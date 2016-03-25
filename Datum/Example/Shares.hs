@@ -41,28 +41,24 @@ transactions
 
 
 -- Example: Select just the Price and Volume columns of the transactions table.
-example_transactions1 :: [Price :*: Volume :*: ()]
-example_transactions1
-        = map (\r ->  select nat1  r :*: select nat2 r :*: ()) 
+ex1 :: [Price :*: Volume :*: ()]
+ex1     = map (\r ->  select nat1  r :*: select nat2 r :*: ()) 
         $ transactions
 
 
 -- Example: Get the list of unqiue symbols from the transactions table.
-example_transactions2 :: [Symbol]
-example_transactions2
-        = members nat0 transactions
+ex2 :: [Symbol]
+ex2     = members nat0 transactions
 
 
 -- Example: Group the transactions by symbol.
-example_transactions3 :: [Symbol :*: [Price :*: Volume :*: Time :*: ()]]
-example_transactions3
-        = group nat0 transactions
+ex3 :: [Symbol :*: [Price :*: Volume :*: Time :*: ()]]
+ex3     = group nat0 transactions
 
 
 -- Example: Group the transactions by time.
-example_transactions4 :: [Time :*: [Symbol :*: Price :*: Volume :*: ()]]
-example_transactions4
-        = group nat3 transactions
+ex4 :: [Time :*: [Symbol :*: Price :*: Volume :*: ()]]
+ex4     = group nat3 transactions
 
 
 -- Example: Group the transactions by both symbol and time.
@@ -71,24 +67,21 @@ example_transactions4
 -- table because it no longer has the same number of columns as the
 -- original transactions table.
 --
-example_transactions5 :: [Symbol :*: [Time :*: [Price :*: Volume :*: ()]]]
-example_transactions5 
-        = mapv (group nat2)
+ex5 :: [Symbol :*: [Time :*: [Price :*: Volume :*: ()]]]
+ex5     = mapv (group nat2)
         $ group nat0 transactions
 
 
 -- Example: Sum up the number of transactions by symbol and time.
-example_transactions6 :: [Symbol :*: [Time :*: Int :*: ()]]
-example_transactions6
-        = mapv (mapv (\r -> length r :*: ()))
+ex6 :: [Symbol :*: [Time :*: Int :*: ()]]
+ex6     = mapv (mapv (\r -> length r :*: ()))
         $ mapv (group nat2)
         $ group nat0 transactions
 
 
 -- Example: Sum up the number of transactions by symbol and time.
-example_transactions7 :: [Symbol :*: [Time :*: [Double :*: Price :*: Volume :*: ()]]]
-example_transactions7
-        = mapv (mapv (map (\row  
+ex7 :: [Symbol :*: [Time :*: [Double :*: Price :*: Volume :*: ()]]]
+ex7     = mapv (mapv (map (\row  
                 -> (select nat0 row * (fromIntegral $ select nat1 row)) 
                 :*: row)))
         $ mapv (group nat2)
@@ -96,17 +89,15 @@ example_transactions7
 
 
 -- Example: Get the last transaction for each symbol.
-example_transactions8 :: [Symbol :*: Time :*: Price :*: Volume :*: ()]
-example_transactions8
-        = mapv (last . L.sortOn (select nat0) . flatten)
+ex8 :: [Symbol :*: Time :*: Price :*: Volume :*: ()]
+ex8     = mapv (last . L.sortOn (select nat0) . flatten)
         $ mapv (group nat2)
         $ group nat0 transactions
 
 
 -- Example: Compute the volume weighted average price per time period.
-example_transactions9 :: [Symbol :*: [Time :*: Double :*: ()]]
-example_transactions9
-        = mapv (mapv (\rows
+ex9 :: [Symbol :*: [Time :*: Double :*: ()]]
+ex9     = mapv (mapv (\rows
                 -> ( sum (map (\row -> select nat0 row * (fromIntegral $ select nat1 row)) rows)
                    / sum (map (\row -> fromIntegral $ select nat1 row) rows))
                 :*: ()))

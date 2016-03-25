@@ -33,25 +33,35 @@ data Dim where
             , columns :: M.Map Name Column          -- ^ columns: all columns that share the shape of this dimension
             } -> Dim                                -- ^ resulting dimension (parent x size)
     deriving (Eq)
+
+
 instance Show Dim where
-    show Dim { dimName=n, size=s, children=c } = (n :: String) ++ show s ++ "\n" ++
-        L.intercalate "-" $ P.map dimName $ M.elems c
-dim = Dim { dimName="", size=One, children=M.empty, columns=M.empty }
+    show Dim { dimName=n, size=s, children=c } 
+        =  (n :: String) ++ show s ++ "\n" 
+        ++ (L.intercalate "-" $ P.map dimName $ M.elems c)
+
+dim  = Dim { dimName="", size=One, children=M.empty, columns=M.empty }
 root = dim { dimName="^", size=One }
+
 
 data Size where
     -- | Singleton value
     One     :: Size
+
     -- | Fixed number of items per parent value (regular)
     Fixed   :: Int          -- ^ size: number of children for every parent
             -> Size
+
     -- | Variable number of items per parent value (ragged)
     Ragged  :: [Int]        -- ^ size: number of children, per parent
             -> Size
+
     -- | Product of parent dimensions
     Product :: Int          -- ^ generations: number of ancestors to work within
             -> Size
     deriving (Eq)
+
+
 instance Show Size where
     show One = []
     show (Fixed l) = "(" ++ show l ++ ")"
@@ -132,7 +142,7 @@ moveRoot = do
         moveRoot
 
 moveUp  :: Int -> State Loc Bool
-moveUp 0        = True
+moveUp 0        = return True
 moveUp level    = do
     l <- get
     case l of
@@ -142,7 +152,7 @@ moveUp level    = do
                 , siblings  = pss
                 , parents   = ps
                 }
-            return moveUp level-1
+            moveUp (level-1)
         Loc {} -> return False
 
 moveDown :: Name -> State Loc Bool
@@ -388,19 +398,23 @@ ancestors = do
 
 mergedSize  :: State Loc Size
 mergedSize = do
-    let go (p@Dim { size=s }:ps) = mergeSize (go ps) s
+    let 
         go [p@Dim { size=s }] = s
+        go (p@Dim { size=s }:ps) = mergeSize (go ps) s
     Loc { parents=ps } <- get
     a <- ancestors
     return $ go a
 
+
+{-
 across  :: [Bool]
         -> State Loc [Bool]
 across (Fixed l) bs = do
 
     l@(Loc ) <- get
 
-    bs [b| b <- bs, i <- [1..l]] Fixed $ l - sum (P.map fromEnum bs)
+    bs [b | b <- bs, i <- [1..l]] Fixed $ l - sum (P.map fromEnum bs)
+
 across (Ragged ls) bs = undefined
 
 across bs = do
@@ -411,7 +425,9 @@ across bs = do
         loc' = loc { targDim=d' }
     moveCol ""
     put loc'
+-}
 
+{-
 load :: State Loc String
 load = do
     loadLines "logEntry" ls             -- load lines of text into a dimension/column
@@ -424,6 +440,7 @@ load = do
 
     s <- drawLoc
     return s
+-}
 
 {-
 -- column orient data
@@ -439,35 +456,40 @@ logEntryPrice = read (smap (!! 5) logEntryFieldCharValue "price") "price" :: Col
 -- | This function shows how to create an empty schema manually. Not really needed
 -- | since you usually construct the schema via queries, only starting with the
 -- | structures that have mirrors in the real world (eg. CSV, JSON etc.)
+{-
 demoSchema = do
     addDim dim { dimName="manager", size=Fixed 4 }
     addDim dim { dimName="name", size=Ragged [3,3,3,3] }
     addCol col { colName="value", values=T.toDyn $ concat ["ABC", "DEF", "GHI", "JKL" ] }
-    _ <- moveUp
+--    _ <- moveUp
     addDim dim { dimName="fund", size=Ragged [2,3,4,5] } -- 14 funds
     addCol col { colName="code", values=T.toDyn "ABCDEFGHIJKLMN" }
     addDim dim { dimName="date", size=Fixed 10 }
     addCol col { colName="date", values=T.toDyn [(1::Int)..10] }
     addCol col { colName="price", values=T.toDyn $ take 140 rand }
-    _ <- moveUp
+--    _ <- moveUp
     addDim dim { dimName="fund", size=Fixed 14 }
     addCol col { colName="correl", values=T.toDyn [(1::Int)..(14*14)] }
-    _ <- moveUp
+--    _ <- moveUp
     addDim dim { dimName="manager", size=Fixed 4 }
     addDim dim { dimName="fund", size=Ragged [2,3,4,5] } -- 14 funds
     addCol col { colName="correl", values=T.toDyn [(1::Int)..(14*14)] }
+{-
     _ <- moveUp
     _ <- moveUp
     _ <- moveUp
     _ <- moveUp
+-}
     get
+-}
 
-
+{-
 main = do
     --let (l,_) = runState create loc
     --putStrLn $ drawLoc l
     let (str,st) = runState load loc
     putStrLn str
+-}
 
 drawLoc :: State Loc String
 drawLoc = do

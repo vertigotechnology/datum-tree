@@ -27,12 +27,12 @@ rand = L.unfoldr (Just . R.random) (R.mkStdGen 0) :: [Int]
 type Name = String
 
 data Dim where
-    Dim ::  { dimName :: Name                       -- ^ name: short name of dimension
-            , size :: Size                          -- ^ size: expansion Size applied to the parent dimension
-            , children :: M.Map Name Dim            -- ^ children: child dimensions
-            , columns :: M.Map Name Column          -- ^ columns: all columns that share the shape of this dimension
-            } -> Dim                                -- ^ resulting dimension (parent x size)
-    deriving (Eq)
+ Dim :: { dimName   :: Name                 -- ^ name: short name of dimension
+        , size      :: Size                 -- ^ size: expansion Size applied to the parent dimension
+        , children  :: M.Map Name Dim       -- ^ children: child dimensions
+        , columns   :: M.Map Name Column    -- ^ columns: all columns that share the shape of this dimension
+        } -> Dim                            -- ^ resulting dimension (parent x size)
+        deriving (Eq)
 
 
 instance Show Dim where
@@ -63,32 +63,44 @@ data Size where
 
 
 instance Show Size where
-    show One = []
-    show (Fixed l) = "(" ++ show l ++ ")"
-    show (Ragged ls) = show (take 5 ls)
-    show (Product g) = "^" ++ show g
+    show One            = []
+    show (Fixed l)      = "(" ++ show l ++ ")"
+    show (Ragged ls)    = show (take 5 ls)              -- * BL: Why take 5 here?
+    show (Product g)    = "^" ++ show g
 
-data Loc = Loc
-    { targDim   :: Dim
-    , targCol   :: Maybe Column
-    , siblings  :: M.Map Name Dim
-    , parents   :: [(M.Map Name Dim, Dim)]
-    } deriving (Eq)
+
+data Loc where
+ Loc :: { targDim   :: Dim
+        , targCol   :: Maybe Column
+        , siblings  :: M.Map Name Dim
+        , parents   :: [(M.Map Name Dim, Dim)]
+        } -> Loc
+        deriving (Eq)
+
+
 instance Show Loc where
-    show Loc { targDim=d, parents=ps } =
-        L.intercalate "." (P.map dimName $ L.reverse $ P.map snd ps) ++ "." ++ show d
+    show Loc { targDim=d, parents=ps } 
+        =  L.intercalate "." (P.map dimName $ L.reverse $ P.map snd ps) 
+        ++ "." ++ show d
+
 loc = Loc { targDim=root, targCol=Nothing, siblings=M.empty, parents=[] }
 
-data Column where
-    Column  ::  { colName   :: Name
-                , values    :: T.Dynamic
-                , typ       :: String
-                } -> Column
+
+data Column 
+        = Column
+        { colName   :: Name
+        , values    :: T.Dynamic
+        , typ       :: String }
+
 instance Show Column where
     show (Column { colName=n }) = n
+
 instance Eq Column where
     (Column { colName=a }) == (Column { colName=b }) = a == b
+
 col = Column { colName="", values=T.toDyn "", typ=""}
+
+
 
 addDim    :: Dim -> State Loc ()
 addDim child = do
@@ -99,6 +111,7 @@ addDim child = do
         , siblings  = cs
         , parents   = (ss, dim):ps
         }
+
 
 -- | Pushes the target column into the dimension
 clearTargCol :: State Loc ()
@@ -295,6 +308,7 @@ smapss dn f = do
     addDim dim { dimName=dn', size=Ragged $ P.map P.length $ concat vs' }
     addCol Column { colName=cn', values=T.toDyn $ P.concat $ P.concat vs', typ="?" }
 
+
 -- | Shape eliminating map, creates:
 -- |    - Col: in parent of targDim
 smap    :: (T.Typeable a, T.Typeable b)
@@ -308,6 +322,7 @@ smap cn f = do
     addCol Column { colName=cn, values=T.toDyn vs', typ="?" }
     return vs'
 
+
 -- | Splits a sequence based on a delimeter
 splitOn     :: (Eq a, T.Typeable a)
             => Name
@@ -315,6 +330,7 @@ splitOn     :: (Eq a, T.Typeable a)
             -> State Loc ()
 splitOn dn xs = do
     smapss dn $ L.splitOn xs
+
 
 -- | Reads a column from text into data type
 -- |    - Col: in parent of targDim
@@ -325,12 +341,14 @@ read cn = do
     vs <- smap cn P.read
     return vs
 
+
 -- | Broadcast values into a flat shape
 broadcastValues :: [a]          -- ^ values to broadcast
                 -> Size         -- ^ shape that represent the child shape, where parent values are Top
                 -> [a]          -- ^ broadcast values
 broadcastValues xs (Ragged ls) = concat $ zipWith replicate ls xs
 broadcastValues xs (Fixed l) = concatMap (replicate l) xs
+
 
 -- | Broadcast into (replicate/fill) a dimension
 {-broadcast   :: (Show a)
@@ -345,6 +363,7 @@ filterSize  :: Size
             -> Size
 filterSize (Fixed l) bs = Fixed $ l - sum (P.map fromEnum bs)
 filterSize (Ragged ls) bs = undefined
+
 
 filterDim   :: [Bool]
             -> Dim

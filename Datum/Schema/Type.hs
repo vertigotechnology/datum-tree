@@ -51,25 +51,4 @@ type Name
         = String
 
 
-exShares :: Shape
-exShares  
- = TS "" 
-        (TT [])
-        [ TS "company" 
-                (TT [ ("symbol",        TPText)
-                    , ("name",          TPText) ])
-
-                [ TS "transaction" 
-                        (TT [ ("price",         TPDecimal)
-                            , ("volume",        TPNat)
-                            , ("time",          TPTime) ])
-                        []
-
-                , TS "office"
-                        (TT  [ ("address",      TPText)])
-                        []
-                ]
-        ]
-
-
 

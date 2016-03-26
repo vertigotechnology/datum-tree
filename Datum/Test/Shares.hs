@@ -13,17 +13,17 @@ btShares
  = BT "" 
         ( TT [])
         [ BT "company" 
-                (TT [ ("symbol",        TPText)
-                    , ("name",          TPText) ])
+                (TT [ ("symbol",        ATText)
+                    , ("name",          ATText) ])
 
                 [ BT "transaction" 
-                        (TT [ ("price",         TPDecimal)
-                            , ("volume",        TPNat)
-                            , ("time",          TPTime) ])
+                        (TT [ ("price",         ATDecimal)
+                            , ("volume",        ATNat)
+                            , ("time",          ATTime) ])
                         []
 
                 , BT "office"
-                        (TT  [ ("address",      TPText)])
+                        (TT  [ ("address",      ATText)])
                         []
                 ]
         ]
@@ -32,23 +32,23 @@ btShares
 bShares :: Branch
 bShares
  = B    (T [])
-        [ [ B  (T [LText "BHP", LText "BHP Billiton Ltd."])
-                  [ [ B  (T [LDecimal 32.16, LNat  1000, LTime "10:01:00"]) []
-                    , B  (T [LDecimal 55.16, LNat   415, LTime "10:01:00"]) []
-                    , B  (T [LDecimal 32.16, LNat 35344, LTime "10:01:00"]) [] 
+        [ [ B  (T [AText "BHP", AText "BHP Billiton Ltd."])
+                  [ [ B  (T [ADecimal 32.16, ANat  1000, ATime "10:01:00"]) []
+                    , B  (T [ADecimal 55.16, ANat   415, ATime "10:01:00"]) []
+                    , B  (T [ADecimal 32.16, ANat 35344, ATime "10:01:00"]) [] 
                     ]
 
-                  , [ B  (T [LText "bhp address1"]) [] 
+                  , [ B  (T [AText "bhp address1"]) [] 
                     ]
                   ]
 
-          , B  (T [LText "TLS", LText "Telstra Corporation Ltd."])
-                  [ [ B  (T [LDecimal 5.11,  LNat   13,  LTime "10:01:05"]) []
-                    , B  (T [LDecimal 5.12,  LNat  100,  LTime "10:01:05"]) []
+          , B  (T [AText "TLS", AText "Telstra Corporation Ltd."])
+                  [ [ B  (T [ADecimal 5.11, ANat   13,   ATime "10:01:05"]) []
+                    , B  (T [ADecimal 5.12, ANat  100,   ATime "10:01:05"]) []
                     ]
 
-                  , [ B  (T [LText "telstra address1"]) []
-                    , B  (T [LText "telstra address2"]) []
+                  , [ B  (T [AText "telstra address1"]) []
+                    , B  (T [AText "telstra address2"]) []
                     ]
                   ]
           ]

@@ -2,7 +2,7 @@
 module Datum.Schema.Exp
         ( Branch        (..)
         , Tuple         (..)
-        , Literal       (..))
+        , Atom          (..))
 where
 
 
@@ -14,19 +14,19 @@ data Branch
 
 -- | Tuple values.
 data Tuple
-        = T [Literal]
+        = T [Atom]
         deriving Show
 
 
--- | Literal values.
-data Literal
-        = LUnit
-        | LBool         Bool
-        | LInt          Int
-        | LFloat        Double
-        | LNat          Int
-        | LDecimal      Double
-        | LText         String
-        | LTime         String
+-- | Atomic values.
+data Atom
+        = AUnit
+        | ABool         Bool
+        | AInt          Int
+        | AFloat        Double
+        | ANat          Int
+        | ADecimal      Double
+        | AText         String
+        | ATime         String
         deriving Show
 

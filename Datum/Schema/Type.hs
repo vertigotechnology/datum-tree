@@ -4,7 +4,7 @@ module Datum.Schema.Type
         , Ix            (..)
         , BranchType    (..)
         , TupleType     (..)
-        , PrimType      (..)
+        , AtomType      (..)
         , Name) 
 where
 
@@ -29,20 +29,20 @@ data BranchType
 
 -- | Named tuple types.
 data TupleType
-        = TT [(Name, PrimType)]
+        = TT [(Name, AtomType)]
         deriving Show
 
 
--- | Primitive types.
-data PrimType
-        = TPUnit
-        | TPBool
-        | TPInt
-        | TPFloat
-        | TPNat
-        | TPDecimal
-        | TPText
-        | TPTime
+-- | Atom types.
+data AtomType
+        = ATUnit
+        | ATBool
+        | ATInt
+        | ATFloat
+        | ATNat
+        | ATDecimal
+        | ATText
+        | ATTime
         deriving Show
 
 

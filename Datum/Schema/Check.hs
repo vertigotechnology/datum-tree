@@ -6,7 +6,7 @@ module Datum.Schema.Check
         , checkBranch
         , checkTuple
 
-        , checkLit)
+        , checkAtom)
 where
 import Datum.Schema.Exp
 import Datum.Schema.Type
@@ -85,23 +85,23 @@ checkTuple path (T fields) (TT nts)
 
         zipWithM_ 
                 (\  field (name, tField)
-                 ->     checkLit (IxField name : path) field tField)
+                 ->     checkAtom (IxField name : path) field tField)
                 fields nts
 
 
--- | Check that a literal has the givne type.
-checkLit  :: Path -> Literal -> PrimType -> Either Error ()
-checkLit path lit tp
+-- | Check that an atom has the given type.
+checkAtom  :: Path -> Atom -> AtomType -> Either Error ()
+checkAtom path lit tp
  = case (lit, tp) of
-        (LUnit,         TPUnit)         -> return ()
-        (LBool _,       TPBool)         -> return ()
-        (LInt _,        TPInt)          -> return ()
-        (LFloat _,      TPFloat)        -> return ()
-        (LNat _,        TPNat)          -> return ()
-        (LDecimal _,    TPDecimal)      -> return ()
-        (LText _,       TPText)         -> return ()
-        (LTime _,       TPTime)         -> return ()
-        _ -> throwError $ ErrorLiteral path lit tp
+        (AUnit,         ATUnit)         -> return ()
+        (ABool _,       ATBool)         -> return ()
+        (AInt _,        ATInt)          -> return ()
+        (AFloat _,      ATFloat)        -> return ()
+        (ANat _,        ATNat)          -> return ()
+        (ADecimal _,    ATDecimal)      -> return ()
+        (AText _,       ATText)         -> return ()
+        (ATime _,       ATTime)         -> return ()
+        _ -> throwError $ ErrorAtom path lit tp
 
 
 -------------------------------------------------------------------------------
@@ -114,12 +114,12 @@ data Error
         | ErrorClashSubDim      Path [Name]
 
         -- | Number of fields in tuple does not match tuple type.
-        | ErrorArityTuple       Path [Literal]  [(Name, PrimType)]
+        | ErrorArityTuple       Path [Atom]  [(Name, AtomType)]
 
         -- | Field name clash.
         | ErrorClashField       Path [Name]
 
-        -- | Literal value does not match associated type.
-        | ErrorLiteral          Path Literal    PrimType
+        -- | Atomic value does not match associated type.
+        | ErrorAtom             Path Atom    AtomType
         deriving Show
 

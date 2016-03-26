@@ -55,11 +55,24 @@ bShares
         ]
 
 
+tShares = Tree bShares btShares
+
 data Tree
         = Tree Branch BranchType
+        deriving Show
 
 data Key
         = Key  Tuple  TupleType
+        deriving Show
+
+
+mapKey :: (Key -> Key) -> Tree -> Tree
+mapKey f (Tree (B t sub) (BT name tt tSub))
+ = case f (Key t tt) of
+        Key t' tt'      -> Tree (B t' sub) (BT name tt' tSub)
+
+-- ??
+-- mapSub
 
 {-
 broadcast 

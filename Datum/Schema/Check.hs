@@ -1,9 +1,11 @@
 
 module Datum.Schema.Check
-        ( checkShape
-        , checkTypeTup
-        , checkTree
-        , checkTup
+        ( checkBranchType
+        , checkKeyType
+
+        , checkBranch
+        , checkTuple
+
         , checkLit)
 where
 import Datum.Schema.Exp
@@ -15,24 +17,24 @@ import qualified Data.List              as L
 
 -------------------------------------------------------------------------------
 -- | Check that a shape is well formed.
-checkShape :: Path -> Shape -> Either Error ()
-checkShape path (TS name tKey subs)
+checkBranchType :: Path -> BranchType -> Either Error ()
+checkBranchType path (BT name tKey subs)
  = do
         -- Check the tuple type.
-        checkTypeTup path tKey
+        checkKeyType path tKey
 
         -- Check that sub dimension names do not clash.
-        let nsSub       = [n | TS n _ _ <- subs]
+        let nsSub       = [n | BT n _ _ <- subs]
         when (length nsSub /= length (L.nub nsSub))
          $ throwError $ ErrorClashSubDim path nsSub
 
         -- Check the sub dimension shapes.
-        mapM_ (checkShape (IxSub name : path)) subs
+        mapM_ (checkBranchType (IxSub name : path)) subs
 
 
 -- | Check that a tuple type is well formed.
-checkTypeTup :: Path -> TypeTup -> Either Error ()
-checkTypeTup path (TT nts)
+checkKeyType :: Path -> TupleType -> Either Error ()
+checkKeyType path (TT nts)
  = do
         -- Check that field names do not clash.
         let nsField     = [n | (n, _)   <- nts]
@@ -42,14 +44,14 @@ checkTypeTup path (TT nts)
 
 -------------------------------------------------------------------------------
 -- | Check that a tree has the specified shape.
-checkTree :: Path -> Tree -> Shape -> Either Error ()
-checkTree path (Tree key subs) (TS name tKey@(TT nts) tsSub)
+checkBranch :: Path -> Branch -> BranchType -> Either Error ()
+checkBranch path (B key subs) (BT name tKey@(TT nts) tsSub)
  = do
         -- Check the tuple type.
-        checkTypeTup path tKey 
+        checkKeyType path tKey 
 
         -- Check the key matches its type.
-        checkTup path key tKey
+        checkTuple path key tKey
 
         -- Check that the number of sub trees matches the number of
         -- sub dimensions.
@@ -57,26 +59,25 @@ checkTree path (Tree key subs) (TS name tKey@(TT nts) tsSub)
          $ throwError $ ErrorArityDim path subs tsSub
 
         -- Check that sub dimension names do not clash.
-        let nsSub       = [n | TS n _ _ <- tsSub]
+        let nsSub       = [n | BT n _ _ <- tsSub]
         when (length nsSub /= length (L.nub nsSub))
          $ throwError $ ErrorClashSubDim path nsSub
 
         -- Check each of the sub trees.
-        zipWithM_ (checkTrees (IxSub name : path)) subs tsSub
+        zipWithM_ (checkBranches (IxSub name : path)) subs tsSub
 
 
 -- | Check that a tree group has the specified shape.
-checkTrees :: Path -> [Tree] -> Shape -> Either Error ()
-checkTrees path trees shape
+checkBranches :: Path -> [Branch] -> BranchType -> Either Error ()
+checkBranches path bs shape
  = do   zipWithM_ 
-                (\i tree 
-                 ->     checkTree (IxElem i : path) tree shape)
-                [0..] trees
+                (\i b -> checkBranch (IxElem i : path) b shape)
+                [0..] bs
 
 
 -- | Check that a tuple has the given type.
-checkTup  :: Path -> Tup -> TypeTup -> Either Error ()
-checkTup path (Tup fields) (TT nts)
+checkTuple  :: Path -> Tuple -> TupleType -> Either Error ()
+checkTuple path (T fields) (TT nts)
  = do   
         -- Check that the number of fields matches the tuple type.
         when (length fields /= length nts)
@@ -89,7 +90,7 @@ checkTup path (Tup fields) (TT nts)
 
 
 -- | Check that a literal has the givne type.
-checkLit  :: Path -> Lit -> TypePrim -> Either Error ()
+checkLit  :: Path -> Literal -> PrimType -> Either Error ()
 checkLit path lit tp
  = case (lit, tp) of
         (LUnit,         TPUnit)         -> return ()
@@ -107,18 +108,18 @@ checkLit path lit tp
 -- | Possible type errors.
 data Error
         -- | Number of sub trees does not match number of sub dimensions.
-        = ErrorArityDim         Path [[Tree]]   [Shape] 
+        = ErrorArityDim         Path [[Branch]] [BranchType] 
 
         -- | Sub dimension name clash.
         | ErrorClashSubDim      Path [Name]
 
         -- | Number of fields in tuple does not match tuple type.
-        | ErrorArityTuple       Path [Lit]      [(Name, TypePrim)]
+        | ErrorArityTuple       Path [Literal]  [(Name, PrimType)]
 
         -- | Field name clash.
         | ErrorClashField       Path [Name]
 
         -- | Literal value does not match associated type.
-        | ErrorLiteral          Path Lit        TypePrim
+        | ErrorLiteral          Path Literal    PrimType
         deriving Show
 

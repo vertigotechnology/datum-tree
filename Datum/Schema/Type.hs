@@ -2,9 +2,9 @@
 module Datum.Schema.Type 
         ( Path          (..)
         , Ix            (..)
-        , Shape         (..)
-        , TypeTup       (..)
-        , TypePrim      (..)
+        , BranchType    (..)
+        , TupleType     (..)
+        , PrimType      (..)
         , Name) 
 where
 
@@ -17,24 +17,24 @@ data Ix
         | IxField Name
         | IxElem  Int
         deriving Show
-        
+
 
 -- | Dimensions.
-data Shape
-        = TS    Name            -- Name of this dimension.
-                TypeTup         -- Key type.
-                [Shape]         -- Sub dimensions.
+data BranchType
+        = BT    Name            -- Name of this dimension.
+                TupleType       -- Tuple type.
+                [BranchType]    -- Sub dimensions.
         deriving Show
 
 
 -- | Named tuple types.
-data TypeTup
-        = TT [(Name, TypePrim)]
+data TupleType
+        = TT [(Name, PrimType)]
         deriving Show
 
 
 -- | Primitive types.
-data TypePrim
+data PrimType
         = TPUnit
         | TPBool
         | TPInt

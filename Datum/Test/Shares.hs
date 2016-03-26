@@ -8,59 +8,60 @@ import Datum.Schema.Type
 
 
 
-sShares :: Shape
-sShares  
- = TS "" 
-        (TT [])
-        [ TS "company" 
+btShares :: BranchType
+btShares  
+ = BT "" 
+        ( TT [])
+        [ BT "company" 
                 (TT [ ("symbol",        TPText)
                     , ("name",          TPText) ])
 
-                [ TS "transaction" 
+                [ BT "transaction" 
                         (TT [ ("price",         TPDecimal)
                             , ("volume",        TPNat)
                             , ("time",          TPTime) ])
                         []
 
-                , TS "office"
+                , BT "office"
                         (TT  [ ("address",      TPText)])
                         []
                 ]
         ]
 
 
-tShares :: Tree
-tShares
- = Tree (Tup [])
-        [ [ Tree  (Tup [LText "BHP", LText "BHP Billiton Ltd."])
-                  [ [ Tree  (Tup [LDecimal 32.16, LNat  1000, LTime "10:01:00"]) []
-                    , Tree  (Tup [LDecimal 55.16, LNat   415, LTime "10:01:00"]) []
-                    , Tree  (Tup [LDecimal 32.16, LNat 35344, LTime "10:01:00"]) [] 
+bShares :: Branch
+bShares
+ = B    (T [])
+        [ [ B  (T [LText "BHP", LText "BHP Billiton Ltd."])
+                  [ [ B  (T [LDecimal 32.16, LNat  1000, LTime "10:01:00"]) []
+                    , B  (T [LDecimal 55.16, LNat   415, LTime "10:01:00"]) []
+                    , B  (T [LDecimal 32.16, LNat 35344, LTime "10:01:00"]) [] 
                     ]
 
-                  , [ Tree  (Tup [LText "bhp address1"]) [] 
+                  , [ B  (T [LText "bhp address1"]) [] 
                     ]
                   ]
 
-          , Tree  (Tup [LText "TLS", LText "Telstra Corporation Ltd."])
-                  [ [ Tree  (Tup [LDecimal 5.11,  LNat   13,  LTime "10:01:05"]) []
-                    , Tree  (Tup [LDecimal 5.12,  LNat  100,  LTime "10:01:05"]) []
+          , B  (T [LText "TLS", LText "Telstra Corporation Ltd."])
+                  [ [ B  (T [LDecimal 5.11,  LNat   13,  LTime "10:01:05"]) []
+                    , B  (T [LDecimal 5.12,  LNat  100,  LTime "10:01:05"]) []
                     ]
 
-                  , [ Tree  (Tup [LText "telstra address1"]) []
-                    , Tree  (Tup [LText "telstra address2"]) []
+                  , [ B  (T [LText "telstra address1"]) []
+                    , B  (T [LText "telstra address2"]) []
                     ]
                   ]
           ]
         ]
 
 
+data Tree
+        = Tree Branch BranchType
+
+data Key
+        = Key  Tuple  TupleType
+
 {-
-mapc    :: (Tree -> Tree) 
-        -> Tree  -> Tree
-mapc f (Tree tup cs
-
-
 broadcast 
         :: [Name] 
         -> [Name]

@@ -1,25 +1,25 @@
 
 module Datum.Schema.Exp
-        ( Tree  (..)
-        , Tup   (..)
-        , Lit   (..))
+        ( Branch        (..)
+        , Tuple         (..)
+        , Literal       (..))
 where
 
 
 -- | Trees with a key and sub trees.
-data Tree
-        = Tree Tup      [[Tree]]
+data Branch
+        = B Tuple [[Branch]]
         deriving Show 
 
 
 -- | Tuple values.
-data Tup
-        = Tup [Lit]
+data Tuple
+        = T [Literal]
         deriving Show
 
 
 -- | Literal values.
-data Lit
+data Literal
         = LUnit
         | LBool         Bool
         | LInt          Int

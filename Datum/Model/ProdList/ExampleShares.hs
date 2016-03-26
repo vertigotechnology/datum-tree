@@ -3,9 +3,8 @@
         MultiParamTypeClasses, FlexibleContexts,
         TypeOperators, TypeFamilies, DataKinds #-}
 
-import Datum.Model.Operators
+import Datum.Model.ProdList.Model
 import qualified Data.List      as L
-
 
 type Symbol     = String
 type Price      = Double
@@ -89,10 +88,10 @@ ex7     = mapv (mapv (map (\row
 
 
 -- Example: Get the last transaction for each symbol.
-ex8 :: [Symbol :*: Time :*: Price :*: Volume :*: ()]
-ex8     = mapv (last . L.sortOn (select nat0) . flatten)
-        $ mapv (group nat2)
-        $ group nat0 transactions
+-- ex8 :: [Symbol :*: Time :*: Price :*: Volume :*: ()]
+-- ex8     = mapv (last . L.sortOn (select nat0) . flatten)
+--        $ mapv (group nat2)
+--        $ group nat0 transactions
 
 
 -- Example: Compute the volume weighted average price per time period.

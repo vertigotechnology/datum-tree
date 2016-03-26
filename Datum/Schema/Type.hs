@@ -1,37 +1,48 @@
 
 module Datum.Schema.Type 
-        ( Shape (..)
-        , TType (..)
-        , PType (..)
+        ( Path          (..)
+        , Ix            (..)
+        , Shape         (..)
+        , TypeTup       (..)
+        , TypePrim      (..)
         , Name) 
 where
 
+-- | Path to a particular dimension.
+type Path 
+        = [Ix]
+
+data Ix
+        = IxSub   Name
+        | IxField Name
+        | IxElem  Int
+        deriving Show
+        
 
 -- | Dimensions.
 data Shape
-        = Shape 
-                Name            -- Name of this dimension.
-                TType           -- Key type.
+        = TS    Name            -- Name of this dimension.
+                TypeTup         -- Key type.
                 [Shape]         -- Sub dimensions.
         deriving Show
 
 
 -- | Named tuple types.
-data TType
-        = TType [(Name, PType)]
+data TypeTup
+        = TT [(Name, TypePrim)]
         deriving Show
 
 
 -- | Primitive types.
-data PType
-        = PUnit
-        | PBool
-        | PInt
-        | PFloat
-        | PNat
-        | PDecimal
-        | PText
-        | PTime
+data TypePrim
+        = TPUnit
+        | TPBool
+        | TPInt
+        | TPFloat
+        | TPNat
+        | TPDecimal
+        | TPText
+        | TPTime
         deriving Show
 
 
@@ -42,20 +53,20 @@ type Name
 
 exShares :: Shape
 exShares  
- = Shape "root" 
-        (TType [])
-        [ Shape "company" 
-                (TType  [ ("symbol", PText)
-                        , ("name",   PText) ])
+ = TS "" 
+        (TT [])
+        [ TS "company" 
+                (TT [ ("symbol",        TPText)
+                    , ("name",          TPText) ])
 
-                [ Shape "transaction" 
-                        (TType  [ ("price",     PDecimal)
-                                , ("volume",    PNat)
-                                , ("time",      PTime) ])
+                [ TS "transaction" 
+                        (TT [ ("price",         TPDecimal)
+                            , ("volume",        TPNat)
+                            , ("time",          TPTime) ])
                         []
 
-                , Shape "office"
-                        (TType  [ ("address",   PText)])
+                , TS "office"
+                        (TT  [ ("address",      TPText)])
                         []
                 ]
         ]

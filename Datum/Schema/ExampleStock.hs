@@ -8,12 +8,13 @@ import Datum.Schema.Check
 import Datum.Schema.Exp
 
 
-tShares :: Tree
-tShares = Tree bShares btShares
+---------------------------------------------------------------------------------------------------
+tStock :: Tree
+tStock = Tree bStock btStock
 
 
-btShares :: BranchType
-btShares  
+btStock :: BranchType
+btStock  
  = BT   "_root" 
         (TT [])
         [ BT "company" 
@@ -41,8 +42,8 @@ btShares
         ]
 
 
-bShares :: Branch
-bShares
+bStock :: Branch
+bStock
  = B    (T [])
         [ [ B   (T [AText "BHP", AText "BHP Billiton Ltd."])
                 [ [ B   (T [ATime "10:01:00", ADecimal 32.16, ANat  1000]) []
@@ -83,3 +84,14 @@ bShares
                   ]
           ]
         ]
+
+
+---------------------------------------------------------------------------------------------------
+-- | Flatten the tree into a list of path keys.
+--
+--   Path keys are formed by concatenating the keys from the root 
+--   to each leaf of the tree.
+--
+ex1     = ppKeyList $ keys tStock
+
+

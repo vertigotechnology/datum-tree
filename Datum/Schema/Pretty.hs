@@ -1,7 +1,42 @@
 
 module Datum.Schema.Pretty where
+import Datum.Schema.Operator
 import Datum.Schema.Exp
 import Text.PrettyPrint.Leijen
+import Prelude                  hiding ((<$>))
+
+
+-- Trees-----------------------------------------------------------------------
+ppTree :: Tree -> Doc
+
+ppTree (Tree (B k []) (BT n _kt []))
+ =      text ". " <> ppTuple k
+
+ppTree (Tree (B k xssSub) (BT n kt tSubs))
+ =      text "* " <> ppTuple k
+ <$>    (vsep $ map ppForest $ zipWith toForest xssSub tSubs)
+
+
+ppForest :: Forest -> Doc
+
+ppForest (Forest [] bt@(BT name kt _))
+ =      text "+ " <> text name <+> text "~" <+> ppTupleType kt
+
+ppForest (Forest bs bt@(BT name kt bts))
+ =      text "+ " <> text name <+> text "~" <+> ppTupleType kt
+ <>     (nest 4 $ line <> vsep (map ppTree [Tree b bt | b <- bs]))
+
+
+ppBranch :: Branch -> Doc
+ppBranch (B t [])
+ =      text ". " <> ppTuple t
+
+ppBranch (B t [[]])
+ =      text ". " <> ppTuple t
+
+ppBranch (B t subs)
+ =      text "* " <> ppTuple t
+ <>     (nest 4 $ line <> vsep (map (\sub -> vsep (map ppBranch sub)) subs))
 
 
 
@@ -10,26 +45,39 @@ ppKeyList :: [Key] -> Doc
 ppKeyList ks
  = vsep $ map ppKey ks
 
+
 ppKey :: Key -> Doc
 ppKey (Key (T as) (TT nts))
  = parens $ hcat (punctuate (text ", ") (zipWith ppAT as nts))
  where  
         ppAT atom (name, ty)
          =   text name 
-         <> text ":" <+> ppAtomType ty
+         <>  text ":" <+> ppAtomType ty
          <+> text "=" <+> ppAtom     atom
 
 
+-- | Pretty print a key with field names, but no field types.
+ppKeyNamed :: Key -> Doc
+ppKeyNamed (Key (T as) (TT nts))
+ = parens $ hcat (punctuate (text ", ") (zipWith ppAT as nts))
+ where  
+        ppAT atom (name, _)
+         =   text name 
+         <+> text "=" <+> ppAtom     atom
+
+
+-- | Pretty print a `Tuple`.
 ppTuple :: Tuple -> Doc
 ppTuple (T as)
  = parens $ hcat (punctuate (text ", ") (map ppAtom as))
 
 
+-- | Pretty print a `TupleType`.
 ppTupleType :: TupleType -> Doc
 ppTupleType (TT nts)
  = parens $ hcat (punctuate (text ", ") (map ppNameType nts))
  where  ppNameType (name, ty)
-         = text name <+> text ":" <+> ppAtomType ty
+         = text name <> text ":" <+> ppAtomType ty
 
 
 -- Atoms ----------------------------------------------------------------------
@@ -44,6 +92,7 @@ ppAtomType at
         ATDecimal       -> text "Decimal"
         ATText          -> text "Text"
         ATTime          -> text "Time"
+
 
 ppAtom :: Atom -> Doc
 ppAtom aa

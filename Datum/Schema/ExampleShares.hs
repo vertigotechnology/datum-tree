@@ -2,6 +2,7 @@
 
 module Datum.Schema.ExampleShares
 where
+import Datum.Schema.Pretty
 import Datum.Schema.Operator
 import Datum.Schema.Check
 import Datum.Schema.Exp

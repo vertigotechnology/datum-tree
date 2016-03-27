@@ -3,7 +3,13 @@ module Datum.Schema.Check
         ( checkBranchType
         , checkKeyType
 
+        , checkTree,    checkTree'
         , checkBranch
+
+        , checkForest
+        , checkBranches
+
+        , checkKey,     checkKey'
         , checkTuple
 
         , checkAtom)
@@ -47,7 +53,19 @@ checkKeyType path (TT nts)
 
 
 -------------------------------------------------------------------------------
--- | Check that a tree has the specified shape.
+-- | Check that a tree is well formed.
+checkTree :: Tree -> Either Error ()
+checkTree tree 
+ =      checkTree' mempty tree
+
+
+-- | Check that a tree is well formed, at the given starting path.
+checkTree' :: Path -> Tree -> Either Error ()
+checkTree' path (Tree branch branchType)
+ =      checkBranch path branch branchType
+
+
+-- | Check that a branch has the given branch type.
 checkBranch :: Path -> Branch -> BranchType -> Either Error ()
 checkBranch
         (Path ps pts) 
@@ -78,6 +96,19 @@ checkBranch
         zipWithM_ (checkBranches path') subs tsSub
 
 
+-------------------------------------------------------------------------------
+-- | Check that a forest is well formed.
+checkForest  :: Forest -> Either Error ()
+checkForest forest
+        = checkForest' mempty forest
+
+
+-- | Check that a forest is well formed, at the given starting path.
+checkForest' :: Path -> Forest -> Either Error ()
+checkForest' path (Forest bs bt)
+        = checkBranches path bs bt
+
+
 -- | Check that a tree group has the specified shape.
 checkBranches :: Path -> [Branch] -> BranchType -> Either Error ()
 checkBranches path bs shape
@@ -86,8 +117,21 @@ checkBranches path bs shape
                 [0..] bs
 
 
+-------------------------------------------------------------------------------
+-- | Check that a key is well formed.
+checkKey  :: Key -> Either Error ()
+checkKey key
+        = checkKey' mempty key
+
+
+-- | Check that a key is well formed, at the given starting path.
+checkKey' :: Path -> Key -> Either Error ()
+checkKey' path (Key t tt)
+        = checkTuple path t tt
+
+
 -- | Check that a tuple has the given type.
-checkTuple  :: Path -> Tuple -> TupleType -> Either Error ()
+checkTuple :: Path -> Tuple -> TupleType -> Either Error ()
 checkTuple path@(Path ps pts) (T fields) tt@(TT nts)
  = do   
         -- Check that the number of fields matches the tuple type.
@@ -100,6 +144,7 @@ checkTuple path@(Path ps pts) (T fields) tt@(TT nts)
                 fields nts
 
 
+-------------------------------------------------------------------------------
 -- | Check that an atom has the given type.
 checkAtom  :: Path -> Atom -> AtomType -> Either Error ()
 checkAtom path lit tp

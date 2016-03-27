@@ -87,11 +87,19 @@ bStock
 
 
 ---------------------------------------------------------------------------------------------------
+-- | Pretty print the tree.
+ex0     = ppTree tStock
+
+
+-- | Check that a tree is well formed.
+ex1     = checkTree tStock
+
+
 -- | Flatten the tree into a list of path keys.
 --
 --   Path keys are formed by concatenating the keys from the root 
 --   to each leaf of the tree.
 --
-ex1     = ppKeyList $ keys tStock
+ex2     = ppKeyList $ keys tStock
 
 

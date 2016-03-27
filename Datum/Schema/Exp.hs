@@ -43,12 +43,16 @@ instance Monoid Path where
 -- Trees ----------------------------------------------------------------------
 -- | A forest is a list of trees of the same type.
 data Forest
-        = Forest [Branch] BranchType
+        = Forest 
+                [Branch]
+                BranchType
         deriving Show
+
 
 -- | A tree combines the branch data and branch meta-data.
 data Tree
-        = Tree  Branch BranchType
+        = Tree  Branch 
+                BranchType
         deriving Show
 
 
@@ -62,25 +66,27 @@ data BranchType
 
 -- | Branch with a key and forests of sub-branches.
 data Branch
-        = B     Tuple [[Branch]]
+        = B     Tuple 
+                [[Branch]]
         deriving Show 
 
 
 -- Tuples ---------------------------------------------------------------------
 -- | A key combines tuple data and tuple meta-data.
 data Key
-        = Key Tuple TupleType
+        = Key   Tuple
+                TupleType
         deriving Show
 
 -- | Named tuple types.
 data TupleType
-        = TT [(Name, AtomType)]
+        = TT    [(Name, AtomType)]
         deriving Show
 
 
 -- | Tuple values.
 data Tuple
-        = T [Atom]
+        = T     [Atom]
         deriving Show
 
 

@@ -1,10 +1,10 @@
 {-# LANGUAGE ParallelListComp #-}
 
-module Datum.Test.Shares
+module Datum.Schema.ExampleShares
 where
+import Datum.Schema.Operator
 import Datum.Schema.Check
 import Datum.Schema.Exp
-import Datum.Schema.Type
 
 
 
@@ -13,8 +13,8 @@ btShares
  = BT   "" 
         (TT [])
         [ BT "company" 
-                (TT [ ("symbol",        ATText)
-                    , ("name",          ATText) ])
+                (TT [ ("symbol", ATText)
+                    , ("name",   ATText) ])
 
                 [ BT "transaction" 
                         (TT [ ("price",         ATDecimal)
@@ -24,7 +24,15 @@ btShares
 
                 , BT "office"
                         (TT  [ ("address",      ATText)])
-                        []
+
+                        [ BT "employee"
+                                (TT [ ("name",          ATText) ])
+                                [ BT "contact"
+                                        (TT [ ("number",        ATText)
+                                            , ("sort",          ATText) ])
+                                        []
+                                ]
+                        ]
                 ]
         ]
 
@@ -32,23 +40,41 @@ btShares
 bShares :: Branch
 bShares
  = B    (T [])
-        [ [ B  (T [AText "BHP", AText "BHP Billiton Ltd."])
-                  [ [ B  (T [ADecimal 32.16, ANat  1000, ATime "10:01:00"]) []
-                    , B  (T [ADecimal 55.16, ANat   415, ATime "10:01:00"]) []
-                    , B  (T [ADecimal 32.16, ANat 35344, ATime "10:01:00"]) [] 
-                    ]
-
-                  , [ B  (T [AText "bhp address1"]) [] 
-                    ]
+        [ [ B   (T [AText "BHP", AText "BHP Billiton Ltd."])
+                [ [ B   (T [ADecimal 32.16, ANat  1000, ATime "10:01:00"]) []
+                  , B   (T [ADecimal 55.16, ANat   415, ATime "10:01:00"]) []
+                  , B   (T [ADecimal 32.16, ANat 35344, ATime "10:01:00"]) [] 
                   ]
+
+                , [ B   (T [AText "171 Collins Street, Melbourne"]) 
+
+                        [ [ B   (T [AText "Max"])   
+                                [ [ B   (T [ AText "0411123123", AText "work"]) []
+                                  , B   (T [ AText "0412321321", AText "home"]) []
+                                  ]
+                                ]
+
+                          , B   (T [AText "Eve"])
+                                [ [ B   (T [ AText "0400999999", AText "work"]) []
+                                  ]
+                                ]
+                          ]
+                        ]
+                  ]
+                ]
 
           , B  (T [AText "TLS", AText "Telstra Corporation Ltd."])
                   [ [ B  (T [ADecimal 5.11, ANat   13,   ATime "10:01:05"]) []
                     , B  (T [ADecimal 5.12, ANat  100,   ATime "10:01:05"]) []
                     ]
 
-                  , [ B  (T [AText "telstra address1"]) []
-                    , B  (T [AText "telstra address2"]) []
+                  , [ B  (T [AText "242 Exhibition Street, Melbourne"]) 
+                         [ []
+                         ]
+
+                    , B  (T [AText "99 King Street, Sydney"]) 
+                         [ []
+                         ]
                     ]
                   ]
           ]
@@ -57,21 +83,7 @@ bShares
 
 tShares = Tree bShares btShares
 
-data Tree
-        = Tree    Branch  BranchType
-        deriving Show
 
-data Key
-        = Key     Tuple   TupleType
-        deriving Show
-
-data Forest
-        = Forest [Branch] BranchType
-
-
--- mapForest :: (Tree -> Tree) -> Forest -> Forest
--- mapForest f (Forest bs bt)
---        = 
 
 
 {-

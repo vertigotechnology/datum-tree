@@ -9,7 +9,6 @@ module Datum.Schema.Check
         , checkAtom)
 where
 import Datum.Schema.Exp
-import Datum.Schema.Type
 import Control.Monad
 import Control.Monad.Except
 import qualified Data.List              as L
@@ -77,7 +76,7 @@ checkBranches path bs shape
 
 -- | Check that a tuple has the given type.
 checkTuple  :: Path -> Tuple -> TupleType -> Either Error ()
-checkTuple path (T fields) (TT nts)
+checkTuple path (T fields) tt@(TT nts)
  = do   
         -- Check that the number of fields matches the tuple type.
         when (length fields /= length nts)

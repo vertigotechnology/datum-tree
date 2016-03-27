@@ -7,6 +7,13 @@ module Datum.Schema.Operator
         , mapBranches
         , mapForest
 
+          -- * Reducing
+        , reduceTree
+        , reduceForest
+
+          -- * Special Reductions
+        , keys
+
           -- * Traversal
         , traverseTree
 
@@ -14,6 +21,7 @@ module Datum.Schema.Operator
         , filterDim)
 where
 import Datum.Schema.Exp
+import qualified Data.List              as L
 
 
 -- Conversion -----------------------------------------------------------------
@@ -29,15 +37,19 @@ fromForest (Forest bs bt)
 -- Mapping --------------------------------------------------------------------
 -- | Apply a per-tree function to every sub-tree of a tree.
 mapBranches   :: (Path -> Tree -> Tree) -> Path -> Tree -> Tree
-mapBranches f path (Tree (B k0 xssSub0) (BT n0 kt tsSub0))
+mapBranches f 
+        (Path ps pts) 
+        (Tree (B k0 xssSub0) (BT n0 kt0 tsSub0))
  = let
+        path'   = Path (ISub k0 : ps) (ITSub n0 kt0 : pts)
+
         (xssSub1, tsSub1)
                 = unzip
                 $ map fromForest
-                $ map (mapForest f (IxSub n0 : path))
+                $ map (mapForest f path')
                 $ zipWith toForest xssSub0 tsSub0
 
-   in   Tree (B k0 xssSub1) (BT n0 kt tsSub1)
+   in   Tree (B k0 xssSub1) (BT n0 kt0 tsSub1)
 
 
 -- | Apply a per-tree-function to a forest.
@@ -49,7 +61,7 @@ mapForest f path (Forest bs0 bt0)
  = let  
         trees           = map (\b -> Tree b bt0) bs0
 
-        trees'          = [ f (IxElem i : path) tree      
+        trees'          = [ f path tree      
                                 | tree  <- trees
                                 | i     <- [0..]]
 
@@ -65,14 +77,15 @@ mapForest f path (Forest bs0 bt0)
 -- Traversal ------------------------------------------------------------------
 -- | Bottom-up traversal of a tree.
 traverseTree :: (Path -> Tree -> Tree) -> Path -> Tree -> Tree
-traverseTree f  path (Tree (B k0 xssSub0) (BT n0 kt0 tsSub0))
+traverseTree f  
+        (Path ps pts)
+        (Tree (B k0 xssSub0) (BT n0 kt0 tsSub0))
  = let
-        path'   = IxSub n0 : path
+        path'   = Path (ISub k0 : ps) (ITSub n0 kt0 : pts)
 
         (xssSub, tsSub)
                 = unzip
-                $ [ let BT n kt _       = tSub
-                        path''          = IxElem i : path'
+                $ [ let BT n kt _ = tSub
 
                         Forest xsSub' tSub'
                                 = mapForest f path'
@@ -86,6 +99,45 @@ traverseTree f  path (Tree (B k0 xssSub0) (BT n0 kt0 tsSub0))
                         | i     <- [0..] ]
 
    in   Tree (B k0 xssSub) (BT n0 kt0 tsSub)
+
+
+-- Reduction ------------------------------------------------------------------
+-- | Reduce all sub-trees in the given tree.
+reduceTree :: (Path -> a -> Tree -> a) -> Path -> a -> Tree -> a
+reduceTree f 
+        (Path ps pts) 
+        acc tree@(Tree (B k0 xssSub0) (BT n0 kt0 tsSub0))
+ = let  
+        path'   = Path (ISub k0 : ps) (ITSub n0 kt0 : pts)
+        forests = zipWith toForest xssSub0 tsSub0
+
+   in   L.foldl' (reduceForest f path') (f path' acc tree) forests
+
+
+-- | Reduce all sub-trees in the given forest.
+reduceForest :: (Path -> a -> Tree -> a) -> Path -> a -> Forest -> a
+reduceForest f path acc (Forest bs bt)
+ =      L.foldl' (\acc' b -> reduceTree f path acc' (Tree b bt))
+                 acc bs
+
+
+-- | Get a list of all tuples in the given tree.
+keys :: Tree -> [Key]
+keys tree
+ = let  
+        paths   = reduceTree (\p acc _ -> acc ++ [p]) mempty [] tree
+        ixs     = [ Key (T  (reverse $ concat 
+                                [ reverse as 
+                                        | ISub  (T as) <- ps' ]))
+
+                        (TT (reverse $ concat
+                                [ reverse nts
+                                        | ITSub _ (TT nts) <- pts']))
+
+                  | Path ps' pts' <- paths]
+  in    ixs
+
+
 
 
 -- Filtering ------------------------------------------------------------------

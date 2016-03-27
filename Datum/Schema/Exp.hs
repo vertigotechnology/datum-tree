@@ -1,7 +1,7 @@
 
 module Datum.Schema.Exp
-        ( Path   (..)
-        , Ix     (..)
+        ( Path   (..),  PathType (..)
+        , Ix     (..),  IxType   (..)
         , Forest (..)
         , Tree   (..),  Branch   (..), BranchType (..)
         , Key    (..),  Tuple    (..), TupleType  (..)
@@ -11,15 +11,33 @@ where
 
 
 -- Path ----------------------------------------------------------------------
+data PathType
+        = PathType  [IxType]
+        deriving Show
+
+
 -- | Path to a particular element.
-type Path
-        = [Ix]
+data Path
+        = Path [Ix] [IxType]
+        deriving Show
+
+
+-- | Type of a path.
+data IxType
+        = ITField       AtomType
+        | ITSub         Name    TupleType
+        deriving Show   
 
 data Ix
-        = IxField Name
-        | IxSub   Name
-        | IxElem  Int
+        = IField        Name
+        | ISub          Tuple
         deriving Show
+
+
+instance Monoid Path where
+ mempty = Path [] []
+ mappend (Path ps1 pts1)    (Path ps2 pts2)
+        = Path (ps1 ++ ps2) (pts1 ++ pts2)
 
 
 -- Trees ----------------------------------------------------------------------

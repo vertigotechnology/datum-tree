@@ -16,23 +16,28 @@ import qualified Data.List              as L
 
 -------------------------------------------------------------------------------
 -- | Check that a shape is well formed.
-checkBranchType :: Path -> BranchType -> Either Error ()
-checkBranchType path (BT name tKey subs)
+checkBranchType :: PathType -> BranchType -> Either Error ()
+checkBranchType 
+        (PathType pts)
+        (BT name tKey subs)
  = do
+        let pts'        = ITSub name tKey : pts
+        let tPath'      = PathType pts'
+
         -- Check the tuple type.
-        checkKeyType path tKey
+        checkKeyType tPath' tKey
 
         -- Check that sub dimension names do not clash.
         let nsSub       = [n | BT n _ _ <- subs]
         when (length nsSub /= length (L.nub nsSub))
-         $ throwError $ ErrorClashSubDim path nsSub
+         $ throwError $ ErrorClashSubDim tPath' nsSub
 
         -- Check the sub dimension shapes.
-        mapM_ (checkBranchType (IxSub name : path)) subs
+        mapM_ (checkBranchType tPath') subs
 
 
 -- | Check that a tuple type is well formed.
-checkKeyType :: Path -> TupleType -> Either Error ()
+checkKeyType :: PathType -> TupleType -> Either Error ()
 checkKeyType path (TT nts)
  = do
         -- Check that field names do not clash.
@@ -44,39 +49,46 @@ checkKeyType path (TT nts)
 -------------------------------------------------------------------------------
 -- | Check that a tree has the specified shape.
 checkBranch :: Path -> Branch -> BranchType -> Either Error ()
-checkBranch path (B key subs) (BT name tKey@(TT nts) tsSub)
+checkBranch
+        (Path ps pts) 
+        (B key subs) (BT name tKey@(TT nts) tsSub)
  = do
+        let ps'         = ISub  key       : ps
+        let pts'        = ITSub name tKey : pts
+        let path'       = Path ps' pts'
+        let tPath'      = PathType pts'
+
         -- Check the tuple type.
-        checkKeyType path tKey 
+        checkKeyType tPath' tKey 
 
         -- Check the key matches its type.
-        checkTuple path key tKey
+        checkTuple   path'  key tKey
 
         -- Check that the number of sub trees matches the number of
         -- sub dimensions.
         when (length subs /= length tsSub)
-         $ throwError $ ErrorArityDim path subs tsSub
+         $ throwError $ ErrorArityDim path' subs tsSub
 
         -- Check that sub dimension names do not clash.
         let nsSub       = [n | BT n _ _ <- tsSub]
         when (length nsSub /= length (L.nub nsSub))
-         $ throwError $ ErrorClashSubDim path nsSub
+         $ throwError $ ErrorClashSubDim tPath' nsSub
 
         -- Check each of the sub trees.
-        zipWithM_ (checkBranches (IxSub name : path)) subs tsSub
+        zipWithM_ (checkBranches path') subs tsSub
 
 
 -- | Check that a tree group has the specified shape.
 checkBranches :: Path -> [Branch] -> BranchType -> Either Error ()
 checkBranches path bs shape
  = do   zipWithM_ 
-                (\i b -> checkBranch (IxElem i : path) b shape)
+                (\i b -> checkBranch path b shape)
                 [0..] bs
 
 
 -- | Check that a tuple has the given type.
 checkTuple  :: Path -> Tuple -> TupleType -> Either Error ()
-checkTuple path (T fields) tt@(TT nts)
+checkTuple path@(Path ps pts) (T fields) tt@(TT nts)
  = do   
         -- Check that the number of fields matches the tuple type.
         when (length fields /= length nts)
@@ -84,7 +96,7 @@ checkTuple path (T fields) tt@(TT nts)
 
         zipWithM_ 
                 (\  field (name, tField)
-                 ->     checkAtom (IxField name : path) field tField)
+                 ->     checkAtom path field tField)
                 fields nts
 
 
@@ -110,13 +122,13 @@ data Error
         = ErrorArityDim         Path [[Branch]] [BranchType] 
 
         -- | Sub dimension name clash.
-        | ErrorClashSubDim      Path [Name]
+        | ErrorClashSubDim      PathType [Name]
 
         -- | Number of fields in tuple does not match tuple type.
         | ErrorArityTuple       Path [Atom]  [(Name, AtomType)]
 
         -- | Field name clash.
-        | ErrorClashField       Path [Name]
+        | ErrorClashField       PathType [Name]
 
         -- | Atomic value does not match associated type.
         | ErrorAtom             Path Atom    AtomType

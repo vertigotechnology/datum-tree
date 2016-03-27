@@ -10,8 +10,8 @@ import Datum.Schema.Type
 
 btShares :: BranchType
 btShares  
- = BT "" 
-        ( TT [])
+ = BT   "" 
+        (TT [])
         [ BT "company" 
                 (TT [ ("symbol",        ATText)
                     , ("name",          ATText) ])
@@ -58,22 +58,61 @@ bShares
 tShares = Tree bShares btShares
 
 data Tree
-        = Tree Branch BranchType
+        = Tree    Branch  BranchType
         deriving Show
 
 data Key
-        = Key  Tuple  TupleType
+        = Key     Tuple   TupleType
         deriving Show
 
+data Forest
+        = Forest [Branch] BranchType
 
+
+-- mapForest :: (Tree -> Tree) -> Forest -> Forest
+-- mapForest f (Forest bs bt)
+--        = 
+
+
+{-
 mapKey :: (Key -> Key) -> Tree -> Tree
-mapKey f (Tree (B t sub) (BT name tt tSub))
- = case f (Key t tt) of
-        Key t' tt'      -> Tree (B t' sub) (BT name tt' tSub)
+mapKey f (Tree (B k xsSub) (BT name kt tsSub))
+ = case f (Key k kt) of
+        Key k' kt'      -> Tree (B k' xsSub) (BT name kt' tsSub)
 
--- ??
--- mapSub
 
+mapTree :: (Tree -> Tree) -> Forest -> Forest
+mapTree f (Forest bs bt)
+ = let  ts              = map (\b -> Tree b bt) bs
+        ts'             = map f ts
+
+        (bs', bts')     = [ (b', bt') | Tree b' bt' <- ts']
+
+        bt1             = case bts' of
+                                []      -> bt
+
+        bt0 : _         = bts'
+
+   in   
+
+
+-- | Apply a function to all the trees in the given sub-dimension.
+mapSub  :: Name -> (Forest -> Forest) -> Tree -> Tree
+mapSub n0 f (Tree (B k0 xs0) (BT name kt0 ts0))
+ = let
+        lsub (xs : xss) (bt@(BT n _ _) : bts)
+         | n == n0      
+         = let  Forest xs' bt'  = f (Forest xs bt)
+           in   (xs' : xss, bt' : bts)
+
+         | otherwise
+         = let  (xss', bts')    = lsub xss bts
+           in   (xs : xss', bt : bts')
+
+        (xs1, ts1)      = lsub xs0 ts0
+
+   in   Tree (B k0 xs1) (BT name kt0 ts1)
+-}
 {-
 broadcast 
         :: [Name] 

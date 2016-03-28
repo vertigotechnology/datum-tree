@@ -12,7 +12,7 @@ module Datum.Schema.Operator
         , reduceForest
 
           -- * Special Reductions
-        , keys
+        , keysOfTree
 
           -- * Traversal
         , traverseTree
@@ -122,8 +122,8 @@ reduceForest f path acc (Forest bs bt)
 
 
 -- | Get a list of all tuples in the given tree.
-keys :: Tree -> [Key]
-keys tree
+keysOfTree :: Tree -> [Key]
+keysOfTree tree
  = let  
         paths   = reduceTree (\p acc _ -> acc ++ [p]) mempty [] tree
         ixs     = [ Key (T  (reverse $ concat 
@@ -138,7 +138,7 @@ keys tree
   in    ixs
 
 
-
+-- ** TODO: make size function
 
 -- Filtering ------------------------------------------------------------------
 -- | Keep only the sub dimensions of the given names.

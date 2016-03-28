@@ -2,7 +2,7 @@
 
 module Datum.Schema.ExampleShares
 where
-import Datum.Schema.Pretty
+import Datum.Schema.PrettyCtor
 import Datum.Schema.Operator
 import Datum.Schema.Check
 import Datum.Schema.Exp
@@ -100,6 +100,6 @@ ex1     = checkTree tStock
 --   Path keys are formed by concatenating the keys from the root 
 --   to each leaf of the tree.
 --
-ex2     = ppKeyList $ keys tStock
+ex2     = ppKeyList $ keysOfTree tStock
 
 

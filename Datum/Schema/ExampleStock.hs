@@ -39,6 +39,11 @@ btStock
                                 ]
                         ]
                 ]
+
+        , BT "exchange"
+                (TT [ ("abbrev", ATText)
+                    , ("name",   ATText) ])
+                []
         ]
 
 
@@ -80,6 +85,9 @@ bStock
                  ]
              ]
          ]
+
+     , G [ B (T [AText "ASX",  AText "Australian Securities Exchange"]) []
+         , B (T [AText "NYSE", AText "New York Stock Exchange"]) [] ]
      ]
 
 
@@ -99,4 +107,20 @@ ex1     = checkTree tStock
 --
 ex2     = ppKeyList $ keysOfTree tStock
 
+
+-- | Filter top-level of tree to keep only named dimensions.
+ex3_1   = ppTree $ filterForestsOfTree (\p f -> nameOfForest f == "company")  mempty tStock
+ex3_2   = ppTree $ filterForestsOfTree (\p f -> nameOfForest f == "exchange") mempty tStock
+
+
+-- | Filter second level of tree to keep only named dimensions.
+ex4_1   = ppTree 
+        $ mapTreesOfTree 
+                (filterForestsOfTree (\p f -> nameOfForest f == "transaction")) 
+                mempty tStock
+
+ex4_2   = ppTree 
+        $ mapTreesOfTree 
+                (filterForestsOfTree (\p f -> nameOfForest f == "office")) 
+                mempty tStock
 

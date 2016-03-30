@@ -1,13 +1,21 @@
 {-# LANGUAGE ParallelListComp #-}
 module Datum.Schema.Operator
-        ( -- * Conversion
-          makeForest,   takeForest
-        , branchOfTree
+        ( -- * Tree Construction
+          makeTree,     takeTree
+        , branchOfTree, typeOfTree
+        , nameOfTree
+        , forestsOfTree
+
+          -- * Forest Construction
+        , makeForest,   takeForest
+        , groupOfForest, typeOfForest
+        , nameOfForest
         , treesOfForest
 
           -- * Mapping
         , mapTreesOfTree
         , mapTreesOfForest
+        , mapForestsOfTree
 
           -- * Reducing
         , reduceTree
@@ -22,7 +30,9 @@ module Datum.Schema.Operator
 
           -- * Filtering
         , filterTree
-        , sliceBranches)
+        , filterTreesOfForest
+        , filterForestsOfTree
+        , sliceTreeWithNames)
 where
 import Datum.Schema.Exp
 import qualified Data.List              as L
@@ -47,6 +57,11 @@ branchOfTree (Tree b _) = b
 -- | Take the branch type of a tree.
 typeOfTree    :: Tree -> BranchType
 typeOfTree (Tree _ bt)  = bt
+
+
+-- | Take the name of a tree.
+nameOfTree    :: Tree -> Name
+nameOfTree (Tree _ (BT n _ _)) = n
 
 
 -- | Take the list of sub-forests from a tree.
@@ -131,11 +146,19 @@ mapForestsOfTree f path tree
 
 
 -- | Apply a function to the list of sub-trees of a forest.
+-- 
+--   * The worker function can change the type of the trees,
+--     provided the result trees all have the same type.
+--
 applyTreesOfForest :: (Path -> [Tree] -> [Tree]) -> Path -> Forest -> Forest
 applyTreesOfForest f path forest
-        = forestOfTrees (typeOfForest forest)
-        $ f path
-        $ treesOfForest forest
+ = let  
+        trees   = treesOfForest forest
+        trees'  = f path trees
+
+   in   case trees' of
+         []       -> forestOfTrees (typeOfForest forest) trees'
+         (t0 : _) -> forestOfTrees (typeOfTree   t0)     trees'
  
 
 -- | Apply a function to the list of sub-forests of a tree.
@@ -247,41 +270,43 @@ sizeOfTree tree
 -- | Filter a tree by keeping only the sub-trees that match
 --   the given predicate. 
 filterTree :: (Path -> Tree -> Bool) -> Path -> Tree -> Tree
-filterTree p 
-        (Path ps pts)
-        tree@(Tree (B k0 gs0) (BT n0 kt0 tsSub0))
- = let
-        path'   = Path (ISub k0 : ps) (ITSub n0 kt0 : pts)
+filterTree pred path tree
+ = applyForestsOfTree 
+        (\  path1 forests -> map (filterTreesOfForest pred path1) forests)
+        path tree
 
-        ff      = map (mapTreesOfForest (filterTree p) path')
-                $ forestsOfTree tree
 
-        (gs1, tsSub)
-                = unzip
-                $ [ ( G (map branchOfTree 
-                                $ filter (p path') [Tree b tSub | b <- bsSub])
-                    , tSub)
-                  | Forest (G bsSub) tSub@(BT n _ _) <- ff ]
-
-   in   Tree (B k0 gs1) (BT n0 kt0 tsSub)
+-- | Filter a tree by keeping only the sub-forests that match
+--   the given predicate.
+filterForestsOfTree :: (Path -> Forest -> Bool) -> Path -> Tree -> Tree
+filterForestsOfTree pred path tree
+ = applyForestsOfTree  (\path1 -> filter (pred path1)) path tree
 
 
 -- | Filter a forest by keeping only the sub-trees that match
 --   the given predicate.
-filterForest :: (Path -> Tree -> Bool) -> Path -> Forest -> Forest
-filterForest p path forest
-        = forestOfTrees (typeOfForest forest)
-        $ map    (filterTree p path)
-        $ filter (p path)
-        $ treesOfForest forest
+--
+--   * This is a shallow filter. We only consider the trees that directly
+--     make up the given forest.
+--
+filterTreesOfForest :: (Path -> Tree -> Bool) -> Path -> Forest -> Forest
+filterTreesOfForest pred path forest
+ = applyTreesOfForest 
+        (\path' trees -> filter (pred path') trees)
+        path forest
 
 
--- | Keep only branches with the given names.
-sliceBranches :: [Name] -> Tree -> Tree
-sliceBranches ns tree
+-- | Slice a tree by keeping only the sub-trees that have the 
+--   given names.
+--
+--   * This is a deep filter. We consider the direct sub-trees of
+--     the provided tree, as well as sub-trees of those, and so on.
+--
+sliceTreeWithNames :: [Name] -> Tree -> Tree
+sliceTreeWithNames ns tree
  = applyForestsOfTree'
         ( filter (\forest -> elem (nameOfForest forest) ns)
-        . map    (mapTreesOfForest' (sliceBranches ns)))
+        . map    (mapTreesOfForest' (sliceTreeWithNames ns)))
         tree
 
 

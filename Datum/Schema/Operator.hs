@@ -1,7 +1,7 @@
 {-# LANGUAGE ParallelListComp #-}
 module Datum.Schema.Operator
         ( -- * Conversion
-          toForest, fromForest
+          makeForest,   takeForest
 
           -- * Mapping
         , mapBranches
@@ -13,6 +13,7 @@ module Datum.Schema.Operator
 
           -- * Special Reductions
         , keysOfTree
+        , sizeOfTree
 
           -- * Traversal
         , traverseTree
@@ -25,12 +26,12 @@ import qualified Data.List              as L
 
 
 -- Conversion -----------------------------------------------------------------
-toForest   :: Group -> BranchType    -> Forest
-toForest b bt = Forest b bt
+makeForest   :: Group -> BranchType    -> Forest
+makeForest b bt = Forest b bt
 
 
-fromForest :: Forest   -> (Group, BranchType)
-fromForest (Forest bs bt)
+takeForest :: Forest   -> (Group, BranchType)
+takeForest (Forest bs bt)
         = (bs, bt)
 
 
@@ -45,9 +46,9 @@ mapBranches f
 
         (xssSub1, tsSub1)
                 = unzip
-                $ map fromForest
+                $ map takeForest
                 $ map (mapForest f path')
-                $ zipWith toForest xssSub0 tsSub0
+                $ zipWith makeForest xssSub0 tsSub0
 
    in   Tree (B k0 xssSub1) (BT n0 kt0 tsSub1)
 
@@ -109,7 +110,7 @@ reduceTree f
         acc tree@(Tree (B k0 xssSub0) (BT n0 kt0 tsSub0))
  = let  
         path'   = Path (ISub k0 : ps) (ITSub n0 kt0 : pts)
-        forests = zipWith toForest xssSub0 tsSub0
+        forests = zipWith makeForest xssSub0 tsSub0
 
    in   L.foldl' (reduceForest f path') (f path' acc tree) forests
 
@@ -138,14 +139,18 @@ keysOfTree tree
   in    ixs
 
 
--- ** TODO: make size function
+-- | Get the size of a tree, in number of branches, including the root branch.
+sizeOfTree :: Tree -> Int
+sizeOfTree tree
+ = reduceTree (\_ n _ -> n + 1) mempty 0 tree   
+
 
 -- Filtering ------------------------------------------------------------------
 -- | Keep only the sub dimensions of the given names.
 filterDim :: [Name] -> Tree -> Tree
 filterDim ns (Tree (B k0 xssSub0) (BT n0 kt tsSub0))
  = let
-        ff      = zipWith toForest xssSub0 tsSub0
+        ff      = zipWith makeForest xssSub0 tsSub0
 
         (xssSub, tsSub)
                 = unzip

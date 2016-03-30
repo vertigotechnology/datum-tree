@@ -14,7 +14,7 @@ ppTree (Tree (B k []) (BT n _kt []))
 
 ppTree (Tree (B k xssSub) (BT n kt tSubs))
  =      text "* " <> ppTuple k
- <$>    (vsep $ map ppForest $ zipWith toForest xssSub tSubs)
+ <$>    (vsep $ map ppForest $ zipWith makeForest xssSub tSubs)
 
 
 ppForest :: Forest -> Doc

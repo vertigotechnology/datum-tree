@@ -15,7 +15,7 @@ tStock = Tree bStock btStock
 
 btStock :: BranchType
 btStock  
- = BT   "_root" 
+ = BT   "root" 
         (TT [])
         [ BT "company" 
                 (TT [ ("symbol", ATText)

@@ -2,6 +2,8 @@
 module Datum.Schema.Operator
         ( -- * Conversion
           makeForest,   takeForest
+        , branchOfTree
+        , treesOfForest
 
           -- * Mapping
         , mapBranches
@@ -19,20 +21,75 @@ module Datum.Schema.Operator
         , traverseTree
 
           -- * Filtering
-        , filterDim)
+        , filterTree
+        , sliceBranches)
 where
 import Datum.Schema.Exp
 import qualified Data.List              as L
 
 
--- Conversion -----------------------------------------------------------------
-makeForest   :: Group -> BranchType    -> Forest
+-- Tree Construction ----------------------------------------------------------
+-- | Make a tree from a branch and its branch type.
+makeTree :: Branch -> BranchType -> Tree
+makeTree b bt = Tree b bt
+
+
+-- | Take the branch and branch type from a tree.
+takeTree :: Tree -> (Branch, BranchType)
+takeTree (Tree b bt) = (b, bt)
+
+
+-- | Take the branch of a tree.
+branchOfTree  :: Tree -> Branch
+branchOfTree (Tree b _) = b
+
+
+-- | Take the branch type of a tree.
+typeOfTree    :: Tree -> BranchType
+typeOfTree (Tree _ bt)  = bt
+
+
+-- Forest Construction --------------------------------------------------------
+-- | Make a forest from a group of branches and their common branchtype.
+makeForest :: Group -> BranchType -> Forest
 makeForest b bt = Forest b bt
 
 
+-- | Take a group of branches and the branch type from a forest.
 takeForest :: Forest   -> (Group, BranchType)
 takeForest (Forest bs bt)
         = (bs, bt)
+
+
+-- | Take the branch group from a forest.
+groupOfForest :: Forest -> Group
+groupOfForest (Forest g _)
+        = g
+
+
+-- | Take the branch type from a forest.
+typeOfForest :: Forest -> BranchType
+typeOfForest (Forest _ bt) = bt
+
+
+-- | Take a list of trees from a forest.
+treesOfForest :: Forest -> [Tree]
+treesOfForest (Forest (G bs) bt)
+        = [Tree b bt | b <- bs]
+
+
+-- | Make a forest from a shared branch type and a list of trees.
+--
+--   The branch type must be supplied explicitly so we know what it should
+--   be when the list of trees is empty.
+-- 
+--   * This function does not check that the provided trees all share the
+--     same branch type, nor that the shared type is the same as the one
+--     provided.
+-- 
+forestOfTrees :: BranchType -> [Tree] -> Forest
+forestOfTrees bt trees
+        = Forest (G (map branchOfTree trees)) bt
 
 
 -- Mapping --------------------------------------------------------------------
@@ -146,17 +203,50 @@ sizeOfTree tree
 
 
 -- Filtering ------------------------------------------------------------------
--- | Keep only the sub dimensions of the given names.
-filterDim :: [Name] -> Tree -> Tree
-filterDim ns (Tree (B k0 xssSub0) (BT n0 kt tsSub0))
+-- | Filter a tree by keeping only the sub-trees that match
+--   the given predicate. 
+filterTree :: (Path -> Tree -> Bool) -> Path -> Tree -> Tree
+filterTree p 
+        (Path ps pts)
+        (Tree (B k0 gs0) (BT n0 kt0 tsSub0))
  = let
-        ff      = zipWith makeForest xssSub0 tsSub0
+        path'   = Path (ISub k0 : ps) (ITSub n0 kt0 : pts)
 
-        (xssSub, tsSub)
+        ff      = map (mapForest (filterTree p) path')
+                $ zipWith makeForest gs0 tsSub0
+
+        (gs1, tsSub)
+                = unzip
+                $ [ ( G (map branchOfTree 
+                                $ filter (p path') [Tree b tSub | b <- bsSub])
+                    , tSub)
+                  | Forest (G bsSub) tSub@(BT n _ _) <- ff ]
+
+   in   Tree (B k0 gs1) (BT n0 kt0 tsSub)
+
+
+-- | Filter a forest by keeping only the sub-trees that match
+--   the given predicate.
+filterForest :: (Path -> Tree -> Bool) -> Path -> Forest -> Forest
+filterForest p path forest
+        = forestOfTrees (typeOfForest forest)
+        $ map    (filterTree p path)
+        $ filter (p path)
+        $ treesOfForest forest
+
+
+-- | Keep only branches with the given names.
+sliceBranches :: [Name] -> Tree -> Tree
+sliceBranches ns (Tree (B k0 gs0) (BT n0 kt tsSub0))
+ = let
+        ff      = map (mapForest (\p t -> sliceBranches ns t) mempty)
+                $ zipWith makeForest gs0 tsSub0
+
+        (gs1, tsSub)
                 = unzip
                 $ [ (xsSub, tSub)
                         | Forest xsSub tSub@(BT n _ _) <- ff
                         , elem n ns]
 
-   in   Tree (B k0 xssSub) (BT n0 kt tsSub)
+   in   Tree (B k0 gs1) (BT n0 kt tsSub)
 

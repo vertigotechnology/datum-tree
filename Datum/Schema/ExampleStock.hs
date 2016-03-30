@@ -2,7 +2,7 @@
 
 module Datum.Schema.ExampleShares
 where
-import Datum.Schema.PrettyCtor
+import Datum.Schema.Pretty
 import Datum.Schema.Operator
 import Datum.Schema.Check
 import Datum.Schema.Exp
@@ -44,46 +44,43 @@ btStock
 
 bStock :: Branch
 bStock
- = B    (T [])
-        [ [ B   (T [AText "BHP", AText "BHP Billiton Ltd."])
-                [ [ B   (T [ATime "10:01:00", ADecimal 32.16, ANat  1000]) []
-                  , B   (T [ATime "10:01:00", ADecimal 55.16, ANat   415]) []
-                  , B   (T [ATime "10:01:00", ADecimal 32.16, ANat 35344]) [] 
-                  ]
+ = B (T [])
+     [ G [ B (T [AText "BHP", AText "BHP Billiton Ltd."])
+             [ G [ B (T [ATime "10:01:00", ADecimal 32.16, ANat  1000]) []
+                 , B (T [ATime "10:01:00", ADecimal 55.16, ANat   415]) []
+                 , B (T [ATime "10:01:00", ADecimal 32.16, ANat 35344]) [] 
+                 ]
 
-                , [ B   (T [AText "171 Collins Street, Melbourne"]) 
+             , G [ B (T [AText "171 Collins Street, Melbourne"]) 
+                     [ G [ B (T [AText "Max"])   
+                             [ G [ B (T [ AText "work", AText "0411123123"]) []
+                                 , B (T [ AText "home", AText "0412321321"]) []
+                                 ]
+                             ]
 
-                        [ [ B   (T [AText "Max"])   
-                                [ [ B   (T [ AText "work", AText "0411123123"]) []
-                                  , B   (T [ AText "home", AText "0412321321"]) []
-                                  ]
-                                ]
-
-                          , B   (T [AText "Eve"])
-                                [ [ B   (T [ AText "work", AText "0400999999"]) []
-                                  ]
-                                ]
-                          ]
-                        ]
-                  ]
-                ]
-
-          , B  (T [AText "TLS", AText "Telstra Corporation Ltd."])
-                  [ [ B  (T [ATime "10:01:05", ADecimal 5.11, ANat   13]) []
-                    , B  (T [ATime "10:01:05", ADecimal 5.12, ANat  100]) []
-                    ]
-
-                  , [ B  (T [AText "242 Exhibition Street, Melbourne"]) 
-                         [ []
+                         , B (T [AText "Eve"])
+                             [ G [ B (T [ AText "work", AText "0400999999"]) []
+                                 ]
+                             ]
                          ]
+                     ]
+                 ]
+             ]
 
-                    , B  (T [AText "99 King Street, Sydney"]) 
-                         [ []
-                         ]
-                    ]
-                  ]
-          ]
-        ]
+         , B (T [AText "TLS", AText "Telstra Corporation Ltd."])
+             [ G [ B (T [ATime "10:01:05", ADecimal 5.11, ANat   13]) []
+                 , B (T [ATime "10:01:05", ADecimal 5.12, ANat  100]) []
+                 ]
+             , G [ B (T [AText "242 Exhibition Street, Melbourne"]) 
+                     [ G []
+                     ]
+                 , B (T [AText "99 King Street, Sydney"]) 
+                     [ G []
+                     ]
+                 ]
+             ]
+         ]
+     ]
 
 
 ---------------------------------------------------------------------------------------------------

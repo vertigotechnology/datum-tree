@@ -7,7 +7,7 @@ module Datum.Schema.Check
         , checkBranch
 
         , checkForest
-        , checkBranches
+        , checkGroup
 
         , checkKey,     checkKey'
         , checkTuple
@@ -93,7 +93,7 @@ checkBranch
          $ throwError $ ErrorClashSubDim tPath' nsSub
 
         -- Check each of the sub trees.
-        zipWithM_ (checkBranches path') subs tsSub
+        zipWithM_ (checkGroup path') subs tsSub
 
 
 -------------------------------------------------------------------------------
@@ -106,12 +106,13 @@ checkForest forest
 -- | Check that a forest is well formed, at the given starting path.
 checkForest' :: Path -> Forest -> Either Error ()
 checkForest' path (Forest bs bt)
-        = checkBranches path bs bt
+        = checkGroup path bs bt
 
 
--- | Check that a tree group has the specified shape.
-checkBranches :: Path -> [Branch] -> BranchType -> Either Error ()
-checkBranches path bs shape
+-- | Check that all the branches in a group
+--   have the specified shape.
+checkGroup :: Path -> Group -> BranchType -> Either Error ()
+checkGroup path (G bs) shape
  = do   zipWithM_ 
                 (\i b -> checkBranch path b shape)
                 [0..] bs
@@ -164,7 +165,7 @@ checkAtom path lit tp
 -- | Possible type errors.
 data Error
         -- | Number of sub trees does not match number of sub dimensions.
-        = ErrorArityDim         Path [[Branch]] [BranchType] 
+        = ErrorArityDim         Path [Group] [BranchType] 
 
         -- | Sub dimension name clash.
         | ErrorClashSubDim      PathType [Name]

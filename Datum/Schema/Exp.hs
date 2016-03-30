@@ -2,9 +2,16 @@
 module Datum.Schema.Exp
         ( Path   (..),  PathType (..)
         , Ix     (..),  IxType   (..)
+
         , Forest (..)
-        , Tree   (..),  Branch   (..), BranchType (..)
-        , Key    (..),  Tuple    (..), TupleType  (..)
+
+        , Tree   (..)
+        , Group  (..)
+        , Branch (..),  BranchType (..)
+
+        , Key    (..)
+        , Tuple  (..),  TupleType  (..)
+
         , Atom   (..),  AtomType (..)
         , Name)
 where
@@ -44,7 +51,7 @@ instance Monoid Path where
 -- | A forest is a list of trees of the same type.
 data Forest
         = Forest 
-                [Branch]
+                Group
                 BranchType
         deriving Show
 
@@ -63,11 +70,16 @@ data BranchType
                 [BranchType]    -- Sub dimensions.
         deriving Show
 
+-- | A group of branches.
+data Group
+        = G     [Branch]
+        deriving Show
+
 
 -- | Branch with a key and forests of sub-branches.
 data Branch
         = B     Tuple 
-                [[Branch]]
+                [Group]
         deriving Show 
 
 

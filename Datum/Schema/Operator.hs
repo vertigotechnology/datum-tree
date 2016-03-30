@@ -25,11 +25,11 @@ import qualified Data.List              as L
 
 
 -- Conversion -----------------------------------------------------------------
-toForest   :: [Branch] -> BranchType    -> Forest
+toForest   :: Group -> BranchType    -> Forest
 toForest b bt = Forest b bt
 
 
-fromForest :: Forest   -> ([Branch], BranchType)
+fromForest :: Forest   -> (Group, BranchType)
 fromForest (Forest bs bt)
         = (bs, bt)
 
@@ -57,7 +57,7 @@ mapBranches f
 --   The result type of each per-tree function must be identifical.
 --
 mapForest :: (Path -> Tree -> Tree) -> Path -> Forest -> Forest
-mapForest f path (Forest bs0 bt0)
+mapForest f path (Forest (G bs0) bt0)
  = let  
         trees           = map (\b -> Tree b bt0) bs0
 
@@ -69,8 +69,8 @@ mapForest f path (Forest bs0 bt0)
         (bs', bts')     = unzip $ map (\(Tree b bt) -> (b, bt)) trees'
 
    in   case bts' of
-         []             -> Forest bs' bt0
-         (bt': _)       -> Forest bs' bt'
+         []             -> Forest (G bs') bt0
+         (bt': _)       -> Forest (G bs') bt'
 
 
 
@@ -116,7 +116,7 @@ reduceTree f
 
 -- | Reduce all sub-trees in the given forest.
 reduceForest :: (Path -> a -> Tree -> a) -> Path -> a -> Forest -> a
-reduceForest f path acc (Forest bs bt)
+reduceForest f path acc (Forest (G bs) bt)
  =      L.foldl' (\acc' b -> reduceTree f path acc' (Tree b bt))
                  acc bs
 

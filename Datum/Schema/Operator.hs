@@ -63,19 +63,22 @@ makeForest b bt = Forest b bt
 
 -- | Take a group of branches and the branch type from a forest.
 takeForest :: Forest   -> (Group, BranchType)
-takeForest (Forest bs bt)
-        = (bs, bt)
+takeForest (Forest bs bt) = (bs, bt)
 
 
 -- | Take the branch group from a forest.
 groupOfForest :: Forest -> Group
-groupOfForest (Forest g _)
-        = g
+groupOfForest (Forest g _) = g
 
 
 -- | Take the branch type from a forest.
 typeOfForest :: Forest -> BranchType
 typeOfForest (Forest _ bt) = bt
+
+
+-- | Take the common branch name of a forest.
+nameOfForest :: Forest -> Name
+nameOfForest (Forest _ (BT n _ _)) = n
 
 
 -- | Take a list of trees from a forest.
@@ -128,12 +131,12 @@ mapForestsOfTree f path tree
 
 
 -- | Apply a function to the list of sub-trees of a forest.
-applyTreesOfForest :: (Path -> [Tree]   -> [Tree])   -> Path -> Forest -> Forest
+applyTreesOfForest :: (Path -> [Tree] -> [Tree]) -> Path -> Forest -> Forest
 applyTreesOfForest f path forest
         = forestOfTrees (typeOfForest forest)
         $ f path
         $ treesOfForest forest
-
+ 
 
 -- | Apply a function to the list of sub-forests of a tree.
 applyForestsOfTree :: (Path -> [Forest] -> [Forest]) -> Path -> Tree -> Tree
@@ -149,6 +152,25 @@ applyForestsOfTree f path
                 $ zipWith makeForest gs0 bts0
 
    in   Tree (B k0 gs1) (BT n0 kt0 bts1)
+
+
+-- Pathless Mapping -----------------------------------------------------------
+-- | Like `mapTreesOfForest`, but we don't care about the path.
+mapTreesOfForest'   :: (Tree -> Tree) -> Forest -> Forest
+mapTreesOfForest' f forest
+        = mapTreesOfForest   (\_path tree -> f tree) mempty forest   
+
+
+-- | Like `applyTreesOfForest`, but we don't care about the path.
+applyTreesOfForest' :: ([Tree] -> [Tree]) -> Forest -> Forest
+applyTreesOfForest' f forest
+        = applyTreesOfForest (\_path trees -> f trees) mempty forest 
+
+
+-- | Like `applyForestsOfTree`, but we don't care about the path.
+applyForestsOfTree' :: ([Forest] -> [Forest]) -> Tree -> Tree
+applyForestsOfTree' f tree
+        = applyForestsOfTree (\_path forests -> f forests) mempty tree    
 
 
 -- Traversal ------------------------------------------------------------------
@@ -256,13 +278,10 @@ filterForest p path forest
 
 -- | Keep only branches with the given names.
 sliceBranches :: [Name] -> Tree -> Tree
-sliceBranches ns tree@(Tree (B k0 gs0) (BT n0 kt tsSub))
- = let  
-        (gs1, tsSub)
-                = unzip
-                $ map    (\(Forest xsSub tSub) -> (xsSub, tSub))
-                $ filter (\(Forest xsSub (BT n _ _)) -> elem n ns)
-                $ map    (mapTreesOfForest (\p t -> sliceBranches ns t) mempty)
-                $ forestsOfTree tree
+sliceBranches ns tree
+ = applyForestsOfTree'
+        ( filter (\forest -> elem (nameOfForest forest) ns)
+        . map    (mapTreesOfForest' (sliceBranches ns)))
+        tree
 
-   in   Tree (B k0 gs1) (BT n0 kt tsSub)
+

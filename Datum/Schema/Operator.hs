@@ -6,8 +6,8 @@ module Datum.Schema.Operator
         , treesOfForest
 
           -- * Mapping
-        , mapBranches
-        , mapForest
+        , mapTreesOfTree
+        , mapTreesOfForest
 
           -- * Reducing
         , reduceTree
@@ -47,6 +47,12 @@ branchOfTree (Tree b _) = b
 -- | Take the branch type of a tree.
 typeOfTree    :: Tree -> BranchType
 typeOfTree (Tree _ bt)  = bt
+
+
+-- | Take the list of sub-forests from a tree.
+forestsOfTree :: Tree -> [Forest]
+forestsOfTree (Tree (B k gs) (BT n kt bts))
+        = zipWith makeForest gs bts
 
 
 -- Forest Construction --------------------------------------------------------
@@ -92,44 +98,57 @@ forestOfTrees bt trees
         = Forest (G (map branchOfTree trees)) bt
 
 
+-- Paths ----------------------------------------------------------------------
+-- | Extend a path to record the fact that we have entered into this sub tree.
+enterTree :: Tree -> Path -> Path 
+enterTree (Tree (B k0 _) (BT n0 kt0 _)) (Path ps pts)
+ = Path (ISub k0 : ps) (ITSub n0 kt0 : pts)
+
+
 -- Mapping --------------------------------------------------------------------
 -- | Apply a per-tree function to every sub-tree of a tree.
-mapBranches   :: (Path -> Tree -> Tree) -> Path -> Tree -> Tree
-mapBranches f 
-        (Path ps pts) 
-        (Tree (B k0 xssSub0) (BT n0 kt0 tsSub0))
+mapTreesOfTree   :: (Path -> Tree -> Tree) -> Path -> Tree -> Tree
+mapTreesOfTree f path tree
+        = mapForestsOfTree (mapTreesOfForest f) path tree
+
+
+-- | Apply a per-tree-function to every sub-tree of a forest.
+--
+--   * The result type of each per-tree function must be identifical.
+--
+mapTreesOfForest :: (Path -> Tree -> Tree) -> Path -> Forest -> Forest
+mapTreesOfForest f path forest
+        = applyTreesOfForest (\path' -> map (f path')) path forest
+
+
+-- | Apply a per-forest function to every sub-forest of a tree.
+mapForestsOfTree :: (Path -> Forest -> Forest) -> Path -> Tree -> Tree
+mapForestsOfTree f path tree
+        = applyForestsOfTree (\path' -> map (f path')) path tree
+
+
+-- | Apply a function to the list of sub-trees of a forest.
+applyTreesOfForest :: (Path -> [Tree]   -> [Tree])   -> Path -> Forest -> Forest
+applyTreesOfForest f path forest
+        = forestOfTrees (typeOfForest forest)
+        $ f path
+        $ treesOfForest forest
+
+
+-- | Apply a function to the list of sub-forests of a tree.
+applyForestsOfTree :: (Path -> [Forest] -> [Forest]) -> Path -> Tree -> Tree
+applyForestsOfTree f path 
+        tree@(Tree (B k0 gs0) (BT n0 kt0 bts0))
  = let
-        path'   = Path (ISub k0 : ps) (ITSub n0 kt0 : pts)
+        path'   = enterTree tree path
 
-        (xssSub1, tsSub1)
+        (gs1, bts1)
                 = unzip
-                $ map takeForest
-                $ map (mapForest f path')
-                $ zipWith makeForest xssSub0 tsSub0
+                $ map     takeForest
+                $ f path'
+                $ zipWith makeForest gs0 bts0
 
-   in   Tree (B k0 xssSub1) (BT n0 kt0 tsSub1)
-
-
--- | Apply a per-tree-function to a forest.
---
---   The result type of each per-tree function must be identifical.
---
-mapForest :: (Path -> Tree -> Tree) -> Path -> Forest -> Forest
-mapForest f path (Forest (G bs0) bt0)
- = let  
-        trees           = map (\b -> Tree b bt0) bs0
-
-        trees'          = [ f path tree      
-                                | tree  <- trees
-                                | i     <- [0..]]
-
-        -- TODO: Check all the return types are identical at this point.
-        (bs', bts')     = unzip $ map (\(Tree b bt) -> (b, bt)) trees'
-
-   in   case bts' of
-         []             -> Forest (G bs') bt0
-         (bt': _)       -> Forest (G bs') bt'
-
+   in   Tree (B k0 gs1) (BT n0 kt0 bts1)
 
 
 -- Traversal ------------------------------------------------------------------
@@ -146,8 +165,8 @@ traverseTree f
                 $ [ let BT n kt _ = tSub
 
                         Forest xsSub' tSub'
-                                = mapForest f path'
-                                $ mapForest (traverseTree f) path'
+                                = mapTreesOfForest f path'
+                                $ mapTreesOfForest (traverseTree f) path'
                                 $ Forest xsSub tSub
 
                     in  (xsSub', tSub')
@@ -208,12 +227,12 @@ sizeOfTree tree
 filterTree :: (Path -> Tree -> Bool) -> Path -> Tree -> Tree
 filterTree p 
         (Path ps pts)
-        (Tree (B k0 gs0) (BT n0 kt0 tsSub0))
+        tree@(Tree (B k0 gs0) (BT n0 kt0 tsSub0))
  = let
         path'   = Path (ISub k0 : ps) (ITSub n0 kt0 : pts)
 
-        ff      = map (mapForest (filterTree p) path')
-                $ zipWith makeForest gs0 tsSub0
+        ff      = map (mapTreesOfForest (filterTree p) path')
+                $ forestsOfTree tree
 
         (gs1, tsSub)
                 = unzip
@@ -237,16 +256,13 @@ filterForest p path forest
 
 -- | Keep only branches with the given names.
 sliceBranches :: [Name] -> Tree -> Tree
-sliceBranches ns (Tree (B k0 gs0) (BT n0 kt tsSub0))
- = let
-        ff      = map (mapForest (\p t -> sliceBranches ns t) mempty)
-                $ zipWith makeForest gs0 tsSub0
-
+sliceBranches ns tree@(Tree (B k0 gs0) (BT n0 kt tsSub))
+ = let  
         (gs1, tsSub)
                 = unzip
-                $ [ (xsSub, tSub)
-                        | Forest xsSub tSub@(BT n _ _) <- ff
-                        , elem n ns]
+                $ map    (\(Forest xsSub tSub) -> (xsSub, tSub))
+                $ filter (\(Forest xsSub (BT n _ _)) -> elem n ns)
+                $ map    (mapTreesOfForest (\p t -> sliceBranches ns t) mempty)
+                $ forestsOfTree tree
 
    in   Tree (B k0 gs1) (BT n0 kt tsSub)
-

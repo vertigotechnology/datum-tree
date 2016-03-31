@@ -13,8 +13,9 @@ module Datum.Schema.Operator
         , treesOfForest
 
           -- * Paths
+        , enterTree
+        , enterForest
         , pathIncludesName
-        , pathIsName
         , onPath 
 
           -- * Mapping
@@ -145,17 +146,13 @@ pathIncludesName name path@(Path ps pts)
    in   elem name ns
 
 
-pathIsName :: Name -> Path -> Bool
-pathIsName name path@(Path ps pts)
- = let  ns      = [ n | IForest n <- ps]
-   in   ns == [name]
-
-
+-- | Get the dimension names of a path.
 dimNamesOfPath :: Path -> [Name]
 dimNamesOfPath (Path ps pts)
  = [n | IForest n <- ps]
 
 
+-- | Check if we're on the path defined by the given names.
 onPath :: [Name] -> Path -> Bool
 onPath ns (Path ps pts)
  = onPath' ns (Path (reverse ps) (reverse pts))
@@ -169,7 +166,6 @@ onPath' nn@(n : ns) pp@(Path (p : ps) (pt : pts))
          | otherwise    -> False
 
         _               -> onPath' nn (Path ps pts)
-
 
 
 -- Mapping ----------------------------------------------------------------------------------------
@@ -378,9 +374,6 @@ sliceTree pred path0 tree0
 --
 sliceTreeWithNames :: [Name] -> Tree -> Tree
 sliceTreeWithNames ns tree
- = applyForestsOfTree
-        ( filter (\forest -> elem (nameOfForest forest) ns)
-        . map    (mapTreesOfForest' (sliceTreeWithNames ns)))
-        tree
+ = sliceTree (\p _ -> onPath ns p) mempty tree
 
 

@@ -36,6 +36,10 @@ btStock
                                         (TT [ ("sort",   ATText)
                                             , ("number", ATText) ])
                                         []
+
+                                , BT "position"
+                                        (TT [ ("name",  ATText) ])
+                                        []
                                 ]
 
                         , BT "contact"
@@ -66,10 +70,18 @@ bStock
                              [ G [ B (T [ AText "work", AText "0411123123"]) []
                                  , B (T [ AText "home", AText "0412321321"]) []
                                  ]
+
+                             , G [ B (T [ AText "Disk Jockey" ]) []
+                                 , B (T [ AText "Dragon Slayer"]) []
+                                 ]
                              ]
 
                          , B (T [AText "Eve"])
                              [ G [ B (T [ AText "work", AText "0400999999"]) []
+                                 ]
+
+                             , G [ B (T [ AText "Data Prophet" ]) []
+                                 , B (T [ AText "Welder" ]) []
                                  ]
                              ]
                          ]
@@ -84,11 +96,30 @@ bStock
                  , B (T [ATime "10:01:05", ADecimal 5.12, ANat  100]) []
                  ]
              , G [ B (T [AText "242 Exhibition Street, Melbourne"]) 
-                     [ G []
+                     [ G [ B (T [AText "Mario"])
+                             [ G [ B (T [ AText "work", AText "014005551234"]) []
+                                 ]
+
+                             , G [ B (T [ AText "Key Master"]) [] 
+                                 ]
+                             ]
+                         ]
+
+                     , G []
                      ]
                  , B (T [AText "99 King Street, Sydney"]) 
-                     [ G []
+                     [ G [ B (T [AText "Raphael"])
+                             [ G [ B (T [ AText "home", AText "014005550000"]) []
+                                 ]
+
+                             , G [ B (T [ AText "Gate Keeper"]) [] 
+                                 ]
+                             ]
+                         ]
+
+                     , G []
                      ]
+
                  ]
              ]
          ]
@@ -130,4 +161,19 @@ ex4_2   = ppTree
         $ mapTreesOfTree 
                 (filterForestsOfTree (\p f -> nameOfForest f == "office")) 
                 mempty tStock
+
+
+-- | Select data on a given path.
+ex5_1   = ppTree
+        $ sliceTree (\p _ -> onPath ["company", "office", "contact"] p) 
+                mempty tStock
+
+ex5_2   = ppTree
+        $ sliceTree (\p _ -> onPath ["company", "office", "employee", "position"] p) 
+                mempty tStock
+
+ex5_3   = ppTree
+        $ sliceTree (\p _ -> onPath ["company", "transaction"] p)
+                mempty tStock
+
 

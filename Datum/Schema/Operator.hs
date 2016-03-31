@@ -363,7 +363,7 @@ sliceTree pred path0 tree0
                                 trees)
                         forest)
         $ filter
-                (\forest 
+                (\ forest 
                 -> let path1    = enterForest forest $ enterTree tree0 path0
                    in  pred path1 forest)
         $ forests)

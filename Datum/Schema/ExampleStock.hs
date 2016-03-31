@@ -37,6 +37,11 @@ btStock
                                             , ("number", ATText) ])
                                         []
                                 ]
+
+                        , BT "contact"
+                                (TT [ ("sort",   ATText)
+                                      , ("number", ATText) ])
+                                 []
                         ]
                 ]
 
@@ -68,6 +73,8 @@ bStock
                                  ]
                              ]
                          ]
+                     
+                     , G [ B (T [AText "security", AText "928312342"]) [] ]
                      ]
                  ]
              ]

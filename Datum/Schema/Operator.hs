@@ -14,7 +14,8 @@ module Datum.Schema.Operator
 
           -- * Paths
         , pathIncludesName
-        , pathIsName     
+        , pathIsName
+        , onPath 
 
           -- * Mapping
         , mapTreesOfTree
@@ -149,9 +150,26 @@ pathIsName name path@(Path ps pts)
  = let  ns      = [ n | IForest n <- ps]
    in   ns == [name]
 
+
 dimNamesOfPath :: Path -> [Name]
 dimNamesOfPath (Path ps pts)
  = [n | IForest n <- ps]
+
+
+onPath :: [Name] -> Path -> Bool
+onPath ns (Path ps pts)
+ = onPath' ns (Path (reverse ps) (reverse pts))
+
+onPath' _  (Path [] _)  = True
+onPath' [] _            = True
+onPath' nn@(n : ns) pp@(Path (p : ps) (pt : pts))
+ = case p of
+        IForest n'
+         | n == n'      -> onPath' ns (Path ps pts)
+         | otherwise    -> False
+
+        _               -> onPath' nn (Path ps pts)
+
 
 
 -- Mapping ----------------------------------------------------------------------------------------
@@ -340,8 +358,8 @@ sliceTree pred path0 tree0
                    in  applyTreesOfForest 
                         (\ trees
                         -> map  (\ tree 
-                                -> let  path3   = enterTree tree path2
-                                   in   sliceTree pred path3 tree) 
+                                -> let path3   = enterTree tree path2
+                                   in  sliceTree pred path3 tree) 
                                 trees)
                         forest)
         $ filter

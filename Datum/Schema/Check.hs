@@ -25,9 +25,9 @@ import qualified Data.List              as L
 checkBranchType :: PathType -> BranchType -> Either Error ()
 checkBranchType 
         (PathType pts)
-        (BT name tKey subs)
+        bt@(BT name tKey subs)
  = do
-        let pts'        = ITSub name tKey : pts
+        let pts'        = ITForest bt : pts
         let tPath'      = PathType pts'
 
         -- Check the tuple type.
@@ -69,10 +69,10 @@ checkTree' path (Tree branch branchType)
 checkBranch :: Path -> Branch -> BranchType -> Either Error ()
 checkBranch
         (Path ps pts) 
-        (B key subs) (BT name tKey@(TT nts) tsSub)
+        (B key subs) bt@(BT name tKey@(TT nts) tsSub)
  = do
-        let ps'         = ISub  key       : ps
-        let pts'        = ITSub name tKey : pts
+        let ps'         = IForest name : ps
+        let pts'        = ITForest bt  : pts
         let path'       = Path ps' pts'
         let tPath'      = PathType pts'
 

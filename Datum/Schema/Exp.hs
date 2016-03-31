@@ -17,7 +17,7 @@ module Datum.Schema.Exp
 where
 
 
--- Path ----------------------------------------------------------------------
+-- Path -------------------------------------------------------------------------------------------
 data PathType
         = PathType  [IxType]
         deriving Show
@@ -31,13 +31,15 @@ data Path
 
 -- | Type of a path.
 data IxType
-        = ITField       AtomType
-        | ITSub         Name    TupleType
+        = ITField       AtomType        -- When entering a field,  find out atom type.
+        | ITTree        TupleType       -- When entering a field,  find out the tuple type.
+        | ITForest      BranchType      -- When entering a field,  find out the branch type.
         deriving Show   
 
 data Ix
-        = IField        Name
-        | ISub          Tuple
+        = IField        Name            -- When entering a field,  find out the field name.
+        | ITree         Tuple           -- When entering a tree,   find out its key.
+        | IForest       Name            -- When entering a forest, find out its name
         deriving Show
 
 
@@ -47,7 +49,7 @@ instance Monoid Path where
         = Path (ps1 ++ ps2) (pts1 ++ pts2)
 
 
--- Trees ----------------------------------------------------------------------
+-- Trees ------------------------------------------------------------------------------------------
 -- | A forest is a list of trees of the same type.
 data Forest
         = Forest 
@@ -83,7 +85,7 @@ data Branch
         deriving Show 
 
 
--- Tuples ---------------------------------------------------------------------
+-- Tuples -----------------------------------------------------------------------------------------
 -- | A key combines tuple data and tuple meta-data.
 data Key
         = Key   Tuple
@@ -102,7 +104,7 @@ data Tuple
         deriving Show
 
 
--- Atoms ----------------------------------------------------------------------
+-- Atoms ------------------------------------------------------------------------------------------
 -- | Atom types.
 data AtomType
         = ATUnit
@@ -129,7 +131,7 @@ data Atom
         deriving Show
 
 
--- Names ----------------------------------------------------------------------
+-- Names ------------------------------------------------------------------------------------------
 -- | Field and dimension names.
 type Name
         = String

@@ -12,6 +12,10 @@ module Datum.Schema.Operator
         , nameOfForest
         , treesOfForest
 
+          -- * Paths
+        , pathIncludesName
+        , pathIsName     
+
           -- * Mapping
         , mapTreesOfTree
         , mapTreesOfForest
@@ -32,13 +36,17 @@ module Datum.Schema.Operator
         , filterTree
         , filterTreesOfForest
         , filterForestsOfTree
+
+          -- * Slicing
+        , sliceTree
         , sliceTreeWithNames)
 where
 import Datum.Schema.Exp
 import qualified Data.List              as L
+import Debug.Trace
 
 
--- Tree Construction ----------------------------------------------------------
+-- Tree Construction ------------------------------------------------------------------------------
 -- | Make a tree from a branch and its branch type.
 makeTree :: Branch -> BranchType -> Tree
 makeTree b bt = Tree b bt
@@ -70,7 +78,7 @@ forestsOfTree (Tree (B k gs) (BT n kt bts))
         = zipWith makeForest gs bts
 
 
--- Forest Construction --------------------------------------------------------
+-- Forest Construction ----------------------------------------------------------------------------
 -- | Make a forest from a group of branches and their common branchtype.
 makeForest :: Group -> BranchType -> Forest
 makeForest b bt = Forest b bt
@@ -116,14 +124,37 @@ forestOfTrees bt trees
         = Forest (G (map branchOfTree trees)) bt
 
 
--- Paths ----------------------------------------------------------------------
--- | Extend a path to record the fact that we have entered into this sub tree.
+-- Paths ------------------------------------------------------------------------------------------
+-- | Extend a path to record the fact that we have entered into this sub-tree.
 enterTree :: Tree -> Path -> Path 
-enterTree (Tree (B k0 _) (BT n0 kt0 _)) (Path ps pts)
- = Path (ISub k0 : ps) (ITSub n0 kt0 : pts)
+enterTree   (Tree (B k0 _) (BT n0 kt0 _)) (Path ps pts)
+ = Path (ITree k0 : ps) (ITTree kt0 : pts)
 
 
--- Mapping --------------------------------------------------------------------
+-- | Extend a path to record the fact that we have entered into this sub-forest.
+enterForest :: Forest -> Path -> Path
+enterForest (Forest _ bt@(BT n0 _ bts)) (Path ps pts)
+ = Path (IForest n0 : ps) (ITForest bt : pts)
+
+
+-- | Check if a path includes a forest with the give name.
+pathIncludesName :: Name -> Path -> Bool
+pathIncludesName name path@(Path ps pts)
+ = let  ns      = [n | IForest n <- ps]
+   in   elem name ns
+
+
+pathIsName :: Name -> Path -> Bool
+pathIsName name path@(Path ps pts)
+ = let  ns      = [ n | IForest n <- ps]
+   in   ns == [name]
+
+dimNamesOfPath :: Path -> [Name]
+dimNamesOfPath (Path ps pts)
+ = [n | IForest n <- ps]
+
+
+-- Mapping ----------------------------------------------------------------------------------------
 -- | Apply a per-tree function to every sub-tree of a tree.
 mapTreesOfTree   :: (Path -> Tree -> Tree) -> Path -> Tree -> Tree
 mapTreesOfTree f path tree
@@ -136,25 +167,30 @@ mapTreesOfTree f path tree
 --
 mapTreesOfForest :: (Path -> Tree -> Tree) -> Path -> Forest -> Forest
 mapTreesOfForest f path forest
-        = applyTreesOfForest (\path' -> map (f path')) path forest
+ = applyTreesOfForest
+        (map (\tree -> f (enterTree tree path) tree))
+        forest
 
 
 -- | Apply a per-forest function to every sub-forest of a tree.
 mapForestsOfTree :: (Path -> Forest -> Forest) -> Path -> Tree -> Tree
 mapForestsOfTree f path tree
-        = applyForestsOfTree (\path' -> map (f path')) path tree
+ = applyForestsOfTree 
+        (map (\forest -> f (enterForest forest path) forest)) 
+        tree
 
 
+-- Application ------------------------------------------------------------------------------------
 -- | Apply a function to the list of sub-trees of a forest.
 -- 
 --   * The worker function can change the type of the trees,
 --     provided the result trees all have the same type.
 --
-applyTreesOfForest :: (Path -> [Tree] -> [Tree]) -> Path -> Forest -> Forest
-applyTreesOfForest f path forest
+applyTreesOfForest :: ([Tree] -> [Tree]) -> Forest -> Forest
+applyTreesOfForest f forest
  = let  
         trees   = treesOfForest forest
-        trees'  = f path trees
+        trees'  = f trees
 
    in   case trees' of
          []       -> forestOfTrees (typeOfForest forest) trees'
@@ -162,48 +198,34 @@ applyTreesOfForest f path forest
  
 
 -- | Apply a function to the list of sub-forests of a tree.
-applyForestsOfTree :: (Path -> [Forest] -> [Forest]) -> Path -> Tree -> Tree
-applyForestsOfTree f path 
+applyForestsOfTree :: ([Forest] -> [Forest]) -> Tree -> Tree
+applyForestsOfTree f
         tree@(Tree (B k0 gs0) (BT n0 kt0 bts0))
  = let
-        path'   = enterTree tree path
-
         (gs1, bts1)
                 = unzip
                 $ map     takeForest
-                $ f path'
+                $ f
                 $ zipWith makeForest gs0 bts0
 
    in   Tree (B k0 gs1) (BT n0 kt0 bts1)
 
 
--- Pathless Mapping -----------------------------------------------------------
+-- Pathless Mapping -------------------------------------------------------------------------------
 -- | Like `mapTreesOfForest`, but we don't care about the path.
 mapTreesOfForest'   :: (Tree -> Tree) -> Forest -> Forest
 mapTreesOfForest' f forest
         = mapTreesOfForest   (\_path tree -> f tree) mempty forest   
 
 
--- | Like `applyTreesOfForest`, but we don't care about the path.
-applyTreesOfForest' :: ([Tree] -> [Tree]) -> Forest -> Forest
-applyTreesOfForest' f forest
-        = applyTreesOfForest (\_path trees -> f trees) mempty forest 
-
-
--- | Like `applyForestsOfTree`, but we don't care about the path.
-applyForestsOfTree' :: ([Forest] -> [Forest]) -> Tree -> Tree
-applyForestsOfTree' f tree
-        = applyForestsOfTree (\_path forests -> f forests) mempty tree    
-
-
--- Traversal ------------------------------------------------------------------
+-- Traversal --------------------------------------------------------------------------------------
 -- | Bottom-up traversal of a tree.
 traverseTree :: (Path -> Tree -> Tree) -> Path -> Tree -> Tree
 traverseTree f  
         (Path ps pts)
         (Tree (B k0 xssSub0) (BT n0 kt0 tsSub0))
  = let
-        path'   = Path (ISub k0 : ps) (ITSub n0 kt0 : pts)
+        path'   = Path (ITree k0 : ps) (ITTree kt0 : pts)
 
         (xssSub, tsSub)
                 = unzip
@@ -223,14 +245,14 @@ traverseTree f
    in   Tree (B k0 xssSub) (BT n0 kt0 tsSub)
 
 
--- Reduction ------------------------------------------------------------------
+-- Reduction --------------------------------------------------------------------------------------
 -- | Reduce all sub-trees in the given tree.
 reduceTree :: (Path -> a -> Tree -> a) -> Path -> a -> Tree -> a
 reduceTree f 
         (Path ps pts) 
         acc tree@(Tree (B k0 xssSub0) (BT n0 kt0 tsSub0))
  = let  
-        path'   = Path (ISub k0 : ps) (ITSub n0 kt0 : pts)
+        path'   = Path (ITree k0 : ps) (ITTree kt0 : pts)
         forests = zipWith makeForest xssSub0 tsSub0
 
    in   L.foldl' (reduceForest f path') (f path' acc tree) forests
@@ -250,11 +272,11 @@ keysOfTree tree
         paths   = reduceTree (\p acc _ -> acc ++ [p]) mempty [] tree
         ixs     = [ Key (T  (reverse $ concat 
                                 [ reverse as 
-                                        | ISub  (T as) <- ps' ]))
+                                        | ITree  (T as) <- ps' ]))
 
                         (TT (reverse $ concat
                                 [ reverse nts
-                                        | ITSub _ (TT nts) <- pts']))
+                                        | ITTree (TT nts) <- pts']))
 
                   | Path ps' pts' <- paths]
   in    ixs
@@ -266,21 +288,29 @@ sizeOfTree tree
  = reduceTree (\_ n _ -> n + 1) mempty 0 tree   
 
 
--- Filtering ------------------------------------------------------------------
+-- Filter -----------------------------------------------------------------------------------------
 -- | Filter a tree by keeping only the sub-trees that match
 --   the given predicate. 
 filterTree :: (Path -> Tree -> Bool) -> Path -> Tree -> Tree
-filterTree pred path tree
+filterTree pred path tree 
  = applyForestsOfTree 
-        (\  path1 forests -> map (filterTreesOfForest pred path1) forests)
-        path tree
+        (\ forests 
+        -> map  (\forest 
+                -> filterTreesOfForest pred 
+                        (enterForest forest path) 
+                        forest)
+                forests)
+        tree
 
 
 -- | Filter a tree by keeping only the sub-forests that match
 --   the given predicate.
 filterForestsOfTree :: (Path -> Forest -> Bool) -> Path -> Tree -> Tree
 filterForestsOfTree pred path tree
- = applyForestsOfTree  (\path1 -> filter (pred path1)) path tree
+ = applyForestsOfTree 
+        (filter (\ forest 
+                -> pred (enterForest forest path) forest))
+        tree
 
 
 -- | Filter a forest by keeping only the sub-trees that match
@@ -290,10 +320,36 @@ filterForestsOfTree pred path tree
 --     make up the given forest.
 --
 filterTreesOfForest :: (Path -> Tree -> Bool) -> Path -> Forest -> Forest
-filterTreesOfForest pred path forest
- = applyTreesOfForest 
-        (\path' trees -> filter (pred path') trees)
-        path forest
+filterTreesOfForest pred path forest 
+ = applyTreesOfForest
+        (filter (\ tree
+                -> pred (enterTree tree path) tree))
+        forest
+
+
+-- Slice ------------------------------------------------------------------------------------------
+-- | Slice a tree by keeping only the sub-forests that satisfy the given
+--   predicate.
+sliceTree :: (Path -> Forest -> Bool) -> Path -> Tree -> Tree
+sliceTree pred path0 tree0 
+ = let path1    = enterTree tree0 path0
+   in  applyForestsOfTree
+        (\ forests
+        -> map  (\ forest
+                -> let path2    = enterForest forest path1
+                   in  applyTreesOfForest 
+                        (\ trees
+                        -> map  (\ tree 
+                                -> let  path3   = enterTree tree path2
+                                   in   sliceTree pred path3 tree) 
+                                trees)
+                        forest)
+        $ filter
+                (\forest 
+                -> let path1    = enterForest forest $ enterTree tree0 path0
+                   in  pred path1 forest)
+        $ forests)
+        tree0
 
 
 -- | Slice a tree by keeping only the sub-trees that have the 
@@ -304,7 +360,7 @@ filterTreesOfForest pred path forest
 --
 sliceTreeWithNames :: [Name] -> Tree -> Tree
 sliceTreeWithNames ns tree
- = applyForestsOfTree'
+ = applyForestsOfTree
         ( filter (\forest -> elem (nameOfForest forest) ns)
         . map    (mapTreesOfForest' (sliceTreeWithNames ns)))
         tree

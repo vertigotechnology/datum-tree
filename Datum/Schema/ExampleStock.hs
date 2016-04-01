@@ -2,6 +2,7 @@
 
 module Datum.Schema.ExampleShares
 where
+import Datum.Schema.Builder
 import Datum.Schema.Pretty
 import Datum.Schema.Operator
 import Datum.Schema.Check
@@ -58,76 +59,54 @@ btStock
 
 bStock :: Branch
 bStock
- = B (T [])
-     [ G [ B (T [AText "BHP", AText "BHP Billiton Ltd."])
-             [ G [ B (T [ATime "10:01:00", ADecimal 32.16, ANat  1000]) []
-                 , B (T [ATime "10:01:00", ADecimal 55.16, ANat   415]) []
-                 , B (T [ATime "10:01:00", ADecimal 32.16, ANat 35344]) [] 
-                 ]
-
-             , G [ B (T [AText "171 Collins Street, Melbourne"]) 
-                     [ G [ B (T [AText "Max"])   
-                             [ G [ B (T [ AText "work", AText "0411123123"]) []
-                                 , B (T [ AText "home", AText "0412321321"]) []
-                                 ]
-
-                             , G [ B (T [ AText "Disk Jockey" ]) []
-                                 , B (T [ AText "Dragon Slayer"]) []
-                                 ]
-                             ]
-
-                         , B (T [AText "Eve"])
-                             [ G [ B (T [ AText "work", AText "0400999999"]) []
-                                 ]
-
-                             , G [ B (T [ AText "Data Prophet" ]) []
-                                 , B (T [ AText "Welder" ]) []
-                                 ]
-                             ]
-                         ]
-                     
-                     , G [ B (T [AText "security", AText "928312342"]) [] ]
-                     ]
-                 ]
-             ]
-
-         , B (T [AText "TLS", AText "Telstra Corporation Ltd."])
-             [ G [ B (T [ATime "10:01:05", ADecimal 5.11, ANat   13]) []
-                 , B (T [ATime "10:01:05", ADecimal 5.12, ANat  100]) []
-                 ]
-             , G [ B (T [AText "242 Exhibition Street, Melbourne"]) 
-                     [ G [ B (T [AText "Mario"])
-                             [ G [ B (T [ AText "work", AText "014005551234"]) []
-                                 ]
-
-                             , G [ B (T [ AText "Key Master"]) [] 
-                                 ]
-                             ]
-                         ]
-
-                     , G []
-                     ]
-                 , B (T [AText "99 King Street, Sydney"]) 
-                     [ G [ B (T [AText "Raphael"])
-                             [ G [ B (T [ AText "home", AText "014005550000"]) []
-                                 ]
-
-                             , G [ B (T [ AText "Gate Keeper"]) [] 
-                                 ]
-                             ]
-                         ]
-
-                     , G []
-                     ]
-
-                 ]
-             ]
-         ]
-
-     , G [ B (T [AText "ASX",  AText "Australian Securities Exchange"]) []
-         , B (T [AText "NYSE", AText "New York Stock Exchange"]) [] ]
-     ]
-
+ = branch tuple
+        (group  
+        (branch (tuple  (text "BHP") (text "BHP Billiton Ltd."))
+                (group  
+                (tuple  (time "10:01:00") (decimal 32.16) (nat 1000))
+                (tuple  (time "10:01:00") (decimal 55.16) (nat   415))
+                (tuple  (time "10:01:00") (decimal 32.16) (nat 35344)))
+                (group
+                (branch (tuple  (text "171 Collins Street, Melbourne"))
+                        (group  
+                        (branch (tuple  (text "Max"))
+                                (group  
+                                (tuple  (text "work") (text "0411123123"))
+                                (tuple  (text "home") (text "0412321321")))
+                                (group  
+                                (tuple  (text "Disk Jockey"))
+                                (tuple  (text "Dragon Slayer"))))
+                        (branch (tuple  (text "Eve"))
+                                (group
+                                (tuple (text "work") (text "0400999999")))
+                                (group  
+                                (tuple (text "Data Prophet"))
+                                (tuple (text "Welder")))))
+                        (group
+                        (tuple  (text "security") (text "928312342"))))))
+        (branch (tuple  (text "TLS") (text "Telstra Corporation Ltd."))
+                (group  
+                (tuple  (time "10:01:05") (decimal 5.11) (nat 13))
+                (tuple  (time "10:01:05") (decimal 5.12) (nat 100)))
+                (group  
+                (branch (tuple  (text "242 Exhibition Street, Melbourne"))
+                        (group
+                        (branch (tuple  (text "Mario"))
+                                (tuple  (text "work") (text "014005551234"))
+                                (tuple  (text "Key Master"))))
+                        group)
+                (branch (tuple (text "99 King Street, Sydney"))
+                        (group
+                        (branch (tuple  (text "Raphael"))
+                                (tuple  (text "home") (text "014005550000"))
+                                (tuple  (text "Gate Keeper"))))
+                        group))))
+        (group
+        (tuple  (text "ASX")  
+                (text "Australian Securities Exchange"))
+        (tuple  (text "NYSE") 
+                (text "New York Stock Exchange")))
+     
 
 ---------------------------------------------------------------------------------------------------
 -- | Pretty print the tree.

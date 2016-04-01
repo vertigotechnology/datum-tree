@@ -70,6 +70,7 @@ data BranchType
         = BT    Name            -- Name of this dimension.
                 TupleType       -- Tuple type.
                 [BranchType]    -- Sub dimensions.
+                                -- ** TODO: add arity information, absolute or relative.
         deriving Show
 
 -- | A group of branches.

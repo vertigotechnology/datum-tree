@@ -11,101 +11,81 @@ import Datum.Schema.Exp
 
 ---------------------------------------------------------------------------------------------------
 tStock :: Tree
-tStock = Tree bStock btStock
-
-
-btStock :: BranchType
-btStock  
- = BT   "root" 
-        (TT [])
-        [ BT "company" 
-                (TT [ ("symbol", ATText)
-                    , ("name",   ATText) ])
-
-                [ BT "transaction" 
-                        (TT [ ("time",          ATTime)
-                            , ("price",         ATDecimal)
-                            , ("volume",        ATNat) ])
-                        []
-
-                , BT "office"
-                        (TT  [ ("address",      ATText)])
-
-                        [ BT "employee"
-                                (TT [ ("name",          ATText) ])
-                                [ BT "contact"
-                                        (TT [ ("sort",   ATText)
-                                            , ("number", ATText) ])
-                                        []
-
-                                , BT "position"
-                                        (TT [ ("name",  ATText) ])
-                                        []
-                                ]
-
-                        , BT "contact"
-                                (TT [ ("sort",   ATText)
-                                      , ("number", ATText) ])
-                                 []
-                        ]
-                ]
-
-        , BT "exchange"
-                (TT [ ("abbrev", ATText)
-                    , ("name",   ATText) ])
-                []
-        ]
-
-
-bStock :: Branch
-bStock
- = branch tuple
-        (group  
+tStock 
+ = tree "datum-v1"
+  (tbranch "root" 
+        (ttuple  (telement "name" ttext))
+        (tbranch "company"
+                (ttuple (telement "symbol" ttext)
+                        (telement "name"   ttext))
+                (tbranch "transaction" 
+                        (ttuple (telement "time"   ttime)
+                                (telement "price"  tdecimal)
+                                (telement "volume" tnat)))
+                (tbranch "office"
+                        (ttuple (telement "address" ttext))
+                        (tbranch "employee"
+                                (ttuple (telement "name" ttext))
+                                (tbranch "contact"
+                                        (ttuple (telement "sort" ttext)
+                                                (telement "number" ttext)))
+                                (tbranch "position"
+                                        (ttuple (telement "name" ttext))))
+                        (tbranch 
+                                "contact"
+                                (ttuple (telement "sort" ttext)
+                                        (telement "number" ttext)))))
+        (tbranch "exchange"
+                (ttuple (telement "abbrev" ttext)
+                        (telement "name"   ttext))))
+  (branch 
+        (tuple  (text "Stock Market Example"))
+        (group  "company"
         (branch (tuple  (text "BHP") (text "BHP Billiton Ltd."))
-                (group  
+                (group  "transaction"
                 (tuple  (time "10:01:00") (decimal 32.16) (nat 1000))
                 (tuple  (time "10:01:00") (decimal 55.16) (nat   415))
                 (tuple  (time "10:01:00") (decimal 32.16) (nat 35344)))
-                (group
+                (group  "office"
                 (branch (tuple  (text "171 Collins Street, Melbourne"))
-                        (group  
+                        (group  "employee"
                         (branch (tuple  (text "Max"))
-                                (group  
+                                (group  "contact"
                                 (tuple  (text "work") (text "0411123123"))
                                 (tuple  (text "home") (text "0412321321")))
-                                (group  
+                                (group  "position"
                                 (tuple  (text "Disk Jockey"))
                                 (tuple  (text "Dragon Slayer"))))
                         (branch (tuple  (text "Eve"))
-                                (group
-                                (tuple (text "work") (text "0400999999")))
-                                (group  
-                                (tuple (text "Data Prophet"))
-                                (tuple (text "Welder")))))
-                        (group
+                                (group  "contact"
+                                (tuple  (text "work") (text "0400999999")))
+                                (group  "position"
+                                (tuple  (text "Data Prophet"))
+                                (tuple  (text "Welder")))))
+                        (group  "contact"
                         (tuple  (text "security") (text "928312342"))))))
         (branch (tuple  (text "TLS") (text "Telstra Corporation Ltd."))
-                (group  
+                (group  "transaction"
                 (tuple  (time "10:01:05") (decimal 5.11) (nat 13))
                 (tuple  (time "10:01:05") (decimal 5.12) (nat 100)))
-                (group  
+                (group  "office"
                 (branch (tuple  (text "242 Exhibition Street, Melbourne"))
-                        (group
+                        (group  "employee"
                         (branch (tuple  (text "Mario"))
                                 (tuple  (text "work") (text "014005551234"))
                                 (tuple  (text "Key Master"))))
-                        group)
+                        (group  "contact"))
                 (branch (tuple (text "99 King Street, Sydney"))
-                        (group
+                        (group  "employee"
                         (branch (tuple  (text "Raphael"))
                                 (tuple  (text "home") (text "014005550000"))
                                 (tuple  (text "Gate Keeper"))))
-                        group))))
-        (group
+                        (group   "contact")))))
+        (group  "exchange"
         (tuple  (text "ASX")  
                 (text "Australian Securities Exchange"))
         (tuple  (text "NYSE") 
-                (text "New York Stock Exchange")))
+                (text "New York Stock Exchange"))))
      
 
 ---------------------------------------------------------------------------------------------------

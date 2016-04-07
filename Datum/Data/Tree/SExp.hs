@@ -17,7 +17,6 @@ module Datum.Data.Tree.SExp
           tree
         , ppTree
 
-
         -- * Tree Types
         -- | Tree types are meta-data describing how the data is named
         --   and structured.
@@ -74,25 +73,32 @@ import Datum.Data.Tree.Exp
 --
 -- @
 -- :{  
--- (tree  (tbranch "root"
---                 (ttuple  (telement "name" ttext))
+-- (tree  (tbranch \"root\"
+--                 (ttuple  (telement \"name\" ttext))
 --                 (tbranch \"pets\"
---                          (ttuple (telement \"species\" ttext)
---                                  (telement \"sort\"    ttext)))
+--                          (ttuple  (telement \"species\" ttext)
+--                                   (telement \"sort\"    ttext)))
 --                 (tbranch \"dinosaurs\"
---                          (ttuple (telement \"species\" ttext)
---                                  (telement \"size\"    ttext)
---                                  (telement \"flies\"   tbool))))
---        (branch  (tuple   (text "Pets Version 1.0"))
+--                          (ttuple  (telement \"species\" ttext)
+--                                   (telement \"size\"    ttext)
+--                                   (telement \"flies\"   tbool)))
+--                          (tbranch \"eats\"
+--                                   (ttuple (telement \"name\"    ttext))))
+--        (branch  (tuple   (text \"Pets Version 1.0\"))
 --                 (group   \"pets\"
 --                          (branch (tuple (text \"Dachshund\") (text \"Dog\")))
 --                          (branch (tuple (text \"Saimese\")   (text \"Cat\")))
 --                          (branch (tuple (text \"Gourami\")   (text \"Fish\"))))
 --                 (group   \"dinosaurs\"
 --                          (branch (tuple (text \"Stegosaurus\")
---                                         (text \"Enormous\")  (bool false)))
+--                                         (text \"Enormous\")  (bool false))
+--                                  (group \"eats\" 
+--                                         (branch (tuple (text \"Plants\")))))
 --                          (branch (tuple (text \"Pterodactyl\")
---                                         (text \"Huge\")      (bool true))))))
+--                                         (text \"Huge\")      (bool true))
+--                                  (group \"eats\"
+--                                         (branch (tuple (text \"Dachshund\")))
+--                                         (branch (tuple (text \"Gourami\"))))))))
 --   :: Tree
 -- :}
 -- @

@@ -1,0 +1,73 @@
+(datum "v1" 
+(tree
+(tbranch "root" 
+        (ttuple  (telement "name" ttext))
+        (tbranch "company"
+                (ttuple (telement "symbol" ttext)
+                        (telement "name"   ttext))
+                (tbranch "transaction" 
+                        (ttuple (telement "time"   ttime)
+                                (telement "price"  tdecimal)
+                                (telement "volume" tnat)))
+                (tbranch "office"
+                        (ttuple (telement "address" ttext))
+                        (tbranch "employee"
+                                (ttuple (telement "name" ttext))
+                                (tbranch "contact"
+                                        (ttuple (telement "sort" ttext)
+                                                (telement "number" ttext)))
+                                (tbranch "position"
+                                        (ttuple (telement "name" ttext))))
+                        (tbranch "contact"
+                                (ttuple (telement "sort" ttext)
+                                        (telement "number" ttext)))))
+        (tbranch "exchange"
+                (ttuple (telement "abbrev" ttext)
+                        (telement "name"   ttext))))
+(branch (tuple  (text "Stock Market Example"))
+        (group  "company"
+        (branch (tuple  (text "BHP") (text "BHP Billiton Ltd."))
+                (group  "transaction"  
+                (tuple  (time "10:01:00") (decimal 32.16) (nat 1000))
+                (tuple  (time "10:01:00") (decimal 55.16) (nat   415))
+                (tuple  (time "10:01:00") (decimal 32.16) (nat 35344)))
+                (group  "office"
+                (branch (text "171 Collins Street, Melbourne")
+                        (group  "employee"
+                        (branch (text "Max")
+                                (group  "contact"
+                                (tuple  (text "work") (text "0411123123"))
+                                (tuple  (text "home") (text "0412321321")))
+                                (group  "position"
+                                (text   "Disk Jockey")
+                                (text   "Dragon Slayer")))
+                        (branch (text   "Eve")
+                                (group  "contact"
+                                (tuple  (text "work") (text "0400999999")))
+                                (group  "position"
+                                (text   "Data Prophet")
+                                (text   "Welder"))))
+                        (group  "contact"
+                        (tuple  (text "security") (text "928312342"))))))
+        (branch (tuple  (text "TLS") (text "Telstra Corporation Ltd."))
+                (group  "transaction"
+                (tuple  (time "10:01:05") (decimal 5.11) (nat 13))
+                (tuple  (time "10:01:05") (decimal 5.12) (nat 100)))
+                (group  "office"
+                (branch (text "242 Exhibition Street, Melbourne")
+                        (group  "employee"
+                        (branch (text "Mario")
+                                (tuple  (text "work") (text "014005551234"))
+                                (text "Key Master")))
+                        (group  "contact"))
+                (branch (text "99 King Street, Sydney")
+                        (group  "employee"
+                        (branch (text "Raphael")
+                                (tuple  (text "home") (text "014005550000"))
+                                (text "Gate Keeper")))
+                        (group  "contact")))))
+        (group  "exchange"
+        (tuple  (text "ASX")  
+                (text "Australian Securities Exchange"))
+        (tuple  (text "NYSE") 
+                (text "New York Stock Exchange"))))))

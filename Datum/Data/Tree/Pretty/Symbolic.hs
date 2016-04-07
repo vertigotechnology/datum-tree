@@ -1,7 +1,7 @@
 
-module Datum.Schema.PrettyCtor where
-import Datum.Schema.Operator
-import Datum.Schema.Exp
+module Datum.Data.Tree.Pretty.Symbolic where
+import Datum.Data.Tree.Operator
+import Datum.Data.Tree.Exp
 import Text.PrettyPrint.Leijen
 import Prelude                  hiding ((<$>))
 
@@ -16,9 +16,10 @@ ppTree (Tree b bt)
 
 
 ppForest :: Forest -> Doc
-ppForest (Forest [] bt@(BT name kt _))
+ppForest (Forest (G []) bt@(BT name kt _))
  =      text "+ " <> text (show name) <+> ppTupleType kt
-ppForest (Forest bs bt@(BT name kt bts))
+
+ppForest (Forest (G bs) bt@(BT name kt bts))
  =      text "+ " <> text (show name) <+> ppTupleType kt
  <>     (nest 4 $ line <> vsep (map ppTree [Tree b bt | b <- bs]))
 
@@ -43,7 +44,7 @@ ppBranchType (BT name tt bts)
 
 ppBranch :: Branch -> Doc
 
-ppBranch (B t [[]])
+ppBranch (B t [G []])
  =      text "branch" <+> ppTuple t <+> text "{}"
 
 ppBranch (B t [])
@@ -57,8 +58,8 @@ ppBranch (B t subs)
  <>     line    <> text "}"
 
 
-ppBranchGroup :: [Branch] -> Doc
-ppBranchGroup bs
+ppBranchGroup :: Group -> Doc
+ppBranchGroup (G bs)
  =      text "group" 
  <>     (nest 4 $  text " {"
                 <> line  

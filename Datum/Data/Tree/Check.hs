@@ -1,5 +1,5 @@
 
-module Datum.Schema.Check
+module Datum.Data.Tree.Check
         ( checkBranchType
         , checkKeyType
 
@@ -14,7 +14,7 @@ module Datum.Schema.Check
 
         , checkAtom)
 where
-import Datum.Schema.Exp
+import Datum.Data.Tree.Exp
 import Control.Monad
 import Control.Monad.Except
 import qualified Data.List              as L

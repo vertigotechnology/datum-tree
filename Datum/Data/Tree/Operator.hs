@@ -1,5 +1,5 @@
-{-# LANGUAGE ParallelListComp #-}
-module Datum.Schema.Operator
+
+module Datum.Data.Tree.Operator
         ( -- * Tree Construction
           makeTree,     takeTree
         , branchOfTree, typeOfTree
@@ -43,7 +43,7 @@ module Datum.Schema.Operator
         , sliceTree
         , sliceTreeWithNames)
 where
-import Datum.Schema.Exp
+import Datum.Data.Tree.Exp
 import qualified Data.List              as L
 import Debug.Trace
 

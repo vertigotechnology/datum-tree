@@ -1,5 +1,5 @@
 
-module Datum.Schema.Exp
+module Datum.Data.Tree.Exp
         ( Path   (..),  PathType (..)
         , Ix     (..),  IxType   (..)
 
@@ -70,7 +70,6 @@ data BranchType
         = BT    Name            -- Name of this dimension.
                 TupleType       -- Tuple type.
                 [BranchType]    -- Sub dimensions.
-                                -- ** TODO: add arity information, absolute or relative.
         deriving Show
 
 -- | A group of branches.

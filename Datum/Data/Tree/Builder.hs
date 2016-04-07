@@ -1,9 +1,5 @@
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE FlexibleContexts  #-}
-{-# LANGUAGE TypeFamilies  #-}
-
-module Datum.Schema.Builder where
-import Datum.Schema.Exp
+module Datum.Data.Tree.Builder where
+import Datum.Data.Tree.Exp
 
 
 -- Trees ----------------------------------------------------------------------

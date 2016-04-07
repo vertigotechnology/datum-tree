@@ -1,7 +1,7 @@
 
-module Datum.Schema.Pretty where
-import Datum.Schema.Operator
-import Datum.Schema.Exp
+module Datum.Data.Tree.Pretty.Chrome where
+import Datum.Data.Tree.Operator
+import Datum.Data.Tree.Exp
 import Text.PrettyPrint.Leijen
 import Prelude                  hiding ((<$>))
 

@@ -1,0 +1,38 @@
+Name:           datum-data
+Version:        1.0.0.0
+License:        AllRightsReserved
+License-file:   LICENSE
+Author:         Vergo
+Maintainer:     Ben Lippmeier <benl@ouroborus.net>
+Build-Type:     Simple
+Cabal-Version:  >=1.8
+Stability:      experimental
+Bug-reports:    benl@ouroborus.net
+Description:    Datum Data Structures
+Synopsis:       Datum Data Structures
+
+
+Library
+ build-depends:
+        base            == 4.8.*,
+        mtl             >= 2.2.1        && < 2.3,
+        wl-pprint       >= 1.2          && < 1.3
+
+
+ hs-source-dirs:
+        .
+
+ exposed-modules:
+        Datum.Data.Tree.Exp
+        Datum.Data.Tree.Check
+        Datum.Data.Tree.Operator
+        Datum.Data.Tree.Builder
+        Datum.Data.Tree.Pretty.Chrome
+        Datum.Data.Tree.Pretty.Symbolic
+
+ extensions:
+        FlexibleInstances
+        ParallelListComp
+        FlexibleContexts
+        TypeFamilies
+

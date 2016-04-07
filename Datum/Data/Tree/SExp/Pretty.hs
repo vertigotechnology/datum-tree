@@ -1,5 +1,5 @@
-
-module Datum.Data.Tree.Pretty.Symbolic where
+{-# OPTIONS_HADDOCK hide #-}
+module Datum.Data.Tree.SExp.Pretty where
 import Datum.Data.Tree.Operator
 import Datum.Data.Tree.Exp
 import Text.PrettyPrint.Leijen
@@ -7,10 +7,12 @@ import Prelude                  hiding ((<$>))
 
 
 -- Trees-----------------------------------------------------------------------
+-- | Pretty print a `Tree` using S-expression syntax.
 ppTree :: Tree -> Doc
 ppTree (Tree b bt)
- =      text "tree" 
- <>     (nest 4 $ line 
+ = parens 
+ $      text "tree" 
+ <>     (nest 4 $   line 
                 <>  (parens $ ppBranch b)
                 <$> (parens $ ppBranchType bt))
 
@@ -24,6 +26,8 @@ ppForest (Forest (G bs) bt@(BT name kt bts))
  <>     (nest 4 $ line <> vsep (map ppTree [Tree b bt | b <- bs]))
 
 
+-- BranchType -----------------------------------------------------------------
+-- | Pretty print a `BranchType` using S-expression syntax.
 ppBranchType :: BranchType -> Doc
 ppBranchType (BT name tt [])
  = hsep [ text "branchtype"
@@ -40,8 +44,8 @@ ppBranchType (BT name tt bts)
  <>     line    <> text "}"
 
 
-
-
+-- Branch ---------------------------------------------------------------------
+-- | Pretty print a `Branch` using S-expression syntax.
 ppBranch :: Branch -> Doc
 
 ppBranch (B t [G []])
@@ -54,19 +58,19 @@ ppBranch (B t subs)
  =      text "branch" <+> ppTuple t
  <>     (nest 4 $  text " {"
                 <> line  
-                <> (vsep (map (\bg -> ppBranchGroup bg <> semi) subs)))
+                <> (vsep (map (\bg -> ppGroup bg <> semi) subs)))
  <>     line    <> text "}"
 
 
-ppBranchGroup :: Group -> Doc
-ppBranchGroup (G bs)
+-- Group ----------------------------------------------------------------------
+-- | Pretty print a `Group` using S-expression syntax.
+ppGroup :: Group -> Doc
+ppGroup (G bs)
  =      text "group" 
  <>     (nest 4 $  text " {"
                 <> line  
                 <> (vsep (map (\b  -> ppBranch b <> semi) bs)))
  <>     line    <> text "}"
-
-
 
 
 -- Keys -----------------------------------------------------------------------

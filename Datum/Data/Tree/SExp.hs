@@ -1,9 +1,30 @@
-module Datum.Data.Tree.Builder 
-        ( tree
+
+-- | The datum tree builder notation allows trees to be expressed using
+--   S-expression style syntax directly in Haskell. This same S-expression
+--   syntax is also used as the external representation of trees, which
+--   allows data to be easilly moved between source code and external data
+--   files.
+--
+--   The symbols, like `tree` and `branch` are encoded as Haskell functions 
+--   which have types that allow them to be applied to a varying number of
+--   arguments. For example so for example, you can construct 2-tuples,
+--   3-tuples and 4-tuples with the same 'tuple' function, in a uniform syntax.
+--
+module Datum.Data.Tree.SExp 
+(       -- * Tree Objects
+        -- | Tree objects package up data and meta-data into the same value,
+        --   and can be checked for well-formedness.
+          tree
+        , ppTree
+
 
         -- * Tree Types
+        -- | Tree types are meta-data describing how the data is named
+        --   and structured.
+
         -- ** Branch Types
         , tbranch,      MakeBranchType
+        , ppBranch
 
         -- ** Tuple Types
         , ttuple
@@ -11,6 +32,8 @@ module Datum.Data.Tree.Builder
 
 
         -- * Tree data
+        -- | Tree data consists of branches, branch groups, tuples and atoms.
+
         -- ** Branches
         , branch,       MakeBranch
 
@@ -18,8 +41,31 @@ module Datum.Data.Tree.Builder
         , group,        MakeGroup
 
         -- ** Tuples
-        , tuple,        MakeTuple)
+        , tuple,        MakeTuple
+
+        -- * Atoms
+        -- ** Unit
+        , tunit,        unit
+
+        -- ** Bool
+        , tbool,        true,   false
+
+        -- ** Nat
+        , tnat,         nat
+
+        -- ** Int
+        , tint,         int
+
+        -- ** Float
+        , tfloat,       float
+
+        -- ** Text
+        , ttext,        text
+
+        -- ** Time
+        , ttime,        time)
 where
+import Datum.Data.Tree.SExp.Pretty
 import Datum.Data.Tree.Exp
 
 
@@ -53,7 +99,6 @@ import Datum.Data.Tree.Exp
 --
 tree :: BranchType -> Branch -> Tree
 tree bt t = Tree t bt
-
 
 -- Branch Types ---------------------------------------------------------------
 -- | Construct a branch type from a name, a tuple type,
@@ -251,7 +296,7 @@ false   = False
 
 
 -- Int
-tint    :: AtomType
+-- tint    :: AtomType
 tint    = ATInt
 
 int     :: Int  -> Atom
@@ -259,7 +304,7 @@ int     = AInt
 
 
 -- Float
-tfloat  :: AtomType
+-- tfloat  :: AtomType
 tfloat  = ATFloat
 
 float   :: Double -> Atom

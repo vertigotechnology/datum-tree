@@ -27,10 +27,12 @@ Library
         Datum.Data.Tree.Exp
         Datum.Data.Tree.Check
         Datum.Data.Tree.Operator
-        Datum.Data.Tree.Builder
+        Datum.Data.Tree.SExp
         Datum.Data.Tree.Pretty.Chrome
-        Datum.Data.Tree.Pretty.Symbolic
 
+ other-modules:
+        Datum.Data.Tree.SExp.Pretty
+        
  extensions:
         FlexibleInstances
         ParallelListComp

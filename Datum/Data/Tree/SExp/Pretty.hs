@@ -74,11 +74,7 @@ ppGroup (G bs)
 
 
 -- Keys -----------------------------------------------------------------------
-ppKeyList :: [Key] -> Doc
-ppKeyList ks
- = vsep $ map ppKey ks
-
-
+-- | Pretty print a `Key` using S-expression syntax.
 ppKey :: Key -> Doc
 ppKey (Key (T as) (TT nts))
  = parens $ hcat (punctuate (text ", ") (zipWith ppAT as nts))
@@ -89,7 +85,11 @@ ppKey (Key (T as) (TT nts))
          <+> text "=" <+> ppAtom     atom
 
 
--- | Pretty print a key with field names, but no field types.
+ppKeyList :: [Key] -> Doc
+ppKeyList ks
+ = vsep $ map ppKey ks
+
+
 ppKeyNamed :: Key -> Doc
 ppKeyNamed (Key (T as) (TT nts))
  = parens $ hcat (punctuate (text ", ") (zipWith ppAT as nts))
@@ -99,7 +99,16 @@ ppKeyNamed (Key (T as) (TT nts))
          <+> text "=" <+> ppAtom     atom
 
 
--- | Pretty print a `Tuple`.
+-- Tuples ---------------------------------------------------------------------
+-- | Pretty print a `TupleType` using S-expression syntax.
+ppTupleType :: TupleType -> Doc
+ppTupleType (TT nts)
+ = parens $ hcat (punctuate (text ", ") (map ppNameType nts))
+ where  ppNameType (name, ty)
+         = text name <> text ":" <+> ppAtomType ty
+
+
+-- | Pretty print a `Tuple` using S-expression syntax.
 ppTuple :: Tuple -> Doc
 ppTuple (T [])
  = parens (text "tuple")
@@ -108,15 +117,8 @@ ppTuple (T as)
  = parens (text "tuple" <+> (hsep $ map ppAtom as))
 
 
--- | Pretty print a `TupleType`.
-ppTupleType :: TupleType -> Doc
-ppTupleType (TT nts)
- = parens $ hcat (punctuate (text ", ") (map ppNameType nts))
- where  ppNameType (name, ty)
-         = text name <> text ":" <+> ppAtomType ty
-
-
 -- Atoms ----------------------------------------------------------------------
+-- | Pretty print an `AtomType` using S-expression syntax.
 ppAtomType :: AtomType -> Doc
 ppAtomType at
  = case at of
@@ -130,6 +132,7 @@ ppAtomType at
         ATTime          -> text "Time"
 
 
+-- | Pretty print an `Atom` using S-expression syntax.
 ppAtom :: Atom -> Doc
 ppAtom aa
  = case aa of

@@ -2,8 +2,7 @@
 -- | The datum tree builder notation allows trees to be expressed using
 --   S-expression style syntax directly in Haskell. This same S-expression
 --   syntax is also used as the external representation of trees, which
---   allows data to be easilly moved between source code and external data
---   files.
+--   is exceptionally easy to parse and pretty print.
 --
 --   The symbols, like `tree` and `branch` are encoded as Haskell functions 
 --   which have types that allow them to be applied to a varying number of
@@ -14,55 +13,43 @@ module Datum.Data.Tree.SExp
 (       -- * Tree Objects
         -- | Tree objects package up data and meta-data into the same value,
         --   and can be checked for well-formedness.
+        -- 
+        --   TODO: add forests and keys.
           tree
         , ppTree
 
-        -- * Tree Types
-        -- | Tree types are meta-data describing how the data is named
-        --   and structured.
-
-        -- ** Branch Types
-        , tbranch,      MakeBranchType
-        , ppBranch
-
-        -- ** Tuple Types
+        -- * Construction
+        -- ** Types
+        , tbranch      
         , ttuple
-        , telement,     MakeTupleType
+        , telement
+        , tunit, tbool, tnat, tint, tfloat, ttext, ttime
 
+        -- ** Values
+        , branch
+        , group
+        , tuple
+        , unit,   bool,  nat,  int,  float,  text,  time
+        , true, false
 
-        -- * Tree data
-        -- | Tree data consists of branches, branch groups, tuples and atoms.
+        -- * Pretty Printing
+        -- ** Types
+        , ppBranchType
+        , ppTupleType
+        , ppAtomType
 
-        -- ** Branches
-        , branch,       MakeBranch
+        -- ** Values
+        , ppBranch
+        , ppGroup
+        , ppTuple
+        , ppAtom
 
-        -- ** Branch Groups
-        , group,        MakeGroup
-
-        -- ** Tuples
-        , tuple,        MakeTuple
-
-        -- * Atoms
-        -- ** Unit
-        , tunit,        unit
-
-        -- ** Bool
-        , tbool,        true,   false
-
-        -- ** Nat
-        , tnat,         nat
-
-        -- ** Int
-        , tint,         int
-
-        -- ** Float
-        , tfloat,       float
-
-        -- ** Text
-        , ttext,        text
-
-        -- ** Time
-        , ttime,        time)
+        -- * Helper Classes
+        , MakeBranchType
+        , MakeTupleType
+        , MakeBranch
+        , MakeGroup
+        , MakeTuple)
 where
 import Datum.Data.Tree.SExp.Pretty
 import Datum.Data.Tree.Exp

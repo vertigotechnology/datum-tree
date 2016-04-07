@@ -1,13 +1,79 @@
-module Datum.Data.Tree.Builder where
+module Datum.Data.Tree.Builder 
+        ( tree
+
+        -- * Tree Types
+        -- ** Branch Types
+        , tbranch,      MakeBranchType
+
+        -- ** Tuple Types
+        , ttuple
+        , telement,     MakeTupleType
+
+
+        -- * Tree data
+        -- ** Branches
+        , branch,       MakeBranch
+
+        -- ** Branch Groups
+        , group,        MakeGroup
+
+        -- ** Tuples
+        , tuple,        MakeTuple)
+where
 import Datum.Data.Tree.Exp
 
 
 -- Trees ----------------------------------------------------------------------
-tree :: String -> BranchType -> Branch -> Tree
-tree _ bt t = Tree t bt
+-- | Construct a tree from a branch type, and branch data.
+--
+-- @
+-- :{  
+-- (tree  (tbranch "root"
+--                 (ttuple  (telement "name" ttext))
+--                 (tbranch \"pets\"
+--                          (ttuple (telement \"species\" ttext)
+--                                  (telement \"sort\"    ttext)))
+--                 (tbranch \"dinosaurs\"
+--                          (ttuple (telement \"species\" ttext)
+--                                  (telement \"size\"    ttext)
+--                                  (telement \"flies\"   tbool))))
+--        (branch  (tuple   (text "Pets Version 1.0"))
+--                 (group   \"pets\"
+--                          (branch (tuple (text \"Dachshund\") (text \"Dog\")))
+--                          (branch (tuple (text \"Saimese\")   (text \"Cat\")))
+--                          (branch (tuple (text \"Gourami\")   (text \"Fish\"))))
+--                 (group   \"dinosaurs\"
+--                          (branch (tuple (text \"Stegosaurus\")
+--                                         (text \"Enormous\")  (bool false)))
+--                          (branch (tuple (text \"Pterodactyl\")
+--                                         (text \"Huge\")      (bool true))))))
+--   :: Tree
+-- :}
+-- @
+--
+tree :: BranchType -> Branch -> Tree
+tree bt t = Tree t bt
 
 
 -- Branch Types ---------------------------------------------------------------
+-- | Construct a branch type from a name, a tuple type,
+--   and a possibly empty sequence of more branch types.
+--  
+-- @
+-- :{
+-- (tbranch "person" 
+--          (ttuple  (telement "name" ttext) 
+--                   (telement "age"  tfloat))
+--          (tbranch "contact"  (ttuple (telement "number" ttext)))
+--          (tbranch "project"  (ttuple (telement "name"   ttext))))
+--   :: BranchType 
+-- :}
+-- @
+--
+tbranch :: MakeBranchType b => Name -> TupleType -> b
+tbranch b tt = makeBranchType b tt []
+
+
 class MakeBranchType a where
  makeBranchType :: Name -> TupleType -> [BranchType] -> a
 
@@ -20,11 +86,28 @@ instance (b ~ BranchType, MakeBranchType a)
  makeBranchType n tt bts 
         = \bt -> makeBranchType n tt (bts ++ [bt])
 
-tbranch :: MakeBranchType b => Name -> TupleType -> b
-tbranch b tt = makeBranchType b tt []
-
 
 -- Tuple Types ----------------------------------------------------------------
+-- | Contruct a tuple type from a possibly empty sequence of named elements.
+--
+-- @
+-- (ttuple) :: TupleType
+--
+-- (ttuple (telement "name" ttext) (telement "value" tfloat)) :: TupleType
+-- @
+--
+ttuple :: MakeTupleType b => b
+ttuple = makeTupleType []
+
+
+-- | Construct an element type from an element name and an atom type.
+--
+-- @(telement "name" tnat)@
+--
+telement :: Name -> AtomType -> (Name, AtomType)
+telement n at = (n, at)
+
+
 class MakeTupleType a where
  makeTupleType :: [(Name, AtomType)] -> a
 
@@ -35,14 +118,33 @@ instance (b ~ (Name, AtomType), MakeTupleType a)
       => MakeTupleType (b -> a) where
  makeTupleType nas  = \na -> makeTupleType (nas ++ [na])
 
-ttuple :: MakeTupleType b => b
-ttuple = makeTupleType []
-
-telement :: Name -> AtomType -> (Name, AtomType)
-telement n at = (n, at)
-
 
 -- Branches -------------------------------------------------------------------
+-- | Construct a branch from a tuple, and a sequence of branch groups.
+--
+--   Branches may be automatically promoted to singleton groups.
+--  
+-- @
+-- :{
+-- (branch  (tuple (text \"Max\"))
+--          (group "contact"
+--                 (branch (tuple (text "work") (text "0400111222")))
+--                 (branch (tuple (text "home") (text "0411222333"))))
+--          (group "occupation"
+--                 (branch (tuple (text "Data Prophet")))))
+--   :: Branch
+-- :}
+--
+-- :{
+-- (branch (tuple (text "home") (text "0411222333")))
+--   :: Group
+-- :} 
+-- @
+--
+branch  :: MakeBranch a => Tuple -> a
+branch t = makeBranch t []
+
+
 class MakeBranch a where
  makeBranch :: Tuple -> [Group] -> a
 
@@ -56,8 +158,29 @@ instance (b ~ Group, MakeBranch a)
       => MakeBranch (b -> a) where
  makeBranch t gs  = \g -> makeBranch t (gs ++ [g])
 
-branch  :: MakeBranch a => Tuple -> a
-branch t = makeBranch t []
+
+-- Groups ---------------------------------------------------------------------
+-- | Construct a branch group from a group name and a sequence of branches.
+--
+-- @
+-- :{
+-- (group "imaginary"
+--        (branch (tuple (text \"Unicorn\"))))
+--    :: Group
+-- :}
+--
+-- :{
+-- (group "pets"
+--        (branch (tuple (text \"Dog\")  (text \"Dachshund\")))
+--        (branch (tuple (text \"Cat\")  (text \"Saimese\")))
+--        (branch (tuple (text \"Fish\") (text \"Gourami\"))))
+--    :: Group
+-- :}
+-- @
+--
+--
+group :: MakeGroup a => String -> a
+group _  = makeGroup []
 
 
 class MakeGroup a where
@@ -71,13 +194,24 @@ instance (b ~ Branch, MakeGroup a)
  makeGroup bs   = \b -> makeGroup (bs ++ [b])
 
 
--- | Construct a group of branches.
-group :: MakeGroup a => String -> a
-group _  = makeGroup []
-
-
-
 -- Tuples ---------------------------------------------------------------------
+-- | Construct a tuple from a possibly empty sequence of atoms.
+--
+--   Tuples may be automatically promoted to branches and singleton groups.
+-- 
+-- @
+-- (tuple) :: Tuple
+-- (tuple (text \"Iced\") (float 3.50)) :: Tuple
+-- (tuple (text \"GOOG\") (float 105.00) (nat 15609) (text \"X\")) :: Tuple
+--
+-- (tuple (text \"Matilda\") (text \"Hedgehog\")    (nat 36000)) :: Branch
+-- (tuple (text \"Marian\")  (text \"Stegosaurus\") (nat 36000)) :: Group
+-- @
+--
+tuple   :: MakeTuple b => b
+tuple   = makeTuple []
+
+
 class MakeTuple b where
  makeTuple :: [Atom] -> b
 
@@ -94,8 +228,6 @@ instance (b ~ Atom, MakeTuple a)
       => MakeTuple (b -> a) where
  makeTuple as   = \a -> makeTuple (as ++ [a])
 
-tuple   :: MakeTuple b => b
-tuple   = makeTuple []
 
 
 -- Atoms and Atom Types--------------------------------------------------------

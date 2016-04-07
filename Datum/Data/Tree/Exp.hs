@@ -50,7 +50,7 @@ instance Monoid Path where
 
 
 -- Trees ------------------------------------------------------------------------------------------
--- | A forest is a list of trees of the same type.
+-- | Datum forest which contains a sequence of trees of the same type.
 data Forest
         = Forest 
                 Group
@@ -58,7 +58,7 @@ data Forest
         deriving Show
 
 
--- | A tree combines the branch data and branch meta-data.
+-- | Datum tree which combines both data and meta-data.
 data Tree
         = Tree  Branch 
                 BranchType

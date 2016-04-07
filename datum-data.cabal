@@ -23,6 +23,7 @@ Library
         .
 
  exposed-modules:
+        Datum.Data.Tree
         Datum.Data.Tree.Exp
         Datum.Data.Tree.Check
         Datum.Data.Tree.Operator

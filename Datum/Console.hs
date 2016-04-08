@@ -10,23 +10,23 @@ class Dump a where
 
 -- Trees ----------------------------------------------------------------------
 instance Dump (Tree 'O) where
- dump t = putDoc $ ppTree t
+ dump t = putDoc $ (ppTree t <> line)
 
 
 instance Dump (Tree 'X) where
  dump t 
   = case checkTree t of
-        Left err        -> putDoc $ ppError err
+        Left err        -> putDoc $ (ppError err <> line)
         Right t'        -> dump t'
 
 
 -- Key Lists ------------------------------------------------------------------
 instance Dump [Key 'O] where
- dump ks = putDoc $ ppKeyList ks
+ dump ks = putDoc $ (ppKeyList ks <> line)
 
 
 instance Dump [Key 'X] where
  dump ks
   = case mapM checkKey ks of
-        Left err        -> putDoc $ ppError err
+        Left err        -> putDoc $ (ppError err <> line)
         Right ks'       -> dump ks'

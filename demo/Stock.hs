@@ -1,6 +1,6 @@
 {-# LANGUAGE ParallelListComp #-}
 
-module Datum.ExampleStock
+module Stock
 where
 import Datum.Data.Tree
 import Datum.Data.Tree.SExp
@@ -8,11 +8,11 @@ import Datum.Console
 
 ---------------------------------------------------------------------------------------------------
 tStock :: Tree O
-tStock = let Right t = tStock' in t
+tStock =  let Right t' = tStock' in t'
 
 tStock'
  = tree 
- (tbranch "root" 
+  (tbranch "root" 
         (ttuple  (telement "name" ttext))
         (tbranch "company"
                 (ttuple (telement "symbol" ttext)
@@ -86,6 +86,7 @@ tStock'
         (tuple  (text "NYSE") 
                 (text "New York Stock Exchange"))))
      
+
 ---------------------------------------------------------------------------------------------------
 -- | Pretty print the tree.
 ex0     = dump tStock

@@ -23,6 +23,8 @@ Library
         .
 
  exposed-modules:
+        Datum.Console
+
         Datum.Data.Tree
         Datum.Data.Tree.Exp
         Datum.Data.Tree.Check
@@ -30,6 +32,7 @@ Library
         Datum.Data.Tree.Compounds
         Datum.Data.Tree.Operators
         Datum.Data.Tree.SExp
+
 
  other-modules:
         Datum.Data.Tree.SExp.Pretty

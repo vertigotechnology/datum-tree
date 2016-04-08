@@ -12,7 +12,9 @@ module Datum.Data.Tree.Check
         , checkKey,     checkKey'
         , checkTuple
 
-        , checkAtom)
+        , checkAtom
+
+        , Error (..))
 where
 import Datum.Data.Tree.Exp
 import Control.Monad
@@ -167,11 +169,11 @@ data Error
         -- | Number of sub trees does not match number of sub dimensions.
         = ErrorArityDim         Path [Group] [BranchType] 
 
-        -- | Sub dimension name clash.
-        | ErrorClashSubDim      PathType [Name]
-
         -- | Number of fields in tuple does not match tuple type.
         | ErrorArityTuple       Path [Atom]  [(Name, AtomType)]
+
+        -- | Sub dimension name clash.
+        | ErrorClashSubDim      PathType [Name]
 
         -- | Field name clash.
         | ErrorClashField       PathType [Name]

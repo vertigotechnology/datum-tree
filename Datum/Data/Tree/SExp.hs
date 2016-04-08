@@ -13,10 +13,11 @@ module Datum.Data.Tree.SExp
 (       -- * Tree Objects
         -- | Tree objects package up data and meta-data into the same value,
         --   and can be checked for well-formedness.
-        -- 
-        --   TODO: add forests and keys.
           tree
-        , ppTree
+        , forest
+        , key
+
+        , Error (..)
 
         -- * Construction
         -- ** Types
@@ -33,6 +34,9 @@ module Datum.Data.Tree.SExp
         , true, false
 
         -- * Pretty Printing
+        -- ** Objects
+        , ppTree
+
         -- ** Types
         , ppBranchType
         , ppTupleType
@@ -53,14 +57,19 @@ module Datum.Data.Tree.SExp
 where
 import Datum.Data.Tree.SExp.Pretty
 import Datum.Data.Tree.Exp
+import Datum.Data.Tree.Check
 
 
 -- Trees ----------------------------------------------------------------------
--- | Construct a tree from a branch type, and branch data.
+-- | Construct a well formed tree from a branch type, and branch data.
+--
+--   If the supplied `Branch` does not match the `BranchType` then `Error`.
 --
 -- @
+-- TODO: Type of this is wrong.
 -- :{  
--- (tree  (tbranch \"root\"
+-- (tree  
+--        (tbranch \"root\"
 --                 (ttuple  (telement \"name\" ttext))
 --                 (tbranch \"pets\"
 --                          (ttuple  (telement \"species\" ttext)
@@ -86,12 +95,41 @@ import Datum.Data.Tree.Exp
 --                                  (group \"eats\"
 --                                         (branch (tuple (text \"Dachshund\")))
 --                                         (branch (tuple (text \"Gourami\"))))))))
---   :: Tree
+--   :: Either Error Tree
 -- :}
 -- @
 --
-tree :: BranchType -> Branch -> Tree
-tree bt t = Tree t bt
+tree :: BranchType -> Branch -> Either Error Tree
+tree bt b 
+ = let  t       = Tree b bt
+   in   case checkTree t of
+         Left err       -> Left err
+         Right ()       -> Right t
+
+
+-- | Construct a well formed forest from a branch type and a group of branches.
+--
+--   If the supplied `Group` does not match the `BranchType` then `Error`.
+--
+forest :: BranchType -> Group -> Either Error Forest
+forest bt g
+ = let  f       = Forest g bt
+   in   case checkForest f of
+         Left err       -> Left err
+         Right ()       -> Right f
+
+
+-- | Construct a well formed key from a tuple type and a tuple.
+--
+--   If the supplied `Tuple` does not match the `TupleType` then `Error`.
+--
+key   :: TupleType -> Tuple -> Either Error Key
+key tt t
+ = let  k       = Key t tt
+   in   case checkKey k of
+         Left err       -> Left err
+         Right ()       -> Right k
+
 
 -- Branch Types ---------------------------------------------------------------
 -- | Construct a branch type from a name, a tuple type,

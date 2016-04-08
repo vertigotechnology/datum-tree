@@ -4,7 +4,9 @@ module Datum.Console
         ( Dump  (..)
         , Check (..)
         , Save  (..)
-        , loadCSV)
+        , loadCSV
+        , initial
+        , sample)
 where
 import Datum.Console.Dump
 import Datum.Console.Check
@@ -12,10 +14,7 @@ import Datum.Console.Save
 
 import Datum.Data.Tree
 import Datum.Data.Tree.Exp
-import Datum.Data.Tree.SExp
 import Datum.Data.Tree.Codec
-import Text.PrettyPrint.Leijen
-import qualified System.IO              as System
 import qualified Data.ByteString.Lazy.Char8     as BS8
 
 

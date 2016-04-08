@@ -57,7 +57,11 @@ module Datum.Data.Tree
         , sliceTreeWithNames
 
           -- * Traversal
-        , traverseTree)
+        , traverseTree
+
+          -- * Limiting
+        , Initial (..)
+        , Sample  (..))
 where
 import Datum.Data.Tree.Operators 
 import Datum.Data.Tree.Check

@@ -35,7 +35,11 @@ module Datum.Data.Tree.Operators
         , sliceTreeWithNames
 
           -- * Traversal
-        , traverseTree)
+        , traverseTree
+
+          -- * Limiting
+        , Initial (..)
+        , Sample  (..))
 where
 import Datum.Data.Tree.Exp
 import Datum.Data.Tree.Compounds
@@ -283,6 +287,58 @@ traverseTree f
                         | tSub  <- tsSub0 ]
 
    in   Tree (B k0 xssSub) (BT n0 kt0 tsSub)
+
+
+-- Limiting ---------------------------------------------------------------------------------------
+
+------------------------
+class Initial a where
+ -- | Take only the initital 'n' trees of every Forest.
+ initial :: Int -> a -> a
+
+instance Initial (Tree c) where
+ initial n (Tree b bt)
+  = Tree (initial n b) bt
+
+instance Initial (Forest c) where
+ initial n (Forest g bt)
+  = Forest (initial n g) bt
+
+instance Initial Branch where
+ initial n (B t gs)
+  = B t $ map (initial n) gs
+
+instance Initial Group where
+ initial n (G name bs)
+  = G name $ map (initial n) $ take n bs
+
+
+-------------------------
+class Sample a where
+ -- | Take only the first 'n' trees of every Forest.
+ sample :: Int -> a -> a
+
+instance Sample (Tree c) where
+ sample n (Tree b bt)
+  = Tree (sample n b) bt
+
+instance Sample (Forest c) where
+ sample n (Forest g bt)
+  = Forest (sample n g) bt
+
+instance Sample Branch where
+ sample n (B t gs)
+  = B t $ map (sample n) gs
+
+instance Sample Group where
+ sample n (G name bs)
+  = let len     = length bs
+        dec     = len `div` n
+
+    in  G name  $ map    (sample n) 
+                $ map    snd
+                $ filter (\(i, _) -> i `mod` dec == 0)
+                $ zip [0..] bs
 
 
 

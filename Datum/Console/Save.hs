@@ -4,7 +4,6 @@ module Datum.Console.Save
 where
 import Datum.Console.Check
 
-import Datum.Data.Tree.Check
 import Datum.Data.Tree.SExp
 import Datum.Data.Tree.Exp
 import Text.PrettyPrint.Leijen

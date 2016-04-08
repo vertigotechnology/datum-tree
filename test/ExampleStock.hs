@@ -7,10 +7,12 @@ import Datum.Data.Tree.SExp
 import Datum.Console
 
 ---------------------------------------------------------------------------------------------------
-tStock :: Tree X
-tStock 
- = tree'
-  (tbranch "root" 
+tStock :: Tree O
+tStock = let Right t = tStock' in t
+
+tStock'
+ = tree 
+ (tbranch "root" 
         (ttuple  (telement "name" ttext))
         (tbranch "company"
                 (ttuple (telement "symbol" ttext)

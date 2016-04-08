@@ -42,6 +42,8 @@ module Datum.Data.Tree.SExp
         -- ** Objects
         , ppTree
         , ppForest
+        , ppKey
+        , ppKeyList
         , ppError
 
         -- ** Types

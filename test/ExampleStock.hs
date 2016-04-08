@@ -1,16 +1,13 @@
 {-# LANGUAGE ParallelListComp #-}
 
-module Datum.Schema.ExampleShares
+module Datum.ExampleStock
 where
-import Datum.Schema.Builder
-import Datum.Schema.Pretty
-import Datum.Schema.Operator
-import Datum.Schema.Check
-import Datum.Schema.Exp
+import Datum.Data.Tree
+import Datum.Data.Tree.SExp
 
 
 ---------------------------------------------------------------------------------------------------
-tStock :: Tree
+tStock :: Tree O
 tStock 
  = tree "datum-v1"
   (tbranch "root" 

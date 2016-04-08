@@ -7,7 +7,7 @@ import Prelude                  hiding ((<$>))
 
 
 -- Trees-----------------------------------------------------------------------
-ppTree :: Tree -> Doc
+ppTree :: Tree c -> Doc
 
 ppTree (Tree (B k []) (BT _n _kt []))
  =      text ". " <> ppTuple k
@@ -17,7 +17,7 @@ ppTree (Tree (B k xssSub) (BT _n _kt tSubs))
  <$>    (vsep $ map ppForest $ zipWith makeForest xssSub tSubs)
 
 
-ppForest :: Forest -> Doc
+ppForest :: Forest c -> Doc
 
 ppForest (Forest (G _ []) (BT name kt _))
  =      text "+ " <> text name <+> text "~" <+> ppTupleType kt
@@ -45,12 +45,12 @@ ppGroup (G _ bs)
 
 
 -- Keys -----------------------------------------------------------------------
-ppKeyList :: [Key] -> Doc
+ppKeyList :: [Key 'O] -> Doc
 ppKeyList ks
  = vsep $ map ppKey ks
 
 
-ppKey :: Key -> Doc
+ppKey :: Key 'O -> Doc
 ppKey (Key (T as) (TT nts))
  = parens $ hcat (punctuate (text ", ") (zipWith ppAT as nts))
  where  
@@ -61,7 +61,7 @@ ppKey (Key (T as) (TT nts))
 
 
 -- | Pretty print a key with field names, but no field types.
-ppKeyNamed :: Key -> Doc
+ppKeyNamed :: Key 'O -> Doc
 ppKeyNamed (Key (T as) (TT nts))
  = parens $ hcat (punctuate (text ", ") (zipWith ppAT as nts))
  where  

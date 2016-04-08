@@ -21,8 +21,12 @@ ppIx ix
 
 
 -- Trees ----------------------------------------------------------------------
--- | Pretty print a `Tree` using S-expression syntax.
-ppTree :: Tree -> Doc
+-- | Pretty print a a checked tree using S-expression syntax.
+-- 
+--   * To display an unchecked tree, split it into the branch and branch type,
+--     then print those separately.
+--
+ppTree :: Tree 'O -> Doc
 ppTree (Tree b bt)
  = parens 
  $      text "tree" 
@@ -31,7 +35,12 @@ ppTree (Tree b bt)
                 <$> (parens $ ppBranchType bt))
 
 
-ppForest :: Forest -> Doc
+-- | Pretty print a checked forest using S-expression syntax.
+--
+--   * To dispaly an unchecked tree, split it into the branch and branch type,
+--     then print those seprately.
+--
+ppForest :: Forest 'O -> Doc
 ppForest (Forest (G _n []) (BT name kt _))
  =      text "+ " <> text (show name) <+> ppTupleType kt
 
@@ -89,7 +98,7 @@ ppGroup (G _n bs)
 
 -- Keys -----------------------------------------------------------------------
 -- | Pretty print a `Key` using S-expression syntax.
-ppKey :: Key -> Doc
+ppKey :: Key 'O -> Doc
 ppKey (Key (T as) (TT nts))
  = parens $ hcat (punctuate (text ", ") (zipWith ppAT as nts))
  where  
@@ -99,12 +108,12 @@ ppKey (Key (T as) (TT nts))
          <+> text "=" <+> ppAtom     atom
 
 
-ppKeyList :: [Key] -> Doc
+ppKeyList :: [Key 'O] -> Doc
 ppKeyList ks
  = vsep $ map ppKey ks
 
 
-ppKeyNamed :: Key -> Doc
+ppKeyNamed :: Key 'O -> Doc
 ppKeyNamed (Key (T as) (TT nts))
  = parens $ hcat (punctuate (text ", ") (zipWith ppAT as nts))
  where  

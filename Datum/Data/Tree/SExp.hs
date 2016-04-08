@@ -41,6 +41,7 @@ module Datum.Data.Tree.SExp
         -- * Pretty Printing
         -- ** Objects
         , ppTree
+        , ppForest
         , ppError
 
         -- ** Types
@@ -103,36 +104,24 @@ import Datum.Data.Tree.Check
 -- :}
 -- @
 --
-tree :: BranchType -> Branch -> Either Error Tree
-tree bt b 
- = let  t       = Tree b bt
-   in   case checkTree t of
-         Left err       -> Left err
-         Right ()       -> Right t
+tree :: BranchType -> Branch -> Either Error (Tree 'O)
+tree bt b = checkTree (Tree b bt)
 
 
 -- | Construct a well formed forest from a branch type and a group of branches.
 --
 --   If the supplied `Group` does not match the `BranchType` then `Error`.
 --
-forest :: BranchType -> Group -> Either Error Forest
-forest bt g
- = let  f       = Forest g bt
-   in   case checkForest f of
-         Left err       -> Left err
-         Right ()       -> Right f
+forest :: BranchType -> Group -> Either Error (Forest 'O)
+forest bt g = checkForest (Forest g bt)
 
 
 -- | Construct a well formed key from a tuple type and a tuple.
 --
 --   If the supplied `Tuple` does not match the `TupleType` then `Error`.
 --
-key   :: TupleType -> Tuple -> Either Error Key
-key tt t
- = let  k       = Key t tt
-   in   case checkKey k of
-         Left err       -> Left err
-         Right ()       -> Right k
+key   :: TupleType -> Tuple -> Either Error (Key 'O)
+key tt t    = checkKey (Key t tt)
 
 
 -- Branch Types ---------------------------------------------------------------

@@ -1,20 +1,156 @@
 
 module Datum.Data.Tree.Exp
-        ( Path   (..),  PathType (..)
-        , Ix     (..),  IxType   (..)
+        ( -- * Objects
+          Checked       (..)
+        , Tree          (..)
+        , Forest        (..)
+        , Key           (..)
 
-        , Forest (..)
+          -- * Meta-Data
+        , Name
+        , BranchType    (..)
+        , TupleType     (..)
+        , AtomType      (..)
 
-        , Tree   (..)
-        , Group  (..)
-        , Branch (..),  BranchType (..)
+          -- * Data
+        , Group         (..)
+        , Branch        (..)
+        , Tuple         (..)
+        , Atom          (..)
 
-        , Key    (..)
-        , Tuple  (..),  TupleType  (..)
-
-        , Atom   (..),  AtomType (..)
-        , Name)
+          -- * Paths
+        , PathType      (..)
+        , Path          (..)
+        , IxType        (..)
+        , Ix            (..))
 where
+
+
+-- Objects ----------------------------------------------------------------------------------------
+-- | Indication of whether an object's data has been checked against
+--   the constraints in its meta-data.
+--
+data Checked
+        = X     -- ^ Object has not been checked.
+        | O     -- ^ Object has been checked.
+        deriving (Show, Eq, Ord)
+
+
+-- | A tree contains both branch data and branch meta-data.
+--
+--   * The type constructor has a phantom parameter indicating
+--     whether the data has been checked against the meta-data.
+--
+--   * By using the raw constructor to build a tree you promise that
+--     the `Checked` parameter is valid.
+--
+data Tree   (c :: Checked)
+        = Tree  Branch 
+                BranchType
+        deriving Show
+
+
+-- | A forest contains a sequence of trees of the same type.
+--
+--   * The type constructor has a phantom parameter indicating 
+--     whether the data has been checked against the meta-data.
+--
+--   * By using the raw constructor to build a forest you promise that
+--     the `Checked` parameter is valid.
+--
+data Forest (c :: Checked)
+        = Forest 
+                Group
+                BranchType
+        deriving Show
+
+
+-- | A key contains tuple data and tuple meta-data.
+--
+--   * The type constructor has a phantom parameter indicating 
+--     whether the data has been checked against the meta-data.
+--
+--   * By using the raw constructor to build a ket you promise that
+--     the `Checked` parameter is valid.
+--
+data Key (c :: Checked)
+        = Key   Tuple
+                TupleType
+        deriving Show
+
+
+-- Meta-data --------------------------------------------------------------------------------------
+-- | Branch type describes the structure of a branch.
+data BranchType
+        = BT    Name            -- Name of this dimension.
+                TupleType       -- Tuple type.
+                [BranchType]    -- Sub dimensions.
+        deriving Show
+
+
+-- | Named tuple types.
+data TupleType
+        = TT    [(Name, AtomType)]
+        deriving Show
+
+
+-- | Atom types.
+data AtomType
+        = ATUnit
+        | ATBool
+        | ATInt
+        | ATFloat
+        | ATNat
+        | ATDecimal
+        | ATText
+        | ATTime
+        deriving Show
+
+
+-- Data -------------------------------------------------------------------------------------------
+-- | A group with a name and list of branches.
+--  
+--   * The name here is not strictly required by the representation as
+--     in a typed tree the group name should match the corresponding
+--     branch type name. However, including it makes it easier to debug 
+--     problems situtations where the tree is not well typed.
+--
+data Group
+        = G     (Maybe Name)
+                [Branch]
+        deriving Show
+
+
+-- | Branch with a key and forests of sub-branches.
+data Branch
+        = B     Tuple 
+                [Group]
+        deriving Show 
+
+
+-- | Tuple values.
+data Tuple
+        = T     [Atom]
+        deriving Show
+
+
+-- | Atomic values.
+data Atom
+        = AUnit
+        | ABool         Bool
+        | AInt          Int
+        | AFloat        Double
+        | ANat          Int
+        | ADecimal      Double
+        | AText         String
+        | ATime         String
+        deriving Show
+
+
+-- Names ------------------------------------------------------------------------------------------
+-- | Branch and field names.
+type Name
+        = String
 
 
 -- Path -------------------------------------------------------------------------------------------
@@ -49,96 +185,3 @@ instance Monoid Path where
         = Path (ps1 ++ ps2) (pts1 ++ pts2)
 
 
--- Trees ------------------------------------------------------------------------------------------
--- | Datum forest which contains a sequence of trees of the same type.
-data Forest
-        = Forest 
-                Group
-                BranchType
-        deriving Show
-
-
--- | Datum tree which combines both data and meta-data.
-data Tree
-        = Tree  Branch 
-                BranchType
-        deriving Show
-
-
--- | Branch type describes the structure of a branch.
-data BranchType
-        = BT    Name            -- Name of this dimension.
-                TupleType       -- Tuple type.
-                [BranchType]    -- Sub dimensions.
-        deriving Show
-
--- | A group with a name and list of branches.
---  
---   * The name here is not strictly required by the representation as
---     in a typed tree the group name should match the corresponding
---     branch type name. However, including it makes it easier to debug 
---     problems situtations where the tree is not well typed.
---
-data Group
-        = G     (Maybe Name)
-                [Branch]
-        deriving Show
-
-
--- | Branch with a key and forests of sub-branches.
-data Branch
-        = B     Tuple 
-                [Group]
-        deriving Show 
-
-
--- Tuples -----------------------------------------------------------------------------------------
--- | A key combines tuple data and tuple meta-data.
-data Key
-        = Key   Tuple
-                TupleType
-        deriving Show
-
--- | Named tuple types.
-data TupleType
-        = TT    [(Name, AtomType)]
-        deriving Show
-
-
--- | Tuple values.
-data Tuple
-        = T     [Atom]
-        deriving Show
-
-
--- Atoms ------------------------------------------------------------------------------------------
--- | Atom types.
-data AtomType
-        = ATUnit
-        | ATBool
-        | ATInt
-        | ATFloat
-        | ATNat
-        | ATDecimal
-        | ATText
-        | ATTime
-        deriving Show
-
-
--- | Atomic values.
-data Atom
-        = AUnit
-        | ABool         Bool
-        | AInt          Int
-        | AFloat        Double
-        | ANat          Int
-        | ADecimal      Double
-        | AText         String
-        | ATime         String
-        deriving Show
-
-
--- Names ------------------------------------------------------------------------------------------
--- | Field and dimension names.
-type Name
-        = String

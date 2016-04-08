@@ -39,6 +39,7 @@ Library
         ParallelListComp
         FlexibleContexts
         TypeFamilies
+        DataKinds
 
  ghc-options:
         -Wall -fno-warn-missing-signatures -Werror

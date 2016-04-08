@@ -58,15 +58,17 @@ checkKeyType path (TT nts)
 
 -------------------------------------------------------------------------------
 -- | Check that a tree is well formed.
-checkTree :: Tree -> Either Error ()
+checkTree :: Tree c -> Either Error (Tree 'O)
 checkTree tree 
  =      checkTree' mempty tree
 
 
 -- | Check that a tree is well formed, at the given starting path.
-checkTree' :: Path -> Tree -> Either Error ()
+checkTree' :: Path -> Tree c -> Either Error (Tree 'O)
 checkTree' path (Tree branch branchType)
- =      checkBranch path branch branchType
+ = case checkBranch path branch branchType of
+        Left err -> Left err
+        Right () -> Right $ Tree branch branchType
 
 
 -- | Check that a branch has the given branch type.
@@ -102,15 +104,17 @@ checkBranch
 
 -------------------------------------------------------------------------------
 -- | Check that a forest is well formed.
-checkForest  :: Forest -> Either Error ()
+checkForest  :: Forest c -> Either Error (Forest 'O)
 checkForest forest
         = checkForest' mempty forest
 
 
 -- | Check that a forest is well formed, at the given starting path.
-checkForest' :: Path -> Forest -> Either Error ()
+checkForest' :: Path -> Forest c -> Either Error (Forest 'O)
 checkForest' path (Forest bs bt)
-        = checkGroup path bs bt
+ = case checkGroup path bs bt of
+        Left err        -> Left err
+        Right ()        -> Right $ Forest bs bt
 
 
 -- | Check that all the branches in a group
@@ -122,15 +126,17 @@ checkGroup path (G _n bs) shape
 
 -------------------------------------------------------------------------------
 -- | Check that a key is well formed.
-checkKey  :: Key -> Either Error ()
+checkKey  :: Key c -> Either Error (Key 'O)
 checkKey key
         = checkKey' mempty key
 
 
 -- | Check that a key is well formed, at the given starting path.
-checkKey' :: Path -> Key -> Either Error ()
+checkKey' :: Path -> Key c -> Either Error (Key 'O)
 checkKey' path (Key t tt)
-        = checkTuple path t tt
+ = case checkTuple path t tt of
+        Left err        -> Left err
+        Right ()        -> Right $ Key t tt
 
 
 -- | Check that a tuple has the given type.

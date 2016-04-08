@@ -24,13 +24,18 @@ module Datum.Data.Tree.SExp
         , tbranch      
         , ttuple
         , telement
-        , tunit, tbool, tnat, tint, tfloat, ttext, ttime
+        , tunit, tbool
+        , tnat,  tint, tfloat, tdecimal
+        , ttext, ttime
 
         -- ** Values
         , branch
         , group
         , tuple
-        , unit,   bool,  nat,  int,  float,  text,  time
+        , unit, bool
+        , nat,  int,  float, decimal
+        , text
+        , time
         , true, false
 
         -- * Pretty Printing
@@ -304,7 +309,6 @@ instance (b ~ Atom, MakeTuple a)
  makeTuple as   = \a -> makeTuple (as ++ [a])
 
 
-
 -- Atoms and Atom Types--------------------------------------------------------
 -- Unit
 tunit   :: AtomType
@@ -372,6 +376,3 @@ ttime   = ATTime
 time    :: String -> Atom
 time    = ATime
 
-
--- Names ----------------------------------------------------------------------
-name s  = s

@@ -1,6 +1,5 @@
 {-# OPTIONS_HADDOCK hide #-}
 module Datum.Data.Tree.SExp.Pretty where
-import Datum.Data.Tree.Operator
 import Datum.Data.Tree.Exp
 import Text.PrettyPrint.Leijen
 import Prelude                  hiding ((<$>))
@@ -33,10 +32,10 @@ ppTree (Tree b bt)
 
 
 ppForest :: Forest -> Doc
-ppForest (Forest (G _n []) bt@(BT name kt _))
+ppForest (Forest (G _n []) (BT name kt _))
  =      text "+ " <> text (show name) <+> ppTupleType kt
 
-ppForest (Forest (G _n bs) bt@(BT name kt bts))
+ppForest (Forest (G _n bs) bt@(BT name kt _bts))
  =      text "+ " <> text (show name) <+> ppTupleType kt
  <>     (nest 4 $ line <> vsep (map ppTree [Tree b bt | b <- bs]))
 

@@ -9,20 +9,20 @@ import Prelude                  hiding ((<$>))
 -- Trees-----------------------------------------------------------------------
 ppTree :: Tree -> Doc
 
-ppTree (Tree (B k []) (BT n _kt []))
+ppTree (Tree (B k []) (BT _n _kt []))
  =      text ". " <> ppTuple k
 
-ppTree (Tree (B k xssSub) (BT n kt tSubs))
+ppTree (Tree (B k xssSub) (BT _n _kt tSubs))
  =      text "* " <> ppTuple k
  <$>    (vsep $ map ppForest $ zipWith makeForest xssSub tSubs)
 
 
 ppForest :: Forest -> Doc
 
-ppForest (Forest (G _ []) bt@(BT name kt _))
+ppForest (Forest (G _ []) (BT name kt _))
  =      text "+ " <> text name <+> text "~" <+> ppTupleType kt
 
-ppForest (Forest (G _ bs) bt@(BT name kt bts))
+ppForest (Forest (G _ bs) bt@(BT name kt _bts))
  =      text "+ " <> text name <+> text "~" <+> ppTupleType kt
  <>     (nest 4 $ line <> vsep (map ppTree [Tree b bt | b <- bs]))
 

@@ -29,7 +29,7 @@ import qualified Data.List              as L
 checkBranchType :: PathType -> BranchType -> Either Error ()
 checkBranchType 
         (PathType pts)
-        bt@(BT name tKey subs)
+        bt@(BT _n tKey subs)
  = do
         let pts'        = ITForest bt : pts
         let tPath'      = PathType pts'
@@ -73,7 +73,7 @@ checkTree' path (Tree branch branchType)
 checkBranch :: Path -> Branch -> BranchType -> Either Error ()
 checkBranch
         (Path ps pts) 
-        (B key subs) bt@(BT name tKey@(TT nts) tsSub)
+        (B key subs) bt@(BT name tKey@(TT _nts) tsSub)
  = do
         let ps'         = IForest name : ps
         let pts'        = ITForest bt  : pts
@@ -117,9 +117,7 @@ checkForest' path (Forest bs bt)
 --   have the specified shape.
 checkGroup :: Path -> Group -> BranchType -> Either Error ()
 checkGroup path (G _n bs) shape
- = do   zipWithM_ 
-                (\i b -> checkBranch path b shape)
-                [0..] bs
+ = do   mapM_ (\b -> checkBranch path b shape) bs
 
 
 -------------------------------------------------------------------------------
@@ -137,14 +135,14 @@ checkKey' path (Key t tt)
 
 -- | Check that a tuple has the given type.
 checkTuple :: Path -> Tuple -> TupleType -> Either Error ()
-checkTuple path@(Path ps pts) (T fields) tt@(TT nts)
+checkTuple path@(Path _ps _pts) (T fields) (TT nts)
  = do   
         -- Check that the number of fields matches the tuple type.
         when (length fields /= length nts)
          $ throwError $ ErrorArityTuple path fields nts
 
         zipWithM_ 
-                (\  field (name, tField)
+                (\  field (_name, tField)
                  ->     checkAtom path field tField)
                 fields nts
 

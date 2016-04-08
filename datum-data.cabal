@@ -40,3 +40,5 @@ Library
         FlexibleContexts
         TypeFamilies
 
+ ghc-options:
+        -Wall -fno-warn-missing-signatures -Werror

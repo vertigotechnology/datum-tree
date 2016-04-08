@@ -45,7 +45,6 @@ module Datum.Data.Tree.Operator
 where
 import Datum.Data.Tree.Exp
 import qualified Data.List              as L
-import Debug.Trace
 
 
 -- Tree Construction ------------------------------------------------------------------------------
@@ -76,7 +75,7 @@ nameOfTree (Tree _ (BT n _ _)) = n
 
 -- | Take the list of sub-forests from a tree.
 forestsOfTree :: Tree -> [Forest]
-forestsOfTree (Tree (B k gs) (BT n kt bts))
+forestsOfTree (Tree (B _k gs) (BT _n _kt bts))
         = zipWith makeForest gs bts
 
 
@@ -129,27 +128,21 @@ forestOfTrees bt@(BT n _ _) trees
 -- Paths ------------------------------------------------------------------------------------------
 -- | Extend a path to record the fact that we have entered into this sub-tree.
 enterTree :: Tree -> Path -> Path 
-enterTree   (Tree (B k0 _) (BT n0 kt0 _)) (Path ps pts)
+enterTree   (Tree (B k0 _) (BT _n0 kt0 _)) (Path ps pts)
  = Path (ITree k0 : ps) (ITTree kt0 : pts)
 
 
 -- | Extend a path to record the fact that we have entered into this sub-forest.
 enterForest :: Forest -> Path -> Path
-enterForest (Forest _ bt@(BT n0 _ bts)) (Path ps pts)
+enterForest (Forest _ bt@(BT n0 _ _bts)) (Path ps pts)
  = Path (IForest n0 : ps) (ITForest bt : pts)
 
 
 -- | Check if a path includes a forest with the give name.
 pathIncludesName :: Name -> Path -> Bool
-pathIncludesName name path@(Path ps pts)
+pathIncludesName name (Path ps _pts)
  = let  ns      = [n | IForest n <- ps]
    in   elem name ns
-
-
--- | Get the dimension names of a path.
-dimNamesOfPath :: Path -> [Name]
-dimNamesOfPath (Path ps pts)
- = [n | IForest n <- ps]
 
 
 -- | Check if we're on the path defined by the given names.
@@ -158,8 +151,9 @@ onPath ns (Path ps pts)
  = onPath' ns (Path (reverse ps) (reverse pts))
 
 onPath' _  (Path [] _)  = True
+onPath' _  (Path _ [])  = True
 onPath' [] _            = True
-onPath' nn@(n : ns) pp@(Path (p : ps) (pt : pts))
+onPath' nn@(n : ns) (Path (p : ps) (_pt : pts))
  = case p of
         IForest n'
          | n == n'      -> onPath' ns (Path ps pts)
@@ -214,7 +208,7 @@ applyTreesOfForest f forest
 -- | Apply a function to the list of sub-forests of a tree.
 applyForestsOfTree :: ([Forest] -> [Forest]) -> Tree -> Tree
 applyForestsOfTree f
-        tree@(Tree (B k0 gs0) (BT n0 kt0 bts0))
+        (Tree (B k0 gs0) (BT n0 kt0 bts0))
  = let
         (gs1, bts1)
                 = unzip
@@ -223,13 +217,6 @@ applyForestsOfTree f
                 $ zipWith makeForest gs0 bts0
 
    in   Tree (B k0 gs1) (BT n0 kt0 bts1)
-
-
--- Pathless Mapping -------------------------------------------------------------------------------
--- | Like `mapTreesOfForest`, but we don't care about the path.
-mapTreesOfForest'   :: (Tree -> Tree) -> Forest -> Forest
-mapTreesOfForest' f forest
-        = mapTreesOfForest   (\_path tree -> f tree) mempty forest   
 
 
 -- Traversal --------------------------------------------------------------------------------------
@@ -243,9 +230,7 @@ traverseTree f
 
         (xssSub, tsSub)
                 = unzip
-                $ [ let BT n kt _ = tSub
-
-                        Forest xsSub' tSub'
+                $ [ let Forest xsSub' tSub'
                                 = mapTreesOfForest f path'
                                 $ mapTreesOfForest (traverseTree f) path'
                                 $ Forest xsSub tSub
@@ -253,8 +238,7 @@ traverseTree f
                     in  (xsSub', tSub')
 
                         | xsSub <- xssSub0
-                        | tSub  <- tsSub0
-                        | i     <- [0..] ]
+                        | tSub  <- tsSub0 ]
 
    in   Tree (B k0 xssSub) (BT n0 kt0 tsSub)
 
@@ -264,7 +248,7 @@ traverseTree f
 reduceTree :: (Path -> a -> Tree -> a) -> Path -> a -> Tree -> a
 reduceTree f 
         (Path ps pts) 
-        acc tree@(Tree (B k0 xssSub0) (BT n0 kt0 tsSub0))
+        acc tree@(Tree (B k0 xssSub0) (BT _n0 kt0 tsSub0))
  = let  
         path'   = Path (ITree k0 : ps) (ITTree kt0 : pts)
         forests = zipWith makeForest xssSub0 tsSub0
@@ -306,11 +290,11 @@ sizeOfTree tree
 -- | Filter a tree by keeping only the sub-trees that match
 --   the given predicate. 
 filterTree :: (Path -> Tree -> Bool) -> Path -> Tree -> Tree
-filterTree pred path tree 
+filterTree p path tree 
  = applyForestsOfTree 
         (\ forests 
         -> map  (\forest 
-                -> filterTreesOfForest pred 
+                -> filterTreesOfForest p 
                         (enterForest forest path) 
                         forest)
                 forests)
@@ -320,10 +304,10 @@ filterTree pred path tree
 -- | Filter a tree by keeping only the sub-forests that match
 --   the given predicate.
 filterForestsOfTree :: (Path -> Forest -> Bool) -> Path -> Tree -> Tree
-filterForestsOfTree pred path tree
+filterForestsOfTree p path tree
  = applyForestsOfTree 
         (filter (\ forest 
-                -> pred (enterForest forest path) forest))
+                -> p (enterForest forest path) forest))
         tree
 
 
@@ -334,10 +318,10 @@ filterForestsOfTree pred path tree
 --     make up the given forest.
 --
 filterTreesOfForest :: (Path -> Tree -> Bool) -> Path -> Forest -> Forest
-filterTreesOfForest pred path forest 
+filterTreesOfForest p path forest 
  = applyTreesOfForest
         (filter (\ tree
-                -> pred (enterTree tree path) tree))
+                -> p (enterTree tree path) tree))
         forest
 
 
@@ -345,7 +329,7 @@ filterTreesOfForest pred path forest
 -- | Slice a tree by keeping only the sub-forests that satisfy the given
 --   predicate.
 sliceTree :: (Path -> Forest -> Bool) -> Path -> Tree -> Tree
-sliceTree pred path0 tree0 
+sliceTree p path0 tree0 
  = let path1    = enterTree tree0 path0
    in  applyForestsOfTree
         (\ forests
@@ -355,13 +339,13 @@ sliceTree pred path0 tree0
                         (\ trees
                         -> map  (\ tree 
                                 -> let path3   = enterTree tree path2
-                                   in  sliceTree pred path3 tree) 
+                                   in  sliceTree p path3 tree) 
                                 trees)
                         forest)
         $ filter
                 (\ forest 
-                -> let path1    = enterForest forest $ enterTree tree0 path0
-                   in  pred path1 forest)
+                -> let path2    = enterForest forest $ enterTree tree0 path0
+                   in  p path2 forest)
         $ forests)
         tree0
 

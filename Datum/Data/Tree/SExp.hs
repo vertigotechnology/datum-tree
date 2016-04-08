@@ -1,13 +1,13 @@
 
--- | The datum tree builder notation allows trees to be expressed using
+-- | The datum builder notation allows trees to be expressed using
 --   S-expression style syntax directly in Haskell. This same S-expression
 --   syntax is also used as the external representation of trees, which
 --   is exceptionally easy to parse and pretty print.
 --
 --   The symbols, like `tree` and `branch` are encoded as Haskell functions 
 --   which have types that allow them to be applied to a varying number of
---   arguments. For example so for example, you can construct 2-tuples,
---   3-tuples and 4-tuples with the same 'tuple' function, in a uniform syntax.
+--   arguments. For example, you can construct 2-tuples, 3-tuples and 4-tuples
+--   all with the same 'tuple' function using a uniform syntax.
 --
 module Datum.Data.Tree.SExp 
 (       -- * Tree Objects

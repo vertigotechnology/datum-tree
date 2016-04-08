@@ -80,13 +80,15 @@ ppGroup (G Nothing [b])
         = ppBranch b
 
 ppGroup (G Nothing bs)
-        = sexp "group" $ vsep (map ppBranch bs)
+        = parens $  text "group" 
+                <$> vsep (map ppBranch bs)
 
 ppGroup (G (Just n) [])
-        = sexp "group" $ text (show n)
+        = parens $ text "group" <+> text (show n)
 
 ppGroup (G (Just n) bs)
-        = sexp "group" $ text (show n) <$> vsep (map ppBranch bs)
+        = parens $ text "group" <+> text (show n) 
+                <$> vsep (map ppBranch bs)
 
 
 -- Keys -----------------------------------------------------------------------

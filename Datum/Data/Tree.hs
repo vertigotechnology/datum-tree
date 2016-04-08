@@ -61,6 +61,7 @@ module Datum.Data.Tree
 
           -- * Limiting
         , Initial (..)
+        , Final   (..)
         , Sample  (..))
 where
 import Datum.Data.Tree.Operators 

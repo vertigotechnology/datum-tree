@@ -39,6 +39,7 @@ module Datum.Data.Tree.Operators
 
           -- * Limiting
         , Initial (..)
+        , Final   (..)
         , Sample  (..))
 where
 import Datum.Data.Tree.Exp
@@ -313,9 +314,35 @@ instance Initial Group where
   = G name $ map (initial n) $ take n bs
 
 
+------------------------
+class Final a where
+ -- | Take only the final 'n' trees of every Forest.
+ final :: Int -> a -> a
+
+instance Final (Tree c) where
+ final n (Tree b bt)
+  = Tree (final n b) bt
+
+instance Final (Forest c) where
+ final n (Forest g bt)
+  = Forest (final n g) bt
+
+instance Final Branch where
+ final n (B t gs)
+  = B t $ map (final n) gs
+
+instance Final Group where
+ final n (G name bs)
+  = G name  $ map (final n) 
+  $ reverse $ take n $ reverse bs
+
+
 -------------------------
 class Sample a where
- -- | Take only the first 'n' trees of every Forest.
+ -- | Sample each forest so the result contains at most the given
+ --   number of trees. The returned trees are spaced regularly, 
+ --   for example, to return 5 trees from a 20 tree group, we take
+ --   every fourth one.
  sample :: Int -> a -> a
 
 instance Sample (Tree c) where
@@ -331,15 +358,27 @@ instance Sample Branch where
   = B t $ map (sample n) gs
 
 instance Sample Group where
- sample n (G name bs)
-  = let len     = length bs
-        dec     = len `div` n
+ sample 0 (G name _)
+  = G name []
 
-    in  G name  $ map    (sample n) 
+ sample 1 (G name (bFirst : _))
+  = G name [bFirst]
+
+ sample n (G name bb@(bFirst : bs))
+  = let len     = max 0 (length bb)
+
+        dec     = len `div` (max 1 n)
+        mids    = take   (n - 2)
                 $ map    snd
                 $ filter (\(i, _) -> i `mod` dec == 0)
-                $ zip [0..] bs
+                $ zip [1..] bs
 
+        (bLast  : _) = reverse bs
+
+    in  G name  $  map (sample n)
+                $  [bFirst]
+                ++  mids
+                ++ [bLast]
 
 
 ---------------------------------------------------------------------------------------------------

@@ -32,6 +32,7 @@ Library
 
  other-modules:
         Datum.Data.Tree.SExp.Pretty
+        Datum.Data.Tree.Check.Error
         
  extensions:
         FlexibleInstances

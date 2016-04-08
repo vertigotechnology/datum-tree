@@ -36,6 +36,7 @@ module Datum.Data.Tree.SExp
         -- * Pretty Printing
         -- ** Objects
         , ppTree
+        , ppError
 
         -- ** Types
         , ppBranchType
@@ -66,36 +67,34 @@ import Datum.Data.Tree.Check
 --   If the supplied `Branch` does not match the `BranchType` then `Error`.
 --
 -- @
--- TODO: Type of this is wrong.
 -- :{  
 -- (tree  
---        (tbranch \"root\"
---                 (ttuple  (telement \"name\" ttext))
---                 (tbranch \"pets\"
---                          (ttuple  (telement \"species\" ttext)
---                                   (telement \"sort\"    ttext)))
---                 (tbranch \"dinosaurs\"
---                          (ttuple  (telement \"species\" ttext)
---                                   (telement \"size\"    ttext)
---                                   (telement \"flies\"   tbool)))
---                          (tbranch \"eats\"
---                                   (ttuple (telement \"name\"    ttext))))
---        (branch  (tuple   (text \"Pets Version 1.0\"))
---                 (group   \"pets\"
---                          (branch (tuple (text \"Dachshund\") (text \"Dog\")))
---                          (branch (tuple (text \"Saimese\")   (text \"Cat\")))
---                          (branch (tuple (text \"Gourami\")   (text \"Fish\"))))
---                 (group   \"dinosaurs\"
---                          (branch (tuple (text \"Stegosaurus\")
---                                         (text \"Enormous\")  (bool false))
---                                  (group \"eats\" 
---                                         (branch (tuple (text \"Plants\")))))
---                          (branch (tuple (text \"Pterodactyl\")
---                                         (text \"Huge\")      (bool true))
---                                  (group \"eats\"
---                                         (branch (tuple (text \"Dachshund\")))
---                                         (branch (tuple (text \"Gourami\"))))))))
---   :: Either Error Tree
+-- (tbranch \"root\"
+--          (ttuple  (telement \"name\" ttext))
+--          (tbranch \"pets\"
+--                   (ttuple  (telement \"species\" ttext)
+--                            (telement \"sort\"    ttext)))
+--          (tbranch \"dinosaurs\"
+--                   (ttuple  (telement \"species\" ttext)
+--                            (telement \"size\"    ttext)
+--                            (telement \"flies\"   tbool))
+--                   (tbranch \"eats\"
+--                            (ttuple (telement \"name\"    ttext)))))
+-- (branch  (tuple   (text \"Pets Version 1.0\"))
+--          (group   \"pets\"
+--                   (branch  (tuple (text \"Dachshund\") (text \"Dog\")))
+--                   (branch  (tuple (text \"Saimese\")   (text \"Cat\")))
+--                   (branch  (tuple (text \"Gourami\")   (text \"Fish\"))))
+--          (group   \"dinosaurs\"
+--                   (branch  (tuple (text \"Stegosaurus\")
+--                                   (text \"Enormous\")  (bool false))
+--                            (group \"eats\" 
+--                                   (branch (tuple (text \"Plants\")))))
+--                   (branch  (tuple (text \"Pterodactyl\")
+--                                   (text \"Huge\")      (bool true))
+--                            (group \"eats\"
+--                                   (branch (tuple (text \"Dachshund\")))
+--                                   (branch (tuple (text \"Gourami\"))))))))
 -- :}
 -- @
 --
@@ -228,7 +227,7 @@ instance MakeBranch Branch where
  makeBranch t gs  = B t gs
 
 instance MakeBranch Group where
- makeBranch t gs  = G [B t gs]
+ makeBranch t gs  = G Nothing [B t gs]
 
 instance (b ~ Group, MakeBranch a)
       => MakeBranch (b -> a) where
@@ -256,18 +255,18 @@ instance (b ~ Group, MakeBranch a)
 --
 --
 group :: MakeGroup a => String -> a
-group _  = makeGroup []
+group n  = makeGroup n []
 
 
 class MakeGroup a where
- makeGroup :: [Branch] -> a
+ makeGroup :: Name -> [Branch] -> a
 
 instance MakeGroup Group where
- makeGroup bs   = G bs
+ makeGroup n bs   = G (Just n) bs
 
 instance (b ~ Branch, MakeGroup a) 
       => MakeGroup (b -> a) where
- makeGroup bs   = \b -> makeGroup (bs ++ [b])
+ makeGroup n bs   = \b -> makeGroup n (bs ++ [b])
 
 
 -- Tuples ---------------------------------------------------------------------
@@ -298,7 +297,7 @@ instance MakeTuple Branch where
  makeTuple as   = B (T as) []
 
 instance MakeTuple Group where
- makeTuple as   = G [B (T as) []]
+ makeTuple as   = G Nothing [B (T as) []]
 
 instance (b ~ Atom, MakeTuple a) 
       => MakeTuple (b -> a) where

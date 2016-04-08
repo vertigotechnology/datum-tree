@@ -6,7 +6,22 @@ import Text.PrettyPrint.Leijen
 import Prelude                  hiding ((<$>))
 
 
--- Trees-----------------------------------------------------------------------
+
+-- Paths ----------------------------------------------------------------------
+ppPath :: Path -> Doc
+ppPath (Path ixs _ixts)
+ = parens $   text "path"
+          <+> (hsep $ map ppIx ixs)
+
+ppIx :: Ix -> Doc
+ppIx ix
+ = case ix of
+        IField  n       -> parens $ text "ifield"  <+> (text $ show n)
+        ITree   t       -> parens $ text "itree"   <+> ppTuple t
+        IForest n       -> parens $ text "iforest" <+> (text $ show n)
+
+
+-- Trees ----------------------------------------------------------------------
 -- | Pretty print a `Tree` using S-expression syntax.
 ppTree :: Tree -> Doc
 ppTree (Tree b bt)
@@ -18,10 +33,10 @@ ppTree (Tree b bt)
 
 
 ppForest :: Forest -> Doc
-ppForest (Forest (G []) bt@(BT name kt _))
+ppForest (Forest (G _n []) bt@(BT name kt _))
  =      text "+ " <> text (show name) <+> ppTupleType kt
 
-ppForest (Forest (G bs) bt@(BT name kt bts))
+ppForest (Forest (G _n bs) bt@(BT name kt bts))
  =      text "+ " <> text (show name) <+> ppTupleType kt
  <>     (nest 4 $ line <> vsep (map ppTree [Tree b bt | b <- bs]))
 
@@ -48,7 +63,7 @@ ppBranchType (BT name tt bts)
 -- | Pretty print a `Branch` using S-expression syntax.
 ppBranch :: Branch -> Doc
 
-ppBranch (B t [G []])
+ppBranch (B t [G _n []])
  =      text "branch" <+> ppTuple t <+> text "{}"
 
 ppBranch (B t [])
@@ -65,7 +80,7 @@ ppBranch (B t subs)
 -- Group ----------------------------------------------------------------------
 -- | Pretty print a `Group` using S-expression syntax.
 ppGroup :: Group -> Doc
-ppGroup (G bs)
+ppGroup (G _n bs)
  =      text "group" 
  <>     (nest 4 $  text " {"
                 <> line  

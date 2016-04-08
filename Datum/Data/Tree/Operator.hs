@@ -108,7 +108,7 @@ nameOfForest (Forest _ (BT n _ _)) = n
 
 -- | Take a list of trees from a forest.
 treesOfForest :: Forest -> [Tree]
-treesOfForest (Forest (G bs) bt)
+treesOfForest (Forest (G _n bs) bt)
         = [Tree b bt | b <- bs]
 
 
@@ -122,8 +122,8 @@ treesOfForest (Forest (G bs) bt)
 --     provided.
 -- 
 forestOfTrees :: BranchType -> [Tree] -> Forest
-forestOfTrees bt trees
-        = Forest (G (map branchOfTree trees)) bt
+forestOfTrees bt@(BT n _ _) trees
+        = Forest (G (Just n) (map branchOfTree trees)) bt
 
 
 -- Paths ------------------------------------------------------------------------------------------
@@ -274,7 +274,7 @@ reduceTree f
 
 -- | Reduce all sub-trees in the given forest.
 reduceForest :: (Path -> a -> Tree -> a) -> Path -> a -> Forest -> a
-reduceForest f path acc (Forest (G bs) bt)
+reduceForest f path acc (Forest (G _n bs) bt)
  =      L.foldl' (\acc' b -> reduceTree f path acc' (Tree b bt))
                  acc bs
 

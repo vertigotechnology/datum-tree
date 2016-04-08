@@ -19,10 +19,10 @@ ppTree (Tree (B k xssSub) (BT n kt tSubs))
 
 ppForest :: Forest -> Doc
 
-ppForest (Forest (G []) bt@(BT name kt _))
+ppForest (Forest (G _ []) bt@(BT name kt _))
  =      text "+ " <> text name <+> text "~" <+> ppTupleType kt
 
-ppForest (Forest (G bs) bt@(BT name kt bts))
+ppForest (Forest (G _ bs) bt@(BT name kt bts))
  =      text "+ " <> text name <+> text "~" <+> ppTupleType kt
  <>     (nest 4 $ line <> vsep (map ppTree [Tree b bt | b <- bs]))
 
@@ -31,7 +31,7 @@ ppBranch :: Branch -> Doc
 ppBranch (B t [])
  =      text ". " <> ppTuple t
 
-ppBranch (B t [G []])
+ppBranch (B t [G _ []])
  =      text ". " <> ppTuple t
 
 ppBranch (B t gs)
@@ -40,7 +40,7 @@ ppBranch (B t gs)
 
 
 ppGroup :: Group -> Doc
-ppGroup (G bs)
+ppGroup (G _ bs)
  =      vsep (map ppBranch bs)
 
 

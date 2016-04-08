@@ -72,9 +72,16 @@ data BranchType
                 [BranchType]    -- Sub dimensions.
         deriving Show
 
--- | A group of branches.
+-- | A group with a name and list of branches.
+--  
+--   * The name here is not strictly required by the representation as
+--     in a typed tree the group name should match the corresponding
+--     branch type name. However, including it makes it easier to debug 
+--     problems situtations where the tree is not well typed.
+--
 data Group
-        = G     [Branch]
+        = G     (Maybe Name)
+                [Branch]
         deriving Show
 
 

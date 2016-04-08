@@ -14,8 +14,10 @@ module Datum.Data.Tree.Check
 
         , checkAtom
 
-        , Error (..))
+        , Error (..)
+        , ppError)
 where
+import Datum.Data.Tree.Check.Error
 import Datum.Data.Tree.Exp
 import Control.Monad
 import Control.Monad.Except
@@ -114,7 +116,7 @@ checkForest' path (Forest bs bt)
 -- | Check that all the branches in a group
 --   have the specified shape.
 checkGroup :: Path -> Group -> BranchType -> Either Error ()
-checkGroup path (G bs) shape
+checkGroup path (G _n bs) shape
  = do   zipWithM_ 
                 (\i b -> checkBranch path b shape)
                 [0..] bs
@@ -161,24 +163,4 @@ checkAtom path lit tp
         (AText _,       ATText)         -> return ()
         (ATime _,       ATTime)         -> return ()
         _ -> throwError $ ErrorAtom path lit tp
-
-
--------------------------------------------------------------------------------
--- | Possible type errors.
-data Error
-        -- | Number of sub trees does not match number of sub dimensions.
-        = ErrorArityDim         Path [Group] [BranchType] 
-
-        -- | Number of fields in tuple does not match tuple type.
-        | ErrorArityTuple       Path [Atom]  [(Name, AtomType)]
-
-        -- | Sub dimension name clash.
-        | ErrorClashSubDim      PathType [Name]
-
-        -- | Field name clash.
-        | ErrorClashField       PathType [Name]
-
-        -- | Atomic value does not match associated type.
-        | ErrorAtom             Path Atom    AtomType
-        deriving Show
 

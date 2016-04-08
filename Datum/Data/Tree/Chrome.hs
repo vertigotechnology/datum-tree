@@ -1,5 +1,5 @@
 
-module Datum.Data.Tree.Pretty.Chrome where
+module Datum.Data.Tree.Chrome where
 import Datum.Data.Tree.Operator
 import Datum.Data.Tree.Exp
 import Text.PrettyPrint.Leijen

@@ -26,9 +26,9 @@ Library
         Datum.Data.Tree
         Datum.Data.Tree.Exp
         Datum.Data.Tree.Check
+        Datum.Data.Tree.Chrome
         Datum.Data.Tree.Operator
         Datum.Data.Tree.SExp
-        Datum.Data.Tree.Pretty.Chrome
 
  other-modules:
         Datum.Data.Tree.SExp.Pretty

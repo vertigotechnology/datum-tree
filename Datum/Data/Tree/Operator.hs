@@ -68,24 +68,24 @@ typeOfTree    :: Tree -> BranchType
 typeOfTree (Tree _ bt)  = bt
 
 
--- | Take the name of a tree.
+-- | Take the name of a tree from its branch type.
 nameOfTree    :: Tree -> Name
 nameOfTree (Tree _ (BT n _ _)) = n
 
 
--- | Take the list of sub-forests from a tree.
+-- | Take the sub forests of tree.
 forestsOfTree :: Tree -> [Forest]
 forestsOfTree (Tree (B _k gs) (BT _n _kt bts))
         = zipWith makeForest gs bts
 
 
 -- Forest Construction ----------------------------------------------------------------------------
--- | Make a forest from a group of branches and their common branchtype.
+-- | Make a forest from a branch group and its shared branchtype..
 makeForest :: Group -> BranchType -> Forest
 makeForest b bt = Forest b bt
 
 
--- | Take a group of branches and the branch type from a forest.
+-- | Take a branch group and branch type from a forest.
 takeForest :: Forest   -> (Group, BranchType)
 takeForest (Forest bs bt) = (bs, bt)
 
@@ -100,12 +100,12 @@ typeOfForest :: Forest -> BranchType
 typeOfForest (Forest _ bt) = bt
 
 
--- | Take the common branch name of a forest.
+-- | Take the name of a forest from its branch type.
 nameOfForest :: Forest -> Name
 nameOfForest (Forest _ (BT n _ _)) = n
 
 
--- | Take a list of trees from a forest.
+-- | Take the list of trees from a forest.
 treesOfForest :: Forest -> [Tree]
 treesOfForest (Forest (G _n bs) bt)
         = [Tree b bt | b <- bs]
@@ -170,9 +170,6 @@ mapTreesOfTree f path tree
 
 
 -- | Apply a per-tree-function to every sub-tree of a forest.
---
---   * The result type of each per-tree function must be identifical.
---
 mapTreesOfForest :: (Path -> Tree -> Tree) -> Path -> Forest -> Forest
 mapTreesOfForest f path forest
  = applyTreesOfForest

@@ -29,7 +29,7 @@ decodeCSV bs
          $ Tree (branch tuple 
                         (G Nothing $ map makeRow $ V.toList vvb))
                 (tbranch "root"
-                        (ttuple (telement "name" ttext))
+                        (ttuple)
                         (tbranch "row" 
                                 (TT [ telement ("col" ++ show n) ttext 
                                     | n <- [0.. len - 1]])))

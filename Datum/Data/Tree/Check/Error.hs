@@ -40,6 +40,5 @@ ppError (ErrorArityDim path gs bts)
           , text "  group  names = " <> text (show nsGroup)
           , text "  branch names = " <> text (show nsBranch) ]
 
-
 ppError _ 
  = error "ppError"

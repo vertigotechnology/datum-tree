@@ -11,13 +11,20 @@
 --
 module Datum.Data.Tree.SExp 
 (       -- * Tree Objects
+        -- ** Checked
         -- | Tree objects package up data and meta-data into the same value,
         --   and can be checked for well-formedness.
           tree
         , forest
         , key
-
         , Error (..)
+
+           -- ** Unchecked
+        -- | These functions can be used to build a tree incrementally,
+        --   assuming that it will be checked later.
+        , tree'
+        , forest'
+        , key'
 
         -- * Construction
         -- ** Types
@@ -106,8 +113,10 @@ import Datum.Data.Tree.Check
 -- :}
 -- @
 --
-tree :: BranchType -> Branch -> Either Error (Tree 'O)
+tree  :: BranchType -> Branch -> Either Error (Tree 'O)
 tree bt b = checkTree (Tree b bt)
+
+
 
 
 -- | Construct a well formed forest from a branch type and a group of branches.
@@ -118,12 +127,29 @@ forest :: BranchType -> Group -> Either Error (Forest 'O)
 forest bt g = checkForest (Forest g bt)
 
 
+
 -- | Construct a well formed key from a tuple type and a tuple.
 --
 --   If the supplied `Tuple` does not match the `TupleType` then `Error`.
 --
 key   :: TupleType -> Tuple -> Either Error (Key 'O)
 key tt t    = checkKey (Key t tt)
+
+
+-- Unchecked ------------------------------------------------------------------
+-- | Like `tree`, but don't check it yet.
+tree' :: BranchType -> Branch -> Tree 'X
+tree' bt b = Tree b bt
+
+
+-- | Like `forest`, but don't check it yet.
+forest' :: BranchType -> Group -> Forest 'X
+forest' bt b = Forest b bt
+
+
+-- | Like `key`, but don't check it yet.
+key'  :: TupleType -> Tuple -> Key 'X
+key' bt b = Key b bt
 
 
 -- Branch Types ---------------------------------------------------------------

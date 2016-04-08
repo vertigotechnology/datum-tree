@@ -4,12 +4,12 @@ module Datum.ExampleStock
 where
 import Datum.Data.Tree
 import Datum.Data.Tree.SExp
-
+import Datum.Console
 
 ---------------------------------------------------------------------------------------------------
-tStock :: Tree O
+tStock :: Tree X
 tStock 
- = tree "datum-v1"
+ = tree'
   (tbranch "root" 
         (ttuple  (telement "name" ttext))
         (tbranch "company"
@@ -84,10 +84,9 @@ tStock
         (tuple  (text "NYSE") 
                 (text "New York Stock Exchange"))))
      
-
 ---------------------------------------------------------------------------------------------------
 -- | Pretty print the tree.
-ex0     = ppTree tStock
+ex0     = dump tStock
 
 
 -- | Check that a tree is well formed.
@@ -99,37 +98,40 @@ ex1     = checkTree tStock
 --   Path keys are formed by concatenating the keys from the root 
 --   to each leaf of the tree.
 --
-ex2     = ppKeyList $ keysOfTree tStock
+ex2     = dump 
+        $ keysOfTree tStock
 
 
 -- | Filter top-level of tree to keep only named dimensions.
-ex3_1   = ppTree $ filterForestsOfTree (\p f -> nameOfForest f == "company")  mempty tStock
-ex3_2   = ppTree $ filterForestsOfTree (\p f -> nameOfForest f == "exchange") mempty tStock
+ex3_1   = dump 
+        $ filterForestsOfTree (\p f -> nameOfForest f == "company")  mempty tStock
+
+ex3_2   = dump 
+        $ filterForestsOfTree (\p f -> nameOfForest f == "exchange") mempty tStock
 
 
 -- | Filter second level of tree to keep only named dimensions.
-ex4_1   = ppTree 
+ex4_1   = dump
         $ mapTreesOfTree 
                 (filterForestsOfTree (\p f -> nameOfForest f == "transaction")) 
                 mempty tStock
 
-ex4_2   = ppTree 
+ex4_2   = dump
         $ mapTreesOfTree 
                 (filterForestsOfTree (\p f -> nameOfForest f == "office")) 
                 mempty tStock
 
 
 -- | Select data on a given path.
-ex5_1   = ppTree
+ex5_1   = dump
         $ sliceTree (\p _ -> onPath ["company", "office", "contact"] p) 
                 mempty tStock
 
-ex5_2   = ppTree
+ex5_2   = dump
         $ sliceTree (\p _ -> onPath ["company", "office", "employee", "position"] p) 
                 mempty tStock
 
-ex5_3   = ppTree
+ex5_3   = dump
         $ sliceTree (\p _ -> onPath ["company", "transaction"] p)
                 mempty tStock
-
 

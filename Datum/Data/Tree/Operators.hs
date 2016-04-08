@@ -1,15 +1,10 @@
 
-module Datum.Data.Tree.Operator
-        ( -- * Tree Construction
-          makeTree,     takeTree
-        , branchOfTree, typeOfTree
-        , nameOfTree
-        , forestsOfTree
-
-          -- * Forest Construction
-        , makeForest,   takeForest
-        , groupOfForest, typeOfForest
+module Datum.Data.Tree.Operators
+        ( -- * Projections
+          nameOfTree
         , nameOfForest
+
+        , forestsOfTree
         , treesOfForest
 
           -- * Paths
@@ -27,12 +22,8 @@ module Datum.Data.Tree.Operator
         , reduceTree
         , reduceForest
 
-          -- * Special Reductions
         , keysOfTree
         , sizeOfTree
-
-          -- * Traversal
-        , traverseTree
 
           -- * Filtering
         , filterTree
@@ -41,98 +32,24 @@ module Datum.Data.Tree.Operator
 
           -- * Slicing
         , sliceTree
-        , sliceTreeWithNames)
+        , sliceTreeWithNames
+
+          -- * Traversal
+        , traverseTree)
 where
 import Datum.Data.Tree.Exp
+import Datum.Data.Tree.Compounds
 import qualified Data.List              as L
 
 
--- Tree Construction ------------------------------------------------------------------------------
--- | Make a tree from a branch and its branch type.
-makeTree :: Branch -> BranchType -> Tree 'X
-makeTree b bt = Tree b bt
-
-
--- | Take the branch and branch type from a tree.
-takeTree :: Tree c -> (Branch, BranchType)
-takeTree (Tree b bt) = (b, bt)
-
-
--- | Take the branch of a tree.
-branchOfTree  :: Tree c -> Branch
-branchOfTree (Tree b _) = b
-
-
--- | Take the branch type of a tree.
-typeOfTree    :: Tree c -> BranchType
-typeOfTree (Tree _ bt)  = bt
-
-
--- | Take the name of a tree from its branch type.
-nameOfTree    :: Tree c -> Name
-nameOfTree (Tree _ (BT n _ _)) = n
-
-
--- | Take the sub forests of tree.
-forestsOfTree :: Tree c -> [Forest c]
-forestsOfTree (Tree (B _k gs) (BT _n _kt bts))
-        = zipWith Forest gs bts
-
-
--- Forest Construction ----------------------------------------------------------------------------
--- | Make a forest from a branch group and its shared branchtype..
-makeForest :: Group -> BranchType -> Forest 'X
-makeForest b bt = Forest b bt
-
-
--- | Take a branch group and branch type from a forest.
-takeForest :: Forest c  -> (Group, BranchType)
-takeForest (Forest bs bt) = (bs, bt)
-
-
--- | Take the branch group from a forest.
-groupOfForest :: Forest c -> Group
-groupOfForest (Forest g _) = g
-
-
--- | Take the branch type from a forest.
-typeOfForest :: Forest c -> BranchType
-typeOfForest (Forest _ bt) = bt
-
-
--- | Take the name of a forest from its branch type.
-nameOfForest :: Forest c -> Name
-nameOfForest (Forest _ (BT n _ _)) = n
-
-
--- | Take the list of trees from a forest.
-treesOfForest :: Forest c -> [Tree c]
-treesOfForest (Forest (G _n bs) bt)
-        = [Tree b bt | b <- bs]
-
-
--- | Make a forest from a shared branch type and a list of trees.
---
---   The branch type must be supplied explicitly so we know what it should
---   be when the list of trees is empty.
--- 
---   * This function does not check that the provided trees all share the
---     same branch type, nor that the shared type is the same as the one
---     provided.
--- 
-forestOfTrees :: BranchType -> [Tree c] -> Forest 'X
-forestOfTrees bt@(BT n _ _) trees
-        = Forest (G (Just n) (map branchOfTree trees)) bt
-
-
 -- Paths ------------------------------------------------------------------------------------------
--- | Extend a path to record the fact that we have entered into this sub-tree.
+-- | Extend a path to record that we have entered into this sub-tree.
 enterTree :: Tree c -> Path -> Path 
 enterTree   (Tree (B k0 _) (BT _n0 kt0 _)) (Path ps pts)
  = Path (ITree k0 : ps) (ITTree kt0 : pts)
 
 
--- | Extend a path to record the fact that we have entered into this sub-forest.
+-- | Extend a path to record that we have entered into this sub-forest.
 enterForest :: Forest c -> Path -> Path
 enterForest (Forest _ bt@(BT n0 _ _bts)) (Path ps pts)
  = Path (IForest n0 : ps) (ITForest bt : pts)
@@ -216,30 +133,6 @@ applyForestsOfTree f
    in   Tree (B k0 gs1) (BT n0 kt0 bts1)
 
 
--- Traversal --------------------------------------------------------------------------------------
--- | Bottom-up traversal of a tree.
-traverseTree :: (Path -> Tree 'X -> Tree c) -> Path -> Tree c' -> Tree 'X
-traverseTree f  
-        (Path ps pts)
-        (Tree (B k0 xssSub0) (BT n0 kt0 tsSub0))
- = let
-        path'   = Path (ITree k0 : ps) (ITTree kt0 : pts)
-
-        (xssSub, tsSub)
-                = unzip
-                $ [ let Forest xsSub' tSub'
-                                = mapTreesOfForest f path'
-                                $ mapTreesOfForest (traverseTree f) path'
-                                $ Forest xsSub tSub
-
-                    in  (xsSub', tSub')
-
-                        | xsSub <- xssSub0
-                        | tSub  <- tsSub0 ]
-
-   in   Tree (B k0 xssSub) (BT n0 kt0 tsSub)
-
-
 -- Reduction --------------------------------------------------------------------------------------
 -- | Reduce all sub-trees in the given tree.
 reduceTree :: (Path -> a -> Tree c -> a) -> Path -> a -> Tree c -> a
@@ -286,6 +179,10 @@ sizeOfTree tree
 -- Filter -----------------------------------------------------------------------------------------
 -- | Filter a tree by keeping only the sub-trees that match
 --   the given predicate. 
+--
+--   * This is a shallow filter. We only consider the direct sub-trees of
+--     the provided one.
+--
 filterTree :: (Path -> Tree c -> Bool) -> Path -> Tree c -> Tree c
 filterTree p path tree 
  = promiseTree
@@ -312,10 +209,6 @@ filterForestsOfTree p path tree
 
 -- | Filter a forest by keeping only the sub-trees that match
 --   the given predicate.
---
---   * This is a shallow filter. We only consider the trees that directly
---     make up the given forest.
---
 filterTreesOfForest :: (Path -> Tree c -> Bool) -> Path -> Forest c -> Forest c
 filterTreesOfForest p path forest 
  = promiseForest
@@ -328,6 +221,13 @@ filterTreesOfForest p path forest
 -- Slice ------------------------------------------------------------------------------------------
 -- | Slice a tree by keeping only the sub-forests that satisfy the given
 --   predicate.
+-- 
+--   * This is a deep filter, we traverse through the whole tree removing
+--     forests that do not match the given predicate.
+--
+--   * When the predicate returns `False` for a particular forest,
+--     both data and meta-data for that forest are removed from the tree.
+--
 sliceTree :: (Path -> Forest c -> Bool) -> Path -> Tree c -> Tree c
 sliceTree p path0 tree0 
  = let path1    = enterTree tree0 path0
@@ -351,20 +251,48 @@ sliceTree p path0 tree0
                 tree0
 
 
--- | Slice a tree by keeping only the sub-trees that have the 
---   given names.
---
---   * This is a deep filter. We consider the direct sub-trees of
---     the provided tree, as well as sub-trees of those, and so on.
---
+-- | Like `sliceTree`, but keep only the forests on the path with the given names.
 sliceTreeWithNames :: [Name] -> Tree c -> Tree c
 sliceTreeWithNames ns tree
  = sliceTree (\p _ -> onPath ns p) mempty tree
 
 
+-- Traversal --------------------------------------------------------------------------------------
+-- | Bottom-up traversal of a tree.
+--
+--   * This does not check that the transformed trees are well
+--     formed during traversal.
+--
+traverseTree :: (Path -> Tree 'X -> Tree c) -> Path -> Tree c' -> Tree 'X
+traverseTree f  
+        (Path ps pts)
+        (Tree (B k0 xssSub0) (BT n0 kt0 tsSub0))
+ = let
+        path'   = Path (ITree k0 : ps) (ITTree kt0 : pts)
 
+        (xssSub, tsSub)
+                = unzip
+                $ [ let Forest xsSub' tSub'
+                                = mapTreesOfForest f path'
+                                $ mapTreesOfForest (traverseTree f) path'
+                                $ Forest xsSub tSub
+
+                    in  (xsSub', tSub')
+
+                        | xsSub <- xssSub0
+                        | tSub  <- tsSub0 ]
+
+   in   Tree (B k0 xssSub) (BT n0 kt0 tsSub)
+
+
+
+---------------------------------------------------------------------------------------------------
+-- | Promise that this tree is well typed.
 promiseTree :: Tree c -> Tree c'
 promiseTree (Tree b bt) = Tree b bt
 
+
+-- | Promise that this forest is well typed.
 promiseForest :: Forest c -> Forest c'
 promiseForest (Forest bs bt) = Forest bs bt
+

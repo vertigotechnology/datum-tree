@@ -1,10 +1,10 @@
 
 module Datum.Data.Tree.Exp
         ( -- * Objects
-          Checked       (..)
-        , Tree          (..)
+          Tree          (..)
         , Forest        (..)
         , Key           (..)
+        , Checked       (..)
 
           -- * Meta-Data
         , Name
@@ -41,10 +41,9 @@ data Checked
 --   * The type constructor has a phantom parameter indicating
 --     whether the data has been checked against the meta-data.
 --
---   * By using the raw constructor to build a tree you promise that
---     the `Checked` parameter is valid.
---
 data Tree   (c :: Checked)
+        -- | By using the raw constructor to build a tree you promise that
+        --   the `Checked` parameter is valid.
         = Tree  Branch 
                 BranchType
         deriving Show
@@ -55,10 +54,9 @@ data Tree   (c :: Checked)
 --   * The type constructor has a phantom parameter indicating 
 --     whether the data has been checked against the meta-data.
 --
---   * By using the raw constructor to build a forest you promise that
---     the `Checked` parameter is valid.
---
 data Forest (c :: Checked)
+        -- | By using the raw constructor to build a forest you promise that
+        --     the `Checked` parameter is valid.
         = Forest 
                 Group
                 BranchType
@@ -70,10 +68,9 @@ data Forest (c :: Checked)
 --   * The type constructor has a phantom parameter indicating 
 --     whether the data has been checked against the meta-data.
 --
---   * By using the raw constructor to build a ket you promise that
---     the `Checked` parameter is valid.
---
 data Key (c :: Checked)
+        -- | By using the raw constructor to build a ket you promise that
+        --     the `Checked` parameter is valid.
         = Key   Tuple
                 TupleType
         deriving Show

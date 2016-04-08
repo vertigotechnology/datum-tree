@@ -1,6 +1,6 @@
 
 module Datum.Data.Tree.Chrome where
-import Datum.Data.Tree.Operator
+import Datum.Data.Tree.Compounds
 import Datum.Data.Tree.Exp
 import Text.PrettyPrint.Leijen
 import Prelude                  hiding ((<$>))

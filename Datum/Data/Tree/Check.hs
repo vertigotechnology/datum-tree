@@ -1,7 +1,7 @@
 
 module Datum.Data.Tree.Check
         ( checkBranchType
-        , checkKeyType
+        , checkTupleType
 
         , checkTree,    checkTree'
         , checkBranch
@@ -25,7 +25,7 @@ import qualified Data.List              as L
 
 
 -------------------------------------------------------------------------------
--- | Check that a shape is well formed.
+-- | Check whether a branch type is well formed.
 checkBranchType :: PathType -> BranchType -> Either Error ()
 checkBranchType 
         (PathType pts)
@@ -35,7 +35,7 @@ checkBranchType
         let tPath'      = PathType pts'
 
         -- Check the tuple type.
-        checkKeyType tPath' tKey
+        checkTupleType tPath' tKey
 
         -- Check that sub dimension names do not clash.
         let nsSub       = [n | BT n _ _ <- subs]
@@ -47,8 +47,8 @@ checkBranchType
 
 
 -- | Check that a tuple type is well formed.
-checkKeyType :: PathType -> TupleType -> Either Error ()
-checkKeyType path (TT nts)
+checkTupleType :: PathType -> TupleType -> Either Error ()
+checkTupleType path (TT nts)
  = do
         -- Check that field names do not clash.
         let nsField     = [n | (n, _)   <- nts]
@@ -57,13 +57,13 @@ checkKeyType path (TT nts)
 
 
 -------------------------------------------------------------------------------
--- | Check that a tree is well formed.
+-- | Check whether a tree is well formed.
 checkTree :: Tree c -> Either Error (Tree 'O)
 checkTree tree 
  =      checkTree' mempty tree
 
 
--- | Check that a tree is well formed, at the given starting path.
+-- | Check whether a tree is well formed, at the given starting path.
 checkTree' :: Path -> Tree c -> Either Error (Tree 'O)
 checkTree' path (Tree branch branchType)
  = case checkBranch path branch branchType of
@@ -71,7 +71,7 @@ checkTree' path (Tree branch branchType)
         Right () -> Right $ Tree branch branchType
 
 
--- | Check that a branch has the given branch type.
+-- | Check whether a branch has the given branch type.
 checkBranch :: Path -> Branch -> BranchType -> Either Error ()
 checkBranch
         (Path ps pts) 
@@ -83,7 +83,7 @@ checkBranch
         let tPath'      = PathType pts'
 
         -- Check the tuple type.
-        checkKeyType tPath' tKey 
+        checkTupleType tPath' tKey 
 
         -- Check the key matches its type.
         checkTuple   path'  key tKey
@@ -103,13 +103,13 @@ checkBranch
 
 
 -------------------------------------------------------------------------------
--- | Check that a forest is well formed.
+-- | Check whether a forest is well formed.
 checkForest  :: Forest c -> Either Error (Forest 'O)
 checkForest forest
         = checkForest' mempty forest
 
 
--- | Check that a forest is well formed, at the given starting path.
+-- | Check whether a forest is well formed, at the given starting path.
 checkForest' :: Path -> Forest c -> Either Error (Forest 'O)
 checkForest' path (Forest bs bt)
  = case checkGroup path bs bt of
@@ -117,21 +117,21 @@ checkForest' path (Forest bs bt)
         Right ()        -> Right $ Forest bs bt
 
 
--- | Check that all the branches in a group
---   have the specified shape.
+-- | Check whether all the branches in a group
+--   have the given branch type.
 checkGroup :: Path -> Group -> BranchType -> Either Error ()
 checkGroup path (G _n bs) shape
  = do   mapM_ (\b -> checkBranch path b shape) bs
 
 
 -------------------------------------------------------------------------------
--- | Check that a key is well formed.
+-- | Check whether a key is well formed.
 checkKey  :: Key c -> Either Error (Key 'O)
 checkKey key
         = checkKey' mempty key
 
 
--- | Check that a key is well formed, at the given starting path.
+-- | Check whether a key is well formed, with the given starting path.
 checkKey' :: Path -> Key c -> Either Error (Key 'O)
 checkKey' path (Key t tt)
  = case checkTuple path t tt of
@@ -139,7 +139,7 @@ checkKey' path (Key t tt)
         Right ()        -> Right $ Key t tt
 
 
--- | Check that a tuple has the given type.
+-- | Check whether a tuple has the given type.
 checkTuple :: Path -> Tuple -> TupleType -> Either Error ()
 checkTuple path@(Path _ps _pts) (T fields) (TT nts)
  = do   

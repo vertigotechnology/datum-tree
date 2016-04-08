@@ -15,9 +15,11 @@ Synopsis:       Datum Data Structures
 Library
  build-depends:
         base            == 4.8.*,
+        bytestring      >= 0.10.6       && < 0.11,
+        vector          >= 0.10.12      && < 0.11,
         mtl             >= 2.2.1        && < 2.3,
-        wl-pprint       >= 1.2          && < 1.3
-
+        wl-pprint       >= 1.2          && < 1.3,
+        cassava         >= 0.4.5        && < 0.5
 
  hs-source-dirs:
         .
@@ -30,6 +32,7 @@ Library
         Datum.Data.Tree.Check
         Datum.Data.Tree.Chrome
         Datum.Data.Tree.Compounds
+        Datum.Data.Tree.Codec
         Datum.Data.Tree.Operators
         Datum.Data.Tree.SExp
 

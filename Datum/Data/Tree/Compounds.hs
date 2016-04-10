@@ -97,7 +97,7 @@ typeOfForest (Forest _ bt) = bt
 -- 
 forestOfTrees :: BranchType -> [Tree c] -> Forest 'X
 forestOfTrees bt@(BT n _ _) trees
-        = Forest (G (Just n) 
+        = Forest (G (Some n) 
                     (A.fromList $ map (box . branchOfTree) trees)) 
                  bt
 

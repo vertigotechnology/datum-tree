@@ -28,9 +28,12 @@ module Datum.Data.Tree.Exp
         , Box           (..)
         , box, unbox
 
+        , Option        (..)
+
         , (:*:)         (..))
 where
-import Data.Repa.Scalar.Box             
+import Data.Repa.Scalar.Box
+import Data.Repa.Scalar.Option           
 import Data.Repa.Scalar.Product
 import Data.Repa.Array                  (Array)
 
@@ -122,21 +125,21 @@ data AtomType
 --     problems situtations where the tree is not well typed.
 --
 data Group
-        = G     (Maybe Name)
-                (Array (Box Branch))
+        = G     !(Option Name)
+                !(Array (Box Branch))
         deriving Show
 
 
 -- | Branch with a key and forests of sub-branches.
 data Branch
-        = B     Tuple 
-                [Group]
+        = B     !Tuple 
+                ![Group]
         deriving Show 
 
 
 -- | Tuple values.
 data Tuple
-        = T     [Atom]
+        = T     ![Atom]
         deriving Show
 
 

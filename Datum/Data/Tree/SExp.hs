@@ -251,7 +251,7 @@ instance MakeBranch Branch where
  makeBranch t gs  = B t gs
 
 instance MakeBranch Group where
- makeBranch t gs  = G Nothing (A.singleton (box (B t gs)))
+ makeBranch t gs  = G None (A.singleton (box (B t gs)))
 
 instance (b ~ Group, MakeBranch a)
       => MakeBranch (b -> a) where
@@ -286,7 +286,7 @@ class MakeGroup a where
  makeGroup :: Name -> [Branch] -> a
 
 instance MakeGroup Group where
- makeGroup n bs   = G (Just n) (A.fromList $ map box bs)
+ makeGroup n bs   = G (Some n) (A.fromList $ map box bs)
 
 instance (b ~ Branch, MakeGroup a) 
       => MakeGroup (b -> a) where
@@ -321,7 +321,7 @@ instance MakeTuple Branch where
  makeTuple as   = B (T as) []
 
 instance MakeTuple Group where
- makeTuple as   = G Nothing (A.singleton $ Box (B (T as) []))
+ makeTuple as   = G None (A.singleton $ Box (B (T as) []))
 
 instance (b ~ Atom, MakeTuple a) 
       => MakeTuple (b -> a) where

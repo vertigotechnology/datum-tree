@@ -65,6 +65,6 @@ module Datum.Data.Tree
         , Final   (..)
         , Sample  (..))
 where
-import Datum.Data.Tree.Operators 
+import Datum.Data.Tree.Operator
 import Datum.Data.Tree.Check
 import Datum.Data.Tree.Exp

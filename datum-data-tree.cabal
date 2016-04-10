@@ -42,6 +42,16 @@ Library
  other-modules:
         Datum.Data.Tree.SExp.Pretty
         Datum.Data.Tree.Check.Error
+
+        Datum.Data.Tree.Operator.Cast
+        Datum.Data.Tree.Operator.Filter
+        Datum.Data.Tree.Operator.Limit
+        Datum.Data.Tree.Operator.Map
+        Datum.Data.Tree.Operator.Path
+        Datum.Data.Tree.Operator.Reduce
+        Datum.Data.Tree.Operator.Slice
+        Datum.Data.Tree.Operator.Traverse
+
         
  extensions:
         ScopedTypeVariables

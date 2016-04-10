@@ -125,7 +125,8 @@ checkForest' path (Forest bs bt)
 --   have the given branch type.
 checkGroup :: Path -> Group -> BranchType -> Either Error ()
 checkGroup path (G _n bs) shape
- = do   mapM_ (\b -> checkBranch path b shape) bs
+ = do   mapM_   (\b -> checkBranch path b shape) 
+                [b | Box b <- A.toList bs]
 
 
 -------------------------------------------------------------------------------

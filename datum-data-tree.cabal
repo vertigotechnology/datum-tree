@@ -49,6 +49,7 @@ Library
         FlexibleContexts
         ParallelListComp
         FlexibleContexts
+        PatternGuards
         TypeOperators
         TypeFamilies
         DataKinds

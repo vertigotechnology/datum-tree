@@ -62,7 +62,7 @@ nameOfForest (Forest _ (BT n _ _)) = n
 -- | Take the sub-trees of a forest.
 treesOfForest :: Forest c -> [Tree c]
 treesOfForest (Forest (G _n bs) bt)
-        = [Tree b bt | b <- bs]
+        = [Tree b bt | Box b <- A.toList bs]
 
 
 -- Forests --------------------------------------------------------------------
@@ -97,7 +97,9 @@ typeOfForest (Forest _ bt) = bt
 -- 
 forestOfTrees :: BranchType -> [Tree c] -> Forest 'X
 forestOfTrees bt@(BT n _ _) trees
-        = Forest (G (Just n) (map branchOfTree trees)) bt
+        = Forest (G (Just n) 
+                    (A.fromList $ map (box . branchOfTree) trees)) 
+                 bt
 
 
 

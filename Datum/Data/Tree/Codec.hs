@@ -28,7 +28,10 @@ decodeCSV bs
 
         return
          $ Tree (branch tuple 
-                        (G Nothing $ map makeRow $ V.toList vvb))
+                        (G Nothing
+                                $ A.fromList
+                                $ map (box . makeRow)
+                                $ V.toList vvb))
                 (tbranch "root"
                         (ttuple)
                         (tbranch "row" 

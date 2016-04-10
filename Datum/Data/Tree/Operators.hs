@@ -158,7 +158,8 @@ reduceTree f
 reduceForest :: (Path -> a -> Tree c -> a) -> Path -> a -> Forest c -> a
 reduceForest f path acc (Forest (G _n bs) bt)
  =      L.foldl' (\acc' b -> reduceTree f path acc' (Tree b bt))
-                 acc bs
+                 acc 
+                 (map unbox $ A.toList bs)
 
 
 -- | Get a list of all tuples in the given tree.
@@ -316,7 +317,10 @@ instance Initial Branch where
 
 instance Initial Group where
  initial n (G name bs)
-  = G name $ map (initial n) $ take n bs
+  = let iStart   = 0
+        iEnd     = max n (A.length bs)
+        Just bs' = A.slice iStart iEnd bs
+    in  G name  $ A.map (box . initial n . unbox) bs'
 
 
 ------------------------
@@ -338,8 +342,11 @@ instance Final Branch where
 
 instance Final Group where
  final n (G name bs)
-  = G name  $ map (final n) 
-  $ reverse $ take n $ reverse bs
+  = let iStart   = max 0 (A.length bs - n)
+        iLen     = max n (A.length bs)
+        Just bs' = A.slice iStart iLen bs
+
+    in  G name  $ A.map (box . final n . unbox) bs'
 
 
 -------------------------
@@ -363,30 +370,38 @@ instance Sample Branch where
   = B t $ map (sample n) gs
 
 instance Sample Group where
- sample _ (G name [])
-  = G name []
+ sample _ (G name bb)
+  | A.length bb == 0
+  = G name A.empty
 
  sample 0 (G name _)
-  = G name []
+  = G name A.empty
 
- sample 1 (G name (bFirst : _))
-  = G name [bFirst]
+ sample 1 (G name bs)
+  | Just bFirst <- A.first bs
+  = G name $ A.singleton bFirst
 
- sample n (G name bb@(bFirst : bs))
-  = let len     = max 0 (length bb)
+ sample n (G name bb)
+  = let 
+        Just bFirst = A.head bb
+        Just bLast  = A.last bb
+        Just bs     = A.tail bb
+
+        len     = max 0 (A.length bb)
 
         dec     = len `div` (max 1 n)
-        mids    = take   (n - 2)
+
+        mids    = A.fromList 
+                $ map    box
+                $ take   (n - 2)
                 $ map    snd
                 $ filter (\(i, _) -> i `mod` dec == 0)
-                $ zip [1..] bs
+                $ zip [1..] 
+                $ [b | Box b <- A.toList bs]
 
-        (bLast  : _) = reverse bs
-
-    in  G name  $  map (sample n)
-                $  [bFirst]
-                ++  mids
-                ++ [bLast]
+    in  G name  $ A.map (box . sample n . unbox)
+                $ A.concat
+                $ A.fromList [A.singleton bFirst, mids, A.singleton bLast]
 
 
 ---------------------------------------------------------------------------------------------------

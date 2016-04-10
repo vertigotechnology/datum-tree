@@ -76,22 +76,25 @@ ppBranch (B t subs)
 -- | Pretty print a `Group` using S-expression syntax.
 ppGroup :: Group -> Doc
 
-ppGroup (G Nothing [])
+ppGroup (G Nothing bs)
+        | A.length bs == 0
         = ssym "group"
 
-ppGroup (G Nothing [b])
+        | A.length bs == 1
+        , [Box b]   <- A.toList bs
         = ppBranch b
 
-ppGroup (G Nothing bs)
+        | otherwise
         = parens $  text "group" 
-                <$> vsep (map ppBranch bs)
-
-ppGroup (G (Just n) [])
-        = parens $ text "group" <+> text (show n)
+                <$> vsep (map ppBranch [b | Box b <- A.toList bs])
 
 ppGroup (G (Just n) bs)
+        | A.length bs == 0
+        = parens $ text "group" <+> text (show n)
+
+        | otherwise
         = parens $ text "group" <+> text (show n) 
-                <$> vsep (map ppBranch bs)
+                <$> vsep (map ppBranch [b | Box b <- A.toList bs])
 
 
 -- Keys -----------------------------------------------------------------------

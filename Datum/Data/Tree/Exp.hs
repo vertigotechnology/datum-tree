@@ -123,7 +123,7 @@ data AtomType
 --
 data Group
         = G     (Maybe Name)
-                [Branch]
+                (Array (Box Branch))
         deriving Show
 
 

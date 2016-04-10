@@ -111,7 +111,8 @@ ppKeyList ks
 ppKeyNamed :: Key 'O -> Doc
 ppKeyNamed (Key (T as) (TT nts))
  = parens $ hcat (punctuate (text ", ") 
-                 (zipWith ppAT as 
+                 (zipWith ppAT 
+                        (unboxes as)
                         [nt | nt <- A.toList nts]))
  where  
         ppAT atom (Box name :*: _)
@@ -132,13 +133,15 @@ ppElementType :: Box Name :*: Box AtomType -> Doc
 ppElementType (Box n :*: Box t)
         = sexp "telement" $ text (show n) <+> ppAtomType t
 
+
 -- | Pretty print a `Tuple` using S-expression syntax.
 ppTuple :: Tuple -> Doc
-ppTuple (T [])
+ppTuple (T as)
+        | A.length as == 0
         = ssym "tuple"
 
-ppTuple (T as)
-        = sexp "tuple" $ (hsep $ map ppAtom as)
+        | otherwise
+        = sexp "tuple" $ (hsep $ map ppAtom $ unboxes as)
 
 
 -- Atoms ----------------------------------------------------------------------

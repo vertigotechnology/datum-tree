@@ -40,7 +40,7 @@ import Data.Repa.Array                  (Array)
 import qualified Data.Repa.Array        as A
 
 
--- Objects ----------------------------------------------------------------------------------------
+-- Objects --------------------------------------------------------------------
 -- | Indication of whether an object's data has been checked against
 --   the constraints in its meta-data.
 --
@@ -58,8 +58,8 @@ data Checked
 data Tree   (c :: Checked)
         -- | By using the raw constructor to build a tree you promise that
         --   the `Checked` parameter is valid.
-        = Tree  !Branch 
-                !BranchType
+        = Tree  !Branch         -- Tree data.
+                !BranchType     -- Tree meta-data.
         deriving Show
 
 
@@ -72,8 +72,8 @@ data Forest (c :: Checked)
         -- | By using the raw constructor to build a forest you promise that
         --     the `Checked` parameter is valid.
         = Forest 
-                !Group
-                !BranchType
+                !Group          -- A group of trees of the same type.
+                !BranchType     -- The shared type of the trees.
         deriving Show
 
 
@@ -85,12 +85,12 @@ data Forest (c :: Checked)
 data Key (c :: Checked)
         -- | By using the raw constructor to build a ket you promise that
         --     the `Checked` parameter is valid.
-        = Key   !Tuple
-                !TupleType
+        = Key   !Tuple          -- Key tuple value
+                !TupleType      -- Key tuple type.
         deriving Show
 
 
--- Meta-data --------------------------------------------------------------------------------------
+-- Meta-data ------------------------------------------------------------------
 -- | Branch type describes the structure of a branch.
 data BranchType
         = BT    !Name                           -- Name of this dimension.
@@ -118,7 +118,7 @@ data AtomType
         deriving Show
 
 
--- Data -------------------------------------------------------------------------------------------
+-- Data -----------------------------------------------------------------------
 -- | A group with a name and list of branches.
 --  
 --   * The name here is not strictly required by the representation as
@@ -127,76 +127,76 @@ data AtomType
 --     problems situtations where the tree is not well typed.
 --
 data Group
-        = G     !(Option Name)
-                !(Array (Box Branch))
+        = G     !(Option Name)                  -- Group name.
+                !(Array (Box Branch))           -- Data of trees in this group.
         deriving Show
 
 
 -- | Branch with a key and forests of sub-branches.
 data Branch
-        = B     !Tuple 
-                !(Array (Box Group))
+        = B     !Tuple                          -- Branch key tuple.
+                !(Array (Box Group))            -- Sub groups of this tree.
         deriving Show 
 
 
 -- | Tuple values.
 data Tuple
-        = T     ![Atom]
+        = T     !(Array (Box Atom))             -- Tuple field values.
         deriving Show
 
 
 -- | Atomic values.
 data Atom
         = AUnit
-        | ABool         Bool
-        | AInt          Int
-        | AFloat        Double
-        | ANat          Int
-        | ADecimal      Double
-        | AText         String
-        | ATime         String
+        | ABool         !Bool
+        | AInt          !Int
+        | AFloat        !Double
+        | ANat          !Int
+        | ADecimal      !Double
+        | AText         !String
+        | ATime         !String
         deriving Show
 
 
--- Names ------------------------------------------------------------------------------------------
+-- Names ----------------------------------------------------------------------
 -- | Branch and field names.
 type Name
         = String
 
 
--- Path -------------------------------------------------------------------------------------------
+-- Path -----------------------------------------------------------------------
 data PathType
-        = PathType  [IxType]
+        = PathType  ![IxType]
         deriving Show
 
 
 -- | Path to a particular element.
 data Path
-        = Path [Ix] [IxType]
+        = Path ![Ix] ![IxType]
         deriving Show
 
 
 -- | Type of a path.
 data IxType
         -- | The atom type of a field.
-        = ITField       AtomType
+        = ITField       !AtomType
 
         -- | The tuple type of a tree.
-        | ITTree        TupleType
+        | ITTree        !TupleType
 
         -- | The branch type of a forest.
-        | ITForest      BranchType
+        | ITForest      !BranchType
         deriving Show   
 
 data Ix
         -- | The field name of a field.
-        = IField        Name
+        = IField        !Name
 
         -- | The key of a tree.
-        | ITree         Tuple
+        | ITree         !Tuple
 
         -- | The group name of a forest.
-        | IForest       Name
+        | IForest       !Name
         deriving Show
 
 
@@ -206,7 +206,7 @@ instance Monoid Path where
         = Path (ps1 ++ ps2) (pts1 ++ pts2)
 
 
--- Utils ------------------------------------------------------------------------------------------
+-- Utils ----------------------------------------------------------------------
 -- | Unpack an array of boxed things into a lazy list.
 unboxes :: Array (Box a) -> [a]
 unboxes arr = map unbox $ A.toList arr
@@ -217,6 +217,4 @@ unboxes arr = map unbox $ A.toList arr
 boxes   :: [a] -> Array (Box a)
 boxes ls    = A.fromList $ map box ls
 {-# INLINE boxes #-}
-
-
 

@@ -148,13 +148,13 @@ checkTuple :: Path -> Tuple -> TupleType -> Either Error ()
 checkTuple path@(Path _ps _pts) (T fields) (TT nts)
  = do   
         -- Check that the number of fields matches the tuple type.
-        when (length fields /= A.length nts)
+        when (A.length fields /= A.length nts)
          $ throwError $ ErrorArityTuple path fields nts
 
         zipWithM_ 
                 (\  field (_name :*: Box tField)
                  ->     checkAtom path field tField)
-                fields 
+                (unboxes fields)
                 (A.toList nts)
 
 

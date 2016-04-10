@@ -20,7 +20,7 @@ data Error
         -- | Number of fields in tuple does not match tuple type.
         | ErrorArityTuple
         { errorPath             :: Path
-        , errorAtoms            :: [Atom]  
+        , errorAtoms            :: Array (Box Atom)
         , errorElements         :: Array (Box Name :*: Box AtomType) }
 
         -- | Sub dimension name clash.

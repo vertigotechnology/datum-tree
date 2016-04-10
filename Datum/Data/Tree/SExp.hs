@@ -319,13 +319,13 @@ class MakeTuple b where
  makeTuple :: [Atom] -> b
 
 instance MakeTuple Tuple where
- makeTuple as   = T as
+ makeTuple as   = T (boxes as)
 
 instance MakeTuple Branch where
- makeTuple as   = B (T as) A.empty
+ makeTuple as   = B (T (boxes as)) A.empty
 
 instance MakeTuple Group where
- makeTuple as   = G None (A.singleton $ Box (B (T as) A.empty))
+ makeTuple as   = G None (A.singleton $ Box (B (T (boxes as)) A.empty))
 
 instance (b ~ Atom, MakeTuple a) 
       => MakeTuple (b -> a) where

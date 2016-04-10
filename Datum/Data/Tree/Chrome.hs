@@ -65,8 +65,7 @@ ppKey :: Key 'O -> Doc
 ppKey (Key (T as) (TT nts))
  = parens 
  $ hcat $ punctuate (text ", ")
- $ zipWith ppAT as 
-        (A.toList nts)
+ $ zipWith ppAT (unboxes as) (A.toList nts)
  where  
         ppAT atom (Box name :*: Box ty)
          =   text name 
@@ -77,10 +76,9 @@ ppKey (Key (T as) (TT nts))
 -- | Pretty print a key with field names, but no field types.
 ppKeyNamed :: Key 'O -> Doc
 ppKeyNamed (Key (T as) (TT nts))
- = parens 
- $ hcat $ punctuate (text ", ") 
- $ zipWith ppAT as 
-        (A.toList nts)
+        = parens 
+        $ hcat $ punctuate (text ", ") 
+        $ zipWith ppAT (unboxes as) (A.toList nts)
 
  where  
         ppAT atom (Box name :*: _)
@@ -91,7 +89,8 @@ ppKeyNamed (Key (T as) (TT nts))
 -- | Pretty print a `Tuple`.
 ppTuple :: Tuple -> Doc
 ppTuple (T as)
- = parens $ hcat (punctuate (text ", ") (map ppAtom as))
+ = parens $ hcat (punctuate (text ", ") 
+                 (map ppAtom $ unboxes as))
 
 
 -- | Pretty print a `TupleType`.

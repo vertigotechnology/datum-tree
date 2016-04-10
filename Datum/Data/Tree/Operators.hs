@@ -169,9 +169,10 @@ keysOfTree :: Tree c -> [Key c]
 keysOfTree tree
  = let  
         paths   = reduceTree (\p acc _ -> acc ++ [p]) mempty [] tree
-        ixs     = [ Key (T  (reverse $ concat 
-                                [ reverse as 
-                                        | ITree  (T as) <- ps' ]))
+        ixs     = [ Key (T      $ A.fromList
+                                $ reverse $ concat 
+                                [ reverse (A.toList as )
+                                        | ITree  (T as) <- ps' ])
 
                         (TT     $ A.fromList 
                                 $ reverse $ concat

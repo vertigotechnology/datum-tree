@@ -37,6 +37,7 @@ where
 import Data.Repa.Scalar.Box
 import Data.Repa.Scalar.Option           
 import Data.Repa.Scalar.Product
+import Data.Hashable
 import Data.Repa.Array                  (Array)
 import qualified Data.Repa.Array        as A
 
@@ -163,6 +164,19 @@ data Atom
         | AText         !String
         | ATime         !String
         deriving Show
+
+
+instance Hashable Atom where
+ hashWithSalt s atom
+  = case atom of
+        AUnit           -> hashWithSalt 0 ()
+        ABool    b      -> hashWithSalt 1 b
+        AInt     i      -> hashWithSalt 2 i
+        AFloat   f      -> hashWithSalt 3 f
+        ANat     n      -> hashWithSalt 4 n
+        ADecimal d      -> hashWithSalt 5 d
+        AText    t      -> hashWithSalt 6 t
+        ATime    t      -> hashWithSalt 7 t
 
 
 -- Names ----------------------------------------------------------------------

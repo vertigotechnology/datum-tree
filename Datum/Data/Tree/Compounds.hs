@@ -18,6 +18,7 @@ module Datum.Data.Tree.Compounds
         , forestOfTrees)
 where
 import Datum.Data.Tree.Exp
+import qualified Data.Repa.Array        as A
 
 
 -- Trees ----------------------------------------------------------------------
@@ -49,7 +50,8 @@ nameOfTree (Tree _ (BT n _ _)) = n
 -- | Take the sub-forests of tree.
 forestsOfTree :: Tree c -> [Forest c]
 forestsOfTree (Tree (B _k gs) (BT _n _kt bts))
-        = zipWith Forest gs bts
+        = zipWith Forest gs 
+                [bt | Box bt <- A.toList bts]
 
 
 -- | Take the name of a forest from its branch type.

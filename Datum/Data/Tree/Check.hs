@@ -22,6 +22,7 @@ import Datum.Data.Tree.Exp
 import Control.Monad
 import Control.Monad.Except
 import qualified Data.List              as L
+import qualified Data.Repa.Array        as A
 
 
 -------------------------------------------------------------------------------
@@ -38,12 +39,13 @@ checkBranchType
         checkTupleType tPath' tKey
 
         -- Check that sub dimension names do not clash.
-        let nsSub       = [n | BT n _ _ <- subs]
+        let nsSub       = [n | Box (BT n _ _) <- A.toList subs]
         when (length nsSub /= length (L.nub nsSub))
          $ throwError $ ErrorClashSubDim tPath' nsSub
 
         -- Check the sub dimension shapes.
-        mapM_ (checkBranchType tPath') subs
+        mapM_ (checkBranchType tPath') 
+                [b | Box b <- A.toList subs]
 
 
 -- | Check that a tuple type is well formed.
@@ -51,7 +53,7 @@ checkTupleType :: PathType -> TupleType -> Either Error ()
 checkTupleType path (TT nts)
  = do
         -- Check that field names do not clash.
-        let nsField     = [n | (n, _)   <- nts]
+        let nsField     = [n | Box n :*: _   <- A.toList nts]
         when (length nsField /= length (L.nub nsField))
          $ throwError $ ErrorClashField path nsField
 
@@ -90,16 +92,18 @@ checkBranch
 
         -- Check that the number of sub trees matches the number of
         -- sub dimensions.
-        when (length subs /= length tsSub)
+        when (length subs /= A.length tsSub)
          $ throwError $ ErrorArityDim path' subs tsSub
 
         -- Check that sub dimension names do not clash.
-        let nsSub       = [n | BT n _ _ <- tsSub]
+        let nsSub       = [n | Box (BT n _ _) <- A.toList tsSub]
         when (length nsSub /= length (L.nub nsSub))
          $ throwError $ ErrorClashSubDim tPath' nsSub
 
         -- Check each of the sub trees.
-        zipWithM_ (checkGroup path') subs tsSub
+        zipWithM_ (checkGroup path') 
+                subs 
+                (map unbox $ A.toList tsSub)
 
 
 -------------------------------------------------------------------------------
@@ -144,13 +148,14 @@ checkTuple :: Path -> Tuple -> TupleType -> Either Error ()
 checkTuple path@(Path _ps _pts) (T fields) (TT nts)
  = do   
         -- Check that the number of fields matches the tuple type.
-        when (length fields /= length nts)
+        when (length fields /= A.length nts)
          $ throwError $ ErrorArityTuple path fields nts
 
         zipWithM_ 
-                (\  field (_name, tField)
+                (\  field (_name :*: Box tField)
                  ->     checkAtom path field tField)
-                fields nts
+                fields 
+                (A.toList nts)
 
 
 -------------------------------------------------------------------------------

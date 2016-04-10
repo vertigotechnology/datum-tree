@@ -1,6 +1,7 @@
 #!/bin/sh
 
-ghci    -XDataKinds -XTypeFamilies -XParallelListComp -XFlexibleInstances \
+ghci    -XScopedTypeVariables -XDataKinds -XTypeFamilies \
+        -XParallelListComp -XFlexibleInstances \
         Datum.Console \
         $1 $2 $3 $4
 

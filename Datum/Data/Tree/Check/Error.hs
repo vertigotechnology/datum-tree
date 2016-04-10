@@ -6,15 +6,23 @@ where
 import Datum.Data.Tree.Exp
 import Datum.Data.Tree.SExp.Pretty
 import Text.PrettyPrint.Leijen
+import Data.Repa.Array                  (Array)
+import qualified Data.Repa.Array        as A
 
 
 -- | Possible type errors.
 data Error
         -- | Number of sub trees does not match number of sub dimensions.
-        = ErrorArityDim         Path     [Group] [BranchType] 
+        = ErrorArityDim
+                Path
+                [Group]
+                (Array (Box BranchType))
 
         -- | Number of fields in tuple does not match tuple type.
-        | ErrorArityTuple       Path     [Atom]  [(Name, AtomType)]
+        | ErrorArityTuple
+        { errorPath     :: Path
+        , errorAtoms    :: [Atom]  
+        , errorElements :: Array (Box Name :*: Box AtomType) }
 
         -- | Sub dimension name clash.
         | ErrorClashSubDim      PathType [Name]
@@ -32,7 +40,7 @@ ppError :: Error -> Doc
 
 ppError (ErrorArityDim path gs bts)
  = let  nsGroup  = [mn | G  mn _   <- gs]
-        nsBranch = [n  | BT n  _ _ <- bts]
+        nsBranch = [n  | Box (BT n  _ _) <- A.toList bts]
 
    in   vcat
         $ [ text "Number of branches does not match number of dimensions."

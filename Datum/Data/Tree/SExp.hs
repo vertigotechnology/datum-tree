@@ -74,6 +74,7 @@ where
 import Datum.Data.Tree.SExp.Pretty
 import Datum.Data.Tree.Exp
 import Datum.Data.Tree.Check
+import qualified Data.Repa.Array        as A
 
 
 -- Trees ----------------------------------------------------------------------
@@ -176,7 +177,7 @@ class MakeBranchType a where
 
 instance MakeBranchType BranchType where
  makeBranchType n tt bts
-        = BT n tt bts
+        = BT n tt (A.fromList $ map Box bts)
 
 instance (b ~ BranchType, MakeBranchType a)
       => MakeBranchType (b -> a) where
@@ -201,15 +202,16 @@ ttuple = makeTupleType []
 --
 -- @(telement "name" tnat)@
 --
-telement :: Name -> AtomType -> (Name, AtomType)
-telement n at = (n, at)
+telement :: Name -> AtomType -> (Box Name :*: Box AtomType)
+telement n at = Box n :*: Box at
 
 
 class MakeTupleType a where
  makeTupleType :: [(Name, AtomType)] -> a
 
 instance MakeTupleType TupleType where
- makeTupleType nas  = TT nas
+ makeTupleType nas  
+        = TT $ A.fromList [Box n :*: Box at | (n, at) <- nas]
 
 instance (b ~ (Name, AtomType), MakeTupleType a)
       => MakeTupleType (b -> a) where

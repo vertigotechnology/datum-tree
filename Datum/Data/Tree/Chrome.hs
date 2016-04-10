@@ -3,18 +3,23 @@ module Datum.Data.Tree.Chrome where
 import Datum.Data.Tree.Compounds
 import Datum.Data.Tree.Exp
 import Text.PrettyPrint.Leijen
-import Prelude                  hiding ((<$>))
+import Prelude                          hiding ((<$>))
+import qualified Data.Repa.Array        as A
 
 
 -- Trees-----------------------------------------------------------------------
 ppTree :: Tree c -> Doc
 
-ppTree (Tree (B k []) (BT _n _kt []))
+ppTree (Tree (B k xssSub) (BT _n _kt bts))
+ | A.length bts == 0
  =      text ". " <> ppTuple k
 
-ppTree (Tree (B k xssSub) (BT _n _kt tSubs))
+ | otherwise
  =      text "* " <> ppTuple k
- <$>    (vsep $ map ppForest $ zipWith makeForest xssSub tSubs)
+ <$>    (vsep   $ map ppForest 
+                $ zipWith makeForest 
+                        xssSub 
+                        [b | Box b <- A.toList bts])
 
 
 ppForest :: Forest c -> Doc
@@ -52,9 +57,12 @@ ppKeyList ks
 
 ppKey :: Key 'O -> Doc
 ppKey (Key (T as) (TT nts))
- = parens $ hcat (punctuate (text ", ") (zipWith ppAT as nts))
+ = parens 
+ $ hcat $ punctuate (text ", ")
+ $ zipWith ppAT as 
+        (A.toList nts)
  where  
-        ppAT atom (name, ty)
+        ppAT atom (Box name :*: Box ty)
          =   text name 
          <>  text ":" <+> ppAtomType ty
          <+> text "=" <+> ppAtom     atom
@@ -63,9 +71,13 @@ ppKey (Key (T as) (TT nts))
 -- | Pretty print a key with field names, but no field types.
 ppKeyNamed :: Key 'O -> Doc
 ppKeyNamed (Key (T as) (TT nts))
- = parens $ hcat (punctuate (text ", ") (zipWith ppAT as nts))
+ = parens 
+ $ hcat $ punctuate (text ", ") 
+ $ zipWith ppAT as 
+        (A.toList nts)
+
  where  
-        ppAT atom (name, _)
+        ppAT atom (Box name :*: _)
          =   text name 
          <+> text "=" <+> ppAtom     atom
 
@@ -79,8 +91,10 @@ ppTuple (T as)
 -- | Pretty print a `TupleType`.
 ppTupleType :: TupleType -> Doc
 ppTupleType (TT nts)
- = parens $ hcat (punctuate (text ", ") (map ppNameType nts))
- where  ppNameType (name, ty)
+ = parens $ hcat (punctuate (text ", ") 
+                 (map ppNameType $ A.toList nts))
+ where  
+        ppNameType (Box name :*: Box ty)
          = text name <> text ":" <+> ppAtomType ty
 
 

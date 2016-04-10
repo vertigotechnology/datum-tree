@@ -45,6 +45,7 @@ where
 import Datum.Data.Tree.Exp
 import Datum.Data.Tree.Compounds
 import qualified Data.List              as L
+import qualified Data.Repa.Array        as A
 
 
 -- Paths ------------------------------------------------------------------------------------------
@@ -133,9 +134,11 @@ applyForestsOfTree f
                 = unzip
                 $ map     takeForest
                 $ f
-                $ zipWith Forest gs0 bts0
+                $ zipWith Forest gs0 
+                        [ b | Box b <- A.toList bts0]
 
-   in   Tree (B k0 gs1) (BT n0 kt0 bts1)
+   in   Tree    (B k0 gs1) 
+                (BT n0 kt0 (A.fromList $ map Box bts1))
 
 
 -- Reduction --------------------------------------------------------------------------------------
@@ -167,9 +170,10 @@ keysOfTree tree
                                 [ reverse as 
                                         | ITree  (T as) <- ps' ]))
 
-                        (TT (reverse $ concat
-                                [ reverse nts
-                                        | ITTree (TT nts) <- pts']))
+                        (TT     $ A.fromList 
+                                $ reverse $ concat
+                                [ reverse $ A.toList nts
+                                        | ITTree (TT nts) <- pts'])
 
                   | Path ps' pts' <- paths]
   in    ixs
@@ -284,10 +288,11 @@ traverseTree f
 
                     in  (xsSub', tSub')
 
-                        | xsSub <- xssSub0
-                        | tSub  <- tsSub0 ]
+                        | xsSub         <- xssSub0
+                        | Box tSub      <- A.toList tsSub0 ]
 
-   in   Tree (B k0 xssSub) (BT n0 kt0 tsSub)
+   in   Tree    (B k0 xssSub) 
+                (BT n0 kt0 (A.fromList $ map Box tsSub))
 
 
 -- Limiting ---------------------------------------------------------------------------------------
@@ -358,6 +363,9 @@ instance Sample Branch where
   = B t $ map (sample n) gs
 
 instance Sample Group where
+ sample _ (G name [])
+  = G name []
+
  sample 0 (G name _)
   = G name []
 

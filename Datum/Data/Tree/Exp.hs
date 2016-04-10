@@ -22,8 +22,17 @@ module Datum.Data.Tree.Exp
         , PathType      (..)
         , Path          (..)
         , IxType        (..)
-        , Ix            (..))
+        , Ix            (..)
+
+          -- * Utils
+        , Box           (..)
+        , box, unbox
+
+        , (:*:)         (..))
 where
+import Data.Repa.Scalar.Box             
+import Data.Repa.Scalar.Product
+import Data.Repa.Array                  (Array)
 
 
 -- Objects ----------------------------------------------------------------------------------------
@@ -44,8 +53,8 @@ data Checked
 data Tree   (c :: Checked)
         -- | By using the raw constructor to build a tree you promise that
         --   the `Checked` parameter is valid.
-        = Tree  Branch 
-                BranchType
+        = Tree  !Branch 
+                !BranchType
         deriving Show
 
 
@@ -58,8 +67,8 @@ data Forest (c :: Checked)
         -- | By using the raw constructor to build a forest you promise that
         --     the `Checked` parameter is valid.
         = Forest 
-                Group
-                BranchType
+                !Group
+                !BranchType
         deriving Show
 
 
@@ -71,23 +80,23 @@ data Forest (c :: Checked)
 data Key (c :: Checked)
         -- | By using the raw constructor to build a ket you promise that
         --     the `Checked` parameter is valid.
-        = Key   Tuple
-                TupleType
+        = Key   !Tuple
+                !TupleType
         deriving Show
 
 
 -- Meta-data --------------------------------------------------------------------------------------
 -- | Branch type describes the structure of a branch.
 data BranchType
-        = BT    Name            -- Name of this dimension.
-                TupleType       -- Tuple type.
-                [BranchType]    -- Sub dimensions.
+        = BT    !Name                           -- Name of this dimension.
+                !TupleType                      -- Tuple type.
+                !(Array (Box BranchType))       -- Sub dimensions.
         deriving Show
 
 
 -- | Named tuple types.
 data TupleType
-        = TT    [(Name, AtomType)]
+        = TT    !(Array (Box Name :*: Box AtomType))
         deriving Show
 
 

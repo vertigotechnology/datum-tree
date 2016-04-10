@@ -7,6 +7,7 @@ import Datum.Data.Tree.SExp
 import qualified Data.Csv                       as Csv
 import qualified Data.ByteString.Lazy.Char8     as BS8
 import qualified Data.Vector                    as V
+import qualified Data.Repa.Array                as A
 
 
 -- | Decode a CSV file from a lazy `ByteString`
@@ -31,5 +32,5 @@ decodeCSV bs
                 (tbranch "root"
                         (ttuple)
                         (tbranch "row" 
-                                (TT [ telement ("col" ++ show n) ttext 
-                                    | n <- [0.. len - 1]])))
+                                (TT $ A.fromList [ telement ("col" ++ show n) ttext 
+                                        | n <- [0.. len - 1]])))

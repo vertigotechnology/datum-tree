@@ -1,8 +1,11 @@
 {-# OPTIONS_HADDOCK hide #-}
 module Datum.Data.Tree.SExp.Pretty where
 import Datum.Data.Tree.Exp
+
 import Text.PrettyPrint.Leijen
-import Prelude                  hiding ((<$>))
+import Prelude                          hiding ((<$>))
+import Data.Repa.Array                  (Array)
+import qualified Data.Repa.Array        as A
 
 
 ssym n          = parens $ text n
@@ -39,21 +42,21 @@ ppForest (Forest g bt)
 -- BranchType -----------------------------------------------------------------
 -- | Pretty print a `BranchType` using S-expression syntax.
 ppBranchType :: BranchType -> Doc
-ppBranchType (BT name tt [])
+ppBranchType (BT name tt (bts :: Array (Box BranchType)))
+        | A.length bts == 0
         =   parens
         $   text "tbranch"
         <+> text (show name)
         <>  (nest 8 $ line
                 <>  ppTupleType tt)
 
-
-ppBranchType (BT name tt bts)
+        | otherwise
         =   parens
         $   text "tbranch"
         <+> text (show name)
         <>  (nest 8 $ line 
                 <>  ppTupleType tt
-                <$> vsep (map ppBranchType bts))
+                <$> vsep (map (ppBranchType . unbox) $ A.toList bts))
 
 
 -- Branch ---------------------------------------------------------------------
@@ -104,9 +107,11 @@ ppKeyList ks
 
 ppKeyNamed :: Key 'O -> Doc
 ppKeyNamed (Key (T as) (TT nts))
- = parens $ hcat (punctuate (text ", ") (zipWith ppAT as nts))
+ = parens $ hcat (punctuate (text ", ") 
+                 (zipWith ppAT as 
+                        [nt | nt <- A.toList nts]))
  where  
-        ppAT atom (name, _)
+        ppAT atom (Box name :*: _)
          =   text name 
          <+> text "=" <+> ppAtom     atom
 
@@ -117,11 +122,11 @@ ppTupleType :: TupleType -> Doc
 ppTupleType (TT nts)
         = sexp "ttype " 
         $ nest 8 
-        $ vsep (map ppElementType nts)
+        $ vsep (map ppElementType $ A.toList nts)
 
 
-ppElementType :: (Name, AtomType) -> Doc
-ppElementType (n, t)
+ppElementType :: Box Name :*: Box AtomType -> Doc
+ppElementType (Box n :*: Box t)
         = sexp "telement" $ text (show n) <+> ppAtomType t
 
 -- | Pretty print a `Tuple` using S-expression syntax.

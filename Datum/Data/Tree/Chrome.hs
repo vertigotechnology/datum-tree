@@ -18,8 +18,8 @@ ppTree (Tree (B k xssSub) (BT _n _kt bts))
  =      text "* " <> ppTuple k
  <$>    (vsep   $ map ppForest 
                 $ zipWith makeForest 
-                        xssSub 
-                        [b | Box b <- A.toList bts])
+                        (unboxes xssSub )
+                        (unboxes bts))
 
 
 ppForest :: Forest c -> Doc
@@ -34,16 +34,18 @@ ppForest (Forest (G _ bs) bt@(BT name kt _))
 
 
 ppBranch :: Branch -> Doc
-ppBranch (B t [])
- =      text ". " <> ppTuple t
-
-ppBranch (B t [G _ bs])
-        | A.length bs == 0
+ppBranch (B t gs)
+        | A.length gs == 0
         = text ". " <> ppTuple t
 
-ppBranch (B t gs)
- =      text "* " <> ppTuple t
- <>     (nest 4 $ line <> vsep (map ppGroup gs))
+        | A.length gs           == 1
+        , Just (Box (G _ bs))   <- A.head gs
+        , A.length bs           == 0
+        = text ". " <> ppTuple t
+
+        | otherwise
+        =  text "* " <> ppTuple t
+        <> (nest 4 $ line <> vsep (map ppGroup $ unboxes gs))
 
 
 ppGroup :: Group -> Doc

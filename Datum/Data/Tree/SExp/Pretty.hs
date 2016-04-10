@@ -62,14 +62,14 @@ ppBranchType (BT name tt (bts :: Array (Box BranchType)))
 -- Branch ---------------------------------------------------------------------
 -- | Pretty print a `Branch` using S-expression syntax.
 ppBranch :: Branch -> Doc
-
-ppBranch (B t [])
+ppBranch (B t gs)
+        | A.length gs == 0
         = ppTuple t
 
-ppBranch (B t subs)
+        | otherwise
         =   sexp "branch"  
         $   ppTuple t 
-        <>  (nest 8 $ line <> vsep (map ppGroup subs))
+        <>  (nest 8 $ line <> vsep (map ppGroup $ unboxes gs))
 
 
 -- Group ----------------------------------------------------------------------

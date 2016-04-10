@@ -92,7 +92,7 @@ checkBranch
 
         -- Check that the number of sub trees matches the number of
         -- sub dimensions.
-        when (length subs /= A.length tsSub)
+        when (A.length subs /= A.length tsSub)
          $ throwError $ ErrorArityDim path' subs tsSub
 
         -- Check that sub dimension names do not clash.
@@ -102,8 +102,7 @@ checkBranch
 
         -- Check each of the sub trees.
         zipWithM_ (checkGroup path') 
-                subs 
-                (map unbox $ A.toList tsSub)
+                  (unboxes subs) (unboxes tsSub)
 
 
 -------------------------------------------------------------------------------

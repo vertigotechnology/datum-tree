@@ -26,7 +26,8 @@ module Datum.Data.Tree.Exp
 
           -- * Utils
         , Box           (..)
-        , box, unbox
+        , box,   unbox
+        , boxes, unboxes
 
         , Option        (..)
 
@@ -36,6 +37,7 @@ import Data.Repa.Scalar.Box
 import Data.Repa.Scalar.Option           
 import Data.Repa.Scalar.Product
 import Data.Repa.Array                  (Array)
+import qualified Data.Repa.Array        as A
 
 
 -- Objects ----------------------------------------------------------------------------------------
@@ -133,7 +135,7 @@ data Group
 -- | Branch with a key and forests of sub-branches.
 data Branch
         = B     !Tuple 
-                ![Group]
+                !(Array (Box Group))
         deriving Show 
 
 
@@ -176,15 +178,25 @@ data Path
 
 -- | Type of a path.
 data IxType
-        = ITField       AtomType        -- When entering a field,  find out atom type.
-        | ITTree        TupleType       -- When entering a field,  find out the tuple type.
-        | ITForest      BranchType      -- When entering a field,  find out the branch type.
+        -- | The atom type of a field.
+        = ITField       AtomType
+
+        -- | The tuple type of a tree.
+        | ITTree        TupleType
+
+        -- | The branch type of a forest.
+        | ITForest      BranchType
         deriving Show   
 
 data Ix
-        = IField        Name            -- When entering a field,  find out the field name.
-        | ITree         Tuple           -- When entering a tree,   find out its key.
-        | IForest       Name            -- When entering a forest, find out its name
+        -- | The field name of a field.
+        = IField        Name
+
+        -- | The key of a tree.
+        | ITree         Tuple
+
+        -- | The group name of a forest.
+        | IForest       Name
         deriving Show
 
 
@@ -192,5 +204,19 @@ instance Monoid Path where
  mempty = Path [] []
  mappend (Path ps1 pts1)    (Path ps2 pts2)
         = Path (ps1 ++ ps2) (pts1 ++ pts2)
+
+
+-- Utils ------------------------------------------------------------------------------------------
+-- | Unpack an array of boxed things into a lazy list.
+unboxes :: Array (Box a) -> [a]
+unboxes arr = map unbox $ A.toList arr
+{-# INLINE unboxes #-}
+
+
+-- | Evaluate a a lazy list of things into an array.
+boxes   :: [a] -> Array (Box a)
+boxes ls    = A.fromList $ map box ls
+{-# INLINE boxes #-}
+
 
 

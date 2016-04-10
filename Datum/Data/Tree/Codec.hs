@@ -21,7 +21,7 @@ decodeCSV bs
         -- Make a branch for a single row of the file.
         let makeRow vFields
                 = let  lFields = map BS8.unpack $ V.toList vFields
-                  in   B (T $ map AText lFields) []
+                  in   B (T $ map AText lFields) A.empty
 
         -- Maximum number of fields in any row.
         let len = V.maximum $ V.map V.length vvb

@@ -7,31 +7,37 @@ import Datum.Data.Tree.Exp
 import Datum.Data.Tree.SExp.Pretty
 import Text.PrettyPrint.Leijen
 import Data.Repa.Array                  (Array)
-import qualified Data.Repa.Array        as A
 
 
 -- | Possible type errors.
 data Error
         -- | Number of sub trees does not match number of sub dimensions.
         = ErrorArityDim
-                Path
-                [Group]
-                (Array (Box BranchType))
+        { errorPath             :: Path
+        , errorGroup            :: Array (Box Group)
+        , errorBranchTypes      :: Array (Box BranchType) }
 
         -- | Number of fields in tuple does not match tuple type.
         | ErrorArityTuple
-        { errorPath     :: Path
-        , errorAtoms    :: [Atom]  
-        , errorElements :: Array (Box Name :*: Box AtomType) }
+        { errorPath             :: Path
+        , errorAtoms            :: [Atom]  
+        , errorElements         :: Array (Box Name :*: Box AtomType) }
 
         -- | Sub dimension name clash.
-        | ErrorClashSubDim      PathType [Name]
+        | ErrorClashSubDim
+        { errorPathType         :: PathType
+        , errorNames            :: [Name] }
 
         -- | Field name clash.
-        | ErrorClashField       PathType [Name]
+        | ErrorClashField
+        { errorPathType         :: PathType
+        , errorNames            :: [Name] }
 
         -- | Atomic value does not match associated type.
-        | ErrorAtom             Path Atom    AtomType
+        | ErrorAtom
+        { errorPath             :: Path
+        , errorAtom             :: Atom
+        , errorAtomType         :: AtomType }
         deriving Show
 
 
@@ -39,8 +45,8 @@ data Error
 ppError :: Error -> Doc
 
 ppError (ErrorArityDim path gs bts)
- = let  nsGroup  = [mn | G  mn _   <- gs]
-        nsBranch = [n  | Box (BT n  _ _) <- A.toList bts]
+ = let  nsGroup  = [mn | G  mn _   <- unboxes gs]
+        nsBranch = [n  | BT n  _ _ <- unboxes bts]
 
    in   vcat
         $ [ text "Number of branches does not match number of dimensions."

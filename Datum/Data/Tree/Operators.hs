@@ -134,11 +134,13 @@ applyForestsOfTree f
                 = unzip
                 $ map     takeForest
                 $ f
-                $ zipWith Forest gs0 
-                        [ b | Box b <- A.toList bts0]
+                $ zipWith 
+                        Forest 
+                        (unboxes gs0)
+                        (unboxes bts0)
 
-   in   Tree    (B k0 gs1) 
-                (BT n0 kt0 (A.fromList $ map Box bts1))
+   in   Tree    (B  k0     $ boxes gs1) 
+                (BT n0 kt0 $ boxes bts1)
 
 
 -- Reduction --------------------------------------------------------------------------------------
@@ -289,11 +291,11 @@ traverseTree f
 
                     in  (xsSub', tSub')
 
-                        | xsSub         <- xssSub0
-                        | Box tSub      <- A.toList tsSub0 ]
+                        | xsSub  <- unboxes xssSub0
+                        | tSub   <- unboxes tsSub0 ]
 
-   in   Tree    (B k0 xssSub) 
-                (BT n0 kt0 (A.fromList $ map Box tsSub))
+   in   Tree    (B k0      $ boxes xssSub) 
+                (BT n0 kt0 $ boxes tsSub)
 
 
 -- Limiting ---------------------------------------------------------------------------------------
@@ -313,7 +315,7 @@ instance Initial (Forest c) where
 
 instance Initial Branch where
  initial n (B t gs)
-  = B t $ map (initial n) gs
+  = B t $ A.map (fmap (initial n)) gs
 
 instance Initial Group where
  initial n (G name bs)
@@ -338,7 +340,7 @@ instance Final (Forest c) where
 
 instance Final Branch where
  final n (B t gs)
-  = B t $ map (final n) gs
+  = B t $ A.map (box . final n . unbox) gs
 
 instance Final Group where
  final n (G name bs)
@@ -367,7 +369,7 @@ instance Sample (Forest c) where
 
 instance Sample Branch where
  sample n (B t gs)
-  = B t $ map (sample n) gs
+  = B t $ A.map (box . sample n . unbox) gs
 
 instance Sample Group where
  sample _ (G name bb)
@@ -391,13 +393,12 @@ instance Sample Group where
 
         dec     = len `div` (max 1 n)
 
-        mids    = A.fromList 
-                $ map    box
+        mids    = boxes
                 $ take   (n - 2)
                 $ map    snd
                 $ filter (\(i, _) -> i `mod` dec == 0)
                 $ zip [1..] 
-                $ [b | Box b <- A.toList bs]
+                $ unboxes bs
 
     in  G name  $ A.map (box . sample n . unbox)
                 $ A.concat

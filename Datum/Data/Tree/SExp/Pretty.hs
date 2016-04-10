@@ -56,7 +56,7 @@ ppBranchType (BT name tt (bts :: Array (Box BranchType)))
         <+> text (show name)
         <>  (nest 8 $ line 
                 <>  ppTupleType tt
-                <$> vsep (map (ppBranchType . unbox) $ A.toList bts))
+                <$> vsep (map ppBranchType $ unboxes bts))
 
 
 -- Branch ---------------------------------------------------------------------
@@ -86,7 +86,7 @@ ppGroup (G None bs)
 
         | otherwise
         = parens $  text "group" 
-                <$> vsep (map ppBranch [b | Box b <- A.toList bs])
+                <$> vsep (map ppBranch $ unboxes bs)
 
 ppGroup (G (Some n) bs)
         | A.length bs == 0
@@ -94,7 +94,7 @@ ppGroup (G (Some n) bs)
 
         | otherwise
         = parens $ text "group" <+> text (show n) 
-                <$> vsep (map ppBranch [b | Box b <- A.toList bs])
+                <$> vsep (map ppBranch $ unboxes bs)
 
 
 -- Keys -----------------------------------------------------------------------

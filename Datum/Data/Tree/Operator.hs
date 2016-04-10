@@ -56,8 +56,5 @@ import Datum.Data.Tree.Operator.Reduce
 import Datum.Data.Tree.Operator.Slice
 import Datum.Data.Tree.Operator.Traverse
 import Datum.Data.Tree.Compounds
-import Datum.Data.Tree.Exp
-import qualified Data.List              as L
-import qualified Data.Repa.Array        as A
 
 

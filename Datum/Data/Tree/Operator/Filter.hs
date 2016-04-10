@@ -8,7 +8,6 @@ import Datum.Data.Tree.Operator.Map
 import Datum.Data.Tree.Operator.Cast
 import Datum.Data.Tree.Operator.Path
 import Datum.Data.Tree.Exp
-import qualified Data.Repa.Array        as A
 
 
 -- | Filter a tree by keeping only the sub-trees that match

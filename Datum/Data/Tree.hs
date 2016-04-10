@@ -57,10 +57,10 @@ module Datum.Data.Tree
         , sliceTree
         , sliceTreeWithNames
 
-          -- * Traversal
+          -- ** Traversal
         , traverseTree
 
-          -- * Limiting
+          -- ** Limiting
         , Initial (..)
         , Final   (..)
         , Sample  (..))

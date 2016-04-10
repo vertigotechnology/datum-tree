@@ -35,7 +35,7 @@ Library
         Datum.Data.Tree.Chrome
         Datum.Data.Tree.Compounds
         Datum.Data.Tree.Codec
-        Datum.Data.Tree.Operators
+        Datum.Data.Tree.Operator
         Datum.Data.Tree.SExp
 
 

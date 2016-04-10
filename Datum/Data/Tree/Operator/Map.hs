@@ -12,8 +12,7 @@ import Datum.Data.Tree.Operator.Cast
 import Datum.Data.Tree.Operator.Path
 import Datum.Data.Tree.Compounds
 import Datum.Data.Tree.Exp
-import qualified Data.List              as L
-import qualified Data.Repa.Array        as A
+
 
 -- Mapping ----------------------------------------------------------------------------------------
 -- | Apply a per-tree function to every sub-tree of a tree.

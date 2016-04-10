@@ -51,10 +51,10 @@ data Checked
         deriving (Show, Eq, Ord)
 
 type family CheckMin (a :: Checked) (b :: Checked) where
-  CheckMin O O = O
-  CheckMin O X = X
-  CheckMin X O = X
-  CheckMin X X = X
+  CheckMin 'O 'O = 'O
+  CheckMin 'O 'X = 'X
+  CheckMin 'X 'O = 'X
+  CheckMin 'X 'X = 'X
 
 
 -- | A tree contains both branch data and branch meta-data.

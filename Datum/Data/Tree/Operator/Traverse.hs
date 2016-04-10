@@ -5,7 +5,6 @@ module Datum.Data.Tree.Operator.Traverse
 where
 import Datum.Data.Tree.Operator.Map
 import Datum.Data.Tree.Exp
-import qualified Data.Repa.Array        as A
 
 
 -- | Bottom-up traversal of a tree.

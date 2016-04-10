@@ -5,6 +5,7 @@ module Datum.Data.Tree.Exp
         , Forest        (..)
         , Key           (..)
         , Checked       (..)
+        , CheckMin
 
           -- * Meta-Data
         , Name
@@ -45,9 +46,15 @@ import qualified Data.Repa.Array        as A
 --   the constraints in its meta-data.
 --
 data Checked
-        = X     -- ^ Object has not been checked.
-        | O     -- ^ Object has been checked.
+        = O     -- ^ Object has been checked.
+        | X     -- ^ Object has not been checked.
         deriving (Show, Eq, Ord)
+
+type family CheckMin (a :: Checked) (b :: Checked) where
+  CheckMin O O = O
+  CheckMin O X = X
+  CheckMin X O = X
+  CheckMin X X = X
 
 
 -- | A tree contains both branch data and branch meta-data.

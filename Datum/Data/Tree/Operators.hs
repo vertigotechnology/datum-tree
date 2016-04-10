@@ -1,7 +1,11 @@
 
 module Datum.Data.Tree.Operators
-        ( -- * Projections
-          nameOfTree
+        ( -- * Casts
+          weakenTree
+        , weakenForest
+
+          -- * Projections
+        , nameOfTree
         , nameOfForest
 
         , forestsOfTree
@@ -17,6 +21,7 @@ module Datum.Data.Tree.Operators
         , mapTreesOfTree
         , mapTreesOfForest
         , mapForestsOfTree
+        , mapForestOfTree
 
           -- * Reducing
         , reduceTree
@@ -46,6 +51,20 @@ import Datum.Data.Tree.Exp
 import Datum.Data.Tree.Compounds
 import qualified Data.List              as L
 import qualified Data.Repa.Array        as A
+
+-- Weakening --------------------------------------------------------------------------------------
+
+-- | Forget about the fact that we've checked this tree.
+weakenTree   :: Tree c -> Tree 'X
+weakenTree   (Tree b bt)    = Tree b bt
+{-# INLINE weakenTree #-}
+
+
+-- | Forget about the fact that we've checked this forest.
+weakenForest :: Forest c -> Forest 'X
+weakenForest (Forest bs bt) = Forest bs bt
+{-# INLINE weakenForest #-}
+
 
 
 -- Paths ------------------------------------------------------------------------------------------
@@ -106,6 +125,21 @@ mapForestsOfTree f path tree
  = applyForestsOfTree 
         (map (\forest -> f (enterForest forest path) forest)) 
         tree
+
+
+-- | Apply a function to the named sub-forest of a tree.
+mapForestOfTree  
+        :: Name 
+        -> (Path -> Forest c -> Forest c')
+        -> Path  -> Tree   c -> Tree 'X
+
+mapForestOfTree name f path tree
+ =  flip applyForestsOfTree tree
+ $  \forests
+ -> map (\forest -> if nameOfForest forest == name
+                        then weakenForest $ f (enterForest forest path) forest
+                        else weakenForest forest)
+ $  forests
 
 
 -- Application ------------------------------------------------------------------------------------

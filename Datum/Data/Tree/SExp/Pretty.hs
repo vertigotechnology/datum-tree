@@ -124,6 +124,10 @@ ppKeyNamed (Key (T as) (TT nts))
 -- | Pretty print a `TupleType` using S-expression syntax.
 ppTupleType :: TupleType -> Doc
 ppTupleType (TT nts)
+        | A.length nts == 0
+        = ssym "ttype"
+
+        | otherwise
         = sexp "ttype " 
         $ nest 8 
         $ vsep (map ppElementType $ A.toList nts)

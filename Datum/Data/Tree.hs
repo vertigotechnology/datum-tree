@@ -39,6 +39,7 @@ module Datum.Data.Tree
         , mapTreesOfTree
         , mapTreesOfForest
         , mapForestsOfTree
+        , mapForestOfTree
 
           -- ** Reducing
         , reduceTree

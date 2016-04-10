@@ -92,14 +92,18 @@ instance Sample Group where
   = G name $ A.singleton bFirst
 
  sample n (G name bb)
+  | n >= A.length bb
+  = G name bb
+
+  | otherwise
   = let 
         Just bFirst = A.head bb
         Just bLast  = A.last bb
         Just bs     = A.tail bb
 
-        len     = max 0 (A.length bb)
+        !len    = max 1 (A.length bb)
 
-        dec     = len `div` (max 1 n)
+        !dec    = max 1 (len `div` (max 1 n))
 
         mids    = boxes
                 $ take   (n - 2)
@@ -111,5 +115,4 @@ instance Sample Group where
     in  G name  $ A.map (box . sample n . unbox)
                 $ A.concat
                 $ A.fromList [A.singleton bFirst, mids, A.singleton bLast]
-
 

@@ -2,7 +2,7 @@
 
 ghci    -XScopedTypeVariables -XDataKinds -XTypeFamilies \
         -XParallelListComp    -XFlexibleInstances \
-        -XTypeOperators \
+        -XTypeOperators       -XBangPatterns \
         Datum.Console \
         $1 $2 $3 $4
 

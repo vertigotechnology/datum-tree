@@ -39,6 +39,9 @@ module Datum.Data.Tree.Operator
         , sliceTree
         , sliceTreeWithNames
 
+          -- * Grouping
+        , groupForest
+
           -- * Traversal
         , traverseTree
 
@@ -54,6 +57,7 @@ import Datum.Data.Tree.Operator.Filter
 import Datum.Data.Tree.Operator.Limit
 import Datum.Data.Tree.Operator.Reduce
 import Datum.Data.Tree.Operator.Slice
+import Datum.Data.Tree.Operator.Group
 import Datum.Data.Tree.Operator.Traverse
 import Datum.Data.Tree.Compounds
 

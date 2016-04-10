@@ -32,7 +32,9 @@ module Datum.Data.Tree.Exp
 
         , Option        (..)
 
-        , (:*:)         (..))
+        , (:*:)         (..)
+
+        , Hashable      (..))
 where
 import Data.Repa.Scalar.Box
 import Data.Repa.Scalar.Option           
@@ -163,20 +165,20 @@ data Atom
         | ADecimal      !Double
         | AText         !String
         | ATime         !String
-        deriving Show
+        deriving (Eq, Show)
 
 
 instance Hashable Atom where
  hashWithSalt s atom
   = case atom of
-        AUnit           -> hashWithSalt 0 ()
-        ABool    b      -> hashWithSalt 1 b
-        AInt     i      -> hashWithSalt 2 i
-        AFloat   f      -> hashWithSalt 3 f
-        ANat     n      -> hashWithSalt 4 n
-        ADecimal d      -> hashWithSalt 5 d
-        AText    t      -> hashWithSalt 6 t
-        ATime    t      -> hashWithSalt 7 t
+        AUnit           -> hashWithSalt (s + 0) ()
+        ABool    b      -> hashWithSalt (s + 1) b
+        AInt     i      -> hashWithSalt (s + 2) i
+        AFloat   f      -> hashWithSalt (s + 3) f
+        ANat     n      -> hashWithSalt (s + 4) n
+        ADecimal d      -> hashWithSalt (s + 5) d
+        AText    t      -> hashWithSalt (s + 6) t
+        ATime    t      -> hashWithSalt (s + 7) t
 
 
 -- Names ----------------------------------------------------------------------

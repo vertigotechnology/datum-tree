@@ -57,6 +57,9 @@ module Datum.Data.Tree
         , sliceTree
         , sliceTreeWithNames
 
+          -- ** Grouping
+        , groupForest
+
           -- ** Traversal
         , traverseTree
 

@@ -10,6 +10,7 @@ module Datum.Data.Tree.Operator.Map
 where
 import Datum.Data.Tree.Operator.Cast
 import Datum.Data.Tree.Operator.Path
+import Datum.Data.Tree.Operator.Project
 import Datum.Data.Tree.Compounds
 import Datum.Data.Tree.Exp
 
@@ -46,7 +47,7 @@ mapForestOfTree
 mapForestOfTree name f path tree
  =  flip applyForestsOfTree tree
  $  \forests
- -> map (\forest -> if nameOfForest forest == name
+ -> map (\forest -> if takeName forest == name
                         then weakenForest $ f (enterForest forest path) forest
                         else weakenForest forest)
  $  forests
@@ -65,8 +66,8 @@ applyTreesOfForest f forest
         trees'  = f trees
 
    in   case trees' of
-         []       -> forestOfTrees (typeOfForest forest) trees'
-         (t0 : _) -> forestOfTrees (typeOfTree   t0)     trees'
+         []       -> forestOfTrees (takeMeta forest) trees'
+         (t0 : _) -> forestOfTrees (takeMeta t0)     trees'
  
 
 -- | Apply a function to the list of sub-forests of a tree.

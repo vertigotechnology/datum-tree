@@ -23,8 +23,9 @@ module Datum.Data.Tree
 
           -- * Operators
           -- ** Projections
-        , nameOfTree
-        , nameOfForest
+        , HasName (..)
+        , HasMeta (..)
+        , HasData (..)
 
         , forestsOfTree
         , treesOfForest

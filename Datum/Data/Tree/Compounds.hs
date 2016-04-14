@@ -7,22 +7,18 @@ module Datum.Data.Tree.Compounds
           -- * Trees
         , makeTree
         , takeTree
-        , branchOfTree
-        , typeOfTree
-        , nameOfTree
         , forestsOfTree
 
           -- * Forests
         , makeForest
         , takeForest
-        , groupOfForest
-        , typeOfForest
-        , nameOfForest
         , treesOfForest
         , forestOfTrees)
 where
 import Datum.Data.Tree.Exp
+import Datum.Data.Tree.Operator.Project
 import qualified Data.Repa.Array        as A
+
 
 -- Special Trees --------------------------------------------------------------
 -- | The empty tree.
@@ -50,32 +46,12 @@ takeTree :: Tree c -> (Branch, BranchType)
 takeTree (Tree b bt) = (b, bt)
 
 
--- | Take the branch of a tree.
-branchOfTree  :: Tree c -> Branch
-branchOfTree (Tree b _) = b
-
-
--- | Take the branch type of a tree.
-typeOfTree    :: Tree c -> BranchType
-typeOfTree (Tree _ bt)  = bt
-
-
--- | Take the name of a tree from its branch type.
-nameOfTree    :: Tree c -> Name
-nameOfTree (Tree _ (BT n _ _)) = n
-
-
 -- | Take the sub-forests of tree.
 forestsOfTree :: Tree c -> [Forest c]
 forestsOfTree (Tree (B _k gs) (BT _n _kt bts))
  = let  Just fs = A.map2 (\(Box g) (Box bt) -> Box (Forest g bt))
                         gs bts
    in   [f | Box f <- A.toList fs]
-
-
--- | Take the name of a forest from its branch type.
-nameOfForest :: Forest c -> Name
-nameOfForest (Forest _ (BT n _ _)) = n
 
 
 -- | Take the sub-trees of a forest.
@@ -95,16 +71,6 @@ takeForest :: Forest c  -> (Group, BranchType)
 takeForest (Forest bs bt) = (bs, bt)
 
 
--- | Take the branch group from a forest.
-groupOfForest :: Forest c -> Group
-groupOfForest (Forest g _) = g
-
-
--- | Take the branch type from a forest.
-typeOfForest :: Forest c -> BranchType
-typeOfForest (Forest _ bt) = bt
-
-
 -- | Make a forest from a shared branch type and a list of trees.
 --
 --   The branch type must be supplied explicitly so we know what it should
@@ -117,8 +83,6 @@ typeOfForest (Forest _ bt) = bt
 forestOfTrees :: BranchType -> [Tree c] -> Forest 'X
 forestOfTrees bt@(BT n _ _) trees
         = Forest (G (Some n) 
-                    (A.fromList $ map (box . branchOfTree) trees)) 
+                    (A.fromList $ map (box . takeData) trees)) 
                  bt
-
-
 

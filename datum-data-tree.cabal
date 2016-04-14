@@ -58,6 +58,7 @@ Library
         Datum.Data.Tree.Operator.Limit
         Datum.Data.Tree.Operator.Map
         Datum.Data.Tree.Operator.Path
+        Datum.Data.Tree.Operator.Project
         Datum.Data.Tree.Operator.Reduce
         Datum.Data.Tree.Operator.Slice
         Datum.Data.Tree.Operator.Traverse

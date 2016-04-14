@@ -1,7 +1,11 @@
 
 module Datum.Data.Tree.Compounds
-        ( -- * Trees
-          makeTree
+        ( -- * Special Trees
+          emptyTree
+        , emptyForest 
+
+          -- * Trees
+        , makeTree
         , takeTree
         , branchOfTree
         , typeOfTree
@@ -19,6 +23,20 @@ module Datum.Data.Tree.Compounds
 where
 import Datum.Data.Tree.Exp
 import qualified Data.Repa.Array        as A
+
+-- Special Trees --------------------------------------------------------------
+-- | The empty tree.
+emptyTree :: Tree c
+emptyTree 
+ = Tree   (B  (T A.empty) A.empty)
+          (BT "root" mempty A.empty)
+
+
+-- | The empty forest.
+emptyForest :: Forest c
+emptyForest
+ = Forest (G  None A.empty)
+          (BT "root" mempty A.empty)
 
 
 -- Trees ----------------------------------------------------------------------

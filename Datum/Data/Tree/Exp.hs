@@ -100,6 +100,12 @@ data Key (c :: Checked)
         deriving Show
 
 
+instance Monoid (Key c) where
+ mempty = Key mempty mempty
+ mappend (Key t1 tt1) (Key t2 tt2)
+        = Key (mappend t1 t2) (mappend tt1 tt2)
+
+
 -- Meta-data ------------------------------------------------------------------
 -- | Branch type describes the structure of a branch.
 data BranchType
@@ -113,6 +119,12 @@ data BranchType
 data TupleType
         = TT    !(Array (Box Name :*: Box AtomType))
         deriving Show
+
+
+instance Monoid TupleType where
+ mempty = TT (A.empty)
+ mappend (TT as1) (TT as2)
+        = TT (A.fromList (A.toList as1 ++ A.toList as2))
 
 
 -- | Atom types.
@@ -153,6 +165,12 @@ data Branch
 data Tuple
         = T     !(Array (Box Atom))             -- Tuple field values.
         deriving Show
+
+
+instance Monoid Tuple where
+ mempty = T (A.empty)
+ mappend (T t1) (T t2)
+        = T (A.fromList (A.toList t1 ++ A.toList t2))
 
 
 -- | Atomic values.

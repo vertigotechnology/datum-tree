@@ -53,6 +53,7 @@ Library
 
         Datum.Data.Tree.Operator.Cast
         Datum.Data.Tree.Operator.Filter
+        Datum.Data.Tree.Operator.Gather
         Datum.Data.Tree.Operator.Group
         Datum.Data.Tree.Operator.Limit
         Datum.Data.Tree.Operator.Map

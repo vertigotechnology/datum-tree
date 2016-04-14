@@ -60,6 +60,9 @@ module Datum.Data.Tree
           -- ** Grouping
         , groupForest
 
+          -- ** Gathering
+        , gatherTree
+
           -- ** Traversal
         , traverseTree
 

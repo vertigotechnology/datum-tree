@@ -42,6 +42,9 @@ module Datum.Data.Tree.Operator
           -- * Grouping
         , groupForest
 
+          -- * Gathering
+        , gatherTree
+
           -- * Traversal
         , traverseTree
 
@@ -58,6 +61,7 @@ import Datum.Data.Tree.Operator.Limit
 import Datum.Data.Tree.Operator.Reduce
 import Datum.Data.Tree.Operator.Slice
 import Datum.Data.Tree.Operator.Group
+import Datum.Data.Tree.Operator.Gather
 import Datum.Data.Tree.Operator.Traverse
 import Datum.Data.Tree.Compounds
 

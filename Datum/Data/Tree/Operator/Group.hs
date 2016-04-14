@@ -1,6 +1,6 @@
 
 module Datum.Data.Tree.Operator.Group
-        ( groupForest)
+        (groupForest)
 where
 import Datum.Data.Tree.Exp
 import qualified Data.HashMap.Strict    as H

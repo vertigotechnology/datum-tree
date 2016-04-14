@@ -207,13 +207,13 @@ telement n at = Box n :*: Box at
 
 
 class MakeTupleType a where
- makeTupleType :: [(Name, AtomType)] -> a
+ makeTupleType :: [Box Name :*: Box AtomType] -> a
 
 instance MakeTupleType TupleType where
  makeTupleType nas  
-        = TT $ A.fromList [Box n :*: Box at | (n, at) <- nas]
+        = TT $ A.fromList nas
 
-instance (b ~ (Name, AtomType), MakeTupleType a)
+instance (b ~ (Box Name :*: Box AtomType), MakeTupleType a)
       => MakeTupleType (b -> a) where
  makeTupleType nas  = \na -> makeTupleType (nas ++ [na])
 

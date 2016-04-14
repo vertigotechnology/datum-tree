@@ -54,5 +54,29 @@ ppError (ErrorArityDim path gs bts)
           , text "  group  names = " <> text (show nsGroup)
           , text "  branch names = " <> text (show nsBranch) ]
 
-ppError _ 
- = error "ppError"
+ppError (ErrorArityTuple path as es)
+ =      vcat
+        $ [ text "Number of atoms in tuple does not match tuple type."
+          , text "  on path      = " <> ppPath path
+          , text "  atoms        = " <> text (show as)
+          , text "  tuple type   = " <> text (show es) ]
+
+ppError (ErrorClashSubDim pt ns)
+        =  vcat
+        $ [ text "Sub dimension name clash."
+          , text "  on path      = " <> text (show pt)
+          , text "  names        = " <> text (show ns) ]
+
+ppError (ErrorClashField pt ns)
+        =  vcat
+        $ [ text "Field name clash."
+          , text "  on path      = " <> text (show pt)
+          , text "  names        = " <> text (show ns) ]
+
+ppError (ErrorAtom p a at)
+        =  vcat
+        $ [ text "Atom type mismatch."
+          , text "  on path             = " <> ppPath p
+          , text "  atom                = " <> ppAtom a
+          , text "  does not match type = " <> ppAtomType at ]
+

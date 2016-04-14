@@ -5,6 +5,7 @@ where
 import Datum.Data.Tree
 import Datum.Data.Tree.SExp
 import Datum.Console            (dump)
+import qualified Datum.Console  as C
 
 ---------------------------------------------------------------------------------------------------
 tStock :: Tree O
@@ -93,7 +94,7 @@ ex0     = dump tStock
 
 
 -- | Check that a tree is well formed.
-ex1     = check tStock
+ex1     = C.check tStock
 
 
 -- | Flatten the tree into a list of path keys.
@@ -102,6 +103,7 @@ ex1     = check tStock
 --   to each leaf of the tree.
 --
 ex2     = dump 
+        $ map takeData
         $ keysOfTree tStock
 
 
@@ -125,7 +127,7 @@ ex4_2   = dump
                 mempty tStock
 
 
--- | Select data on a given path.
+-- | Slice tree to retain only data on the given paths.
 ex5_1   = dump
         $ sliceTree (\p _ -> onPath ["company", "office", "contact"] p) 
                 mempty tStock
@@ -135,6 +137,24 @@ ex5_2   = dump
                 mempty tStock
 
 ex5_3   = dump
+        $ sliceTree (\p _ -> onPath ["company", "office", "employee", "contact"] p) 
+                mempty tStock
+
+ex5_4   = dump
         $ sliceTree (\p _ -> onPath ["company", "transaction"] p)
                 mempty tStock
+
+
+-- | Gather data on given path,
+--   unlike 'sliceTree' the matching sub-trees are pulled up 
+--   to the top-level.
+ex6_1   = dump
+        $ gatherTree ["root", "company", "transaction"] tStock
+
+ex6_2   = dump
+        $ gatherTree ["root", "company", "office"] tStock
+
+ex6_3   = dump
+        $ gatherTree ["root", "company", "office", "employee", "contact"] tStock
+
 

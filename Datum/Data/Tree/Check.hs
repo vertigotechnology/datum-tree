@@ -1,9 +1,6 @@
 
 module Datum.Data.Tree.Check
         ( Check (..)
-
-        , checkAtom
-
         , Error (..)
         , ppError)
 where
@@ -132,7 +129,7 @@ instance Check (Key c) where
 
         zipWithM_
                 (\  field (_name :*: Box tField)
-                 ->     checkAtom path field tField)
+                 ->     checkOnPath path (Element field tField))
                 (unboxes fields)
                 (A.toList nts)
 
@@ -140,17 +137,19 @@ instance Check (Key c) where
 
 
 -------------------------------------------------------------------------------
--- | Check that an atom has the given type.
-checkAtom  :: Path -> Atom -> AtomType -> Either Error ()
-checkAtom path lit tp
- = case (lit, tp) of
-        (AUnit,         ATUnit)         -> return ()
-        (ABool _,       ATBool)         -> return ()
-        (AInt _,        ATInt)          -> return ()
-        (AFloat _,      ATFloat)        -> return ()
-        (ANat _,        ATNat)          -> return ()
-        (ADecimal _,    ATDecimal)      -> return ()
-        (AText _,       ATText)         -> return ()
-        (ATime _,       ATTime)         -> return ()
-        _ -> throwError $ ErrorAtom path lit tp
+instance Check (Element c) where
+ type Checked' (Element c) = Element 'O
+ type Path'    (Element c) = Path
+
+ checkOnPath path (Element a at)
+  = case (a, at) of
+        (AUnit,         ATUnit)     -> return (Element a at)
+        (ABool _,       ATBool)     -> return (Element a at)
+        (AInt _,        ATInt)      -> return (Element a at)
+        (AFloat _,      ATFloat)    -> return (Element a at)
+        (ANat _,        ATNat)      -> return (Element a at)
+        (ADecimal _,    ATDecimal)  -> return (Element a at)
+        (AText _,       ATText)     -> return (Element a at)
+        (ATime _,       ATTime)     -> return (Element a at)
+        _ -> throwError $ ErrorAtom path a at
 

@@ -4,6 +4,7 @@ module Datum.Data.Tree.Exp
           Tree          (..)
         , Forest        (..)
         , Key           (..)
+        , Element       (..)
         , Checked       (..)
         , CheckMin
 
@@ -61,10 +62,6 @@ type family CheckMin (a :: Checked) (b :: Checked) where
 
 
 -- | A tree contains both branch data and branch meta-data.
---
---   * The type constructor has a phantom parameter indicating
---     whether the data has been checked against the meta-data.
---
 data Tree   (c :: Checked)
         -- | By using the raw constructor to build a tree you promise that
         --   the `Checked` parameter is valid.
@@ -74,13 +71,9 @@ data Tree   (c :: Checked)
 
 
 -- | A forest contains a sequence of trees of the same type.
---
---   * The type constructor has a phantom parameter indicating 
---     whether the data has been checked against the meta-data.
---
 data Forest (c :: Checked)
         -- | By using the raw constructor to build a forest you promise that
-        --     the `Checked` parameter is valid.
+        --   the `Checked` parameter is valid.
         = Forest 
                 !Group          -- A group of trees of the same type.
                 !BranchType     -- The shared type of the trees.
@@ -88,13 +81,9 @@ data Forest (c :: Checked)
 
 
 -- | A key contains tuple data and tuple meta-data.
---
---   * The type constructor has a phantom parameter indicating 
---     whether the data has been checked against the meta-data.
---
 data Key (c :: Checked)
-        -- | By using the raw constructor to build a ket you promise that
-        --     the `Checked` parameter is valid.
+        -- | By using the raw constructor to build a key you promise that
+        --   the `Checked` parameter is valid.
         = Key   !Tuple          -- Key tuple value
                 !TupleType      -- Key tuple type.
         deriving Show
@@ -104,6 +93,14 @@ instance Monoid (Key c) where
  mempty = Key mempty mempty
  mappend (Key t1 tt1) (Key t2 tt2)
         = Key (mappend t1 t2) (mappend tt1 tt2)
+
+
+-- | An element contains an atom and an atom type.
+data Element (c :: Checked)
+        -- | By using the raw constructor to build an element you promise that
+        --   the `Checked` parameter is valid.
+        = Element !Atom !AtomType
+        deriving Show
 
 
 -- Meta-data ------------------------------------------------------------------

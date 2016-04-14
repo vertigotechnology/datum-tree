@@ -13,6 +13,7 @@ module Datum.Data.Tree
           Tree
         , Forest
         , Key
+        , Element
 
           -- * Type Checking
         , Checked (..)

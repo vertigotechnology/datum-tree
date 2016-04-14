@@ -16,9 +16,7 @@ module Datum.Data.Tree
 
           -- * Type Checking
         , Checked (..)
-        , checkTree
-        , checkForest
-        , checkKey
+        , Check   (..)
         , Error   (..)
 
           -- * Operators

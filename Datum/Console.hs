@@ -2,7 +2,7 @@
 -- | Utilities for working with datum trees in the GHCi console.
 module Datum.Console
         ( Dump  (..)
-        , Check (..)
+        , CheckIO (..)
         , Save  (..)
         , loadCSV
         , initial

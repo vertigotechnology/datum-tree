@@ -115,7 +115,7 @@ import qualified Data.Repa.Array        as A
 -- @
 --
 tree  :: BranchType -> Branch -> Either Error (Tree 'O)
-tree bt b = checkTree (Tree b bt)
+tree bt b = check (Tree b bt)
 
 
 
@@ -125,7 +125,7 @@ tree bt b = checkTree (Tree b bt)
 --   If the supplied `Group` does not match the `BranchType` then `Error`.
 --
 forest :: BranchType -> Group -> Either Error (Forest 'O)
-forest bt g = checkForest (Forest g bt)
+forest bt g = check (Forest g bt)
 
 
 
@@ -134,7 +134,7 @@ forest bt g = checkForest (Forest g bt)
 --   If the supplied `Tuple` does not match the `TupleType` then `Error`.
 --
 key   :: TupleType -> Tuple -> Either Error (Key 'O)
-key tt t    = checkKey (Key t tt)
+key tt t    = check (Key t tt)
 
 
 -- Unchecked ------------------------------------------------------------------

@@ -4,7 +4,7 @@ module Stock
 where
 import Datum.Data.Tree
 import Datum.Data.Tree.SExp
-import Datum.Console
+import Datum.Console            (dump)
 
 ---------------------------------------------------------------------------------------------------
 tStock :: Tree O
@@ -93,7 +93,7 @@ ex0     = dump tStock
 
 
 -- | Check that a tree is well formed.
-ex1     = checkTree tStock
+ex1     = check tStock
 
 
 -- | Flatten the tree into a list of path keys.
@@ -107,21 +107,21 @@ ex2     = dump
 
 -- | Filter top-level of tree to keep only named dimensions.
 ex3_1   = dump 
-        $ filterForestsOfTree (\p f -> nameOfForest f == "company")  mempty tStock
+        $ filterForestsOfTree (\p f -> takeName f == "company")  mempty tStock
 
 ex3_2   = dump 
-        $ filterForestsOfTree (\p f -> nameOfForest f == "exchange") mempty tStock
+        $ filterForestsOfTree (\p f -> takeName f == "exchange") mempty tStock
 
 
 -- | Filter second level of tree to keep only named dimensions.
 ex4_1   = dump
         $ mapTreesOfTree 
-                (filterForestsOfTree (\p f -> nameOfForest f == "transaction")) 
+                (filterForestsOfTree (\p f -> takeName f == "transaction")) 
                 mempty tStock
 
 ex4_2   = dump
         $ mapTreesOfTree 
-                (filterForestsOfTree (\p f -> nameOfForest f == "office")) 
+                (filterForestsOfTree (\p f -> takeName f == "office")) 
                 mempty tStock
 
 

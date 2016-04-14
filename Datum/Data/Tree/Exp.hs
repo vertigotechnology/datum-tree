@@ -210,6 +210,11 @@ data PathType
         = PathType  ![IxType]
         deriving Show
 
+instance Monoid PathType where
+ mempty = PathType []
+ mappend (PathType pt1) (PathType pt2)
+        = PathType (pt1 ++ pt2)
+
 
 -- | Path to a particular element.
 data Path

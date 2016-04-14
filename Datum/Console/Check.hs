@@ -1,24 +1,23 @@
-
+{-# LANGUAGE UndecidableInstances #-}
 module Datum.Console.Check
-        (Check  (..))
+        (CheckIO (..))
 where
 import Datum.Data.Tree.SExp
 import Datum.Data.Tree.Exp
-import Datum.Data.Tree
+import Datum.Data.Tree          as T
 import Text.PrettyPrint.Leijen
 
 
-class Check a where
- type Check' a
+class Check a => CheckIO a where
  -- | Type check an object.
- check :: a -> IO (Check' a)
+ check :: a -> IO (Checked' a)
 
 
 -- Tree
-instance Check (Tree a) where
- type Check' (Tree a) = Tree 'O
+instance Check   (Tree c) 
+      => CheckIO (Tree c) where
  check t
-  = case checkTree t of
+  = case T.check t of
         Left err        
          -> do  putDoc $ ppError err <> line
                 error "Tree is not well formed."
@@ -28,10 +27,10 @@ instance Check (Tree a) where
 
 
 -- Forest
-instance Check (Forest a) where
- type Check' (Forest a) = Forest 'O
+instance Check   (Forest c)
+      => CheckIO (Forest c) where
  check t
-  = case checkForest t of
+  = case T.check t of
         Left err        
          -> do  putDoc $ ppError err <> line
                 error "Forest is not well formed."

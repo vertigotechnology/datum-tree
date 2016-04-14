@@ -2,11 +2,11 @@
 module Datum.Console.Dump
         (Dump   (..))
 where
-import Datum.Console.Check
+import qualified Datum.Console.Check    as C
 
 import Datum.Data.Tree.SExp
 import Datum.Data.Tree.Exp
-import Datum.Data.Tree
+import Datum.Data.Tree                  as T
 import Text.PrettyPrint.Leijen
 
 
@@ -22,7 +22,7 @@ instance Dump (Tree 'O) where
 
 instance Dump (Tree 'X) where
  dump t 
-  = case checkTree t of
+  = case T.check t of
         Left err        -> putDoc $ (ppError err <> line)
         Right t'        -> dump t'
 
@@ -34,7 +34,7 @@ instance Dump [Tree 'O] where
 
 instance Dump [Tree 'X] where
  dump ts
-  = do  ts'     <- mapM check ts
+  = do  ts'     <- mapM C.check ts
         mapM_ dump ts'
 
 
@@ -45,7 +45,7 @@ instance Dump (Forest 'O) where
 
 instance Dump (Forest 'X) where
  dump t 
-  = case checkForest t of
+  = case T.check t of
         Left err        -> putDoc $ (ppError err <> line)
         Right t'        -> dump t'
 
@@ -57,7 +57,7 @@ instance Dump [Forest 'O] where
 
 instance Dump [Forest 'X] where
  dump fs
-  = do  fs'     <- mapM check fs
+  = do  fs'     <- mapM C.check fs
         mapM_ dump fs'
 
 
@@ -68,7 +68,7 @@ instance Dump [Key 'O] where
 
 instance Dump [Key 'X] where
  dump ks
-  = case mapM checkKey ks of
+  = case mapM T.check ks of
         Left err        -> putDoc $ (ppError err <> line)
         Right ks'       -> dump ks'
 

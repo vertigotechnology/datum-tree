@@ -4,9 +4,11 @@ module Datum.Console
         ( Dump  (..)
         , CheckIO (..)
         , Save  (..)
-        , loadCSV
         , initial
-        , sample)
+        , sample
+
+        , loadCSV
+        , HasHeader (..))
 where
 import Datum.Console.Dump
 import Datum.Console.Check

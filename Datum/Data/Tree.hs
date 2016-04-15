@@ -14,6 +14,7 @@ module Datum.Data.Tree
         , Forest
         , Key
         , Element
+        , Name
 
           -- * Type Checking
         , Checked (..)
@@ -28,6 +29,9 @@ module Datum.Data.Tree
 
         , forestsOfTree
         , treesOfForest
+
+          -- ** Meta-data
+        , HasFields (..)
 
           -- ** Paths
         , enterTree

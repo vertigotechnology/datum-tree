@@ -12,6 +12,9 @@ module Datum.Data.Tree.Operator
         , forestsOfTree
         , treesOfForest
 
+          -- * Meta-data
+        , HasFields(..)
+
           -- * Paths
         , enterTree
         , enterForest
@@ -57,6 +60,7 @@ where
 import Datum.Data.Tree.Operator.Cast
 import Datum.Data.Tree.Operator.Map
 import Datum.Data.Tree.Operator.Path
+import Datum.Data.Tree.Operator.Meta
 import Datum.Data.Tree.Operator.Project
 import Datum.Data.Tree.Operator.Filter
 import Datum.Data.Tree.Operator.Limit

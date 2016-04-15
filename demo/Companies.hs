@@ -54,3 +54,4 @@ ex6
         dump    $ sample 30
                 $ gatherTree ["root", "row", "row"]
                 $ mapForestOfTree "row" (\p f -> groupForest "col1" f) mempty t
+

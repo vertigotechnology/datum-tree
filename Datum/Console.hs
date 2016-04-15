@@ -21,5 +21,5 @@ import qualified Data.ByteString.Lazy.Char8     as BS8
 loadCSV :: FilePath -> IO (Tree 'O)
 loadCSV path
  = do   bs              <- BS8.readFile path
-        let Right t     =  decodeCSV bs
+        let Right t     =  decodeCSV HasHeader bs
         return  t

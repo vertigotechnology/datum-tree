@@ -51,9 +51,6 @@ decodeCSV hasHeader bs
                 = let  lFields = map BS8.unpack $ V.toList vFields
                   in   B (T $ boxes $ map AText lFields) A.empty
 
-        -- Maximum number of fields in any row.
-        let len = V.maximum $ V.map V.length vvb
-
         return
          $ Tree (branch tuple 
                         (G None $ A.fromList

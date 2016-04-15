@@ -15,6 +15,9 @@ module Datum.Data.Tree.Operator
           -- * Meta-data
         , HasFields(..)
 
+          -- * Data
+        , HasTrees (..)
+
           -- * Paths
         , enterTree
         , enterForest
@@ -70,5 +73,14 @@ import Datum.Data.Tree.Operator.Group
 import Datum.Data.Tree.Operator.Gather
 import Datum.Data.Tree.Operator.Traverse
 import Datum.Data.Tree.Compounds
+import Datum.Data.Tree.Exp
 
+
+class HasTrees obj where
+ mapTrees :: (Path -> obj c -> obj c')
+          ->  Path -> obj c -> obj 'X
+
+
+instance HasTrees Tree where
+ mapTrees = mapTreesOfTree
 

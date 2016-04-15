@@ -42,9 +42,9 @@ maxConfig c1 c2
  where
         maxMaybeFormats mf1 mf2
          = case (mf1, mf2) of
-                (Nothing, mf2)          -> mf2
-                (mf1, Nothing)          -> mf1
-                (Just f1, Just f2)      -> Just $ zipWith lubColumnFormats f1 f2
+                (Nothing, _)       -> mf2
+                (_, Nothing)       -> mf1
+                (Just f1, Just f2) -> Just $ zipWith lubColumnFormats f1 f2
 
 
 -------------------------------------------------------------------------------
@@ -63,10 +63,10 @@ data ColumnFormat
 lubColumnFormats :: ColumnFormat -> ColumnFormat -> ColumnFormat
 lubColumnFormats f1 f2
  = case (f1, f2) of
-        (ColumnUnknown,     f2)
+        (ColumnUnknown,     _)
          -> f2
 
-        (f1,                ColumnUnknown)
+        (_,                ColumnUnknown)
          -> f1
 
         (ColumnText    mi1, ColumnText    mi2) 
@@ -85,9 +85,9 @@ lubColumnFormats f1 f2
 lubMaybeInt :: Maybe Int -> Maybe Int -> Maybe Int
 lubMaybeInt m1 m2
  = case (m1, m2) of
-        (Nothing, m2)           -> m2
-        (m1, Nothing)           -> m1
-        (Just i1, Just i2)      -> Just (max i1 i2)
+        (Nothing, _)       -> m2
+        (_, Nothing)       -> m1
+        (Just i1, Just i2) -> Just (max i1 i2)
 
 
 -- Trees ----------------------------------------------------------------------
@@ -172,7 +172,7 @@ ppGroup config g@(G None bs)
           in    parens  $   text "group" 
                         <$> vsep (map (ppBranch config') $ unboxes bs)
 
-ppGroup config g@(G (Some n) bs)
+ppGroup _config g@(G (Some n) bs)
         | A.length bs == 0
         = parens $ text "group" <+> text (show n)
 

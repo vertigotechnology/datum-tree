@@ -17,7 +17,7 @@ class Dump a where
 
 -- Trees ----------------------------------------------------------------------
 instance Dump (Tree 'O) where
- dump t = putDoc $ (ppTree t <> line)
+ dump t = putDoc $ (ppTree mempty t <> line)
 
 
 instance Dump (Tree 'X) where
@@ -40,7 +40,7 @@ instance Dump [Tree 'X] where
 
 -- Forests --------------------------------------------------------------------
 instance Dump (Forest 'O) where
- dump t = putDoc $ (ppForest t <> line)
+ dump t = putDoc $ (ppForest mempty t <> line)
 
 
 instance Dump (Forest 'X) where
@@ -73,8 +73,6 @@ instance Dump [Key 'X] where
         Right ks'       -> dump ks'
 
 
-
-
 -- Meta ----------------------------------------------------------------------
 instance Dump BranchType where
  dump bt = putDoc $ ppBranchType bt <> line
@@ -99,21 +97,21 @@ instance Dump [AtomType] where
 
 -- Data -----------------------------------------------------------------------
 instance Dump Branch where
- dump b  = putDoc $ ppBranch b <> line
+ dump b  = putDoc $ ppBranch mempty b <> line
 
 instance Dump [Branch] where
  dump bs = mapM_ dump bs
 
 
 instance Dump Group where
- dump g  = putDoc $ ppGroup g <> line
+ dump g  = putDoc $ ppGroup  mempty g <> line
 
 instance Dump [Group] where
  dump gs = mapM_ dump gs
 
 
 instance Dump Tuple where
- dump t  = putDoc $ ppTuple t <> line
+ dump t  = putDoc $ ppTuple mempty t <> line
 
 instance Dump [Tuple] where
  dump ts = mapM_ dump ts

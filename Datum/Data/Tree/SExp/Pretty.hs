@@ -1,15 +1,47 @@
 {-# OPTIONS_HADDOCK hide #-}
 module Datum.Data.Tree.SExp.Pretty where
+import Datum.Data.Tree.Compounds
 import Datum.Data.Tree.Exp
 
 import Text.PrettyPrint.Leijen
+import Data.Maybe
 import Prelude                          hiding ((<$>))
 import Data.Repa.Array                  (Array)
 import qualified Data.Repa.Array        as A
-
+import qualified Data.List              as L
 
 ssym n          = parens $ text n
 sexp n d        = parens $ text n <+> d
+
+
+-------------------------------------------------------------------------------
+-- | Pretty printer configuration.
+data Config
+        = Config
+        { -- Desired column widths, in characters.
+          configColumnWidths    :: Maybe [Int] }
+
+
+instance Monoid Config where
+ mempty = Config
+        { configColumnWidths     = Nothing }
+
+ mappend 
+        (Config mcw1) 
+        (Config mcw2)
+  =     (Config (listToMaybe $ catMaybes [mcw1, mcw2]))
+
+
+-- | Combine two configs, taking the maximum of corresponding column lengths.
+maxConfig :: Config -> Config -> Config
+maxConfig c1 c2
+ = c1   { configColumnWidths     
+                = maxWidths (configColumnWidths c1)
+                            (configColumnWidths c2) }
+ where
+        maxWidths Nothing mcw2          = mcw2
+        maxWidths mcw1    Nothing       = mcw1
+        maxWidths (Just cw1) (Just cw2) = Just (zipWith max cw1 cw2)
 
 
 -- Trees ----------------------------------------------------------------------
@@ -18,25 +50,25 @@ sexp n d        = parens $ text n <+> d
 --   * To display an unchecked tree, split it into the branch and branch type,
 --     then print those separately.
 --
-ppTree :: Tree 'O -> Doc
-ppTree (Tree b bt)
+ppTree :: Config -> Tree 'O -> Doc
+ppTree config (Tree b bt)
         =   sexp "tree"
         $   line
         <>  ppBranchType bt
-        <$> ppBranch b
+        <$> ppBranch     config b
 
 
 -- | Pretty print a checked forest using S-expression syntax.
 --
---   * To dispaly an unchecked tree, split it into the branch and branch type,
+--   * To display an unchecked tree, split it into the branch and branch type,
 --     then print those seprately.
 --
-ppForest :: Forest 'O -> Doc
-ppForest (Forest g bt)
+ppForest :: Config -> Forest 'O -> Doc
+ppForest config (Forest g bt)
         =   sexp "forest"
         $   line
         <>  ppBranchType bt
-        <$> ppGroup g
+        <$> ppGroup      config g
 
 
 -- BranchType -----------------------------------------------------------------
@@ -61,47 +93,66 @@ ppBranchType (BT name tt (bts :: Array (Box BranchType)))
 
 -- Branch ---------------------------------------------------------------------
 -- | Pretty print a `Branch` using S-expression syntax.
-ppBranch :: Branch -> Doc
-ppBranch (B t gs)
+ppBranch :: Config -> Branch -> Doc
+ppBranch config (B t gs)
         | A.length gs == 0
-        = ppTuple t
+        =   ppTuple config t
 
         | otherwise
         =   sexp "branch"  
-        $   ppTuple t 
-        <>  (nest 8 $ line <> vsep (map ppGroup $ unboxes gs))
+        $   ppTuple config t 
+        <>  (nest 8 $ line <> vsep (map (ppGroup config) $ unboxes gs))
+
+
+-- | Slurp a default pretty printer config for a branch.
+configForBranch :: Branch -> Config
+configForBranch (B t _)
+        = configForTuple t
 
 
 -- Group ----------------------------------------------------------------------
 -- | Pretty print a `Group` using S-expression syntax.
-ppGroup :: Group -> Doc
-
-ppGroup (G None bs)
+ppGroup :: Config -> Group -> Doc
+ppGroup config g@(G None bs)
         | A.length bs == 0
         = ssym "group"
 
         | A.length bs == 1
         , [Box b]   <- A.toList bs
-        = ppBranch b
+        = ppBranch config b
 
         | otherwise
-        = parens $  text "group" 
-                <$> vsep (map ppBranch $ unboxes bs)
+        = let   config' = configForGroup g
+          in    parens  $   text "group" 
+                        <$> vsep (map (ppBranch config') $ unboxes bs)
 
-ppGroup (G (Some n) bs)
+ppGroup config g@(G (Some n) bs)
         | A.length bs == 0
         = parens $ text "group" <+> text (show n)
 
         | otherwise
-        = parens $ text "group" <+> text (show n) 
-                <$> vsep (map ppBranch $ unboxes bs)
+        = let   config' = configForGroup g
+          in    parens  $   text "group" <+> text (show n) 
+                        <$> vsep (map (ppBranch config') $ unboxes bs)
+
+
+-- | Slurp a default pretty printer config for a group.
+configForGroup :: Group -> Config
+configForGroup (G _ bs)
+        | all isLeafBranch $ unboxes bs
+        = L.foldl' maxConfig mempty 
+        $ map configForBranch 
+        $ unboxes bs
+
+        | otherwise
+        = mempty
 
 
 -- Keys -----------------------------------------------------------------------
 -- | Pretty print a `Key` using S-expression syntax.
 ppKey :: Key 'O -> Doc
 ppKey (Key t tt)
-        = sexp "key" $ ppTuple t <+> ppTupleType tt
+        = sexp "key" $ ppTuple mempty  t <+> ppTupleType tt
 
 ppKeyList :: [Key 'O] -> Doc
 ppKeyList ks
@@ -139,13 +190,26 @@ ppElementType (Box n :*: Box t)
 
 
 -- | Pretty print a `Tuple` using S-expression syntax.
-ppTuple :: Tuple -> Doc
-ppTuple (T as)
+ppTuple :: Config -> Tuple -> Doc
+ppTuple config (T as)
         | A.length as == 0
         = ssym "tuple"
 
+        | Just nsWidth <- configColumnWidths config
+        = sexp "tuple" 
+        $ hsep  $ [ let str     = show $ ppAtom a
+                    in  text (padR n str)
+                        | a <- unboxes as
+                        | n <- nsWidth ++ [0..]]
+
         | otherwise
         = sexp "tuple" $ (hsep $ map ppAtom $ unboxes as)
+
+-- Slurp a default pretty printer config for a tuple.
+configForTuple :: Tuple -> Config
+configForTuple (T as)
+ = let  lens    = map (length . show . ppAtom) $ unboxes as
+   in   mempty  { configColumnWidths = Just lens }
 
 
 -- Atoms ----------------------------------------------------------------------
@@ -202,8 +266,19 @@ ppIx :: Ix -> Doc
 ppIx ix
  = case ix of
         IField  n       -> parens $ text "ifield"  <+> (text $ show n)
-        ITree   t       -> parens $ text "itree"   <+> ppTuple t
+        ITree   t       -> parens $ text "itree"   <+> ppTuple mempty t
         IForest n       -> parens $ text "iforest" <+> (text $ show n)
 
 
+-------------------------------------------------------------------------------
+{-
+padL :: Int -> String -> String
+padL n str
+        =  replicate (max 0 (n - length str)) ' '
+        ++ str
+-}
 
+padR :: Int -> String -> String
+padR n str
+        =  str
+        ++ replicate (max 0 (n - length str)) ' '

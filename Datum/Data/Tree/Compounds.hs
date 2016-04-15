@@ -8,6 +8,8 @@ module Datum.Data.Tree.Compounds
         , makeTree
         , takeTree
         , forestsOfTree
+        , isLeaf
+        , isLeafBranch
 
           -- * Forests
         , makeForest
@@ -54,10 +56,14 @@ forestsOfTree (Tree (B _k gs) (BT _n _kt bts))
    in   [f | Box f <- A.toList fs]
 
 
--- | Take the sub-trees of a forest.
-treesOfForest :: Forest c -> [Tree c]
-treesOfForest (Forest (G _n bs) bt)
-        = [Tree b bt | Box b <- A.toList bs]
+-- | Check if a tree is a leaf, meaning it has no sub trees.
+isLeaf :: Tree c -> Bool
+isLeaf (Tree (B _ gs) _)
+        = A.length gs == 0
+
+isLeafBranch :: Branch -> Bool
+isLeafBranch (B _ gs)
+        = A.length gs == 0
 
 
 -- Forests --------------------------------------------------------------------
@@ -69,6 +75,12 @@ makeForest b bt = Forest b bt
 -- | Take a branch group and branch type from a forest.
 takeForest :: Forest c  -> (Group, BranchType)
 takeForest (Forest bs bt) = (bs, bt)
+
+
+-- | Take the sub-trees of a forest.
+treesOfForest :: Forest c -> [Tree c]
+treesOfForest (Forest (G _n bs) bt)
+        = [Tree b bt | Box b <- A.toList bs]
 
 
 -- | Make a forest from a shared branch type and a list of trees.

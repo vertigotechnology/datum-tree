@@ -20,7 +20,7 @@ instance Save (Tree a) where
  save file t
   = do  t'      <- check t
         System.withFile file System.WriteMode
-         $ \h -> hPutDoc h (ppTree t' <> line)
+         $ \h -> hPutDoc h (ppTree mempty t' <> line)
 
 
 -- Forest
@@ -28,5 +28,5 @@ instance Save (Forest a) where
  save file t
   = do  t'      <- check t
         System.withFile file System.WriteMode
-         $ \h -> hPutDoc h (ppForest t' <> line)
+         $ \h -> hPutDoc h (ppForest mempty t' <> line)
 

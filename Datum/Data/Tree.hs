@@ -21,6 +21,9 @@ module Datum.Data.Tree
         , Check   (..)
         , Error   (..)
 
+          -- * Predicates
+        , isLeaf
+
           -- * Operators
           -- ** Projections
         , HasName (..)
@@ -75,6 +78,7 @@ module Datum.Data.Tree
         , Final   (..)
         , Sample  (..))
 where
+import Datum.Data.Tree.Compounds
 import Datum.Data.Tree.Operator
 import Datum.Data.Tree.Check
 import Datum.Data.Tree.Exp

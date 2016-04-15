@@ -14,7 +14,10 @@ class HasFields a where
  --
  --   * If there are more new names then the excess ones are dropped.
  -- 
- renameFields :: [Name] -> a -> a
+ renameFields   :: [Name] -> a -> a
+
+ -- | Take the field names of a thing.
+ takeFieldNames :: a -> [Name]
 
 
 instance HasFields TupleType where
@@ -37,19 +40,30 @@ instance HasFields TupleType where
                         | at <- ats    ]
     in  TT nats'        
 
+ takeFieldNames (TT nats)
+        = [ n | Box n :*: _ <- A.toList nats]
+
 
 instance HasFields BranchType where
  renameFields ns' (BT n tt bts)
         = BT n (renameFields ns' tt) bts
+
+ takeFieldNames (BT _ tt _)
+        = takeFieldNames tt
 
 
 instance HasFields (Tree c) where
  renameFields ns'  (Tree b bt)
         = Tree   b (renameFields ns' bt)
 
+ takeFieldNames    (Tree _ bt)
+        = takeFieldNames bt
+
 
 instance HasFields (Forest c) where
  renameFields ns'  (Forest g bt)
         = Forest g (renameFields ns' bt)
 
+ takeFieldNames    (Forest _ bt)
+        = takeFieldNames bt
 

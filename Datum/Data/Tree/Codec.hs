@@ -16,7 +16,6 @@ decodeCSV :: Csv.HasHeader -> BS8.ByteString -> Either String (Tree 'O)
 decodeCSV hasHeader bs
  = do   
         -- Decode the file into a vector of rows of vectors of fields.
-        -- TODO: slurp header in post processing.
         (lsName, vvb)     
          <- case hasHeader of
                 Csv.NoHeader
@@ -63,4 +62,5 @@ decodeCSV hasHeader bs
                 (tbranch "root"
                         (ttuple)
                         (tbranch "row" 
-                                (TT $ A.fromList $ map (\n -> telement n ttext) lsName)))
+                                (TT $ A.fromList 
+                                    $ map (flip telement ttext) lsName)))

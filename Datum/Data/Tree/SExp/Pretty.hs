@@ -19,12 +19,13 @@ sexp n d        = parens $ text n <+> d
 data Config
         = Config
         { -- Desired column widths, in characters.
-          configColumnWidths    :: Maybe [Int] }
+          configColumnFormats   :: Maybe [ColumnFormat] }
+
 
 
 instance Monoid Config where
  mempty = Config
-        { configColumnWidths     = Nothing }
+        { configColumnFormats   = Nothing }
 
  mappend 
         (Config mcw1) 
@@ -35,13 +36,58 @@ instance Monoid Config where
 -- | Combine two configs, taking the maximum of corresponding column lengths.
 maxConfig :: Config -> Config -> Config
 maxConfig c1 c2
- = c1   { configColumnWidths     
-                = maxWidths (configColumnWidths c1)
-                            (configColumnWidths c2) }
+ = c1   { configColumnFormats
+                = maxMaybeFormats (configColumnFormats c1)
+                                  (configColumnFormats c2) }
  where
-        maxWidths Nothing mcw2          = mcw2
-        maxWidths mcw1    Nothing       = mcw1
-        maxWidths (Just cw1) (Just cw2) = Just (zipWith max cw1 cw2)
+        maxMaybeFormats mf1 mf2
+         = case (mf1, mf2) of
+                (Nothing, mf2)          -> mf2
+                (mf1, Nothing)          -> mf1
+                (Just f1, Just f2)      -> Just $ zipWith lubColumnFormats f1 f2
+
+
+-------------------------------------------------------------------------------
+-- | Pretty printer format for a column.
+data ColumnFormat
+        = ColumnUnknown 
+
+        -- | Column of textual values.
+        | ColumnText    (Maybe Int)
+
+        -- | Column of numeric values. 
+        | ColumnNumeric (Maybe Int)
+        deriving Show
+
+
+lubColumnFormats :: ColumnFormat -> ColumnFormat -> ColumnFormat
+lubColumnFormats f1 f2
+ = case (f1, f2) of
+        (ColumnUnknown,     f2)
+         -> f2
+
+        (f1,                ColumnUnknown)
+         -> f1
+
+        (ColumnText    mi1, ColumnText    mi2) 
+         -> ColumnText    (lubMaybeInt mi1 mi2)
+
+        (ColumnNumeric mi1, ColumnNumeric mi2) 
+         -> ColumnNumeric (lubMaybeInt mi1 mi2)
+
+        (ColumnText    mi1, ColumnNumeric mi2)
+         -> ColumnText    (lubMaybeInt mi1 mi2)
+
+        (ColumnNumeric mi1, ColumnText    mi2)
+         -> ColumnText    (lubMaybeInt mi1 mi2)
+
+
+lubMaybeInt :: Maybe Int -> Maybe Int -> Maybe Int
+lubMaybeInt m1 m2
+ = case (m1, m2) of
+        (Nothing, m2)           -> m2
+        (m1, Nothing)           -> m1
+        (Just i1, Just i2)      -> Just (max i1 i2)
 
 
 -- Trees ----------------------------------------------------------------------
@@ -168,7 +214,7 @@ ppKeyNamed (Key (T as) (TT nts))
  where  
         ppAT atom (Box name :*: _)
          =   text name 
-         <+> text "=" <+> ppAtom     atom
+         <+> text "=" <+> ppAtomWithFormat ColumnUnknown atom
 
 
 -- Tuples ---------------------------------------------------------------------
@@ -195,21 +241,22 @@ ppTuple config (T as)
         | A.length as == 0
         = ssym "tuple"
 
-        | Just nsWidth <- configColumnWidths config
+        | Just fs <- configColumnFormats config
         = sexp "tuple" 
-        $ hsep  $ [ let str     = show $ ppAtom a
-                    in  text (padR n str)
+        $ hsep  [ ppAtomWithFormat f a
                         | a <- unboxes as
-                        | n <- nsWidth ++ [0..]]
+                        | f <- fs ++ repeat ColumnUnknown]
 
         | otherwise
-        = sexp "tuple" $ (hsep $ map ppAtom $ unboxes as)
+        = sexp "tuple" $ (hsep $ map (ppAtomWithFormat ColumnUnknown) $ unboxes as)
+
 
 -- Slurp a default pretty printer config for a tuple.
 configForTuple :: Tuple -> Config
 configForTuple (T as)
- = let  lens    = map (length . show . ppAtom) $ unboxes as
-   in   mempty  { configColumnWidths = Just lens }
+        = mempty
+        { configColumnFormats 
+                = Just  $ map formatForAtom $ unboxes as }
 
 
 -- Atoms ----------------------------------------------------------------------
@@ -226,10 +273,12 @@ ppAtomType at
         ATText          -> text "ttext"
         ATTime          -> text "ttime"
 
+ppAtom :: Atom -> Doc
+ppAtom a = ppAtomWithFormat ColumnUnknown a
 
 -- | Pretty print an `Atom` using S-expression syntax.
-ppAtom :: Atom -> Doc
-ppAtom aa
+ppAtomWithFormat :: ColumnFormat -> Atom -> Doc
+ppAtomWithFormat f aa
  = case aa of
         AUnit           
          -> ssym "unit"
@@ -244,16 +293,39 @@ ppAtom aa
          -> sexp "float"   (text $ show d)
 
         ANat  i
+         |  ColumnNumeric  (Just n) <- f
+         -> sexp "nat"     (padL (n - 6) (int i))
+
+         |  otherwise
          -> sexp "nat"     (int i)
 
         ADecimal d 
          -> sexp "decimal" (text $ show d)
 
         AText str
+         |  ColumnText     (Just n) <- f
+         -> sexp "text"    (padR (n - 7) (text $ show str))
+
+         |  otherwise
          -> sexp "text"    (text $ show str)
 
         ATime str
          -> sexp "time"    (text $ show str)
+
+
+-- | Get the default format for an atom.
+formatForAtom :: Atom -> ColumnFormat
+formatForAtom a
+ = let ml       = Just $ length $ show $ ppAtomWithFormat ColumnUnknown a
+   in case a of
+        AUnit           -> ColumnText    ml
+        ABool    _      -> ColumnText    ml
+        AInt     _      -> ColumnNumeric ml
+        AFloat   _      -> ColumnNumeric ml
+        ANat     _      -> ColumnNumeric ml
+        ADecimal _      -> ColumnNumeric ml
+        AText    _      -> ColumnText    ml
+        ATime    _      -> ColumnNumeric ml
 
 
 -- Paths ----------------------------------------------------------------------
@@ -271,14 +343,14 @@ ppIx ix
 
 
 -------------------------------------------------------------------------------
-{-
-padL :: Int -> String -> String
-padL n str
-        =  replicate (max 0 (n - length str)) ' '
-        ++ str
--}
+padL :: Int -> Doc -> Doc
+padL n doc
+        =  text (replicate (max 0 (n - (length $ show doc))) ' ')
+        <> doc
 
-padR :: Int -> String -> String
-padR n str
-        =  str
-        ++ replicate (max 0 (n - length str)) ' '
+
+padR :: Int -> Doc -> Doc
+padR n doc
+        =  doc
+        <> text (replicate (max 0 (n - (length $ show doc))) ' ')
+

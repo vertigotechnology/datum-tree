@@ -51,7 +51,6 @@ module Datum.Data.Tree
         , elementOfKey
         , hasElement
 
-
           -- * Operators
 
           -- ** Paths
@@ -69,8 +68,7 @@ module Datum.Data.Tree
 
         , mapForests
         , mapForests'
-
-        , mapForestOfTree
+        , mapForest'
 
           -- ** Filtering
         , filterTrees

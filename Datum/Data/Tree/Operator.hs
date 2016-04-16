@@ -31,8 +31,16 @@ module Datum.Data.Tree.Operator
 
           -- ** Fields
         , takeFieldNames
-        , elementOfKey
+
+          -- ** Elements
+        , takeElements
+        , takeElement
         , hasElement
+        , extractElement
+
+          -- ** Atoms
+        , takeAtoms
+        , takeAtom
 
           -- * Operators
 
@@ -86,6 +94,7 @@ module Datum.Data.Tree.Operator
         , sample)
 where
 import Datum.Data.Tree.Operator.Cast
+import Datum.Data.Tree.Operator.Elements
 import Datum.Data.Tree.Operator.Extract
 import Datum.Data.Tree.Operator.Fields
 import Datum.Data.Tree.Operator.Forests

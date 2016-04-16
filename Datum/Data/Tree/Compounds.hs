@@ -19,6 +19,7 @@ module Datum.Data.Tree.Compounds
         , forestOfTrees
 
           -- * Keys
+        , elementsOfKey
         , elementOfKey
         , hasElement)
 where
@@ -77,6 +78,7 @@ isLeaf (Tree (B _ gs) _)
 {-# INLINE isLeaf #-}
 
 
+-- | Check if a branch is a leaf, meaning it has no sub branches.
 isLeafBranch :: Branch -> Bool
 isLeafBranch (B _ gs)
         = A.length gs == 0
@@ -118,8 +120,17 @@ forestOfTrees bt@(BT n _ _) trees
                  bt
 
 -- Keys -----------------------------------------------------------------------
+-- | Get all the elements of a key.
+elementsOfKey :: Key c -> [Element c]
+elementsOfKey (Key (T as) (TT nats))
+ = let  (_ns, ats) = unzip 
+                   $ [ (n, at) | (Box n :*: Box at) <- A.toList nats ]
+
+   in   zipWith Element (unboxes as) ats        
+
+
 -- | Get the named element from a key, if there is one.
-elementOfKey :: Name -> Key c -> Maybe (Element c)
+elementOfKey  :: Name -> Key c -> Maybe (Element c)
 elementOfKey n0 (Key (T as) (TT nats))
  = let  
         (ns, ats) = unzip 

@@ -198,7 +198,7 @@ configForGroup (G _ bs)
 -- | Pretty print a `Key` using S-expression syntax.
 ppKey :: Key 'O -> Doc
 ppKey (Key t tt)
-        = sexp "key" $ ppTuple mempty  t <+> ppTupleType tt
+        = sexp "key" $ indent 4 (ppTuple mempty  t <$> ppTupleType tt)
 
 ppKeyList :: [Key 'O] -> Doc
 ppKeyList ks
@@ -242,13 +242,13 @@ ppTuple config (T as)
         = ssym "tuple"
 
         | Just fs <- configColumnFormats config
-        = sexp "tuple" 
+        = sexp "tuple " 
         $ hsep  [ ppAtomWithFormat f a
                         | a <- unboxes as
                         | f <- fs ++ repeat ColumnUnknown]
 
         | otherwise
-        = sexp "tuple" $ (hsep $ map (ppAtomWithFormat ColumnUnknown) $ unboxes as)
+        = sexp "tuple " $ (hsep $ map (ppAtomWithFormat ColumnUnknown) $ unboxes as)
 
 
 -- Slurp a default pretty printer config for a tuple.

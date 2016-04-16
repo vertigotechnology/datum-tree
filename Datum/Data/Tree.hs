@@ -48,8 +48,16 @@ module Datum.Data.Tree
 
           -- ** Fields
         , takeFieldNames
-        , elementOfKey
+
+          -- ** Elements
+        , takeElements
+        , takeElement
         , hasElement
+        , extractElement
+
+          -- ** Atoms
+        , takeAtoms
+        , takeAtom
 
           -- * Operators
 

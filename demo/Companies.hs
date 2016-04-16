@@ -61,12 +61,15 @@ ex6
                 $ gatherTree ["root", "row", "row"]
                 $ mapForests (groupForest "symbol") t
 
+-- | Extract a list of tuples of symbol and names for just
+--   the companies in the Software & Services grouping. 
 ex7
  = do   t <- loadCompanies
-
-        let (ts :: [Name])
-                = mapMaybe (join . fmap extract . elementOfKey "symbol")
+        let (ts :: [(String, String)])
+                = mapMaybe (\p -> do  s <- extractElement "symbol" p
+                                      n <- extractElement "name"   p
+                                      return (s, n))
                 $ filter   (hasElement "grouping" (text "Software & Services"))
                 $ keysOfTree t
 
-        dump    $ ts
+        putStrLn $ unlines $ map show ts

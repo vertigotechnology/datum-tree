@@ -53,6 +53,18 @@ instance Strippable (Forest c) BranchType where
 
 
 -------------------------------------------------------------------------------
+instance Strippable (Element c) Atom where
+ strip (Element a _)  = a
+ {-# INLINE strip #-}
+
+
+instance Strippable (Element c) AtomType where
+ strip (Element _ at) = at
+ {-# INLINE strip #-}
+
+
+
+-------------------------------------------------------------------------------
 instance Strippable BranchType Name where
  strip (BT n _ _) = n
  {-# INLINE strip #-}

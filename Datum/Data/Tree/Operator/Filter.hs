@@ -1,6 +1,6 @@
 
 module Datum.Data.Tree.Operator.Filter
-        ( filterTree
+        ( filterTreesOfTree
         , filterForestsOfTree
         , filterTreesOfForest)
 where
@@ -16,8 +16,8 @@ import Datum.Data.Tree.Exp
 --   * This is a shallow filter. We only consider the direct sub-trees of
 --     the provided one.
 --
-filterTree :: (Path -> Tree c -> Bool) -> Path -> Tree c -> Tree c
-filterTree p path tree 
+filterTreesOfTree :: (Path -> Tree c -> Bool) -> Path -> Tree c -> Tree c
+filterTreesOfTree p path tree 
  = promiseTree
  $ applyForestsOfTree 
         (\ forests 

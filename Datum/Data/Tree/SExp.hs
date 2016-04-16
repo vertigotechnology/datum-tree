@@ -51,6 +51,7 @@ module Datum.Data.Tree.SExp
         , ppForest
         , ppKey
         , ppKeyList
+        , ppElement
         , ppError
 
         -- ** Types
@@ -63,6 +64,7 @@ module Datum.Data.Tree.SExp
         , ppGroup
         , ppTuple
         , ppAtom
+        , ppName
 
         -- * Helper Classes
         , MakeBranchType

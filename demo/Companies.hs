@@ -1,6 +1,7 @@
 
 module Companies
 where
+import Datum.Data.Tree.Operator.Extract
 import Datum.Data.Tree
 import Datum.Console
 
@@ -10,10 +11,9 @@ file    = "demo/data/ASXListedCompanies.csv"
 
 loadCompanies
  = do   t <- loadCSV file
-        return  $  mapTreesOfTree 
-                        (\_ -> renameFields ["name", "symbol", "grouping"]) 
-                        mempty t 
+        return  $ mapTrees (renameFields ["name", "symbol", "grouping"]) t
  
+
 -- | Load the file and display a sample.
 --   We take 10 rows from the data with uniform spacing.
 ex1 
@@ -31,8 +31,8 @@ ex2
 --   The sampling mechanism will take 5 branches from every group.
 ex3
  = do   t <- loadCompanies
-        dump    $ sample 5
-                $ mapForestOfTree "row" (\p f -> groupForest "grouping" f) mempty t
+        dump    $ sample 5 
+                $ mapForests (groupForest "grouping") t
 
 
 -- | Gathering the leaves lifts them back to the top-level while 
@@ -41,7 +41,7 @@ ex4
  = do   t <- loadCompanies
         dump    $ sample 30
                 $ gatherTree ["root", "row", "row"]
-                $ mapForestOfTree "row" (\p f -> groupForest "grouping" f) mempty t
+                $ mapForests (groupForest "grouping") t
 
 
 -- | By sampling before grouping we get 5 whole groups of up to 5 elements,
@@ -51,7 +51,7 @@ ex5
         dump    $ map takeData $ keysOfTree
                 $ gatherTree ["root", "row", "row"]
                 $ sample 5
-                $ mapForestOfTree "row" (\p f -> groupForest "grouping" f) mempty t
+                $ mapForests (groupForest "grouping") t
 
 
 -- | Grouping on the symbol instead brings that column to the front.
@@ -59,5 +59,14 @@ ex6
  = do   t <- loadCompanies
         dump    $ sample 30
                 $ gatherTree ["root", "row", "row"]
-                $ mapForestOfTree "row" (\p f -> groupForest "symbol" f) mempty t
+                $ mapForests (groupForest "symbol") t
 
+ex7
+ = do   t <- loadCompanies
+
+        let (ts :: [Name])
+                = mapMaybe (join . fmap extract . elementOfKey "symbol")
+                $ filter   (hasElement "grouping" (text "Software & Services"))
+                $ keysOfTree t
+
+        dump    $ ts

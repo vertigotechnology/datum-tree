@@ -40,6 +40,12 @@ Library
         Datum.Data.Tree.Compounds
         Datum.Data.Tree.Codec
         Datum.Data.Tree.Operator
+        Datum.Data.Tree.Operator.Extract
+        Datum.Data.Tree.Operator.Fields
+        Datum.Data.Tree.Operator.Project
+        Datum.Data.Tree.Operator.Strip
+        Datum.Data.Tree.Operator.Trees
+        Datum.Data.Tree.Operator.Limit
         Datum.Data.Tree.SExp
 
 
@@ -55,16 +61,15 @@ Library
         Datum.Data.Tree.Operator.Filter
         Datum.Data.Tree.Operator.Gather
         Datum.Data.Tree.Operator.Group
-        Datum.Data.Tree.Operator.Limit
         Datum.Data.Tree.Operator.Map
         Datum.Data.Tree.Operator.Path
-        Datum.Data.Tree.Operator.Project
         Datum.Data.Tree.Operator.Reduce
         Datum.Data.Tree.Operator.Slice
         Datum.Data.Tree.Operator.Traverse
 
         
  extensions:
+        MultiParamTypeClasses
         ScopedTypeVariables
         FlexibleInstances
         FlexibleContexts

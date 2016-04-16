@@ -109,22 +109,18 @@ ex2     = dump
 
 -- | Filter top-level of tree to keep only named dimensions.
 ex3_1   = dump 
-        $ filterForestsOfTree (\p f -> takeName f == "company")  mempty tStock
+        $ filterForests (hasName "company")  tStock
 
 ex3_2   = dump 
-        $ filterForestsOfTree (\p f -> takeName f == "exchange") mempty tStock
+        $ filterForests (hasName "exchange") tStock
 
 
 -- | Filter second level of tree to keep only named dimensions.
 ex4_1   = dump
-        $ mapTreesOfTree 
-                (filterForestsOfTree (\p f -> takeName f == "transaction")) 
-                mempty tStock
+        $ mapTrees (filterForests (hasName "transaction")) tStock
 
 ex4_2   = dump
-        $ mapTreesOfTree 
-                (filterForestsOfTree (\p f -> takeName f == "office")) 
-                mempty tStock
+        $ mapTrees (filterForests (hasName "office"))      tStock
 
 
 -- | Slice tree to retain only data on the given paths.

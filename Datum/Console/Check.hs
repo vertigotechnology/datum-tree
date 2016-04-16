@@ -2,7 +2,7 @@
 module Datum.Console.Check
         (CheckIO (..))
 where
-import Datum.Data.Tree.SExp
+import Datum.Data.Tree.Check
 import Datum.Data.Tree.Exp
 import Datum.Data.Tree          as T
 import Text.PrettyPrint.Leijen

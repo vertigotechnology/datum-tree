@@ -6,9 +6,12 @@ module Datum.Console
         , Save  (..)
         , initial
         , sample
-
         , loadCSV
-        , HasHeader (..))
+        , HasHeader (..)
+
+        , module Datum.Data.Tree.SExp
+        , module Control.Monad
+        , module Data.Maybe)
 where
 import Datum.Console.Dump
 import Datum.Console.Check
@@ -16,6 +19,10 @@ import Datum.Console.Save
 
 import Datum.Data.Tree
 import Datum.Data.Tree.Codec
+import Datum.Data.Tree.SExp
+
+import Control.Monad
+import Data.Maybe
 import qualified Data.ByteString.Lazy.Char8     as BS8
 
 

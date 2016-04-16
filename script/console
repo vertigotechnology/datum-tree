@@ -1,7 +1,9 @@
 #!/bin/sh
 
 ghci    -XScopedTypeVariables -XDataKinds -XTypeFamilies \
-        -XParallelListComp    -XFlexibleInstances -XFlexibleContexts \
+        -XParallelListComp \
+        -XFlexibleInstances -XFlexibleContexts \
+        -XMultiParamTypeClasses \
         -XTypeOperators       -XBangPatterns \
         Datum.Console \
         $1 $2 $3 $4

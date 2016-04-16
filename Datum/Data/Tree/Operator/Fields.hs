@@ -1,5 +1,5 @@
 
-module Datum.Data.Tree.Operator.Meta
+module Datum.Data.Tree.Operator.Fields
         (HasFields (..))
 where
 import Datum.Data.Tree.Exp
@@ -7,7 +7,10 @@ import qualified Data.Repa.Array        as A
 
 
 class HasFields a where
- -- | Rename the fields in a thing.
+ -- | Take the field names of an object.
+ takeFieldNames :: a -> [Name]
+
+ -- | Rename the fields of an object.
  -- 
  --   * If there are less new names than there are fields in the thing
  --     then the initial ones are renamed and the rest are preserved.
@@ -16,8 +19,6 @@ class HasFields a where
  -- 
  renameFields   :: [Name] -> a -> a
 
- -- | Take the field names of a thing.
- takeFieldNames :: a -> [Name]
 
 
 instance HasFields TupleType where

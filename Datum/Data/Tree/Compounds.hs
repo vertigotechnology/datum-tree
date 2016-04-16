@@ -7,6 +7,7 @@ module Datum.Data.Tree.Compounds
           -- * Trees
         , makeTree
         , takeTree
+        , treesOfTree
         , forestsOfTree
         , isLeaf
         , isLeafBranch
@@ -15,7 +16,11 @@ module Datum.Data.Tree.Compounds
         , makeForest
         , takeForest
         , treesOfForest
-        , forestOfTrees)
+        , forestOfTrees
+
+          -- * Keys
+        , elementOfKey
+        , hasElement)
 where
 import Datum.Data.Tree.Exp
 import Datum.Data.Tree.Operator.Project
@@ -41,11 +46,20 @@ emptyForest
 -- | Make a tree from a branch and its branch type.
 makeTree :: Branch -> BranchType -> Tree 'X
 makeTree b bt = Tree b bt
+{-# INLINE makeTree #-}
 
 
 -- | Take the branch and branch type from a tree.
 takeTree :: Tree c -> (Branch, BranchType)
 takeTree (Tree b bt) = (b, bt)
+{-# INLINE takeTree #-}
+
+
+-- | Take the sub-trees of a tree.
+treesOfTree :: Tree c -> [Tree c]
+treesOfTree (Tree (B _k gs) (BT _n _kt bts))
+  = let Just fs = A.map2 (\(Box g) (Box bt) -> Box (Forest g bt)) gs bts
+    in  concat [treesOfForest f | Box f <- A.toList fs]
 
 
 -- | Take the sub-forests of tree.
@@ -60,21 +74,26 @@ forestsOfTree (Tree (B _k gs) (BT _n _kt bts))
 isLeaf :: Tree c -> Bool
 isLeaf (Tree (B _ gs) _)
         = A.length gs == 0
+{-# INLINE isLeaf #-}
+
 
 isLeafBranch :: Branch -> Bool
 isLeafBranch (B _ gs)
         = A.length gs == 0
+{-# INLINE isLeafBranch #-}
 
 
 -- Forests --------------------------------------------------------------------
 -- | Make a forest from a branch group and its shared branchtype..
 makeForest :: Group -> BranchType -> Forest 'X
 makeForest b bt = Forest b bt
+{-# INLINE makeForest #-}
 
 
 -- | Take a branch group and branch type from a forest.
 takeForest :: Forest c  -> (Group, BranchType)
 takeForest (Forest bs bt) = (bs, bt)
+{-# INLINE takeForest #-}
 
 
 -- | Take the sub-trees of a forest.
@@ -97,4 +116,34 @@ forestOfTrees bt@(BT n _ _) trees
         = Forest (G (Some n) 
                     (A.fromList $ map (box . takeData) trees)) 
                  bt
+
+-- Keys -----------------------------------------------------------------------
+-- | Get the named element from a key, if there is one.
+elementOfKey :: Name -> Key c -> Maybe (Element c)
+elementOfKey n0 (Key (T as) (TT nats))
+ = let  
+        (ns, ats) = unzip 
+                  $ [ (n, at) | (Box n :*: Box at) <- A.toList nats ]
+
+        mix       = lookup n0 $ zip ns [(0 :: Int) ..]
+
+   in   case mix of
+         Nothing 
+          -> Nothing
+
+         Just ix
+          |  Just a  <- lookup ix $ zip [0..] $ unboxes as
+          ,  Just at <- lookup ix $ zip [0..] ats
+          -> Just (Element a at)
+
+          | otherwise
+          -> Nothing
+
+
+-- | Check if this thing has a key with the given element value.
+hasElement :: HasKey a => Name -> Atom -> a c -> Bool
+hasElement n a x
+ = case elementOfKey n (takeKey x) of
+        Nothing                 -> False
+        Just (Element a' _)     -> a == a'
 

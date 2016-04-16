@@ -328,6 +328,18 @@ formatForAtom a
         ATime    _      -> ColumnNumeric ml
 
 
+-- | Pretty print an element.
+ppElement :: Element c -> Doc
+ppElement (Element a at)
+ = parens $   text "element"
+          <+> (hsep [ppAtom a, ppAtomType at])
+
+
+-- Names ----------------------------------------------------------------------
+ppName :: Name -> Doc
+ppName n = text n
+
+
 -- Paths ----------------------------------------------------------------------
 ppPath :: Path -> Doc
 ppPath (Path ixs _ixts)

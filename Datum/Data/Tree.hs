@@ -14,27 +14,45 @@ module Datum.Data.Tree
         , Forest
         , Key
         , Element
+        , Atom
         , Name
 
-          -- * Type Checking
+          -- * Checking
         , Checked (..)
-        , Check   (..)
-        , Error   (..)
+        , check
+        , check'
 
           -- * Predicates
         , isLeaf
 
-          -- * Operators
-          -- ** Projections
-        , HasName (..)
-        , HasMeta (..)
-        , HasData (..)
-
-        , forestsOfTree
-        , treesOfForest
+          -- * Projections
+          -- ** Names
+        , takeName
+        , hasName
 
           -- ** Meta-data
-        , HasFields (..)
+        , takeMeta
+
+          -- ** Data
+        , takeData
+
+          -- ** Trees
+        , takeTrees
+
+          -- ** Forests
+        , takeForests
+
+          -- ** Keys
+        , takeKey
+        , hasKey
+
+          -- ** Fields
+        , takeFieldNames
+        , elementOfKey
+        , hasElement
+
+
+          -- * Operators
 
           -- ** Paths
         , enterTree
@@ -42,11 +60,24 @@ module Datum.Data.Tree
         , pathIncludesName
         , onPath 
 
+          -- ** Renaming
+        , renameFields
+
           -- ** Mapping
-        , mapTreesOfTree
-        , mapTreesOfForest
-        , mapForestsOfTree
+        , mapTrees
+        , mapTrees'
+
+        , mapForests
+        , mapForests'
+
         , mapForestOfTree
+
+          -- ** Filtering
+        , filterTrees
+        , filterTrees'
+
+        , filterForests
+        , filterForests'
 
           -- ** Reducing
         , reduceTree
@@ -54,11 +85,6 @@ module Datum.Data.Tree
 
         , keysOfTree
         , sizeOfTree
-
-          -- ** Filtering
-        , filterTree
-        , filterTreesOfForest
-        , filterForestsOfTree
         
           -- ** Slicing
         , sliceTree
@@ -74,9 +100,9 @@ module Datum.Data.Tree
         , traverseTree
 
           -- ** Limiting
-        , Initial (..)
-        , Final   (..)
-        , Sample  (..))
+        , initial
+        , final
+        , sample)
 where
 import Datum.Data.Tree.Compounds
 import Datum.Data.Tree.Operator

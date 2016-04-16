@@ -62,15 +62,45 @@ instance Dump [Forest 'X] where
 
 
 -- Key ------------------------------------------------------------------------
+instance Dump (Key 'O) where
+ dump k  = putDoc $ ppKey k <> line
+
+instance Dump (Key 'X) where
+ dump k  
+  = case T.check k of
+        Left err        -> putDoc $ ppError err <> line
+        Right k'        -> dump k'
+
+
 instance Dump [Key 'O] where
  dump ks = putDoc $ (ppKeyList ks <> line)
-
 
 instance Dump [Key 'X] where
  dump ks
   = case mapM T.check ks of
-        Left err        -> putDoc $ (ppError err <> line)
+        Left err        -> putDoc $ ppError err <> line
         Right ks'       -> dump ks'
+
+
+-- Element -------------------------------------------------------------------
+instance Dump (Element 'O) where
+ dump e  = putDoc $ ppElement e <> line
+
+instance Dump (Element 'X) where
+ dump e
+  = case T.check e of
+        Left err        -> putDoc $ ppError err <> line
+        Right e'        -> dump e'
+
+
+instance Dump [Element 'O] where
+ dump es = mapM_ dump es
+
+instance Dump [Element 'X] where
+ dump es 
+  = case mapM T.check es of
+        Left err        -> putDoc $ ppError err <> line
+        Right es'       -> dump es'
 
 
 -- Meta ----------------------------------------------------------------------
@@ -122,4 +152,11 @@ instance Dump Atom where
 
 instance Dump [Atom] where
  dump as = mapM_ dump as
+
+
+instance Dump Name where
+ dump n  = putDoc $ ppName n <> line
+
+instance Dump [Name] where
+ dump ns = mapM_ dump ns
 

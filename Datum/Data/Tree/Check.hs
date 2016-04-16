@@ -18,12 +18,12 @@ class Monoid (Path' a) => Check a where
  type Path'    a
 
  -- | Type check an object.
- check          ::            a -> Either Error (Checked' a)
- check = checkOnPath mempty
+ check  ::            a -> Either Error (Checked' a)
+ check = check' mempty
 
  -- | Type check an object that is on the given path in the tree.
  --   The path is used for error reporting only.
- checkOnPath    :: Path' a -> a -> Either Error (Checked' a)
+ check' :: Path' a -> a -> Either Error (Checked' a)
 
 
 -------------------------------------------------------------------------------
@@ -31,13 +31,13 @@ instance Check BranchType where
  type Checked' BranchType = BranchType
  type Path'    BranchType = PathType
 
- checkOnPath  (PathType pts) bt@(BT _n tKey subs)
+ check'  (PathType pts) bt@(BT _n tt subs)
   = do
         let pts'        = ITForest bt : pts
         let tPath'      = PathType pts'
 
         -- Check the tuple type.
-        checkOnPath tPath' tKey
+        _ <- check' tPath' tt
 
         -- Check that sub dimension names do not clash.
         let nsSub       = [n | Box (BT n _ _) <- A.toList subs]
@@ -45,7 +45,7 @@ instance Check BranchType where
          $ throwError $ ErrorClashSubDim tPath' nsSub
 
         -- Check the sub dimension shapes.
-        mapM_ (checkOnPath tPath') 
+        mapM_ (check' tPath') 
                 [b | Box b <- A.toList subs]
 
         return bt
@@ -55,7 +55,7 @@ instance Check TupleType where
  type Checked' TupleType = TupleType
  type Path'    TupleType = PathType
 
- checkOnPath path tt@(TT nts)
+ check' path tt@(TT nts)
   = do
         -- Check that field names do not clash.
         let nsField     = [n | Box n :*: _   <- A.toList nts]
@@ -70,8 +70,7 @@ instance Check (Tree c) where
  type Checked' (Tree c) = Tree 'O
  type Path'    (Tree c) = Path
 
- checkOnPath 
-        (Path ps pts) 
+ check' (Path ps pts) 
         (Tree b@(B t subs) bt@(BT name tt@(TT _nts) tsSub))
   = do
         let ps'         = IForest name : ps
@@ -80,10 +79,10 @@ instance Check (Tree c) where
         let tPath'      = PathType pts'
 
         -- Check the tuple type.
-        checkOnPath tPath' tt 
+        _ <- check' tPath' tt 
 
         -- Check the key matches its type.
-        checkOnPath path'  (Key t tt)
+        _ <- check' path'  (Key t tt)
 
         -- Check that the number of sub trees matches the number of
         -- sub dimensions.
@@ -96,7 +95,7 @@ instance Check (Tree c) where
          $ throwError $ ErrorClashSubDim tPath' nsSub
 
         -- Check each of the sub forests.
-        mapM_   (checkOnPath path') 
+        mapM_   (check' path') 
                 $ zipWith Forest (unboxes subs) (unboxes tsSub)
 
         return (Tree b bt)
@@ -107,8 +106,8 @@ instance Check (Forest c) where
  type Checked' (Forest c) = Forest 'O
  type Path'    (Forest c) = Path
 
- checkOnPath path (Forest g@(G _n bs) bt)
-  = do  mapM_   (\b -> checkOnPath path (Tree b bt))
+ check' path (Forest g@(G _n bs) bt)
+  = do  mapM_   (\b -> check' path (Tree b bt))
                 [b | Box b <- A.toList bs]
 
         return  (Forest g bt)
@@ -119,8 +118,7 @@ instance Check (Key c) where
  type Checked' (Key c) = Key 'O
  type Path'    (Key c) = Path
 
- checkOnPath 
-        path@(Path _ps _pts) 
+ check' path@(Path _ps _pts) 
         (Key t@(T fields) tt@(TT nts))
   = do   
         -- Check that the number of fields matches the tuple type.
@@ -129,7 +127,7 @@ instance Check (Key c) where
 
         zipWithM_
                 (\  field (_name :*: Box tField)
-                 ->     checkOnPath path (Element field tField))
+                 ->     check' path (Element field tField))
                 (unboxes fields)
                 (A.toList nts)
 
@@ -141,7 +139,7 @@ instance Check (Element c) where
  type Checked' (Element c) = Element 'O
  type Path'    (Element c) = Path
 
- checkOnPath path (Element a at)
+ check' path (Element a at)
   = case (a, at) of
         (AUnit,         ATUnit)     -> return (Element a at)
         (ABool _,       ATBool)     -> return (Element a at)

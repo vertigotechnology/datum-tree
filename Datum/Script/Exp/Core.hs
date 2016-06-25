@@ -20,6 +20,8 @@ module Datum.Script.Exp.Core
 
           -- types
         , pattern XTS
+        , pattern XTList
+        , pattern XTName
         , pattern XTTree
         , pattern XTTreePath
         , pattern XTFilePath
@@ -33,6 +35,9 @@ module Datum.Script.Exp.Core
         , pattern XTTime
 
           -- values
+        , pattern XName
+        , pattern XList
+        , pattern XTree
         , pattern XTreePath
         , pattern XFilePath
 
@@ -48,6 +53,7 @@ module Datum.Script.Exp.Core
         , pattern XLoad
         , pattern XStore
         , pattern XGather
+        , pattern XRenameFields
 
         , typeOfPrim
         , typeOfAtom)
@@ -124,25 +130,30 @@ data Prim
 
         -- Types  (level 1)
         | PTS                           -- ^ State computation constructor.
+        | PTList                        -- ^ List type constructor.
 
+        | PTName                        -- ^ Name type.
         | PTTree                        -- ^ Datum tree type.
         | PTTreePath                    -- ^ Datum tree path type.
         | PTFilePath                    -- ^ FilePath type.
 
-        | PTAtom T.AtomType             -- ^ Atom types.
+        | PTAtom    T.AtomType          -- ^ Atom types.
  
         -- Values (level 0)
-        | PTreePath     [Text]          -- ^ A datum tree path.
-        | PFilePath     FilePath        -- ^ A file path.
+        | PName     Text                -- ^ Field or branch name.
+        | PList     Exp [Exp]           -- ^ List of elements of the given type.
+        | PTree     (T.Tree 'T.O)       -- ^ A checked datum tree.
+        | PTreePath [Text]              -- ^ A datum tree path.
+        | PFilePath FilePath            -- ^ A file path.
 
-        | PAtom  T.Atom                 -- ^ Atoms.
+        | PAtom      T.Atom             -- ^ Atoms.
 
         | PLoad                         -- ^ Load  a value from the file system.
         | PStore                        -- ^ Store a value to the file system.
         | PGather                       -- ^ Gather branches of a tree into sub trees.
+        | PRenameFields                 -- ^ Rename fields of key.
 
 deriving instance Show Prim
-deriving instance Eq   Prim
 
 -- Generic
 pattern XType n         = XPrim (PType n)
@@ -150,8 +161,10 @@ pattern XFun  n a b     = XApp (XApp (XPrim (PFun n)) a) b
 
 -- Types
 pattern XTS a           = XApp (XPrim PTS) a
+pattern XTList a        = XApp (XPrim PTList) a
 
-pattern XTTree          = XPrim (PTTree)
+pattern XTName          = XPrim PTName
+pattern XTTree          = XPrim PTTree
 pattern XTTreePath      = XPrim PTTreePath
 pattern XTFilePath      = XPrim PTFilePath
 
@@ -165,6 +178,9 @@ pattern XTText          = XPrim (PTAtom T.ATText)
 pattern XTTime          = XPrim (PTAtom T.ATTime)
 
 -- Values
+pattern XName     n     = XPrim (PName     n)
+pattern XList     t xs  = XPrim (PList     t xs)
+pattern XTree     t     = XPrim (PTree     t)
 pattern XTreePath ts    = XPrim (PTreePath ts)
 pattern XFilePath fp    = XPrim (PFilePath fp)
 
@@ -180,6 +196,8 @@ pattern XTime     x     = XPrim (PAtom (T.ATime    x))
 pattern XLoad           = XPrim PLoad
 pattern XStore          = XPrim PStore
 pattern XGather         = XPrim PGather
+pattern XRenameFields   = XPrim PRenameFields
+
 
 (~>) a b  = XApp (XApp (XPrim (PFun 1)) a) b
 infixr ~>
@@ -208,7 +226,9 @@ typeOfPrim pp
 
         -- Types of Types
         PTS             -> XType 1 ~~> XType 1
+        PTList          -> XType 1 ~~> XType 1
 
+        PTName          -> XType 1
         PTTree          -> XType 1
         PTTreePath      -> XType 1
         PTFilePath      -> XType 1
@@ -216,6 +236,9 @@ typeOfPrim pp
         PTAtom _        -> XType 1
 
         -- Types of Values
+        PName _         -> XTName
+        PList t _       -> XTList t
+        PTree  _        -> XTTree
         PTreePath  _    -> XTTreePath
         PFilePath  _    -> XTFilePath
 
@@ -224,6 +247,7 @@ typeOfPrim pp
         PLoad           -> XTFilePath ~> XTS XTTree
         PStore          -> XTFilePath ~> XTTree ~> XTS XTUnit
         PGather         -> XTTreePath ~> XTTree ~> XTTree
+        PRenameFields   -> XTList XTName ~> XTTree ~> XTTree
 
 
 -- | Yield the type of the given atom.

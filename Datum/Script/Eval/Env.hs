@@ -2,6 +2,8 @@
 module Datum.Script.Eval.Env
         ( Env   (..)
         , Value (..)
+        , pattern VVPrim
+
         , empty
         , lookup
         , insert)
@@ -22,6 +24,8 @@ data Value
         | VPrim    !Prim ![Value]
 
 deriving instance Show Value
+
+pattern VVPrim p        = VPrim p []
 
 
 -- | Environment holding names of bound variables.

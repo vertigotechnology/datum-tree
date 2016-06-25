@@ -20,7 +20,7 @@ main
 
 
 eval state
- = do   putStrLn $ ppShow state
+ = do   -- putStrLn $ ppShow state
         result  <- step state
         case result of 
          Left  err              -> error $ show err

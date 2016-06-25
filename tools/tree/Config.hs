@@ -31,15 +31,28 @@ parseArgs []   config
 
 parseArgs args config
  | "-load"   : file : rest <- args
- = parseArgs rest  $ pushPipeline config (XApp XLoad  (XFilePath file))
+ = parseArgs rest
+        $ pushPipeline config
+        $ XApp XLoad  (XFilePath file)
 
  | "-store"  : file : rest <- args
- = parseArgs rest  $ pushPipeline config (XApp XStore (XFilePath file))
+ = parseArgs rest
+        $ pushPipeline config 
+        $ XApp XStore (XFilePath file)
+
+ | "-rename-fields" : rest        <- args
+ , (names, rest') <- List.break (List.isPrefixOf "-") rest
+ , names'         <- map Text.pack names
+ = parseArgs rest'
+        $ pushPipeline config 
+        $ XApp XRenameFields (XList XTName $ map XName names')
 
  | "-gather" : rest        <- args
- , (keys, rest') <- List.break (List.isPrefixOf "-") rest
- , keys'         <- map Text.pack keys
- = parseArgs rest' $ pushPipeline config (XApp XGather (XTreePath keys'))
+ , (keys,  rest') <- List.break (List.isPrefixOf "-") rest
+ , keys'          <- map Text.pack keys
+ = parseArgs rest'
+        $ pushPipeline config 
+        $ XApp XGather (XTreePath keys')
 
  | otherwise
  = error "usage"

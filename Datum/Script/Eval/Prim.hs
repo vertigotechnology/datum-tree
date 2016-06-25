@@ -29,7 +29,7 @@ step PVLoad      [VFilePath filePath]
                 let Right t     =  T.decodeCSV T.HasHeader bs        
                 return $ Right (VPrim (PVTree t) [])
 
-        _ ->    return $ Left  (ErrorPrim (ErrorStoreUnknownFileFormat filePath))
+        _ ->    return $ Left $ ErrorPrim $ ErrorStoreUnknownFileFormat filePath
 
 
 -- Store to the file system.
@@ -44,23 +44,41 @@ step PVStore     [VFilePath filePath, VTree tree]
         _ ->    return $ Left $ ErrorPrim $ ErrorLoadUnknownFileFormat filePath
 
 
+-- Take the initial n branches of each subtree.
+step PVInitial   [VNat n, VTree tree]
+ =      return  $ Right $ VTree $ T.initial n tree
+
+
+-- Take the final n branches of each subtree.
+step PVFinal     [VNat n, VTree tree]
+ =      return  $ Right $ VTree $ T.final n tree
+
+
+-- Sample n intermediate branches of each subtree.
+step PVSample    [VNat n, VTree tree]
+ =      return  $ Right $ VTree $ T.sample n tree
+
+
 -- Gather subtrees.
 step PVGather    [VTreePath treePath, VTree tree]
  = do   let path' = map Text.unpack treePath
-        let tree' = T.gatherTree path' tree
-        return  $ Right (VVPrim (PVTree tree'))
+        return  $ Right $ VTree $ T.gatherTree path' tree
 
+        
+-- Group by a given key.
+-- TODO: need a way to specify the correct level.
+step PVGroup   [VName name, VTree tree]
+ =      return  $ Right $ VTree 
+                $ T.promiseTree
+                $ T.mapForests (T.groupForest $ Text.unpack name) tree
 
 -- Rename fields in a tree.
+-- TODO: need a way to specify the correct level.
 step PVRenameFields [ VList XTName names, VTree tree ]
  = do   let names' = [ Text.unpack n | XName n <- names]
-
-        -- PROMISE: Renaming fields renames the meta-data, 
-        --          so the result is well typed.
-        let tree'  = T.promiseTree
-                   $ T.mapTrees (T.renameFields names') tree
-
-        return  $ Right (VVPrim (PVTree tree'))
+        return  $ Right $ VTree
+                $ T.promiseTree
+                $ T.mapTrees (T.renameFields names') tree
 
 step p args
  = do   return  $ Right (VPrim p args)

@@ -40,6 +40,10 @@ data GPrim l
 
         | PVLoad                        -- ^ Load  a value from the file system.
         | PVStore                       -- ^ Store a value to the file system.
+        | PVInitial                     -- ^ Select the initial n branches of each subtree.
+        | PVFinal                       -- ^ Select the final n branches of each subtree.
+        | PVSample                      -- ^ Sample n intermediate branches of each subtree.
+        | PVGroup                       -- ^ Group branches by given key field.
         | PVGather                      -- ^ Gather branches of a tree into sub trees.
         | PVRenameFields                -- ^ Rename fields of key.
 
@@ -87,7 +91,11 @@ typeOfPrim pp
 
         PVLoad          -> XTFilePath ~> XTS XTTree
         PVStore         -> XTFilePath ~> XTTree ~> XTS XTUnit
-        PVGather        -> XTTreePath ~> XTTree ~> XTTree
+        PVInitial       -> XTNat         ~> XTTree ~> XTTree
+        PVFinal         -> XTNat         ~> XTTree ~> XTTree
+        PVSample        -> XTNat         ~> XTTree ~> XTTree
+        PVGroup         -> XTName        ~> XTTree ~> XTTree
+        PVGather        -> XTTreePath    ~> XTTree ~> XTTree
         PVRenameFields  -> XTList XTName ~> XTTree ~> XTTree
 
 
@@ -146,6 +154,10 @@ pattern XTime     x     = XPrim (PVAtom (T.ATime    x))
 
 pattern XLoad           = XPrim PVLoad
 pattern XStore          = XPrim PVStore
+pattern XInitial        = XPrim PVInitial
+pattern XFinal          = XPrim PVFinal
+pattern XSample         = XPrim PVSample
+pattern XGroup          = XPrim PVGroup
 pattern XGather         = XPrim PVGather
 pattern XRenameFields   = XPrim PVRenameFields
 

@@ -1,0 +1,142 @@
+Name:           datum-tree
+Version:        1.0.0.0
+License:        AllRightsReserved
+License-file:   LICENSE
+Author:         Vergo
+Maintainer:     Ben Lippmeier <benl@ouroborus.net>
+Build-Type:     Simple
+Cabal-Version:  >=1.8
+Stability:      experimental
+Bug-reports:    benl@ouroborus.net
+Description:    Datum Data Structures
+Synopsis:       Datum Data Structures
+
+Executable datum-tree
+ hs-source-dirs: tools/tree .
+ main-is:        Main.hs
+ build-depends:
+        base                    == 4.9.*,
+        data-default            >= 0.7.1        && < 0.8,
+        pretty-show             >= 1.6.10       && < 1.7,
+        filepath                >= 1.4.1        && < 1.5,
+        bytestring              >= 0.10.6       && < 0.11,
+        vector                  >= 0.10.12      && < 0.12,
+        hashable                >= 1.2.3        && < 1.3,
+        containers              >= 0.5.6        && < 0.6,
+        unordered-containers    >= 0.2.5        && < 0.3,
+        mtl                     >= 2.2.1        && < 2.3,
+        text                    >= 1.2.2        && < 1.3,
+        wl-pprint               >= 1.2          && < 1.3,
+        cassava                 >= 0.4.5        && < 0.5,
+        repa-scalar             >= 4.2.2        && < 4.3,
+        repa-array              >= 4.2.2        && < 4.3
+
+
+ extensions:
+        MultiParamTypeClasses
+        ScopedTypeVariables
+        StandaloneDeriving
+        FlexibleInstances
+        FlexibleContexts
+        PatternSynonyms
+        ParallelListComp
+        FlexibleContexts
+        ConstraintKinds
+        PatternGuards
+        TypeOperators
+        TypeFamilies
+        BangPatterns
+        DataKinds
+
+ ghc-options:
+        -Wall -Werror
+        -fno-warn-missing-signatures
+        -fno-warn-missing-pattern-synonym-signatures
+
+
+Library
+ build-depends:
+        base                    == 4.9.*,
+        bytestring              >= 0.10.6       && < 0.11,
+        vector                  >= 0.10.12      && < 0.12,
+        hashable                >= 1.2.3        && < 1.3,
+        containers              >= 0.5.6        && < 0.6,
+        unordered-containers    >= 0.2.5        && < 0.3,
+        mtl                     >= 2.2.1        && < 2.3,
+        wl-pprint               >= 1.2          && < 1.3,
+        cassava                 >= 0.4.5        && < 0.5,
+        repa-scalar             >= 4.2.2        && < 4.3,
+        repa-array              >= 4.2.2        && < 4.3,
+        text                    >= 1.2.2        && < 1.3,
+        filepath                >= 1.4.1        && < 1.5
+
+ hs-source-dirs:
+        .
+
+ exposed-modules:
+        Datum.Console
+
+        Datum.Data.Tree
+        Datum.Data.Tree.Exp
+        Datum.Data.Tree.Check
+        Datum.Data.Tree.Chrome
+        Datum.Data.Tree.Compounds
+        Datum.Data.Tree.Codec
+        Datum.Data.Tree.Operator
+        Datum.Data.Tree.Operator.Extract
+        Datum.Data.Tree.Operator.Fields
+        Datum.Data.Tree.Operator.Project
+        Datum.Data.Tree.Operator.Strip
+        Datum.Data.Tree.Operator.Trees
+        Datum.Data.Tree.Operator.Limit
+        Datum.Data.Tree.SExp
+
+        Datum.Script.Eval.Env
+        Datum.Script.Eval.Error
+        Datum.Script.Eval.Prim
+        Datum.Script.Eval.State
+        Datum.Script.Eval
+        Datum.Script.Exp.Compounds        
+        Datum.Script.Exp.Core
+        Datum.Script.Exp.Generic
+        Datum.Script.Exp.Prim
+
+ other-modules:
+        Datum.Console.Check
+        Datum.Console.Dump
+        Datum.Console.Save
+
+        Datum.Data.Tree.SExp.Pretty
+        Datum.Data.Tree.Check.Error
+
+        Datum.Data.Tree.Operator.Cast
+        Datum.Data.Tree.Operator.Filter
+        Datum.Data.Tree.Operator.Gather
+        Datum.Data.Tree.Operator.Group
+        Datum.Data.Tree.Operator.Map
+        Datum.Data.Tree.Operator.Path
+        Datum.Data.Tree.Operator.Reduce
+        Datum.Data.Tree.Operator.Slice
+        Datum.Data.Tree.Operator.Traverse
+
+        
+ extensions:
+        MultiParamTypeClasses
+        ScopedTypeVariables
+        StandaloneDeriving
+        FlexibleInstances
+        FlexibleContexts
+        ParallelListComp
+        FlexibleContexts
+        ConstraintKinds
+        PatternSynonyms
+        PatternGuards
+        TypeOperators
+        TypeFamilies
+        BangPatterns
+        DataKinds
+
+ ghc-options:
+        -Wall -Werror
+        -fno-warn-missing-signatures
+        -fno-warn-missing-pattern-synonym-signatures

@@ -20,14 +20,14 @@ data GExp l
         -- | Bound variable.
         | XVar   (GXBound l)
 
+        -- | Type cast.
+        | XCast  (GXCast  l) (GExp l)
+
         -- | Function abstraction with a type and body.
         | XAbs   (GXBind  l) (GExp l) (GExp l)
 
         -- | Function application.
         | XApp   (GExp    l) (GExp l)
-
-        -- | Type cast.
-        | XCast  (GXCast  l)  (GExp l)
 
 
 type ShowGExp l

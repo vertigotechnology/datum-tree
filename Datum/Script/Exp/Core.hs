@@ -7,6 +7,7 @@ module Datum.Script.Exp.Core
         , GXBound, GXBind
         , GXCast
 
+        , Name
         , Bind (..), Bound (..)
         , Prim (..), Cast (..)
 
@@ -38,8 +39,8 @@ module Datum.Script.Exp.Core
         , typeOfAtom)
 where
 import Datum.Script.Exp.Generic
-import Datum.Data.Tree.Exp
-import Data.Text                (Text)
+import qualified Datum.Data.Tree.Exp    as T
+import Data.Text                        (Text)
 
 
 ---------------------------------------------------------------------------------------------------
@@ -55,13 +56,17 @@ type instance GXCast  Core = Cast
 
 
 ---------------------------------------------------------------------------------------------------
+-- | Names of variables.
+type Name
+        = Text
+
 -- | Binding occurrences of variables.
 data Bind
         -- | An anonymous binder.
         = BAnon
 
         -- | A named binder.
-        | BName String
+        | BName Name
 
 deriving instance Show Bind
 deriving instance Eq   Bind
@@ -73,7 +78,7 @@ data Bound
         = UIx   Int
 
         -- | A named variable.
-        | UName String
+        | UName Name
 
 deriving instance Show Bound
 deriving instance Eq   Bound
@@ -110,13 +115,13 @@ data Prim
         | PTTreePath                    -- ^ Datum tree path type.
         | PTFilePath                    -- ^ FilePath type.
 
-        | PTAtom AtomType               -- ^ Atom types.
+        | PTAtom T.AtomType             -- ^ Atom types.
  
         -- Values (level 0)
         | PTreePath     [Text]          -- ^ A datum tree path.
         | PFilePath     FilePath        -- ^ A file path.
 
-        | PAtom  Atom                   -- ^ Atoms.
+        | PAtom  T.Atom                 -- ^ Atoms.
 
         | PLoad                         -- ^ Load  a value from the file system.
         | PStore                        -- ^ Store a value to the file system.
@@ -134,14 +139,14 @@ pattern XTTree          = XPrim (PTTree)
 pattern XTTreePath      = XPrim PTTreePath
 pattern XTFilePath      = XPrim PTFilePath
 
-pattern XTUnit          = XPrim (PTAtom ATUnit)
-pattern XTBool          = XPrim (PTAtom ATBool)
-pattern XTInt           = XPrim (PTAtom ATInt)
-pattern XTFloat         = XPrim (PTAtom ATFloat)
-pattern XTNat           = XPrim (PTAtom ATNat)
-pattern XTDecimal       = XPrim (PTAtom ATDecimal)
-pattern XTText          = XPrim (PTAtom ATText)
-pattern XTTime          = XPrim (PTAtom ATTime)
+pattern XTUnit          = XPrim (PTAtom T.ATUnit)
+pattern XTBool          = XPrim (PTAtom T.ATBool)
+pattern XTInt           = XPrim (PTAtom T.ATInt)
+pattern XTFloat         = XPrim (PTAtom T.ATFloat)
+pattern XTNat           = XPrim (PTAtom T.ATNat)
+pattern XTDecimal       = XPrim (PTAtom T.ATDecimal)
+pattern XTText          = XPrim (PTAtom T.ATText)
+pattern XTTime          = XPrim (PTAtom T.ATTime)
 
 pattern XTreePath ts    = XPrim (PTreePath ts)
 pattern XFilePath fp    = XPrim (PFilePath fp)
@@ -196,15 +201,15 @@ typeOfPrim pp
 
 
 -- | Yield the type of the given atom.
-typeOfAtom :: Atom -> AtomType
+typeOfAtom :: T.Atom -> T.AtomType
 typeOfAtom aa
  = case aa of
-        AUnit{}         -> ATUnit
-        ABool{}         -> ATBool
-        AInt{}          -> ATInt
-        AFloat{}        -> ATFloat
-        ANat{}          -> ATNat
-        ADecimal{}      -> ATDecimal
-        AText{}         -> ATText
-        ATime{}         -> ATTime
+        T.AUnit{}       -> T.ATUnit
+        T.ABool{}       -> T.ATBool
+        T.AInt{}        -> T.ATInt
+        T.AFloat{}      -> T.ATFloat
+        T.ANat{}        -> T.ATNat
+        T.ADecimal{}    -> T.ATDecimal
+        T.AText{}       -> T.ATText
+        T.ATime{}       -> T.ATTime
 

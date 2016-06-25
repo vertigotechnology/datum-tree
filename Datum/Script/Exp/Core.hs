@@ -10,11 +10,15 @@ module Datum.Script.Exp.Core
         , Name
         , Bind (..), Bound (..)
         , Prim (..), Cast (..)
+        , T.AtomType    (..)
+        , T.Atom        (..)
 
         , (~>), (~~>)
 
         , pattern XType
         , pattern XFun
+
+          -- types
         , pattern XTS
         , pattern XTTree
         , pattern XTTreePath
@@ -28,8 +32,18 @@ module Datum.Script.Exp.Core
         , pattern XTText
         , pattern XTTime
 
+          -- values
         , pattern XTreePath
         , pattern XFilePath
+
+        , pattern XUnit
+        , pattern XBool
+        , pattern XInt
+        , pattern XFloat
+        , pattern XNat
+        , pattern XDecimal
+        , pattern XText
+        , pattern XTime
 
         , pattern XLoad
         , pattern XStore
@@ -130,9 +144,11 @@ data Prim
 deriving instance Show Prim
 deriving instance Eq   Prim
 
+-- Generic
 pattern XType n         = XPrim (PType n)
 pattern XFun  n a b     = XApp (XApp (XPrim (PFun n)) a) b
 
+-- Types
 pattern XTS a           = XApp (XPrim PTS) a
 
 pattern XTTree          = XPrim (PTTree)
@@ -148,8 +164,18 @@ pattern XTDecimal       = XPrim (PTAtom T.ATDecimal)
 pattern XTText          = XPrim (PTAtom T.ATText)
 pattern XTTime          = XPrim (PTAtom T.ATTime)
 
+-- Values
 pattern XTreePath ts    = XPrim (PTreePath ts)
 pattern XFilePath fp    = XPrim (PFilePath fp)
+
+pattern XUnit           = XPrim (PAtom T.AUnit)
+pattern XBool     x     = XPrim (PAtom (T.ABool    x))
+pattern XInt      x     = XPrim (PAtom (T.AInt     x))
+pattern XFloat    x     = XPrim (PAtom (T.AFloat   x))
+pattern XNat      x     = XPrim (PAtom (T.ANat     x))
+pattern XDecimal  x     = XPrim (PAtom (T.ADecimal x))
+pattern XText     x     = XPrim (PAtom (T.AText    x))
+pattern XTime     x     = XPrim (PAtom (T.ATime    x))
 
 pattern XLoad           = XPrim PLoad
 pattern XStore          = XPrim PStore

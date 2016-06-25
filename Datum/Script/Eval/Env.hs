@@ -14,8 +14,12 @@ import Prelude hiding (lookup)
 
 -- | Value.
 data Value
-        = VPrim         Prim
-        | VClosure      Exp Env
+        -- | An expression with values for free variables
+        --   defined by the given environemnt.
+        = VClosure !Exp  !Env
+
+        -- | A primitive partially applied to its first few arguments.
+        | VPrim    !Prim ![Value]
 
 deriving instance Show Value
 
@@ -23,9 +27,9 @@ deriving instance Show Value
 -- | Environment holding names of bound variables.
 data Env
         = Env
-        { envNamed              :: Map Name Value
-        , envStack              :: [Value] 
-        , envStackLength        :: Int }
+        { envNamed              :: !(Map Name Value)
+        , envStack              :: ![Value] 
+        , envStackLength        :: !Int }
 
 deriving instance Show Env
 
@@ -40,11 +44,11 @@ lookup :: Bound -> Env -> Maybe Value
 lookup uu env
  = case uu of
         UIx i
-         | i <  0                       -> Nothing
-         | i >= envStackLength env      -> Nothing
-         | otherwise                    -> Just (envStack env !! i)
+         | i <  0                  -> Nothing
+         | i >= envStackLength env -> Nothing
+         | otherwise               -> Just (envStack env !! i)
 
-        UName n                         -> Map.lookup n (envNamed env)
+        UName n                    -> Map.lookup n (envNamed env)
 
 
 -- | Insert a new expression into the environment.

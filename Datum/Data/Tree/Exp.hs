@@ -134,7 +134,7 @@ data AtomType
         | ATDecimal
         | ATText
         | ATTime
-        deriving Show
+        deriving (Show, Eq)
 
 
 -- Data -----------------------------------------------------------------------

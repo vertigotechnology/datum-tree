@@ -1,13 +1,5 @@
 
-module Datum.Script.Eval.Env
-        ( Env   (..)
-        , Value (..)
-        , pattern VVPrim
-
-        , empty
-        , lookup
-        , insert)
-where
+module Datum.Script.Eval.Env where
 import Datum.Script.Exp.Core
 import Data.Map                         (Map)
 import qualified Data.Map               as Map
@@ -24,8 +16,6 @@ data Value
         | VPrim    !Prim ![Value]
 
 deriving instance Show Value
-
-pattern VVPrim p        = VPrim p []
 
 
 -- | Environment holding names of bound variables.

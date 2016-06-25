@@ -1,4 +1,4 @@
-
+{-# LANGUAGE UndecidableInstances #-}
 module Datum.Script.Exp.Generic where
 
 
@@ -6,6 +6,7 @@ type family GXAnnot l
 type family GXPrim  l
 type family GXBind  l
 type family GXBound l
+type family GXCast  l
 
 
 -- | Generic expression language.
@@ -23,5 +24,16 @@ data GExp l
         | XAbs   (GXBind  l) (GExp l) (GExp l)
 
         -- | Function application.
-        | XApp   (GExp l)    (GExp l)
+        | XApp   (GExp    l) (GExp l)
 
+        -- | Type cast.
+        | XCast  (GXCast  l)  (GExp l)
+
+
+type ShowGExp l
+        = ( Show (GXAnnot l), Show (GXPrim  l)
+          , Show (GXBind  l), Show (GXBound l)
+          , Show (GXCast  l))
+
+
+deriving instance ShowGExp l => Show (GExp l)

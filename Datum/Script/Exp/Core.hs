@@ -1,21 +1,57 @@
 
-module Datum.Script.Exp.Core where
+module Datum.Script.Exp.Core 
+        ( Core (..), Exp
+        , GExp (..)
+
+        , GXAnnot, GXPrim
+        , GXBound, GXBind
+        , GXCast
+
+        , Bind (..), Bound (..)
+        , Prim (..), Cast (..)
+
+        , (~>), (~~>)
+
+        , pattern XType
+        , pattern XFun
+        , pattern XTS
+        , pattern XTTree
+        , pattern XTTreePath
+        , pattern XTFilePath
+        , pattern XTUnit
+        , pattern XTBool
+        , pattern XTInt
+        , pattern XTFloat
+        , pattern XTNat
+        , pattern XTDecimal
+        , pattern XTText
+        , pattern XTTime
+
+        , pattern XTreePath
+        , pattern XFilePath
+
+        , pattern XLoad
+        , pattern XStore
+        , pattern XGather
+
+        , typeOfPrim
+        , typeOfAtom)
+where
 import Datum.Script.Exp.Generic
 import Datum.Data.Tree.Exp
 import Data.Text                (Text)
-import qualified Data.Text      as Text
 
 
 ---------------------------------------------------------------------------------------------------
 -- | Tag for the core lanugage with a unit annotation.
 data Core       = Core
+type Exp        = GExp Core
 
 type instance GXAnnot Core = ()
 type instance GXPrim  Core = Prim
 type instance GXBind  Core = Bind
 type instance GXBound Core = Bound
-
-type Exp        = GExp Core
+type instance GXCast  Core = Cast
 
 
 ---------------------------------------------------------------------------------------------------
@@ -41,6 +77,18 @@ data Bound
 
 deriving instance Show Bound
 deriving instance Eq   Bound
+
+
+-- | Type casts.
+data Cast
+        -- | Run an effectful computation.
+        = CRun
+
+        -- | Box up an effectful expression.
+        | CBox
+
+deriving instance Show Cast
+deriving instance Eq   Cast
 
 
 ---------------------------------------------------------------------------------------------------
@@ -94,6 +142,13 @@ pattern XTNat           = XPrim (PTAtom ATNat)
 pattern XTDecimal       = XPrim (PTAtom ATDecimal)
 pattern XTText          = XPrim (PTAtom ATText)
 pattern XTTime          = XPrim (PTAtom ATTime)
+
+pattern XTreePath ts    = XPrim (PTreePath ts)
+pattern XFilePath fp    = XPrim (PFilePath fp)
+
+pattern XLoad           = XPrim PLoad
+pattern XStore          = XPrim PStore
+pattern XGather         = XPrim PGather
 
 (~>) a b  = XApp (XApp (XPrim (PFun 1)) a) b
 infixr ~>

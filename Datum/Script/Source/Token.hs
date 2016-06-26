@@ -5,11 +5,11 @@ module Datum.Script.Source.Token
         , sayToken)
 where
 
-
 -- | A source file location.
 data Loc a
         = Loc
-        { locLine       :: Int
+        { locName       :: String
+        , locLine       :: Int
         , locColumn     :: Int 
         , locBody       :: a }
         deriving Show

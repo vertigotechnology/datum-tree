@@ -1,7 +1,6 @@
 {-# LANGUAGE ParallelListComp #-}
 
-module Stock
-where
+module Stock where
 import Datum.Data.Tree
 import Datum.Data.Tree.SExp
 import Datum.Console            (dump)

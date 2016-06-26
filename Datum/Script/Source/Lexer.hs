@@ -10,8 +10,8 @@ import qualified Data.List      as List
 
 
 -- | Tokenize a string.
-tokenize :: String -> [Loc Token]
-tokenize xx0
+tokenize :: FilePath -> String -> [Loc Token]
+tokenize filePath xx0
  = eat 1 1 xx0
  where 
        eat !l !c []
@@ -89,7 +89,8 @@ tokenize xx0
         | otherwise
         = [wrap (KErrorJunk x)]
 
-        where   wrap t = Loc l c t
+        where   wrap t = Loc filePath l c t
+
 
 -- | Match a fixed length token.
 matchFixed  :: String -> Maybe (Token, String, String)

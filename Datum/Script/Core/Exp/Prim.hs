@@ -1,14 +1,14 @@
 {-# LANGUAGE UndecidableInstances #-}
 
-module Datum.Script.Exp.Prim where
-import Datum.Script.Exp.Generic
+module Datum.Script.Core.Exp.Prim where
+import Datum.Script.Core.Exp.Generic
 import qualified Datum.Data.Tree.Exp    as T
 import Data.Text                        (Text)
 
 
 ---------------------------------------------------------------------------------------------------
 -- | Primitive objects in the core language.
-data GPrim l
+data GPrim x
         -- Universal, works at all levels.
         = PType Int                     -- ^ Type of types at the given level.
         | PFun  Int                     -- ^ Function arrow at the given level.
@@ -31,7 +31,7 @@ data GPrim l
  
         -- Values (level 0)
         | PVName     Text               -- ^ Field or branch name.
-        | PVList     (GExp l) [GExp l]  -- ^ List of elements of the given type.
+        | PVList     x [x]              -- ^ List of elements of the given type.
         | PVTree     (T.Tree 'T.O)      -- ^ Checked datum tree.
         | PVTreePath [Text]             -- ^ Datum tree path.
         | PVFilePath FilePath           -- ^ File path.
@@ -48,12 +48,14 @@ data GPrim l
         | PVRenameFields                -- ^ Rename fields of key.
 
 
-deriving instance ShowGExp l => Show (GPrim l)
+deriving instance Show x => Show (GPrim x)
 
 
 ---------------------------------------------------------------------------------------------------
 -- | Yield the type of the given primitive.
-typeOfPrim :: (GPrim l ~ GXPrim l) =>  GPrim l -> GExp l
+typeOfPrim 
+        :: (GXPrim l ~ GPrim (GExp l))
+        => GPrim (GExp l) -> GExp l
 typeOfPrim pp
  = case pp of
         -- Generic

@@ -1,5 +1,6 @@
+
 {-# LANGUAGE UndecidableInstances #-}
-module Datum.Script.Exp.Generic where
+module Datum.Script.Source.Exp.Generic where
 
 
 type family GXAnnot l

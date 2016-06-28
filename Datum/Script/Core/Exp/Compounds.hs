@@ -1,5 +1,5 @@
 
-module Datum.Script.Exp.Compounds
+module Datum.Script.Core.Exp.Compounds
         (expOfPipeline)
 where
 import Datum.Script.Exp.Core

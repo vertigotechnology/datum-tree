@@ -1,17 +1,16 @@
 
 module Datum.Script.Source.Parser where
 import Data.Functor.Identity
-import Datum.Script.Exp.Core
-import Datum.Script.Exp.Prim
+import Datum.Script.Source.Exp
 import Datum.Script.Source.Token                (Token(..), Loc)
 import Text.Parsec                              (SourcePos, (<?>))
 import Control.Monad
 import qualified Datum.Script.Source.Lexer      as Lexer
 import qualified Datum.Script.Source.Token      as K
+import qualified Datum.Data.Tree.Exp            as T
 import qualified Text.Parsec                    as P
 import qualified Text.Parsec.Pos                as P
 import qualified Data.Text                      as Text
-
 
 -------------------------------------------------------------------------------
 type Parser a 
@@ -36,7 +35,7 @@ runParser filePath tokens p
 
 
 -- | Lex and parse an parse an input string.
-loadExp :: FilePath -> String -> Either P.ParseError ExpS
+loadExp :: FilePath -> String -> Either P.ParseError Datum.Script.Source.Exp.Exp
 loadExp filePath str
  = let  tokens  =  Lexer.tokenize filePath str 
                 ++ [K.Loc filePath 0 0 $ KEndOfFile]
@@ -44,19 +43,8 @@ loadExp filePath str
 
 
 -------------------------------------------------------------------------------
-data Source     = Source
-type ExpS       = GExp  Source
-type PrimS      = GPrim Source
-
-type instance GXAnnot Source    = SourcePos
-type instance GXPrim  Source    = Prim
-type instance GXBind  Source    = Bind
-type instance GXBound Source    = Bound
-type instance GXCast  Source    = Cast
-
-
 -- | Parse an entire datum script.
-pScript  :: Parser ExpS
+pScript  :: Parser Exp
 pScript 
  = do   (_, x)  <- pExp
         _       <- pTok KEndOfFile
@@ -65,14 +53,14 @@ pScript
 
 -------------------------------------------------------------------------------
 -- | Parse an expression.
-pExp :: Parser (SourcePos, ExpS)
+pExp :: Parser (SourcePos, Exp)
 pExp 
  = do   pExpApp
 
 
 -------------------------------------------------------------------------------
 -- | Parse a function application.
-pExpApp :: Parser (SourcePos, ExpS)
+pExpApp :: Parser (SourcePos, Exp)
 pExpApp
  = do   (sp, x1) <- pExpAtom
         
@@ -89,7 +77,7 @@ pExpApp
 
 
 -------------------------------------------------------------------------------
-pExpAtom :: Parser (SourcePos, ExpS)
+pExpAtom :: Parser (SourcePos, Exp)
 pExpAtom 
  = P.choice
  [ do   -- parenthesised expression
@@ -104,15 +92,15 @@ pExpAtom
 
  , do   -- symbols
         (sp, s) <- pSymbol
-        return  (sp, XAnnot sp $ XName (Text.pack s))
+        return  (sp, XAnnot sp $ XPrim (PVName (Text.pack s)))
 
  , do   -- literal text
         (sp, str) <- pLitString
-        return  (sp, XAnnot sp $ XText str)
+        return  (sp, XAnnot sp $ XPrim (PVAtom (T.AText str)))
 
  , do   -- literal integer
         (sp, n)   <- pLitInt
-        return  (sp, XAnnot sp $ XInt n)
+        return  (sp, XAnnot sp $ XPrim (PVAtom (T.AInt n)))
  ]
  <?> "an atomic expression"
 

@@ -17,7 +17,9 @@ data Loc a
 
 -- | A token in lambda expression syntax.
 data Token
-        = KErrorJunk   Char     -- ^ Some junk or invalid character.
+        = KEndOfFile            -- ^ End of file marker.
+        
+        | KErrorJunk   Char     -- ^ Some junk or invalid character.
         | KErrorUnterm String   -- ^ Unterminated string.
 
         | KBra                  -- ^ Open  braket.
@@ -39,6 +41,7 @@ data Token
 sayToken :: Token -> String
 sayToken tok
  = case tok of
+        KEndOfFile      -> "end of file"
         KErrorJunk   _  -> "unexpected character"
         KErrorUnterm _  -> "unterminated string"
         KBra            -> "open bracket"
@@ -51,4 +54,5 @@ sayToken tok
         KSym s          -> "symbol " ++ s
         KLitString s    -> "literal string "   ++ show s 
         KLitInt i       -> "literal integer '" ++ show i ++ "'"
+
 

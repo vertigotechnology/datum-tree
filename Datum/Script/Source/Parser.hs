@@ -4,7 +4,8 @@ import Data.Functor.Identity
 import Datum.Script.Exp.Core
 import Datum.Script.Exp.Prim
 import Datum.Script.Source.Token                (Token(..), Loc)
-import Text.Parsec                              (SourcePos)
+import Text.Parsec                              (SourcePos, (<?>))
+import Control.Monad
 import qualified Datum.Script.Source.Lexer      as Lexer
 import qualified Datum.Script.Source.Token      as K
 import qualified Text.Parsec                    as P
@@ -12,7 +13,7 @@ import qualified Text.Parsec.Pos                as P
 import qualified Data.Text                      as Text
 
 
----------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 type Parser a 
         = P.ParsecT [K.Loc K.Token] () Identity a
 
@@ -37,10 +38,12 @@ runParser filePath tokens p
 -- | Lex and parse an parse an input string.
 loadExp :: FilePath -> String -> Either P.ParseError ExpS
 loadExp filePath str
- = fmap snd $ runParser filePath (Lexer.tokenize filePath str) pExpAtom
+ = let  tokens  =  Lexer.tokenize filePath str 
+                ++ [K.Loc filePath 0 0 $ KEndOfFile]
+   in   runParser filePath tokens pScript
 
 
----------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 data Source     = Source
 type ExpS       = GExp  Source
 type PrimS      = GPrim Source
@@ -52,16 +55,55 @@ type instance GXBound Source    = Bound
 type instance GXCast  Source    = Cast
 
 
----------------------------------------------------------------------------------------------------
+-- | Parse an entire datum script.
+pScript  :: Parser ExpS
+pScript 
+ = do   (_, x)  <- pExp
+        _       <- pTok KEndOfFile
+        return  x
+
+
+-------------------------------------------------------------------------------
+-- | Parse an expression.
+pExp :: Parser (SourcePos, ExpS)
+pExp 
+ = do   pExpApp
+
+
+-------------------------------------------------------------------------------
+-- | Parse a function application.
+pExpApp :: Parser (SourcePos, ExpS)
+pExpApp
+ = do   (sp, x1) <- pExpAtom
+        
+        P.choice
+         [ do   -- application of two expressions
+                xs      <- P.many1 pExpAtom
+                let xApp = foldl (\x (sp', x') -> XAnnot sp' $ XApp x x') x1 xs
+                return (sp, xApp)
+
+                -- a single atomic expression
+         ,      return (sp, x1)]
+
+ <?> "an expression or application"
+
+
+-------------------------------------------------------------------------------
 pExpAtom :: Parser (SourcePos, ExpS)
 pExpAtom 
  = P.choice
- [ do   -- variables
-        (sp, u)   <- pVar
+ [ do   -- parenthesised expression
+        pTok KBra
+        spx     <- pExp
+        pTok KKet
+        return  spx
+
+ , do   -- variables
+        (sp, u) <- pVar
         return  (sp, XAnnot sp $ XVar u) 
 
  , do   -- symbols
-        (sp, s)   <- pSymbol
+        (sp, s) <- pSymbol
         return  (sp, XAnnot sp $ XName (Text.pack s))
 
  , do   -- literal text
@@ -72,9 +114,10 @@ pExpAtom
         (sp, n)   <- pLitInt
         return  (sp, XAnnot sp $ XInt n)
  ]
+ <?> "an atomic expression"
 
 
----------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- | Parse the given keyword.
 pKey :: String -> Parser SourcePos
 pKey str   
@@ -135,3 +178,4 @@ pTokMaybe f
         (\l -> case f (K.locBody l) of
                 Nothing -> Nothing
                 Just a  -> Just (sourcePosOfLoc l, a))
+

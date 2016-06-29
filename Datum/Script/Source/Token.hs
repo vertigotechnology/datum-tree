@@ -26,6 +26,7 @@ data Token
         | KKet                  -- ^ Close braket.
         | KLam                  -- ^ Lambda symbol.
         | KDot                  -- ^ Dot symbol.
+        | KSemi                 -- ^ Semicolon.
 
         | KKey  String          -- ^ Keyword.
         | KVar  String          -- ^ Variable name.
@@ -48,6 +49,7 @@ sayToken tok
         KKet            -> "close bracket"
         KLam            -> "lambda"
         KDot            -> "dot"
+        KSemi           -> "semicolon"
         KKey k          -> "keyword '"  ++ k ++ "'"
         KVar v          -> "variable '" ++ v ++ "'"
         KOp  o          -> "operator '" ++ o ++ "'"

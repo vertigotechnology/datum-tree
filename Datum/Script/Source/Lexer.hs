@@ -112,6 +112,7 @@ tokensFixed
         , ("\\",        KLam)
         , ("λ",         KLam)
         , (".",         KDot) 
+        , (";",         KSemi)
         , ("let",       KKey "let")
         , ("in",        KKey "in")
         , ("if",        KKey "if")

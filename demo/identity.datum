@@ -1,4 +1,4 @@
 
 main
  = load  "data/stock.tree"
- & store "tmp/stock.tree"
+ & store "tmp/stock.tree";

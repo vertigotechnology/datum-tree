@@ -63,6 +63,7 @@ pTop
         vsArgs          <- fmap (map snd) $ P.many pVar
         _               <- pTok (KOp "=")
         (_,  xBody)     <- pExp
+        _               <- pTok KSemi
         return  (sp, TBind vName vsArgs xBody)
 
 

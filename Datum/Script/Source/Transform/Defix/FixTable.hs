@@ -133,7 +133,7 @@ defaultFixTable
         , FixDefInfix   "∨"     (xvar "or")             InfixRight 3
 
         , FixDefInfix   "$"     (xvar "apply")          InfixRight 0 
-        , FixDefInfix   "&"     (xvar "apply")          InfixLeft  1
+        , FixDefInfix   "&"     (xvar "applyr")         InfixLeft  1
 
         -- Text pasting.
         --   These associate to the right so that when text objects are formed by

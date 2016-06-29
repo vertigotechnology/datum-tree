@@ -64,7 +64,8 @@ pTop
         _               <- pTok (KOp "=")
         (_,  xBody)     <- pExp
         _               <- pTok KSemi
-        return  (sp, TBind vName vsArgs xBody)
+        let vtsArgs     = [(v, Nothing) | v <- vsArgs]
+        return  (sp, TBind vName vtsArgs xBody)
 
 
 -------------------------------------------------------------------------------

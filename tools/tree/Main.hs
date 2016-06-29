@@ -4,8 +4,6 @@ module Main where
 import Config
 import Load
 import Pervasive
--- import Datum.Script.Core.Exp.Compounds
--- import Datum.Script.Eval
 import Data.Default
 import Text.Show.Pretty
 import qualified Datum.Script.Source.Exp                as Source
@@ -27,8 +25,12 @@ main
         modClient       <- loadSource (configDump config) filePath strSource
 
         -- Append pervasives to the front of the client module.
-        let modTotal    = Source.globModules modPervasive modClient
-        putStrLn $ ppShow modTotal
+        let modTotal      = Source.globModules modPervasive modClient
+
+        -- Extract a single expression that represents the client query.
+        let Just srcTotal = Source.extractExpOfModule modTotal
+
+        putStrLn $ ppShow $ Source.stripXAnnotX srcTotal
 
         return ()
 

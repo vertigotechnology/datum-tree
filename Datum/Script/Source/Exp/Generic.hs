@@ -21,7 +21,7 @@ deriving instance ShowGExp l => Show (GModule l)
 -- | Top level definition.
 data GTop l
         -- | Top level function binding with arguments and body.
-        = TBind !(GXBind l) [GXBind l] (GExp l)
+        = TBind !(GXBind l) [(GXBind l, Maybe (GExp l))] (GExp l)
 
 deriving instance ShowGExp l => Show (GTop l)
 
@@ -44,11 +44,12 @@ data GExp l
         -- | Type cast.
         | XCast  !(GXCast  l) !(GExp l)
 
-        -- | Function abstraction with a type and body.
-        | XAbs   !(GXBind  l) !(GExp l) !(GExp l)
+        -- | Function abstraction with optional type and body.
+        | XAbs   !(GXBind  l) !(Maybe (GExp l)) !(GExp l)
 
         -- | Function application.
         | XApp   !(GExp    l) !(GExp l)
+
 
         -- Sugar Constructors ---------------------------------------
         --   These define syntactic sugar in the source language,
@@ -64,6 +65,10 @@ data GExp l
         -- | Use of an infix operator as a plain variable, like in (+) 1 2.
         --   INVARIANT: only appears in the list of an XDefix node.
         | XInfixVar !(GXBound l)
+
+
+-- | Non-recursive let-binding.
+pattern XLet b t x1 x2 = XApp (XAbs b t x2) x1
 
 
 type ShowGExp l

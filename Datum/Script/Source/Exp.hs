@@ -24,6 +24,7 @@ module Datum.Script.Source.Exp
         , type ShowGExp
 
         -- * Compounds
+        , stripXAnnot
         , makeXApps
         , takeXApps
 

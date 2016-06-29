@@ -1,10 +1,10 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 -- | Things that can go wrong when resolving infix expressions.
-module DDC.Source.Tetra.Transform.Defix.Error
+module Datum.Script.Source.Transform.Defix.Error
         (Error (..))
 where
-import Datum.Source.Exp
+import Datum.Script.Source.Exp
 
 
 -- | Things that can go wrong when defixing code.

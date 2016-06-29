@@ -11,7 +11,7 @@ where
 import Datum.Script.Eval.State
 import Datum.Script.Eval.Error
 import Datum.Script.Eval.Env            (Value(..))
-import Datum.Script.Exp.Core
+import Datum.Script.Core.Exp
 import qualified Datum.Script.Eval.Env  as Env
 import qualified Datum.Script.Eval.Prim as Prim
 

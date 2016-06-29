@@ -68,7 +68,8 @@ Library
         repa-scalar             >= 4.2.2        && < 4.3,
         repa-array              >= 4.2.2        && < 4.3,
         text                    >= 1.2.2        && < 1.3,
-        filepath                >= 1.4.1        && < 1.5
+        filepath                >= 1.4.1        && < 1.5,
+        parsec                  >= 3.1.11       && < 3.2
 
  hs-source-dirs:
         .
@@ -91,15 +92,29 @@ Library
         Datum.Data.Tree.Operator.Limit
         Datum.Data.Tree.SExp
 
+        Datum.Script.Core.Exp.Bind
+        Datum.Script.Core.Exp.Cast
+        Datum.Script.Core.Exp.Compounds
+        Datum.Script.Core.Exp.Generic
+        Datum.Script.Core.Exp.Prim
+        Datum.Script.Core.Exp
+
         Datum.Script.Eval.Env
         Datum.Script.Eval.Error
         Datum.Script.Eval.Prim
         Datum.Script.Eval.State
+
+        Datum.Script.Source.Exp.Generic
+        Datum.Script.Source.Transform.Defix.Error
+        Datum.Script.Source.Transform.Defix.FixTable
+        Datum.Script.Source.Transform.Defix
+        Datum.Script.Source.Exp
+        Datum.Script.Source.Lexer
+        Datum.Script.Source.Load
+        Datum.Script.Source.Parser
+        Datum.Script.Source.Token
+
         Datum.Script.Eval
-        Datum.Script.Exp.Compounds        
-        Datum.Script.Exp.Core
-        Datum.Script.Exp.Generic
-        Datum.Script.Exp.Prim
 
  other-modules:
         Datum.Console.Check

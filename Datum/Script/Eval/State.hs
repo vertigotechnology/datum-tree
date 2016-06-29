@@ -2,7 +2,7 @@
 -- | Evaluation state for Datum Scripts.
 module Datum.Script.Eval.State where
 import Datum.Script.Eval.Env            (Env, Value(..))
-import Datum.Script.Exp.Core
+import Datum.Script.Core.Exp
 import qualified Datum.Script.Eval.Env  as Env
 
 

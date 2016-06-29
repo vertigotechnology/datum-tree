@@ -1,7 +1,7 @@
 
 module Main where
 import Config
-import Datum.Script.Exp.Compounds
+import Datum.Script.Core.Exp.Compounds
 import Datum.Script.Eval
 import Data.Default
 import qualified System.Environment     as System

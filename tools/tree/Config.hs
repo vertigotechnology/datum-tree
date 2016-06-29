@@ -1,6 +1,6 @@
 
 module Config where
-import Datum.Script.Exp.Core
+import Datum.Script.Core.Exp
 import Data.Default
 import qualified Data.List      as List
 import qualified Data.Text      as Text
@@ -64,11 +64,12 @@ parseArgs args config
  = pushPipeline rest config
         $ XApp XGroup (XName (Text.pack name))
 
+{-
  | "-rename-fields" : rest <- args
  , (names, rest') <- List.break (List.isPrefixOf "-") rest
  , names'         <- map Text.pack names
  = pushPipeline rest' config 
         $ XApp XRenameFields (XList XTName $ map XName names')
-
+-}
  | otherwise
  = error "usage"

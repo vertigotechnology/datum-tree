@@ -1,6 +1,6 @@
-
+{-# LANGUAGE UndecidableInstances #-}
 module Datum.Script.Eval.Env where
-import Datum.Script.Exp.Core
+import Datum.Script.Core.Exp
 import Data.Map                         (Map)
 import qualified Data.Map               as Map
 import Prelude hiding (lookup)

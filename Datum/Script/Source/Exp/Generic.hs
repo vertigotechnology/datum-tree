@@ -39,7 +39,7 @@ data GExp l
         --   which is removed when transforming to the core language.
 
         -- | An infix expression that needs to have infix ops removed.
-        | XDefix    !(GExp l)
+        | XDefix    ![GExp l]
 
         -- | Use of a naked infix operator, like in 1 + 2.
         --   INVARIANT: only appears in the list of an XDefix node.

@@ -6,7 +6,7 @@ where
 import Datum.Script.Eval.Error
 import Datum.Script.Eval.State
 import Datum.Script.Eval.Env                    (Value(..))
-import Datum.Script.Exp.Core
+import Datum.Script.Core.Exp
 import qualified Datum.Data.Tree                as T
 import qualified Datum.Data.Tree.Codec          as T
 import qualified Datum.Data.Tree.SExp.Pretty    as T
@@ -72,6 +72,7 @@ step PVGroup   [VName name, VTree tree]
                 $ T.promiseTree
                 $ T.mapForests (T.groupForest $ Text.unpack name) tree
 
+{-
 -- Rename fields in a tree.
 -- TODO: need a way to specify the correct level.
 step PVRenameFields [ VList XTName names, VTree tree ]
@@ -79,7 +80,7 @@ step PVRenameFields [ VList XTName names, VTree tree ]
         return  $ Right $ VTree
                 $ T.promiseTree
                 $ T.mapTrees (T.renameFields names') tree
-
+-}
 step p args
  = do   return  $ Right (VPrim p args)
 

@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- | Defines the table that tracks what precedence and associativity
 --   infix operators have. The config for common operators is currently
 --   hard-coded, rather than being configurable in the source language.
@@ -13,6 +15,7 @@ where
 import Datum.Script.Source.Transform.Defix.Error
 import Datum.Script.Source.Exp
 import Data.List
+import Data.Text                        (Text)
 import qualified Data.Text              as Text
 
 
@@ -26,7 +29,7 @@ data FixDef l
         -- A prefix operator
         = FixDefPrefix
         { -- String of the operator
-          fixDefSymbol  :: String
+          fixDefSymbol  :: Text
 
           -- Expression to rewrite the operator to, 
           -- given the annotation of the original symbol.
@@ -35,7 +38,7 @@ data FixDef l
         -- An infix operator.
         | FixDefInfix
         { -- String of the operator.
-          fixDefSymbol  :: String
+          fixDefSymbol  :: Text
         
           -- Expression to rewrite the operator to, 
           -- given the annotation of the original symbol.
@@ -68,7 +71,7 @@ data InfixAssoc
 
 
 -- | Lookup the `FixDefInfix` corresponding to a symbol name, if any.
-lookupDefInfixOfSymbol  :: FixTable l -> String -> Maybe (FixDef l)
+lookupDefInfixOfSymbol  :: FixTable l -> Text -> Maybe (FixDef l)
 lookupDefInfixOfSymbol (FixTable defs) str
  = find (\def -> case def of
                   FixDefInfix{}  -> fixDefSymbol def == str
@@ -77,7 +80,7 @@ lookupDefInfixOfSymbol (FixTable defs) str
 
 
 -- | Lookup the `FixDefPrefix` corresponding to a symbol name, if any.
-lookupDefPrefixOfSymbol :: FixTable l -> String -> Maybe (FixDef l)
+lookupDefPrefixOfSymbol :: FixTable l -> Name -> Maybe (FixDef l)
 lookupDefPrefixOfSymbol (FixTable defs) str
  = find (\def -> case def of
                   FixDefPrefix{} -> fixDefSymbol def == str
@@ -89,7 +92,7 @@ lookupDefPrefixOfSymbol (FixTable defs) str
 getInfixDefOfSymbol 
         :: GXAnnot  l
         -> FixTable l
-        -> String 
+        -> Text 
         -> Either (Error l) (FixDef l)
 
 getInfixDefOfSymbol a table str
@@ -99,7 +102,7 @@ getInfixDefOfSymbol a table str
 
 
 -- | Default fixity table for infix operators.
-defaultFixTable :: GXBoundVar l ~ Bound => FixTable l
+defaultFixTable :: GXBound l ~ Bound => FixTable l
 defaultFixTable
  = FixTable 
         [ FixDefPrefix  "-"     (xvar "neg")

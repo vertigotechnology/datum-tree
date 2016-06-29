@@ -14,7 +14,7 @@ tokenize :: FilePath -> String -> [Loc Token]
 tokenize filePath xx0
  = eat 1 1 xx0
  where 
-       eat !l !c []
+       eat !_l !_c []
         = []
 
        eat !l !c !(x : xs)
@@ -43,8 +43,8 @@ tokenize filePath xx0
                  = wrap (KLitString (reverse acc))
                     : eat l (c + n) ss1
 
-                 | c    : ss1 <- ss
-                 = eats (n + 1) (c : acc) ss1
+                 | c'   : ss1 <- ss
+                 = eats (n + 1) (c' : acc) ss1
 
                  | otherwise
                  = [wrap (KErrorUnterm ss)]

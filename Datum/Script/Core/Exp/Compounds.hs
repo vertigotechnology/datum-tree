@@ -2,7 +2,7 @@
 module Datum.Script.Core.Exp.Compounds
         (expOfPipeline)
 where
-import Datum.Script.Exp.Core
+import Datum.Script.Core.Exp
 
 
 -- | Combine individule pipeline stages into a combined expression.

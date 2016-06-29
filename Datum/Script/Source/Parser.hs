@@ -4,13 +4,13 @@ import Data.Functor.Identity
 import Datum.Script.Source.Exp
 import Datum.Script.Source.Token                (Token(..), Loc)
 import Text.Parsec                              (SourcePos, (<?>))
-import Control.Monad
 import qualified Datum.Script.Source.Lexer      as Lexer
 import qualified Datum.Script.Source.Token      as K
 import qualified Datum.Data.Tree.Exp            as T
 import qualified Text.Parsec                    as P
 import qualified Text.Parsec.Pos                as P
 import qualified Data.Text                      as Text
+
 
 -------------------------------------------------------------------------------
 type Parser a 
@@ -81,9 +81,9 @@ pExpAtom :: Parser (SourcePos, Exp)
 pExpAtom 
  = P.choice
  [ do   -- parenthesised expression
-        pTok KBra
+        _       <- pTok KBra
         spx     <- pExp
-        pTok KKet
+        _       <- pTok KKet
         return  spx
 
  , do   -- variables
@@ -117,10 +117,10 @@ pKey str
 
 
 -- | Parse a named variable.
-pVar :: Parser (SourcePos, Bound)
+pVar :: Parser (SourcePos, Name)
 pVar    = pTokMaybe 
         $ \k -> case k of
-                 KVar name      -> Just (UName (Text.pack name))
+                 KVar name      -> Just (Text.pack name)
                  _              -> Nothing
 
 

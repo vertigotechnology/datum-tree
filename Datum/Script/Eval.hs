@@ -79,9 +79,9 @@ step (State env ctx  (Right vv))
                  ->  return $ Right $ State env ctx' 
                             $ Right (VClosure x11 (Env.insert b v2 env'))
 
-                -- Application of a primitive to some arguments.
+                -- Application of a primitive operator to some arguments.
                 --   The primitive may or may not be partially applied.
-                VPrim p args
+                VPrim (PVOp p) args
                  -> do  result <- Prim.step p (args ++ [v2])
                         case result of
                          Left err -> return $ Left err

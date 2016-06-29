@@ -42,7 +42,7 @@ import qualified Datum.Data.Tree.Exp    as T
 -- | Tag for the core lanugage with a unit annotation.
 data Core       = Core
 type Exp        = GExp  Core
-type Prim       = GPrim Core
+type Prim       = GPrim (GExp Core)
 
 type instance GXAnnot Core = ()
 type instance GXPrim  Core = Prim

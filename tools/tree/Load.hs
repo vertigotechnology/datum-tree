@@ -1,23 +1,47 @@
 
 module Load where
--- import Datum.Script.Core.Exp.Compounds
--- import Datum.Script.Eval
+import Pervasive
+
 import Text.Show.Pretty
 import Control.Monad
+
+import qualified Datum.Script.Source.Transform.ToCore   as Source
 import qualified Datum.Script.Source.Transform.Defix    as Source
 import qualified Datum.Script.Source.Parser             as Source
 import qualified Datum.Script.Source.Lexer              as Source
 import qualified Datum.Script.Source.Token              as Source
 import qualified Datum.Script.Source.Exp                as Source
 
+import qualified Datum.Script.Core.Exp                  as Core
 
-loadSource 
+
+
+-- | Load a datum script source file and convert it to core.
+loadToCore
+        :: Bool         -- ^ Dump intermediate representations.
+        -> FilePath     -- ^ File path for error messages.
+        -> String       -- ^ Text of script source.
+        -> IO Core.Exp  
+
+loadToCore dump filePath strSource
+ = do
+        xSource       <- loadToSourceExp dump filePath strSource
+        xCore         <- case Source.toCoreX xSource of
+                          Left err      -> error $ show err
+                          Right xCore'  -> return xCore'
+
+        return xCore
+
+
+
+-- | Load a datum script source file.
+loadToSourceModule 
         :: Bool         -- ^ Dump intermediate representations.
         -> FilePath     -- ^ File path for error messages.
         -> String       -- ^ Text of script source.
         -> IO Source.Module
 
-loadSource dump filePath strSource
+loadToSourceModule dump filePath strSource
  = do
         -- Tokenise source file.
         let toksSource   
@@ -60,4 +84,30 @@ loadSource dump filePath strSource
          $ writeFile "dump-defixed-deannot.us-ast" 
          $ ppShow (Source.stripXAnnotM sourceDefixed)
 
-        return sourceDefixed        
+        return sourceDefixed
+
+
+-- | Load a datum script as a source expression,
+--   appending the pervasives to the front.
+loadToSourceExp 
+        :: Bool         -- ^ Dump intermediate representations.
+        -> FilePath     -- ^ File path for error messages.
+        -> String       -- ^ Text of script source.
+        -> IO Source.Exp
+
+loadToSourceExp dump filePath strSource
+ = do
+        -- Load the pervasives.
+        --  This defines standard utility functions like 'apply'.
+        modPervasive    <- loadToSourceModule False "Pervasive" strPervasive
+
+        -- Load the client module.
+        modClient       <- loadToSourceModule dump filePath strSource
+
+        -- Append pervasives to the front of the client module.
+        let modTotal      = Source.globModules modPervasive modClient
+
+        -- Extract a single expression that represents the client query.
+        let Just srcTotal = Source.extractExpOfModule modTotal
+
+        return srcTotal        

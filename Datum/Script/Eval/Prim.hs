@@ -19,10 +19,10 @@ import qualified Data.Text                      as Text
 
 
 -- | Evaluate a primitive applied to some arguments.
-step :: Prim -> [Value] -> IO (Either Error Value)
+step :: PrimOp -> [Value] -> IO (Either Error Value)
 
 -- Load from the file system.
-step PVLoad      [VFilePath filePath]
+step PPLoad      [VFilePath filePath]
  = case FilePath.takeExtension filePath of
         ".csv"  
          -> do  bs              <- BS8.readFile filePath
@@ -33,7 +33,7 @@ step PVLoad      [VFilePath filePath]
 
 
 -- Store to the file system.
-step PVStore     [VFilePath filePath, VTree tree]
+step PPStore     [VFilePath filePath, VTree tree]
  = case FilePath.takeExtension filePath of
         ".tree"
          -> do  System.withFile filePath System.WriteMode
@@ -45,29 +45,29 @@ step PVStore     [VFilePath filePath, VTree tree]
 
 
 -- Take the initial n branches of each subtree.
-step PVInitial   [VNat n, VTree tree]
+step PPInitial   [VNat n, VTree tree]
  =      return  $ Right $ VTree $ T.initial n tree
 
 
 -- Take the final n branches of each subtree.
-step PVFinal     [VNat n, VTree tree]
+step PPFinal     [VNat n, VTree tree]
  =      return  $ Right $ VTree $ T.final n tree
 
 
 -- Sample n intermediate branches of each subtree.
-step PVSample    [VNat n, VTree tree]
+step PPSample    [VNat n, VTree tree]
  =      return  $ Right $ VTree $ T.sample n tree
 
 
 -- Gather subtrees.
-step PVGather    [VTreePath treePath, VTree tree]
+step PPGather    [VTreePath treePath, VTree tree]
  = do   let path' = map Text.unpack treePath
         return  $ Right $ VTree $ T.gatherTree path' tree
 
         
 -- Group by a given key.
 -- TODO: need a way to specify the correct level.
-step PVGroup   [VName name, VTree tree]
+step PPGroup   [VName name, VTree tree]
  =      return  $ Right $ VTree 
                 $ T.promiseTree
                 $ T.mapForests (T.groupForest $ Text.unpack name) tree
@@ -75,14 +75,14 @@ step PVGroup   [VName name, VTree tree]
 {-
 -- Rename fields in a tree.
 -- TODO: need a way to specify the correct level.
-step PVRenameFields [ VList XTName names, VTree tree ]
+step PPRenameFields [ VList XTName names, VTree tree ]
  = do   let names' = [ Text.unpack n | XName n <- names]
         return  $ Right $ VTree
                 $ T.promiseTree
                 $ T.mapTrees (T.renameFields names') tree
 -}
 step p args
- = do   return  $ Right (VPrim p args)
+ = do   return  $ Right (VPrim (PVOp p) args)
 
 
 

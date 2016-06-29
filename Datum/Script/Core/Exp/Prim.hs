@@ -10,7 +10,8 @@ import Data.Text                        (Text)
 -- | Primitive objects in the core language.
 data GPrim x
         -- Universal, works at all levels.
-        = PType Int                     -- ^ Type of types at the given level.
+        = PHole x                       -- ^ A hole of the given type, to be elaborated.
+        | PType Int                     -- ^ Type of types at the given level.
         | PFun  Int                     -- ^ Function arrow at the given level.
 
         -- Kinds  (level 2)
@@ -27,7 +28,7 @@ data GPrim x
         | PTTreePath                    -- ^ Datum tree path type.
         | PTFilePath                    -- ^ File path type.
 
-        | PTAtom    T.AtomType          -- ^ Atom types.
+        | PTAtom     T.AtomType         -- ^ Atom types.
  
         -- Values (level 0)
         | PVName     Text               -- ^ Field or branch name.
@@ -36,19 +37,23 @@ data GPrim x
         | PVTreePath [Text]             -- ^ Datum tree path.
         | PVFilePath FilePath           -- ^ File path.
 
-        | PVAtom      T.Atom            -- ^ Atomic Values.
+        | PVAtom     T.Atom             -- ^ Atomic Values.
+        | PVOp       PrimOp             -- ^ Primitive operators.
 
-        | PVLoad                        -- ^ Load  a value from the file system.
-        | PVStore                       -- ^ Store a value to the file system.
-        | PVInitial                     -- ^ Select the initial n branches of each subtree.
-        | PVFinal                       -- ^ Select the final n branches of each subtree.
-        | PVSample                      -- ^ Sample n intermediate branches of each subtree.
-        | PVGroup                       -- ^ Group branches by given key field.
-        | PVGather                      -- ^ Gather branches of a tree into sub trees.
-        | PVRenameFields                -- ^ Rename fields of key.
+
+data PrimOp
+        = PPLoad                        -- ^ Load  a value from the file system.
+        | PPStore                       -- ^ Store a value to the file system.
+        | PPInitial                     -- ^ Select the initial n branches of each subtree.
+        | PPFinal                       -- ^ Select the final n branches of each subtree.
+        | PPSample                      -- ^ Sample n intermediate branches of each subtree.
+        | PPGroup                       -- ^ Group branches by given key field.
+        | PPGather                      -- ^ Gather branches of a tree into sub trees.
+        | PPRenameFields                -- ^ Rename fields of key.
 
 
 deriving instance Show x => Show (GPrim x)
+deriving instance Show PrimOp
 
 
 ---------------------------------------------------------------------------------------------------
@@ -59,6 +64,8 @@ typeOfPrim
 typeOfPrim pp
  = case pp of
         -- Generic
+        PHole t         -> t
+
         PType n 
          -> XType (n + 1)
 
@@ -90,15 +97,7 @@ typeOfPrim pp
         PVFilePath  _   -> XTFilePath
 
         PVAtom a        -> XPrim (PTAtom (typeOfAtom a))
-
-        PVLoad          -> XTFilePath ~> XTS XTTree
-        PVStore         -> XTFilePath ~> XTTree ~> XTS XTUnit
-        PVInitial       -> XTNat         ~> XTTree ~> XTTree
-        PVFinal         -> XTNat         ~> XTTree ~> XTTree
-        PVSample        -> XTNat         ~> XTTree ~> XTTree
-        PVGroup         -> XTName        ~> XTTree ~> XTTree
-        PVGather        -> XTTreePath    ~> XTTree ~> XTTree
-        PVRenameFields  -> XTList XTName ~> XTTree ~> XTTree
+        PVOp   op       -> typeOfOp op
 
 
 -- | Yield the type of the given atom.
@@ -113,6 +112,21 @@ typeOfAtom aa
         T.ADecimal{}    -> T.ATDecimal
         T.AText{}       -> T.ATText
         T.ATime{}       -> T.ATTime
+
+
+-- | Yield the type of the given primop.
+typeOfOp :: (GXPrim l ~ GPrim (GExp l))
+         => PrimOp -> GExp l
+typeOfOp op
+ = case op of
+        PPLoad          -> XTFilePath ~> XTS XTTree
+        PPStore         -> XTFilePath ~> XTTree ~> XTS XTUnit
+        PPInitial       -> XTNat         ~> XTTree ~> XTTree
+        PPFinal         -> XTNat         ~> XTTree ~> XTTree
+        PPSample        -> XTNat         ~> XTTree ~> XTTree
+        PPGroup         -> XTName        ~> XTTree ~> XTTree
+        PPGather        -> XTTreePath    ~> XTTree ~> XTTree
+        PPRenameFields  -> XTList XTName ~> XTTree ~> XTTree
 
 
 ---------------------------------------------------------------------------------------------------
@@ -154,14 +168,14 @@ pattern XDecimal  x     = XPrim (PVAtom (T.ADecimal x))
 pattern XText     x     = XPrim (PVAtom (T.AText    x))
 pattern XTime     x     = XPrim (PVAtom (T.ATime    x))
 
-pattern XLoad           = XPrim PVLoad
-pattern XStore          = XPrim PVStore
-pattern XInitial        = XPrim PVInitial
-pattern XFinal          = XPrim PVFinal
-pattern XSample         = XPrim PVSample
-pattern XGroup          = XPrim PVGroup
-pattern XGather         = XPrim PVGather
-pattern XRenameFields   = XPrim PVRenameFields
+pattern XLoad           = XPrim (PVOp PPLoad)
+pattern XStore          = XPrim (PVOp PPStore)
+pattern XInitial        = XPrim (PVOp PPInitial)
+pattern XFinal          = XPrim (PVOp PPFinal)
+pattern XSample         = XPrim (PVOp PPSample)
+pattern XGroup          = XPrim (PVOp PPGroup)
+pattern XGather         = XPrim (PVOp PPGather)
+pattern XRenameFields   = XPrim (PVOp PPRenameFields)
 
 
 (~>) a b  = XApp (XApp (XPrim (PFun 1)) a) b

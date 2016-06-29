@@ -92,10 +92,6 @@ Library
         Datum.Data.Tree.Operator.Limit
         Datum.Data.Tree.SExp
 
-        Datum.Script.Core.Exp.Bind
-        Datum.Script.Core.Exp.Cast
-        Datum.Script.Core.Exp.Compounds
-        Datum.Script.Core.Exp.Generic
         Datum.Script.Core.Exp.Prim
         Datum.Script.Core.Exp
 
@@ -104,7 +100,6 @@ Library
         Datum.Script.Eval.Prim
         Datum.Script.Eval.State
 
-        Datum.Script.Source.Exp.Generic
         Datum.Script.Source.Transform.Defix.Error
         Datum.Script.Source.Transform.Defix.FixTable
         Datum.Script.Source.Transform.Defix
@@ -134,6 +129,12 @@ Library
         Datum.Data.Tree.Operator.Slice
         Datum.Data.Tree.Operator.Traverse
 
+        Datum.Script.Core.Exp.Bind
+        Datum.Script.Core.Exp.Cast
+        Datum.Script.Core.Exp.Compounds
+        Datum.Script.Core.Exp.Generic
+
+        Datum.Script.Source.Exp.Generic
         
  extensions:
         MultiParamTypeClasses

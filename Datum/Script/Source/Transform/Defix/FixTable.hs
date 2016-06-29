@@ -102,7 +102,7 @@ getInfixDefOfSymbol a table str
 
 
 -- | Default fixity table for infix operators.
-defaultFixTable :: GXBound l ~ Bound => FixTable l
+defaultFixTable :: (GXBound l ~ Name) => FixTable l
 defaultFixTable
  = FixTable 
         [ FixDefPrefix  "-"     (xvar "neg")
@@ -143,5 +143,5 @@ defaultFixTable
         ]
 
  where  xvar str sp 
-         = XAnnot sp $ XVar (UName $ Text.pack str)
+         = XAnnot sp $ XVar (Text.pack str)
 

@@ -1,25 +1,40 @@
 
 module Datum.Script.Core.Exp
-        ( Core (..)
-        , GExp (..),  Exp
-        , GPrim (..), Prim
+        ( -- * Binding
+          Bind  (..)
+        , Bound (..)
+        , Name
 
+          -- * Syntax
+        , Core (..)
+
+          -- ** Expressions
+        , Exp,  GExp (..)
+
+          -- ** Casts
+        , Cast  (..)
+
+          -- ** Primitives
+        , Prim, GPrim (..)
+        , T.AtomType    (..)
+        , T.Atom        (..)
+
+          -- * Generics
         , GXAnnot, GXPrim
         , GXBound, GXBind
         , GXCast
 
-        , Name
-        , Bind (..), Bound (..)
-        , Cast (..)
-        , T.AtomType    (..)
-        , T.Atom        (..)
+          -- * Compounds
+        , expOfPipeline
 
+          -- ** Pattern Synonyms
         , module Datum.Script.Core.Exp.Prim)
 where
 import Datum.Script.Core.Exp.Bind
 import Datum.Script.Core.Exp.Cast
 import Datum.Script.Core.Exp.Prim
 import Datum.Script.Core.Exp.Generic
+import Datum.Script.Core.Exp.Compounds
 import qualified Datum.Data.Tree        as T
 import qualified Datum.Data.Tree.Exp    as T
 

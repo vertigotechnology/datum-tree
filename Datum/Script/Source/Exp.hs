@@ -1,25 +1,33 @@
 
 module Datum.Script.Source.Exp
-        ( Source (..)
-        , GExp   (..),  Exp
-        , GPrim  (..), Prim
-        , type ShowGExp
+        ( -- * Binding
+          Name
 
+          -- * Syntax
+        , Source (..)
+
+          -- ** Expressions
+        , Exp, GExp (..)
+
+          -- ** Casts
+        , Cast (..)
+
+          -- ** Primitives
+        , Prim, GPrim (..)
+        , T.AtomType    (..)
+        , T.Atom        (..)
+
+          -- ** Generics
         , GXAnnot, GXPrim
         , GXBound, GXBind
         , GXCast
-
-        , Name
-        , Bind (..), Bound (..)
-        , Cast (..)
-        , T.AtomType    (..)
-        , T.Atom        (..)
+        , type ShowGExp
 
         -- * Compounds
         , makeXApps
         , takeXApps
 
-        -- * Primitives
+        -- ** Pattern Synonyms
         , module Datum.Script.Core.Exp.Prim)
 where
 import Datum.Script.Core.Exp.Bind

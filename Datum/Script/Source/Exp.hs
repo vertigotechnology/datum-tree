@@ -27,9 +27,6 @@ module Datum.Script.Source.Exp
         , GXCast
         , type ShowGExp
 
-          -- ** Sugar
-        , pattern XLet
-
         -- * Compounds
         , globModules
         , extractExpOfModule

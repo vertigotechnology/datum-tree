@@ -61,8 +61,9 @@ instance GXBound l ~ Name => Defix GExp l where
         XPrim{}         -> return xx
         XVar{}          -> return xx
         XCast c x       -> liftM  (XCast c)   (down x)
-        XAbs  b t x     -> liftM  (XAbs  b t) (down x)
-        XApp  x1 x2     -> liftM2  XApp       (down x1)  (down x2)
+        XAbs b t x      -> liftM  (XAbs  b t) (down x)
+        XApp x1 x2      -> liftM2  XApp       (down x1) (down x2)
+        XLet b mt x1 x2 -> liftM2 (XLet b mt) (down x1) (down x2)
 
         XDefix xs     
          -> do  xs'     <- mapM down xs

@@ -74,16 +74,18 @@ stripXAnnotT tt
 -- | Strip annotations from a source expression.
 stripXAnnotX :: GExp l -> GExp l
 stripXAnnotX xx
- = case xx of
-        XAnnot _ x      -> stripXAnnotX x
-        XPrim{}         -> xx
-        XVar{}          -> xx
-        XCast  c x      -> XCast c   (stripXAnnotX x)
-        XAbs   b t x    -> XAbs  b t (stripXAnnotX x)
-        XApp   x1 x2    -> XApp (stripXAnnotX x1) (stripXAnnotX x2)
-        XDefix xs       -> XDefix (map stripXAnnotX xs)
-        XInfixOp{}      -> xx
-        XInfixVar{}     -> xx
+ = let down = stripXAnnotX
+   in case xx of
+        XAnnot _ x        -> down x
+        XPrim{}           -> xx
+        XVar{}            -> xx
+        XCast  c x        -> XCast c   (down x)
+        XAbs   b t x      -> XAbs  b t (down x)
+        XApp   x1 x2      -> XApp (down x1) (down x2)
+        XLet   b mt x1 x2 -> XLet b (fmap down mt) (down x1) (down x2)
+        XDefix xs         -> XDefix (map down xs)
+        XInfixOp{}        -> xx
+        XInfixVar{}       -> xx
 
 
 -------------------------------------------------------------------------------

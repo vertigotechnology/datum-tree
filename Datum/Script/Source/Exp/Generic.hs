@@ -55,6 +55,9 @@ data GExp l
         --   These define syntactic sugar in the source language,
         --   which is removed when transforming to the core language.
 
+        -- | Non-recursive let-bindings.
+        | XLet      !(GXBind l) (Maybe (GExp l)) (GExp l) (GExp l)
+
         -- | An infix expression that needs to have infix ops removed.
         | XDefix    ![GExp l]
 
@@ -65,10 +68,6 @@ data GExp l
         -- | Use of an infix operator as a plain variable, like in (+) 1 2.
         --   INVARIANT: only appears in the list of an XDefix node.
         | XInfixVar !(GXBound l)
-
-
--- | Non-recursive let-binding.
-pattern XLet b t x1 x2 = XApp (XAbs b t x2) x1
 
 
 type ShowGExp l

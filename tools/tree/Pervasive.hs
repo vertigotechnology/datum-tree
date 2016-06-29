@@ -10,5 +10,9 @@ strPervasive
 
           -- Reverse application, which implements the '&' operator.
         , "applyr x f = f x;" 
+
+          -- Aliases for primitive operators.
+        , "load  n      = load#  f;"
+        , "store n t    = store# n t;"
         ]
 

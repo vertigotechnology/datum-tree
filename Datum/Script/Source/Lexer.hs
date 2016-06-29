@@ -129,7 +129,7 @@ isVarStart c
 -- | Character can be in a variable name body.
 isVarBody  :: Char -> Bool
 isVarBody c
- = Char.isAlphaNum c || c == '-' || c == '_'
+ = Char.isAlphaNum c || c == '-' || c == '_' || c == '#'
 
 
 -- | Character can be in a symbol name.

@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 
 module Datum.Script.Source.Transform.ToCore
         (toCoreX)
@@ -5,6 +6,7 @@ where
 import Data.Text                                (Text)
 import qualified Datum.Script.Source.Exp        as S
 import qualified Datum.Script.Core.Exp          as C
+
 
 -- | Things that can go wrong when converting to core.
 data Error
@@ -19,7 +21,7 @@ toCoreX xx
  = case xx of
         S.XAnnot _ x    -> toCoreX x
         S.XPrim p       -> C.XPrim <$> toCorePrim  p
-        S.XVar  u       -> C.XVar  <$> toCoreBound u
+        S.XVar  u       -> toCoreBoundX u
         S.XCast c x     -> C.XCast <$> toCoreCast  c  <*> toCoreX x
         S.XAbs  b  mt x -> C.XAbs  <$> toCoreBind  b  <*> toCoreMT mt <*> toCoreX x
         S.XApp  x1 x2   -> C.XApp  <$> toCoreX     x1 <*> toCoreX x2
@@ -42,12 +44,6 @@ toCoreX xx
 toCoreBind  :: Text -> Either Error C.Bind
 toCoreBind tt
         = return $ C.BName tt
-
-
--- | Convert a source bound to core.
-toCoreBound :: Text -> Either Error C.Bound
-toCoreBound tt
-        = return $ C.UName tt
 
 
 -- | Convert a source cast to core.
@@ -100,4 +96,26 @@ toCorePrim pp
 
         S.PVAtom a      -> return $ C.PVAtom a
         S.PVOp   p      -> return $ C.PVOp   p
+
+
+-- | Convert a source bound to core, 
+--   converting variables to primitive operators along the way.
+--
+--   The parser parses primitive operators like 'load#' as plain
+--   variables. Here we detect those and produce the correct 
+--   element of the 'Prim' type.
+--
+toCoreBoundX :: Text -> Either Error C.Exp
+toCoreBoundX tt
+ = let  op p  = return $ C.XPrim (C.PVOp p)
+   in case tt of
+        "load#"                 -> op C.PPLoad
+        "store#"                -> op C.PPStore
+        "initial#"              -> op C.PPInitial
+        "final#"                -> op C.PPFinal
+        "sample#"               -> op C.PPSample
+        "group#"                -> op C.PPGroup
+        "gather#"               -> op C.PPGather
+        "rename-fields#"        -> op C.PPRenameFields
+        _                       -> return $ C.XVar (C.UName tt)
 

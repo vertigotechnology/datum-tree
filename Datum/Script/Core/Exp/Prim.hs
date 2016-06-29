@@ -129,6 +129,21 @@ typeOfOp op
         PPRenameFields  -> XTList XTName ~> XTTree ~> XTTree
 
 
+-- | Yield the arity of a primitive operator.
+--   TODO: not sure if we really need this.
+arityOfOp :: PrimOp -> Int
+arityOfOp op
+ = case op of
+        PPLoad          -> 1
+        PPStore         -> 2
+        PPInitial       -> 2
+        PPFinal         -> 2
+        PPSample        -> 2
+        PPGroup         -> 2
+        PPGather        -> 2
+        PPRenameFields  -> 2
+
+
 ---------------------------------------------------------------------------------------------------
 -- Generic
 pattern XType n         = XPrim (PType n)

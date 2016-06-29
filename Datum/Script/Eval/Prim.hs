@@ -5,7 +5,7 @@ module Datum.Script.Eval.Prim
 where
 import Datum.Script.Eval.Error
 import Datum.Script.Eval.State
-import Datum.Script.Eval.Env                    (Value(..))
+import Datum.Script.Eval.Env                    (Thunk(..))
 import Datum.Script.Core.Exp
 import qualified Datum.Data.Tree                as T
 import qualified Datum.Data.Tree.Codec          as T
@@ -19,7 +19,7 @@ import qualified Data.Text                      as Text
 
 
 -- | Evaluate a primitive applied to some arguments.
-step :: PrimOp -> [Value] -> IO (Either Error Value)
+step :: PrimOp -> [Thunk] -> IO (Either Error Thunk)
 
 -- Load from the file system.
 step PPLoad      [VFilePath filePath]

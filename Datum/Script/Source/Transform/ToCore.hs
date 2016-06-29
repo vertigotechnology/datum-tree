@@ -31,8 +31,8 @@ toCoreX xx
                 <$> (C.XAbs 
                         <$> toCoreBind b
                         <*> toCoreMT mt
-                        <*> toCoreX x1)
-                <*> toCoreX x2
+                        <*> toCoreX x2)
+                <*> toCoreX x1
 
 
         S.XDefix{}      -> Left $ ErrorSugaredInfix xx

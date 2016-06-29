@@ -10,7 +10,7 @@ module Datum.Script.Eval
 where
 import Datum.Script.Eval.State
 import Datum.Script.Eval.Error
-import Datum.Script.Eval.Env            (Value(..))
+import Datum.Script.Eval.Env            (Thunk(..))
 import Datum.Script.Core.Exp
 import qualified Datum.Script.Eval.Env  as Env
 import qualified Datum.Script.Eval.Prim as Prim
@@ -27,8 +27,9 @@ step   (State env ctx (Left xx))
 
         -- Lookup value of variable from the environment.
         XVar u
-         -> let Just v' = Env.lookup u env
-            in  return  $ Right $ State env ctx (Right v')
+         -> case Env.lookup u env of
+                Nothing -> return $ Left  $ ErrorCore $ ErrorCoreUnboundVariable u
+                Just v' -> return $ Right $ State env ctx (Right v')
 
         -- Primitives are already values.
         XPrim p

@@ -1,7 +1,7 @@
 
 -- | Evaluation state for Datum Scripts.
 module Datum.Script.Eval.State where
-import Datum.Script.Eval.Env            (Env, Value(..))
+import Datum.Script.Eval.Env            (Env, Thunk(..))
 import Datum.Script.Core.Exp
 import qualified Datum.Script.Eval.Env  as Env
 
@@ -21,7 +21,7 @@ data State
           -- | Current focus of evaluation, either an expression that 
           --   requires more evaluation, or a value which has finished
           --   evaluation.
-        , stateFocus    :: Either Exp Value }
+        , stateFocus    :: Either Exp Thunk }
 
 deriving instance Show State
 
@@ -34,7 +34,7 @@ data Frame
 
         -- | In an application we are evaluating the argument,
         --   and the frame holds the evaluated function.
-        | FrameAppRight Value
+        | FrameAppRight Thunk
 
 deriving instance Show Frame
 

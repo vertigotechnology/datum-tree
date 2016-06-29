@@ -6,23 +6,25 @@ import qualified Data.Map               as Map
 import Prelude hiding (lookup)
 
 
--- | Value.
-data Value
+---------------------------------------------------------------------------------------------------
+-- | Thunk can be a closure or an application of a primitive. 
+data Thunk
         -- | An expression with values for free variables
         --   defined by the given environemnt.
         = VClosure !Exp  !Env
 
         -- | A primitive partially applied to its first few arguments.
-        | VPrim    !Prim ![Value]
+        | VPrim    !Prim ![Thunk]
 
-deriving instance Show Value
+deriving instance Show Thunk
 
 
+---------------------------------------------------------------------------------------------------
 -- | Environment holding names of bound variables.
 data Env
         = Env
-        { envNamed              :: !(Map Name Value)
-        , envStack              :: ![Value] 
+        { envNamed              :: !(Map Name Thunk)
+        , envStack              :: ![Thunk] 
         , envStackLength        :: !Int }
 
 deriving instance Show Env
@@ -34,7 +36,7 @@ empty   = Env Map.empty [] 0
 
 
 -- | Lookup an expression in the environment.
-lookup :: Bound -> Env -> Maybe Value
+lookup :: Bound -> Env -> Maybe Thunk
 lookup uu env
  = case uu of
         UIx i
@@ -46,7 +48,7 @@ lookup uu env
 
 
 -- | Insert a new expression into the environment.
-insert :: Bind -> Value -> Env -> Env
+insert :: Bind -> Thunk -> Env -> Env
 insert bb xx env
  = case bb of
         BAnon   -> env { envStack = xx : envStack env }

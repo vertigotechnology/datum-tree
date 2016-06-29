@@ -99,6 +99,13 @@ pExpAtom
         _       <- pTok KKet
         return  spx
 
+ , do   -- lambda abstraction
+        sp      <- pTok KLam
+        (_,  n) <- pVar
+        _       <- pTok KRightArrow
+        (_,  x) <- pExp
+        return  (sp, XAnnot sp $ XAbs n Nothing x)
+
  , do   -- variables
         (sp, u) <- pVar
         return  (sp, XAnnot sp $ XVar u) 

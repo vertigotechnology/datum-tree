@@ -25,8 +25,10 @@ data Token
         | KBra                  -- ^ Open  braket.
         | KKet                  -- ^ Close braket.
         | KLam                  -- ^ Lambda symbol.
+        | KRightArrow           -- ^ Right arrow.
         | KDot                  -- ^ Dot symbol.
         | KSemi                 -- ^ Semicolon.
+
 
         | KKey  String          -- ^ Keyword.
         | KVar  String          -- ^ Variable name.
@@ -48,6 +50,7 @@ sayToken tok
         KBra            -> "open bracket"
         KKet            -> "close bracket"
         KLam            -> "lambda"
+        KRightArrow     -> "right arrow"
         KDot            -> "dot"
         KSemi           -> "semicolon"
         KKey k          -> "keyword '"  ++ k ++ "'"

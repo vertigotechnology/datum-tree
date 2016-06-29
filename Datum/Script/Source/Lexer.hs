@@ -105,12 +105,13 @@ matchFixed str
 
 
 -- | Fixed length tokens.
+--   Each of the unicode symbols has a corresponding plain ascii one.
 tokensFixed :: [(String, Token)]
 tokensFixed
  =      [ ("(",         KBra)
         , (")",         KKet)
-        , ("\\",        KLam)
-        , ("λ",         KLam)
+        , ("\\",        KLam),          ("λ",           KLam)
+        , ("->",        KRightArrow),   ("→",           KRightArrow)
         , (".",         KDot) 
         , (";",         KSemi)
         , ("let",       KKey "let")

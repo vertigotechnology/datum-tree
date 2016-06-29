@@ -4,8 +4,8 @@ import Config
 import Load
 import Data.Default
 import Text.Show.Pretty
-import qualified System.Environment                     as System
-
+import qualified Datum.Script.Eval      as Eval
+import qualified System.Environment     as System
 
 main
  = do   args    <- System.getArgs 
@@ -15,21 +15,25 @@ main
 
         -- Read the client module.
         strSource       <- readFile filePath
+
+        -- Parse the client module text and convert to the core language.
         xCore           <- loadToCore (configDump config) filePath strSource
 
-        putStrLn $ ppShow xCore
+        -- Create a new machine state to evaluate the core expression.
+        let state       = Eval.stateInit xCore
 
-        return ()
+        -- Evaluate the script.
+        state'          <- eval state
+
+        putStrLn $ ppShow state'
 
 
-{-
 eval state
- = do   -- putStrLn $ ppShow state
-        result  <- step state
+ = do   putStrLn $ ppShow state
+        result  <- Eval.step state
         case result of 
          Left  err              -> error $ show err
          Right state'
-          | isDone state'       -> return state'
+          | Eval.isDone state'  -> return state'
           | otherwise           -> eval state'
 
--}

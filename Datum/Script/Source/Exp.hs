@@ -6,6 +6,10 @@ module Datum.Script.Source.Exp
           -- * Syntax
         , Source (..)
 
+          -- ** Top-level definitions
+        , Module, GModule (..)
+        , Top,    GTop    (..)
+
           -- ** Expressions
         , Exp, GExp (..)
 
@@ -24,7 +28,8 @@ module Datum.Script.Source.Exp
         , type ShowGExp
 
         -- * Compounds
-        , stripXAnnot
+        , globModules
+        , stripXAnnotM, stripXAnnotT, stripXAnnotX
         , makeXApps
         , takeXApps
 
@@ -43,7 +48,9 @@ import qualified Datum.Data.Tree.Exp    as T
 
 -- | Tag for the core lanugage with a unit annotation.
 data Source     = Source
-type Exp        = GExp  Source
+type Module     = GModule Source
+type Top        = GTop    Source
+type Exp        = GExp    Source
 type Prim       = GPrim (GExp Source)
 
 type instance GXAnnot Source = SourcePos

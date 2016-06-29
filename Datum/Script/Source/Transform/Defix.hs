@@ -41,6 +41,18 @@ class Defix (c :: * -> *) l where
         -> Either (Error l) (c l)
 
 
+instance GXBound l ~ Name => Defix GModule l where
+ defix table a mm
+  = case mm of
+        Module ts       -> fmap Module $ mapM (defix table a) ts
+
+
+instance GXBound l ~ Name => Defix GTop l where
+ defix table a tt
+  = case tt of
+        TBind v vs x    -> liftM (TBind v vs) (defix table a x)
+
+
 instance GXBound l ~ Name => Defix GExp l where
  defix table a xx
   = let down = defix table a
@@ -89,7 +101,7 @@ defixApps table a xx
         start [x]
          = return [x]
 
-        -- Starting operator must be prefix.
+        -- Starting operator must be infix .
         start (x1 : xs)
          | Just (a', op) <- takeXAnnotInfixOp a x1
          = case lookupDefPrefixOfSymbol table op of
@@ -111,7 +123,7 @@ defixApps table a xx
          = return [acc]
 
         -- We've hit an infix op, drop the accumulated expression.
-        munch acc (xop@XInfixOp{} : xs)
+        munch acc (xop : xs)
          | Just _       <- takeXAnnotInfixOp a xop
          = do   xs'     <- start xs
                 return $ acc : xop : xs'

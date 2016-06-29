@@ -132,14 +132,15 @@ defaultFixTable
         , FixDefInfix   "\\/"   (xvar "or")             InfixRight 3
         , FixDefInfix   "∨"     (xvar "or")             InfixRight 3
 
-        , FixDefInfix   "$"     (xvar "apply")          InfixRight 1 
+        , FixDefInfix   "$"     (xvar "apply")          InfixRight 0 
+        , FixDefInfix   "&"     (xvar "apply")          InfixLeft  1
 
         -- Text pasting.
         --   These associate to the right so that when text objects are formed by
         --   pasting several together, then spine of the data structure leans to 
         --   the right, as do cons lists.
-        , FixDefInfix   "%"  (xvar "paste")             InfixRight 6
-        , FixDefInfix   "%%" (xvar "pastes")            InfixRight 6
+        , FixDefInfix   "%"     (xvar "paste")          InfixRight 6
+        , FixDefInfix   "%%"    (xvar "pastes")         InfixRight 6
         ]
 
  where  xvar str sp 

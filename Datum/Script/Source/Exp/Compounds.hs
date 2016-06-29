@@ -1,7 +1,12 @@
 
 module Datum.Script.Source.Exp.Compounds
-        ( -- * Annotations
-          stripXAnnot
+        ( -- * Modules
+          globModules
+
+          -- * Annotations
+        , stripXAnnotM
+        , stripXAnnotT
+        , stripXAnnotX
 
           -- * Applications
         , makeXApps
@@ -11,17 +16,41 @@ import Datum.Script.Source.Exp.Generic
 
 
 -------------------------------------------------------------------------------
+-- | Glob two modules together.
+--
+--   The result contains all the top-level things from both modules.
+--
+globModules :: GModule l -> GModule l -> GModule l
+globModules (Module ts1) (Module ts2)
+        = Module (ts1 ++ ts2)
+
+
+-------------------------------------------------------------------------------
+-- | Strip annotations form a module.
+stripXAnnotM :: GModule l -> GModule l
+stripXAnnotM mm
+ = case mm of
+        Module ts       -> Module (map stripXAnnotT ts)
+
+
+-- | Strip annotations from a top level definition.
+stripXAnnotT :: GTop l -> GTop l
+stripXAnnotT tt
+ = case tt of
+        TBind n vs x    -> TBind n vs (stripXAnnotX x)
+
+
 -- | Strip annotations from a source expression.
-stripXAnnot :: GExp l -> GExp l
-stripXAnnot xx
+stripXAnnotX :: GExp l -> GExp l
+stripXAnnotX xx
  = case xx of
-        XAnnot _ x      -> stripXAnnot x
+        XAnnot _ x      -> stripXAnnotX x
         XPrim{}         -> xx
         XVar{}          -> xx
-        XCast  c x      -> XCast c   (stripXAnnot x)
-        XAbs   b t x    -> XAbs  b t (stripXAnnot x)
-        XApp   x1 x2    -> XApp (stripXAnnot x1) (stripXAnnot x2)
-        XDefix xs       -> XDefix (map stripXAnnot xs)
+        XCast  c x      -> XCast c   (stripXAnnotX x)
+        XAbs   b t x    -> XAbs  b t (stripXAnnotX x)
+        XApp   x1 x2    -> XApp (stripXAnnotX x1) (stripXAnnotX x2)
+        XDefix xs       -> XDefix (map stripXAnnotX xs)
         XInfixOp{}      -> xx
         XInfixVar{}     -> xx
 

@@ -10,6 +10,22 @@ type family GXBound l
 type family GXCast  l
 
 
+-- | A complete module.
+data GModule l
+        = Module
+        { moduleTops    :: [GTop l] }
+
+deriving instance ShowGExp l => Show (GModule l)
+
+
+-- | Top level definition.
+data GTop l
+        -- | Top level function binding with arguments and body.
+        = TBind !(GXBind l) [GXBind l] (GExp l)
+
+deriving instance ShowGExp l => Show (GTop l)
+
+
 -- | Generic expression language.
 data GExp l
 

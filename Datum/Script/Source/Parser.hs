@@ -4,7 +4,6 @@ import Data.Functor.Identity
 import Datum.Script.Source.Exp
 import Datum.Script.Source.Token                (Token(..), Loc)
 import Text.Parsec                              (SourcePos, (<?>))
-import qualified Datum.Script.Source.Lexer      as Lexer
 import qualified Datum.Script.Source.Token      as K
 import qualified Datum.Data.Tree.Exp            as T
 import qualified Text.Parsec                    as P
@@ -15,13 +14,6 @@ import qualified Data.Text                      as Text
 -------------------------------------------------------------------------------
 type Parser a 
         = P.ParsecT [K.Loc K.Token] () Identity a
-
-
--- | Take the source position of a location.
-sourcePosOfLoc :: Loc a -> SourcePos
-sourcePosOfLoc loc
-        = P.newPos (K.locName loc) (K.locLine loc) (K.locColumn loc)
-
 
 -- | Run parser on some input tokens.
 runParser 
@@ -34,21 +26,44 @@ runParser filePath tokens p
         = P.parse p filePath tokens
 
 
+-- | Take the source position of a location.
+sourcePosOfLoc :: Loc a -> SourcePos
+sourcePosOfLoc loc
+        = P.newPos (K.locName loc) (K.locLine loc) (K.locColumn loc)
+
+
+-- | Yield a source position corresponding to the start of the given file.
+startingSourcePos :: FilePath -> SourcePos
+startingSourcePos filePath
+        = P.newPos filePath 1 1
+
+{-
 -- | Lex and parse an parse an input string.
 loadExp :: FilePath -> String -> Either P.ParseError Datum.Script.Source.Exp.Exp
 loadExp filePath str
  = let  tokens  =  Lexer.tokenize filePath str 
                 ++ [K.Loc filePath 0 0 $ KEndOfFile]
    in   runParser filePath tokens pScript
-
+-}
 
 -------------------------------------------------------------------------------
 -- | Parse an entire datum script.
-pScript  :: Parser Exp
-pScript 
- = do   (_, x)  <- pExp
-        _       <- pTok KEndOfFile
-        return  x
+pModule  :: Parser Module
+pModule 
+ = do   ts              <- fmap (map snd) $ P.many1 pTop
+        _               <- pTok KEndOfFile
+        return  $ Module 
+                { moduleTops = ts }
+
+
+-------------------------------------------------------------------------------
+pTop :: Parser (SourcePos, Top)
+pTop 
+ = do   (sp, vName)     <- pVar
+        vsArgs          <- fmap (map snd) $ P.many pVar
+        _               <- pTok (KOp "=")
+        (_,  xBody)     <- pExp
+        return  (sp, TBind vName vsArgs xBody)
 
 
 -------------------------------------------------------------------------------
@@ -62,16 +77,12 @@ pExp
 -- | Parse a function application.
 pExpApp :: Parser (SourcePos, Exp)
 pExpApp
- = do   (sp, x1) <- pExpAtom
-        
-        P.choice
-         [ do   -- application of two expressions
-                xs      <- P.many1 pExpAtom
-                let xApp = foldl (\x (sp', x') -> XAnnot sp' $ XApp x x') x1 xs
-                return (sp, xApp)
-
-                -- a single atomic expression
-         ,      return (sp, x1)]
+ = do   spx     <- P.many1 pExpAtom
+        let (sps, xs) = unzip spx
+        let (sp1 : _) = sps
+        case xs of
+         [x]    -> return (sp1, x)
+         _      -> return (sp1, XDefix xs)
 
  <?> "an expression or application"
 
@@ -89,6 +100,10 @@ pExpAtom
  , do   -- variables
         (sp, u) <- pVar
         return  (sp, XAnnot sp $ XVar u) 
+
+ , do   -- infix operators.
+        (sp, u) <- pOp
+        return  (sp, XAnnot sp $ XInfixOp u) 
 
  , do   -- symbols
         (sp, s) <- pSymbol
@@ -121,6 +136,14 @@ pVar :: Parser (SourcePos, Name)
 pVar    = pTokMaybe 
         $ \k -> case k of
                  KVar name      -> Just (Text.pack name)
+                 _              -> Nothing
+
+
+-- | Parse an infix operator.
+pOp :: Parser (SourcePos, Name)
+pOp    = pTokMaybe 
+        $ \k -> case k of
+                 KOp name       -> Just (Text.pack name)
                  _              -> Nothing
 
 

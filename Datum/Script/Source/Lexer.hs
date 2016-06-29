@@ -82,7 +82,7 @@ tokenize filePath xx0
         = let   restOfVar       = takeWhile isOperatorBody xs
                 restOfString    = drop (length restOfVar)  xs
                 name            = x : restOfVar
-          in    wrap (KSym name)
+          in    wrap (KOp name)
                  : eat l (c + length name) restOfString
 
         -- If we see a junk character then stop scanning.

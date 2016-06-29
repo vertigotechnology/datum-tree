@@ -32,4 +32,9 @@ data Error l
         { errorAnnot            :: GXAnnot l
         , errorExp              :: GExp l }
 
+        -- | (internal) No expressions in defix node.
+        | ErrorNoExpressions
+        { errorAnnot            :: GXAnnot l }
+
+
 deriving instance ShowGExp l => Show (Error l)

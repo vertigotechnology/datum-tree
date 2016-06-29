@@ -150,8 +150,8 @@ defixExps table a xx
  = case xx of
         -- If there are no elements then we're screwed.
         -- Maybe the parser is wrong or defixInfix has lost them.
-        []      -> error "datum.defixExps: no expressions"                      -- TODO: lift to err
-
+        []      -> Left $ ErrorNoExpressions a
+        
         -- If there is only one element then we're done.
         [x]     -> Right x
 

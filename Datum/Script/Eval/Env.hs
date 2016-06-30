@@ -19,6 +19,17 @@ data Thunk
 deriving instance Show Thunk
 
 
+-- | Thunk represents an expression in normal form.
+isNormalThunk :: Thunk -> Bool
+isNormalThunk tt
+ = case tt of
+        VClosure x _env 
+         -> isNormalOpenX arityOfPrim x
+
+        VPrim p xs
+         -> length xs >= arityOfPrim p
+
+
 ---------------------------------------------------------------------------------------------------
 -- | Environment holding names of bound variables.
 data Env

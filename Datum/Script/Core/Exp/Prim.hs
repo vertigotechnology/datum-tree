@@ -129,8 +129,15 @@ typeOfOp op
         PPRenameFields  -> XTList XTName ~> XTTree ~> XTTree
 
 
+-- | Yield the arity of a primitive.
+arityOfPrim :: GPrim x -> Int
+arityOfPrim pp
+ = case pp of
+        PVOp op         -> arityOfOp op
+        _               -> 0
+
+
 -- | Yield the arity of a primitive operator.
---   TODO: not sure if we really need this.
 arityOfOp :: PrimOp -> Int
 arityOfOp op
  = case op of

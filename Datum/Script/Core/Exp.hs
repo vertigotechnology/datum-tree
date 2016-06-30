@@ -25,7 +25,13 @@ module Datum.Script.Core.Exp
         , GXCast
 
           -- * Compounds
+        , makeXAbss
+        , makeXApps
+        , takeXApps, takeXApps'
         , expOfPipeline
+
+          -- * Predicates
+        , isNormalOpenX
 
           -- ** Pattern Synonyms
         , module Datum.Script.Core.Exp.Prim)
@@ -35,6 +41,7 @@ import Datum.Script.Core.Exp.Cast
 import Datum.Script.Core.Exp.Prim
 import Datum.Script.Core.Exp.Generic
 import Datum.Script.Core.Exp.Compounds
+import Datum.Script.Core.Exp.Predicates
 import qualified Datum.Data.Tree        as T
 import qualified Datum.Data.Tree.Exp    as T
 

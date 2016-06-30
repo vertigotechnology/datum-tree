@@ -41,7 +41,7 @@ deriving instance Show Frame
 
 -- | Check if the evaluation of the expression in the given state is done.
 isDone :: State -> Bool
-isDone (State _ [] (Right _))   = True
+isDone (State _ [] (Right t))   = Env.isNormalThunk t
 isDone (State _ _  (Left  _))   = False
 isDone _                        = False
 

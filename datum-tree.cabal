@@ -133,6 +133,7 @@ Library
         Datum.Script.Core.Exp.Bind
         Datum.Script.Core.Exp.Cast
         Datum.Script.Core.Exp.Compounds
+        Datum.Script.Core.Exp.Predicates
         Datum.Script.Core.Exp.Generic
 
         Datum.Script.Source.Exp.Generic

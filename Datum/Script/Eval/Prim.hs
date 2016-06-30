@@ -21,6 +21,13 @@ import qualified Data.Text                      as Text
 -- | Evaluate a primitive applied to some arguments.
 step :: PrimOp -> [Thunk] -> IO (Either Error Thunk)
 
+-- Numeric ------------------------------------------------
+step op      [v1@(VInt _), v2@(VInt _)]
+ | Just x       <- redNum2 op v1 v2
+ =      return  $ Right x
+
+
+-- Tree ---------------------------------------------------
 -- Load from the file system.
 step PPLoad      [VFilePath filePath]
  = case FilePath.takeExtension filePath of
@@ -85,4 +92,17 @@ step p args
  = do   return  $ Right (VPrim (PVOp p) args)
 
 
+
+redNum2 :: PrimOp -> Thunk -> Thunk -> Maybe Thunk
+redNum2 op (VInt x1) (VInt x2)
+ = case op of
+        PPAdd   -> Just $ VInt (x1 +     x2)
+        PPSub   -> Just $ VInt (x1 -     x2)
+        PPMul   -> Just $ VInt (x1 *     x2)
+        PPDiv   -> Just $ VInt (x1 `div` x2)
+        _       -> Nothing
+
+redNum2 _ _ _
+ = Nothing
+ 
 

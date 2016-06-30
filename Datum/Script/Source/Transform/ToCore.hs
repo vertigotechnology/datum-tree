@@ -71,6 +71,7 @@ toCorePrim pp
         S.PHole t       -> C.PHole <$> toCoreX t
         S.PType i       -> return $ C.PType i
         S.PFun  i       -> return $ C.PFun  i
+        S.PAll  n k t   -> C.PAll n <$> toCoreX k <*> toCoreX t
 
         -- Kinds (level 2)
         S.PKComp        -> return $ C.PKComp
@@ -79,6 +80,7 @@ toCorePrim pp
 
         -- Types (level 1)
         S.PTS           -> return $ C.PTS
+        S.PTNum         -> return $ C.PTNum
         S.PTList        -> return $ C.PTList
 
         S.PTName        -> return $ C.PTName
@@ -109,6 +111,18 @@ toCoreBoundX :: Text -> Either Error C.Exp
 toCoreBoundX tt
  = let  op p  = return $ C.XPrim (C.PVOp p)
    in case tt of
+        "neg#"                  -> op C.PPNeg
+        "add#"                  -> op C.PPAdd
+        "sub#"                  -> op C.PPSub
+        "mul#"                  -> op C.PPMul
+        "div#"                  -> op C.PPDiv
+
+        "eq#"                   -> op C.PPEq
+        "gt#"                   -> op C.PPGt
+        "ge#"                   -> op C.PPGe
+        "lt#"                   -> op C.PPLt
+        "le#"                   -> op C.PPLe
+
         "load#"                 -> op C.PPLoad
         "store#"                -> op C.PPStore
         "initial#"              -> op C.PPInitial

@@ -68,7 +68,7 @@ step (State env ctx  (Right vv))
                  -> let ctx2    = FrameAppRight v1 : ctx'
                     in  return  $ Right $ State env ctx2 (Left x2)
 
-                _ -> return $ Left $ Error "invalid state"
+                _ -> return $ Left $ Error "invalid state on left of app"
 
         -- We have reduced the right of an application to a value,
         -- so perform the application.
@@ -88,7 +88,14 @@ step (State env ctx  (Right vv))
                          Left err -> return $ Left err
                          Right v' -> return $ Right $ State env ctx' $ Right v'
 
-                _ -> return $ Left $ Error "invalid state"
+                _ -> return $ Left $ Error "invalid state on right of app"
 
-        _ -> return $ Left $ Error "invalid state"
+
+        -- Closure in an empty context.
+        --  The expression in the closure may not yet be in normal form,
+        --  so we need to force it.
+        ([], VClosure x env')
+          -> return $ Right $ State (Env.append env env') ctx (Left x)
+
+        _ -> return $ Left  $ Error "invalid state"
 

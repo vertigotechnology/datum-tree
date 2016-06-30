@@ -13,6 +13,7 @@ data GPrim x
         = PHole x                       -- ^ A hole of the given type, to be elaborated.
         | PType Int                     -- ^ Type of types at the given level.
         | PFun  Int                     -- ^ Function arrow at the given level.
+        | PAll  Int x x                 -- ^ Universal quantification with a kind and bound.
 
         -- Kinds  (level 2)
         | PKComp                        -- ^ Kind of computation types.
@@ -24,6 +25,7 @@ data GPrim x
         | PTList                        -- ^ List type constructor.
 
         | PTName                        -- ^ Name type.
+        | PTNum                         -- ^ Supertype of number types.
         | PTTree                        -- ^ Datum tree type.
         | PTTreePath                    -- ^ Datum tree path type.
         | PTFilePath                    -- ^ File path type.
@@ -38,11 +40,22 @@ data GPrim x
         | PVFilePath FilePath           -- ^ File path.
 
         | PVAtom     T.Atom             -- ^ Atomic Values.
-        | PVOp       PrimOp             -- ^ Primitive operators.
-
+        | PVOp       PrimOp             -- ^ Primitive operators with the given type arguments.
 
 data PrimOp
-        = PPLoad                        -- ^ Load  a value from the file system.
+        = PPNeg                         -- ^ Negation.
+        | PPAdd                         -- ^ Addition.
+        | PPSub                         -- ^ Subtraction.
+        | PPMul                         -- ^ Multiplication.
+        | PPDiv                         -- ^ Division
+
+        | PPEq                          -- ^ Equality.
+        | PPGt                          -- ^ Greater-than.
+        | PPGe                          -- ^ Greater-than-equal.
+        | PPLt                          -- ^ Less-than.
+        | PPLe                          -- ^ Less-than-equal.
+
+        | PPLoad                        -- ^ Load  a value from the file system.
         | PPStore                       -- ^ Store a value to the file system.
         | PPInitial                     -- ^ Select the initial n branches of each subtree.
         | PPFinal                       -- ^ Select the final n branches of each subtree.
@@ -73,6 +86,10 @@ typeOfPrim pp
          -> let n'      = n + 1
             in  XFun n' (XType n') (XFun n' (XType n') (XType n'))
 
+        PAll  n k t
+         -> let n'      = n + 1
+            in  XFun n' k (XFun n' t (XType n'))
+
         -- Types of Kinds
         PKComp          -> XType 2
         PKData          -> XType 2
@@ -80,6 +97,7 @@ typeOfPrim pp
 
         -- Types of Types
         PTS             -> XType 1 ~~> XType 1
+        PTNum           -> XType 1
         PTList          -> XType 1 ~~> XType 1
 
         PTName          -> XType 1
@@ -119,6 +137,18 @@ typeOfOp :: (GXPrim l ~ GPrim (GExp l))
          => PrimOp -> GExp l
 typeOfOp op
  = case op of
+        PPNeg           -> error "typeOfOp: finish me"
+        PPAdd           -> error "typeOfOp: finish me"
+        PPSub           -> error "typeOfOp: finish me"
+        PPMul           -> error "typeOfOp: finish me"
+        PPDiv           -> error "typeOfOp: finish me"
+
+        PPEq            -> error "typeOfOp: finish me"
+        PPGt            -> error "typeOfOp: finish me"
+        PPGe            -> error "typeOfOp: finish me"
+        PPLt            -> error "typeOfOp: finish me"
+        PPLe            -> error "typeOfOp: finish me"
+
         PPLoad          -> XTFilePath ~> XTS XTTree
         PPStore         -> XTFilePath ~> XTTree ~> XTS XTUnit
         PPInitial       -> XTNat         ~> XTTree ~> XTTree
@@ -141,6 +171,18 @@ arityOfPrim pp
 arityOfOp :: PrimOp -> Int
 arityOfOp op
  = case op of
+        PPNeg           -> 1
+        PPAdd           -> 2
+        PPSub           -> 2
+        PPMul           -> 2
+        PPDiv           -> 2
+
+        PPEq            -> 2
+        PPGt            -> 2
+        PPGe            -> 2
+        PPLt            -> 2
+        PPLe            -> 2
+
         PPLoad          -> 1
         PPStore         -> 2
         PPInitial       -> 2

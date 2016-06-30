@@ -12,6 +12,18 @@ strPervasive
         , "applyr x f = f x;" 
 
           -- Aliases for primitive operators.
+        , "neg          = neg#;"
+        , "add          = add#;"
+        , "sub          = sub#;"
+        , "mul          = mul#;"
+        , "div          = div#;"
+
+        , "eq           = eq#;"
+        , "gt           = gt#;"
+        , "ge           = ge#;"
+        , "lt           = lt#;"
+        , "le           = le#;"
+
         , "load  n      = load#  f;"
         , "store n t    = store# n t;"
         ]

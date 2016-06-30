@@ -1,5 +1,9 @@
 
+twice f x
+ = f (f x);
+
 main
- = store# "demo/tmp/stock.tree" (load# "demo/data/ASXListedCompanies.csv");
+ = load "demo/data/ASXListedCompanies-cut.csv"
+ & twice (store "demo/tmp/stock.tree");
 
 

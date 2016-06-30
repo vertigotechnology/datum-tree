@@ -14,6 +14,7 @@ import Datum.Script.Eval.Env            (Thunk(..))
 import Datum.Script.Core.Exp
 import qualified Datum.Script.Eval.Env  as Env
 import qualified Datum.Script.Eval.Prim as Prim
+import Data.Function
 
 
 -- | Perform a single step evaluation of the expression.
@@ -56,6 +57,14 @@ step   (State env ctx (Left xx))
 step (State env ctx  (Right vv))
  = case (ctx, vv) of
 
+        -- Fully applied primitive in an empty context.
+        (_, VPrim (PVOp p) xs)
+          |  length xs == arityOfOp p
+          -> do result     <- Prim.step p xs
+                case result of
+                 Left err -> return $ Left err
+                 Right v' -> return $ Right $ State env ctx $ Right v'
+
         -- We have reduced the left of an application to a value,
         -- now reduce the argument.
         (FrameAppLeft x2 : ctx', v1)
@@ -77,8 +86,11 @@ step (State env ctx  (Right vv))
                 -- Application of an abstraction to an argument.
                 --   Build a closure that binds the formal parameter to the argument.
                 VClosure (XAbs b _t x11) env'
-                 ->  return $ Right $ State env ctx' 
-                            $ Right (VClosure x11 (Env.insert b v2 env'))
+                 -> do  let env''  = env 
+                                   & Env.union  env'
+                                   & Env.insert b v2
+
+                        return $ Right $ State env'' ctx' $ Left x11
 
                 -- Application of a primitive operator to some arguments.
                 --   The primitive may or may not be partially applied.
@@ -89,22 +101,6 @@ step (State env ctx  (Right vv))
                          Right v' -> return $ Right $ State env ctx' $ Right v'
 
                 _ -> return $ Left $ Error "invalid state on right of app"
-
-
-        -- Closure in an empty context.
-        --  The expression in the closure may not yet be in normal form,
-        --  so we need to force it.
-        (_, VClosure x env')
-          -> return $ Right $ State (Env.append env env') ctx (Left x)
-
-
-        -- Fully applied primitive in an empty context.
-        (_, VPrim (PVOp p) xs)
-          |  length xs == arityOfOp p
-          -> do result     <- Prim.step p xs
-                case result of
-                 Left err -> return $ Left err
-                 Right v' -> return $ Right $ State env ctx $ Right v'
 
 
         _ -> return $ Left  $ Error "invalid state"

@@ -66,9 +66,9 @@ insert bb xx env
         BName n -> env { envNamed = Map.insert n xx (envNamed env) }
 
 
--- | Append two environments.
-append :: Env -> Env -> Env
-append env1 env2
+-- | Take the union of two environments.
+union :: Env -> Env -> Env
+union env1 env2
         = Env
         { envNamed              = Map.union (envNamed env1) (envNamed env2)
         , envStack              = envStack env2       ++ envStack env1

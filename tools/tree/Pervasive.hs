@@ -5,12 +5,6 @@ module Pervasive where
 strPervasive :: String
 strPervasive
         = unlines
-        [ "applyr x f = f x;" 
-        , "load  f      = load#  f;"
-        , "store f t    = store# f t;"
-        ]
-
-{-
         [ -- Application, which implements the '$' operator.
           "apply  f x = f x;" 
 
@@ -30,7 +24,8 @@ strPervasive
         , "lt           = lt#;"
         , "le           = le#;"
 
-        , "load  f      = load#  f;"
-        , "store f t    = store# f t;"
+        , "load         = load#;"
+        , "store        = store#;"
+        , "sample       = sample#;"
+        , "group        = group#;"
         ]
--}

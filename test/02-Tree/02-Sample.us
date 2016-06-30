@@ -1,0 +1,6 @@
+
+main
+ = load   "demo/data/ASXListedCompanies-cut.csv"
+ & group  'grouping
+ & sample 10
+ & store  "demo/tmp/stock-sample.tree";

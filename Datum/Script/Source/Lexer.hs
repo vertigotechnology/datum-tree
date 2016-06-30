@@ -69,11 +69,12 @@ tokenize filePath xx0
           in    wrap (KVar name)
                  : eat l (c + length name) restOfString
 
-        -- Symbols start with a tick character.
+        -- Symbols start with a tick character,
+        -- but the tick is not part of the name.
         | x == '\''
         = let   restOfVar       = takeWhile isSymbolBody   xs
                 restOfString    = drop (length restOfVar)  xs
-                name            = x : restOfVar
+                name            = restOfVar
           in    wrap (KSym name)
                  : eat l (c + length name) restOfString
 

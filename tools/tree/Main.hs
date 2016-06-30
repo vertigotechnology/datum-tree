@@ -29,7 +29,7 @@ main
 
 
 eval state
- = do   putStrLn $ ppShow state
+ = do   -- putStrLn $ ppShow state
         result  <- Eval.step state
         case result of 
          Left  err              -> error $ show err

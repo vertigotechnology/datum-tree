@@ -62,7 +62,7 @@ step PPFinal     [VNat n, VTree tree]
 
 
 -- Sample n intermediate branches of each subtree.
-step PPSample    [VNat n, VTree tree]
+step PPSample    [VInt n, VTree tree]
  =      return  $ Right $ VTree $ T.sample n tree
 
 
@@ -79,15 +79,13 @@ step PPGroup   [VName name, VTree tree]
                 $ T.promiseTree
                 $ T.mapForests (T.groupForest $ Text.unpack name) tree
 
-{-
--- Rename fields in a tree.
 -- TODO: need a way to specify the correct level.
 step PPRenameFields [ VList XTName names, VTree tree ]
  = do   let names' = [ Text.unpack n | XName n <- names]
         return  $ Right $ VTree
                 $ T.promiseTree
                 $ T.mapTrees (T.renameFields names') tree
--}
+
 step p args
  = do   return  $ Right (VPrim (PVOp p) args)
 

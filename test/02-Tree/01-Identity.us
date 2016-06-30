@@ -1,0 +1,5 @@
+
+main
+ = store# "demo/tmp/stock.tree" (load# "demo/data/ASXListedCompanies.csv");
+
+

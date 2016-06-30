@@ -94,8 +94,18 @@ step (State env ctx  (Right vv))
         -- Closure in an empty context.
         --  The expression in the closure may not yet be in normal form,
         --  so we need to force it.
-        ([], VClosure x env')
+        (_, VClosure x env')
           -> return $ Right $ State (Env.append env env') ctx (Left x)
+
+
+        -- Fully applied primitive in an empty context.
+        (_, VPrim (PVOp p) xs)
+          |  length xs == arityOfOp p
+          -> do result     <- Prim.step p xs
+                case result of
+                 Left err -> return $ Left err
+                 Right v' -> return $ Right $ State env ctx $ Right v'
+
 
         _ -> return $ Left  $ Error "invalid state"
 

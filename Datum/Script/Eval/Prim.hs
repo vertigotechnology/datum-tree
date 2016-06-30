@@ -29,7 +29,7 @@ step op      [v1@(VInt _), v2@(VInt _)]
 
 -- Tree ---------------------------------------------------
 -- Load from the file system.
-step PPLoad      [VFilePath filePath]
+step PPLoad      [VText filePath]
  = case FilePath.takeExtension filePath of
         ".csv"  
          -> do  bs              <- BS8.readFile filePath
@@ -40,7 +40,7 @@ step PPLoad      [VFilePath filePath]
 
 
 -- Store to the file system.
-step PPStore     [VFilePath filePath, VTree tree]
+step PPStore     [VText filePath, VTree tree]
  = case FilePath.takeExtension filePath of
         ".tree"
          -> do  System.withFile filePath System.WriteMode

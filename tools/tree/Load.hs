@@ -87,8 +87,7 @@ loadToSourceExp dump filePath strSource
         modClient       <- loadToSourceModule dump filePath strSource
 
         -- Append pervasives to the front of the client module.
-        let modTotal      = (Source.globModules modPervasive modClient)
-                                `seq` modClient
+        let modTotal      = Source.globModules modPervasive modClient
 
         when dump
          $ writeFile "dump-06-source-module.us-ast" 

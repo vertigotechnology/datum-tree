@@ -23,8 +23,8 @@ deriving instance Show Thunk
 isNormalThunk :: Thunk -> Bool
 isNormalThunk tt
  = case tt of
-        VClosure x _env 
-         -> isNormalOpenX arityOfPrim x
+        VClosure{}
+         -> False
 
         VPrim p xs
          -> length xs >= arityOfPrim p

@@ -104,6 +104,13 @@ pExpAtom
         _       <- pTok KSquareKet
         return  (sp, XAnnot sp $ XPrim (PVList (XPrim (PHole (XPrim PKData))) xs))
 
+ , do   -- branch path sugar
+        sp      <- pTok KSlashForward
+        ns      <- fmap (map snd) $ P.sepBy1 pVar (pTok KSlashForward)
+        let xs  =  [XPrim (PVName n) | n <- Text.pack "root" : ns]
+        let hole = XPrim (PHole (XPrim PKData))
+        return  (sp, XAnnot sp $ XPrim (PVList hole xs))
+
  , do   -- variables
         (sp, u) <- pVar
         return  (sp, XAnnot sp $ XVar u) 

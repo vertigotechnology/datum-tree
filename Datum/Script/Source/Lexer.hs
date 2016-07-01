@@ -124,6 +124,7 @@ tokensFixed
         , (".",         KDot) 
         , (",",         KComma)
         , (";",         KSemi)
+        , ("/",         KSlashForward)
         , ("let",       KKey "let")
         , ("in",        KKey "in")
         , ("if",        KKey "if")
@@ -154,5 +155,5 @@ isOperatorBody :: Char -> Bool
 isOperatorBody c
  = elem c 
         [ '!', '@', '$', '%', '^', '&', '*', '?'
-        , '-', '+', '=', '>', '<', '|', '/', '~']
+        , '-', '+', '=', '>', '<', '|', '~']
 

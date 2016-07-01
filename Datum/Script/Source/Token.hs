@@ -34,6 +34,7 @@ data Token
         | KDot                  -- ^ Dot character.
         | KComma                -- ^ Comma charater.
         | KSemi                 -- ^ Semicolon.
+        | KSlashForward         -- ^ Forward slash.
 
         | KKey  String          -- ^ Keyword.
         | KVar  String          -- ^ Variable name.
@@ -63,8 +64,9 @@ sayToken tok
         KRightArrow     -> "right arrow"
 
         KDot            -> "dot"
-        KSemi           -> "semicolon"
         KComma          -> "comma"
+        KSemi           -> "semicolon"
+        KSlashForward   -> "forward slash"
 
         KKey k          -> "keyword '"  ++ k ++ "'"
         KVar v          -> "variable '" ++ v ++ "'"

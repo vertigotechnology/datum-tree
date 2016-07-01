@@ -2,6 +2,6 @@
 
 main
  = load   "demo/data/ASXListedCompanies-cut.csv"
- & on ['root, 'row] (group 'grouping)
+ & on /row $ (group 'grouping)
  & sample 10
  & store  "demo/tmp/02-stock-sample.tree";

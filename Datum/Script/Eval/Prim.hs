@@ -1,7 +1,6 @@
 
 module Datum.Script.Eval.Prim
-        ( step
-        , Error)
+        ( step, Error(..) )
 where
 import Datum.Script.Eval.Error
 import Datum.Script.Eval.State
@@ -20,10 +19,8 @@ import qualified System.IO.Unsafe               as System
 import qualified Text.Show.Pretty               as Text
 import qualified Datum.Script.Eval.Env          as Env
 
-progress thunk = return $ Right thunk
-failure  err   = return $ Left  err
 
----------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 -- | Evaluate a primitive applied to some arguments.
 step    :: (State -> IO (Either Error (Maybe State)))
         -> State
@@ -106,14 +103,17 @@ step self state PPAt [VList _ names, thunk, VTree tree0]
                 = sequence
                 $ map takeXName names
 
+        -- A dream within a dream.
+        --   This function calls our interpreter to apply the thunk.
+        --   The interface is via a pure Haskell function,
+        --   so when we pass it to the Haskell-side operators they
+        --   don't know they're calling back into the interpreter.
         let inception :: T.Path -> T.Tree 'T.O -> T.Tree 'T.O
             inception path tree
                 = T.promiseTree
                 $ System.unsafePerformIO
                 $ liftTreeTransformIO 
-                        self 
-                        thunk 
-                        state { stateContext = [] }
+                        self thunk state { stateContext = [] }
                         path tree
 
         progress $ VTree
@@ -129,13 +129,17 @@ step self state PPOn [VList _ names, thunk, VTree tree0]
                 = sequence
                 $ map takeXName names
 
+        -- A dream within a dream.
+        --   This function calls our interpreter to apply the thunk.
+        --   The interface is via a pure Haskell function,
+        --   so when we pass it to the Haskell-side operators they
+        --   don't know they're calling back into the interpreter.
         let inception :: T.Path -> T.Forest 'T.O -> T.Forest 'T.O
             inception path forest
                 = T.promiseForest
                 $ System.unsafePerformIO
                 $ liftForestTransformIO 
-                        self thunk 
-                        state { stateContext = [] }
+                        self thunk state { stateContext = [] }
                         path forest
 
         progress $ VTree
@@ -143,7 +147,6 @@ step self state PPOn [VList _ names, thunk, VTree tree0]
                  $ T.mapForestOfTreeOn
                         names' inception
                         mempty tree0
-
 
 step _ _ p args
  -- Form a thunk from a partially applied primitive.
@@ -160,7 +163,12 @@ step _ _ p args
          , "args    = " ++ Text.ppShow args]
 
 
-----------------------------------------------------------------------------------------------------
+-- Helpers.
+progress thunk = return $ Right thunk
+failure  err   = return $ Left  err
+
+
+---------------------------------------------------------------------------------------------------
 redNum2 :: PrimOp -> Thunk -> Thunk -> Maybe Thunk
 redNum2 op (VInt x1) (VInt x2)
  = case op of
@@ -182,8 +190,7 @@ takeXName xx
         _               -> Nothing
 
 
--------------------------------------------------------------------------------
-
+---------------------------------------------------------------------------------------------------
 liftForestTransformIO
         :: (State -> IO (Either Error (Maybe State)))
                         -- ^ Stepper function for general expressions.
@@ -213,12 +220,12 @@ liftForestTransformIO sstep thunk state0 _path0 forest0
                  Right Nothing
                   -> case stateControl state of
                         ControlPAP (PAP (PVForest t) [])
-                                -> return t
-                        focus   -> error $ "datum-tree: wrong type in internal forest evaluation "
-                                ++ Text.ppShow focus
+                              -> return t
+                        focus -> error $ "datum-tree: wrong type in internal forest evaluation "
+                              ++ Text.ppShow focus
 
 
--------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 liftTreeTransformIO
         :: (State -> IO (Either Error (Maybe State)))
                         -- ^ Stepper function for general expressions.
@@ -248,12 +255,12 @@ liftTreeTransformIO sstep thunk state0 _path0 tree0
                  Right Nothing
                   -> case stateControl state of
                         ControlPAP (PAP (PVTree t) [])
-                                -> return t
-                        focus   -> error 
-                                $  "datum-tree: wrong type in internal evaluation "
-                                ++ Text.ppShow focus
+                              -> return t
+                        focus -> error $ "datum-tree: unexpected type in internal tree evaluation "
+                              ++ Text.ppShow focus
 
 
+-- | Curry the given primitive argument onto a thunk.
 curryThunkPrim  :: Thunk -> Prim -> Thunk
 curryThunkPrim tt pArg
  = case tt of

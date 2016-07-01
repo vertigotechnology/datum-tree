@@ -24,8 +24,9 @@ strPervasive
         , "lt           = lt#;"
         , "le           = le#;"
 
-        , "load         = load#;"
-        , "store        = store#;"
-        , "sample       = sample#;"
-        , "group        = group#;"
+        , "load                 = load#;"
+        , "store                = store#;"
+        , "sample               = sample#;"
+        , "group                = group#;"
+        , "rename-fields        = rename-fields#;"
         ]

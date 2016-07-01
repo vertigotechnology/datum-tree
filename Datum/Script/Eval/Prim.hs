@@ -80,15 +80,25 @@ step PPGroup   [VName name, VTree tree]
                 $ T.mapForests (T.groupForest $ Text.unpack name) tree
 
 -- TODO: need a way to specify the correct level.
-step PPRenameFields [ VList XTName names, VTree tree ]
+step PPRenameFields [ VList _ names, VTree tree ]
  = do   let names' = [ Text.unpack n | XName n <- names]
         return  $ Right $ VTree
                 $ T.promiseTree
                 $ T.mapTrees (T.renameFields names') tree
 
 step p args
+ -- Form a thunk from a partially applied primitive.
+ | length args < arityOfOp p
  = do   return  $ Right (VPrim (PVOp p) args)
 
+ -- Primitive application is ill-typed.
+ | otherwise
+ = error $ unlines
+         [ "datum-tree: ill typed primitive application\n"
+         , "op      = " ++ show p
+         , "args    = " ++ show args
+         , "n-args  = " ++ show (length args)
+         , "arity   = " ++ show (arityOfOp p)] 
 
 
 redNum2 :: PrimOp -> Thunk -> Thunk -> Maybe Thunk

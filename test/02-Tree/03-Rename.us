@@ -1,0 +1,9 @@
+
+
+main
+ = load   "demo/data/ASXListedCompanies.csv"
+ & rename-fields ['name, 'symbol, 'grouping]
+ & group 'grouping
+ & sample 10
+ & store  "demo/tmp/stock-sample.tree";
+

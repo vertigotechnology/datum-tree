@@ -37,14 +37,6 @@ startingSourcePos :: FilePath -> SourcePos
 startingSourcePos filePath
         = P.newPos filePath 1 1
 
-{-
--- | Lex and parse an parse an input string.
-loadExp :: FilePath -> String -> Either P.ParseError Datum.Script.Source.Exp.Exp
-loadExp filePath str
- = let  tokens  =  Lexer.tokenize filePath str 
-                ++ [K.Loc filePath 0 0 $ KEndOfFile]
-   in   runParser filePath tokens pScript
--}
 
 -------------------------------------------------------------------------------
 -- | Parse an entire datum script.
@@ -94,9 +86,9 @@ pExpAtom :: Parser (SourcePos, Exp)
 pExpAtom 
  = P.choice
  [ do   -- parenthesised expression
-        _       <- pTok KBra
+        _       <- pTok KRoundBra
         spx     <- pExp
-        _       <- pTok KKet
+        _       <- pTok KRoundKet
         return  spx
 
  , do   -- lambda abstraction
@@ -105,6 +97,12 @@ pExpAtom
         _       <- pTok KRightArrow
         (_,  x) <- pExp
         return  (sp, XAnnot sp $ XAbs n Nothing x)
+
+ , do   -- list
+        sp      <- pTok KSquareBra
+        xs      <- fmap (map snd) $ P.sepBy1 pExp (pTok KComma)
+        _       <- pTok KSquareKet
+        return  (sp, XAnnot sp $ XPrim (PVList (XPrim (PHole (XPrim PKData))) xs))
 
  , do   -- variables
         (sp, u) <- pVar

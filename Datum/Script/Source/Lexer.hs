@@ -19,6 +19,10 @@ tokenize filePath xx0
 
        eat !l !c !(x : xs)
 
+        -- Increment line counter.
+        | '\n' <- x
+        = eat (l + 1) 1 xs
+
         -- Ignore whitespace.
         | Char.isSpace x
         = eat l (c + 1) xs
@@ -76,7 +80,7 @@ tokenize filePath xx0
                 restOfString    = drop (length restOfVar)  xs
                 name            = restOfVar
           in    wrap (KSym name)
-                 : eat l (c + length name) restOfString
+                 : eat l (c + 1 + length name) restOfString
 
         -- Operators
         | isOperatorBody x
@@ -109,11 +113,16 @@ matchFixed str
 --   Each of the unicode symbols has a corresponding plain ascii one.
 tokensFixed :: [(String, Token)]
 tokensFixed
- =      [ ("(",         KBra)
-        , (")",         KKet)
+ =      [ ("(",         KRoundBra)
+        , (")",         KRoundKet)
+
+        , ("[",         KSquareBra)
+        , ("]",         KSquareKet)
+
         , ("\\",        KLam),          ("λ",           KLam)
         , ("->",        KRightArrow),   ("→",           KRightArrow)
         , (".",         KDot) 
+        , (",",         KComma)
         , (";",         KSemi)
         , ("let",       KKey "let")
         , ("in",        KKey "in")

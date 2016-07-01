@@ -22,13 +22,18 @@ data Token
         | KErrorJunk   Char     -- ^ Some junk or invalid character.
         | KErrorUnterm String   -- ^ Unterminated string.
 
-        | KBra                  -- ^ Open  braket.
-        | KKet                  -- ^ Close braket.
+        | KRoundBra             -- ^ Open  round parenthesis.
+        | KRoundKet             -- ^ Close round parenthesis.
+
+        | KSquareBra            -- ^ Open  round parenthesis.
+        | KSquareKet            -- ^ Close round parenthesis.
+
         | KLam                  -- ^ Lambda symbol.
         | KRightArrow           -- ^ Right arrow.
-        | KDot                  -- ^ Dot symbol.
-        | KSemi                 -- ^ Semicolon.
 
+        | KDot                  -- ^ Dot character.
+        | KComma                -- ^ Comma charater.
+        | KSemi                 -- ^ Semicolon.
 
         | KKey  String          -- ^ Keyword.
         | KVar  String          -- ^ Variable name.
@@ -47,12 +52,20 @@ sayToken tok
         KEndOfFile      -> "end of file"
         KErrorJunk   _  -> "unexpected character"
         KErrorUnterm _  -> "unterminated string"
-        KBra            -> "open bracket"
-        KKet            -> "close bracket"
+
+        KRoundBra       -> "open round parenthesis"
+        KRoundKet       -> "close round parenthesis"
+
+        KSquareBra      -> "open square parenthesis"
+        KSquareKet      -> "close square parenthesis"
+
         KLam            -> "lambda"
         KRightArrow     -> "right arrow"
+
         KDot            -> "dot"
         KSemi           -> "semicolon"
+        KComma          -> "comma"
+
         KKey k          -> "keyword '"  ++ k ++ "'"
         KVar v          -> "variable '" ++ v ++ "'"
         KOp  o          -> "operator '" ++ o ++ "'"

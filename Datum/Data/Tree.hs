@@ -16,6 +16,7 @@ module Datum.Data.Tree
         , Element
         , Atom
         , Name
+        , Path
 
           -- * Checking
         , Checked (..)
@@ -77,6 +78,9 @@ module Datum.Data.Tree
         , mapForests
         , mapForests'
         , mapForest'
+
+        , mapForestOfTreeOn
+        , mapTreesOfTreeOn
 
           -- ** Filtering
         , filterTrees

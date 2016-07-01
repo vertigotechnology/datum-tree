@@ -26,8 +26,11 @@ data GPrim x
 
         | PTName                        -- ^ Name type.
         | PTNum                         -- ^ Supertype of number types.
+
+        | PTForest                      -- ^ Datum forest type.
         | PTTree                        -- ^ Datum tree type.
         | PTTreePath                    -- ^ Datum tree path type.
+
         | PTFilePath                    -- ^ File path type.
 
         | PTAtom     T.AtomType         -- ^ Atom types.
@@ -35,8 +38,11 @@ data GPrim x
         -- Values (level 0)
         | PVName     Text               -- ^ Field or branch name.
         | PVList     x [x]              -- ^ List of elements of the given type.
-        | PVTree     (T.Tree 'T.O)      -- ^ Checked datum tree.
+
+        | PVForest   (T.Forest 'T.O)    -- ^ Checked datum forest.
+        | PVTree     (T.Tree   'T.O)    -- ^ Checked datum tree.
         | PVTreePath [Text]             -- ^ Datum tree path.
+
         | PVFilePath FilePath           -- ^ File path.
 
         | PVAtom     T.Atom             -- ^ Atomic Values.
@@ -64,6 +70,8 @@ data PrimOp
         | PPGather                      -- ^ Gather branches of a tree into sub trees.
         | PPRenameFields                -- ^ Rename fields of key.
 
+        | PPAt                          -- ^ Apply a per-tree function at the given path.
+        | PPOn                          -- ^ Apply a per-forest function at the given path. 
 
 deriving instance Show x => Show (GPrim x)
 deriving instance Show PrimOp
@@ -101,8 +109,11 @@ typeOfPrim pp
         PTList          -> XType 1 ~~> XType 1
 
         PTName          -> XType 1
+
+        PTForest        -> XType 1
         PTTree          -> XType 1
         PTTreePath      -> XType 1
+
         PTFilePath      -> XType 1
 
         PTAtom _        -> XType 1
@@ -110,8 +121,11 @@ typeOfPrim pp
         -- Types of Values
         PVName _        -> XTName
         PVList t _      -> XTList t
-        PVTree  _       -> XTTree
+
+        PVForest _      -> XTForest
+        PVTree   _      -> XTTree
         PVTreePath  _   -> XTTreePath
+
         PVFilePath  _   -> XTFilePath
 
         PVAtom a        -> XPrim (PTAtom (typeOfAtom a))
@@ -158,6 +172,8 @@ typeOfOp op
         PPGather        -> XTTreePath    ~> XTTree ~> XTTree
         PPRenameFields  -> XTList XTName ~> XTTree ~> XTTree
 
+        PPAt            -> XTList XTName ~> (XTTree   ~> XTTree)   ~> XTTree ~> XTTree
+        PPOn            -> XTList XTName ~> (XTForest ~> XTForest) ~> XTTree ~> XTTree
 
 -- | Yield the arity of a primitive.
 arityOfPrim :: GPrim x -> Int
@@ -192,6 +208,9 @@ arityOfOp op
         PPGather        -> 2
         PPRenameFields  -> 2
 
+        PPAt            -> 3
+        PPOn            -> 3
+
 
 ---------------------------------------------------------------------------------------------------
 -- Generic
@@ -203,6 +222,7 @@ pattern XTS a           = XApp (XPrim PTS) a
 pattern XTList a        = XApp (XPrim PTList) a
 
 pattern XTName          = XPrim PTName
+pattern XTForest        = XPrim PTForest
 pattern XTTree          = XPrim PTTree
 pattern XTTreePath      = XPrim PTTreePath
 pattern XTFilePath      = XPrim PTFilePath
@@ -219,6 +239,7 @@ pattern XTTime          = XPrim (PTAtom T.ATTime)
 -- Values
 pattern XName     n     = XPrim (PVName     n)
 pattern XList     t xs  = XPrim (PVList     t xs)
+pattern XForest   f     = XPrim (PVForest   f)
 pattern XTree     t     = XPrim (PVTree     t)
 pattern XTreePath ts    = XPrim (PVTreePath ts)
 pattern XFilePath fp    = XPrim (PVFilePath fp)
@@ -240,6 +261,9 @@ pattern XSample         = XPrim (PVOp PPSample)
 pattern XGroup          = XPrim (PVOp PPGroup)
 pattern XGather         = XPrim (PVOp PPGather)
 pattern XRenameFields   = XPrim (PVOp PPRenameFields)
+
+pattern XAt             = XPrim (PVOp PPAt)
+pattern XOn             = XPrim (PVOp PPOn)
 
 
 (~>) a b  = XApp (XApp (XPrim (PFun 1)) a) b

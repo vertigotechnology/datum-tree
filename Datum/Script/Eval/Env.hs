@@ -30,6 +30,16 @@ isNormalThunk tt
          -> length xs >= arityOfPrim p
 
 
+curryThunkPrim :: Thunk -> Prim -> Thunk
+curryThunkPrim tt pArg
+ = case tt of
+        VClosure x1 env
+         -> VClosure (XApp x1 (XPrim pArg)) env
+
+        VPrim p ts
+         -> VPrim p (ts ++ [VPrim pArg []])
+
+
 ---------------------------------------------------------------------------------------------------
 -- | Environment holding names of bound variables.
 data Env

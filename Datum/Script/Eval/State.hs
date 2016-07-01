@@ -56,6 +56,7 @@ pattern VVPrim p        = VPrim p []
 
 pattern VName n         = VVPrim (PVName     n)
 pattern VList t xs      = VVPrim (PVList     t xs)
+pattern VForest f       = VVPrim (PVForest   f)
 pattern VTree t         = VVPrim (PVTree     t)
 pattern VTreePath ts    = VVPrim (PVTreePath ts)
 pattern VFilePath fp    = VVPrim (PVFilePath fp)

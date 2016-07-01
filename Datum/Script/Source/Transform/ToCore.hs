@@ -84,6 +84,7 @@ toCorePrim pp
         S.PTList        -> return $ C.PTList
 
         S.PTName        -> return $ C.PTName
+        S.PTForest      -> return $ C.PTForest
         S.PTTree        -> return $ C.PTTree
         S.PTTreePath    -> return $ C.PTTreePath
         S.PTFilePath    -> return $ C.PTFilePath
@@ -92,7 +93,8 @@ toCorePrim pp
 
         S.PVName t      -> return $ C.PVName t
         S.PVList x xs   -> C.PVList <$> toCoreX x <*> mapM toCoreX xs
-        S.PVTree t      -> return $ C.PVTree t
+        S.PVForest t    -> return $ C.PVForest t
+        S.PVTree t      -> return $ C.PVTree   t
         S.PVTreePath ts -> return $ C.PVTreePath ts
         S.PVFilePath f  -> return $ C.PVFilePath f
 
@@ -103,9 +105,8 @@ toCorePrim pp
 -- | Convert a source bound to core, 
 --   converting variables to primitive operators along the way.
 --
---   The parser parses primitive operators like 'load#' as plain
---   variables. Here we detect those and produce the correct 
---   element of the 'Prim' type.
+--   The parser parses primitive operators like 'load#' as plain variables.
+--   Here we detect those and produce the correct element of the 'Prim' type.
 --
 toCoreBoundX :: Text -> Either Error C.Exp
 toCoreBoundX tt
@@ -131,5 +132,9 @@ toCoreBoundX tt
         "group#"                -> op C.PPGroup
         "gather#"               -> op C.PPGather
         "rename-fields#"        -> op C.PPRenameFields
+
+        "at#"                   -> op C.PPAt
+        "on#"                   -> op C.PPOn
+        
         _                       -> return $ C.XVar (C.UName tt)
 

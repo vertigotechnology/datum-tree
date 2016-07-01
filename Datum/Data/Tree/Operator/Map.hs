@@ -5,6 +5,9 @@ module Datum.Data.Tree.Operator.Map
         , mapForestsOfTree
         , mapForestOfTree
 
+        , mapForestOfTreeOn
+        , mapTreesOfTreeOn
+
         , applyTreesOfForest
         , applyForestsOfTree)
 where
@@ -51,6 +54,55 @@ mapForestOfTree name f path tree
                         then weakenForest $ f (enterForest forest path) forest
                         else weakenForest forest)
  $  forests
+
+
+-- | Apply a per-forest functio to the forest with the given branch path.
+mapForestOfTreeOn 
+        :: [Name]
+        -> (Path -> Forest c -> Forest c')
+        ->  Path -> Tree c -> Tree 'X
+
+mapForestOfTreeOn names f path tree
+ = case names of
+        -- We need to apply a function to a specific sub-forest of the tree,
+        -- but we don't know which one to apply it to. A single tree may have
+        -- several sub forests.
+        []      -> weakenTree tree
+
+        -- Apply the worker function to the matching sub forest.
+        nt : nf : []  
+         |  takeName tree == nt
+         -> mapForestOfTree nf f path tree
+
+         |  otherwise
+         -> weakenTree tree
+
+        -- Enter into the named sub-forest.
+        nt : ns  
+         | takeName tree == nt
+         -> mapTreesOfTree 
+                (mapForestOfTreeOn ns f) 
+                path tree
+
+         | otherwise
+         -> weakenTree tree
+
+
+-- | Apply a per-forest function to the forests with the given branch path.
+mapTreesOfTreeOn 
+        :: [Name]
+        -> (Path -> Tree c -> Tree c')
+        ->  Path -> Tree c -> Tree 'X
+
+mapTreesOfTreeOn [] f p t 
+ = weakenTree (f p t)
+
+mapTreesOfTreeOn (name : names) f path tree
+ | takeName tree == name
+ = mapTreesOfTree (mapTreesOfTreeOn names f) path tree
+
+ | otherwise
+ = weakenTree tree
 
 
 -- Application ------------------------------------------------------------------------------------

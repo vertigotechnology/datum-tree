@@ -29,4 +29,5 @@ strPervasive
         , "sample               = sample#;"
         , "group                = group#;"
         , "rename-fields        = rename-fields#;"
+        , "on                   = on#;"
         ]

@@ -61,6 +61,9 @@ module Datum.Data.Tree.Operator
         , mapForests'
         , mapForest'
 
+        , mapForestOfTreeOn
+        , mapTreesOfTreeOn
+
           -- ** Filtering
         , filterTrees
         , filterTrees'
@@ -101,6 +104,7 @@ import Datum.Data.Tree.Operator.Forests
 import Datum.Data.Tree.Operator.Gather
 import Datum.Data.Tree.Operator.Group
 import Datum.Data.Tree.Operator.Limit
+import Datum.Data.Tree.Operator.Map
 import Datum.Data.Tree.Operator.Path
 import Datum.Data.Tree.Operator.Project
 import Datum.Data.Tree.Operator.Reduce

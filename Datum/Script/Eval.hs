@@ -17,6 +17,7 @@ import qualified Datum.Script.Eval.Prim as Prim
 import Data.Function
 
 
+
 -- | Perform a single step evaluation of the expression.
 step :: State -> IO (Either Error State)
 
@@ -54,13 +55,13 @@ step   (State env ctx (Left xx))
          -> let ctx'    = FrameAppLeft x2 : ctx
             in  return  $ Right $ State env ctx' (Left x1)
 
-step (State env ctx  (Right vv))
+step state@(State env ctx  (Right vv))
  = case (ctx, vv) of
 
         -- Fully applied primitive in an empty context.
         (_, VPrim (PVOp p) xs)
           |  length xs == arityOfOp p
-          -> do result     <- Prim.step p xs
+          -> do result     <- Prim.step step state p xs
                 case result of
                  Left err -> return $ Left err
                  Right v' -> return $ Right $ State env ctx $ Right v'
@@ -95,7 +96,7 @@ step (State env ctx  (Right vv))
                 -- Application of a primitive operator to some arguments.
                 --   The primitive may or may not be partially applied.
                 VPrim (PVOp p) args
-                 -> do  result <- Prim.step p (args ++ [v2])
+                 -> do  result <- Prim.step step state p (args ++ [v2])
                         case result of
                          Left err -> return $ Left err
                          Right v' -> return $ Right $ State env ctx' $ Right v'

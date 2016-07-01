@@ -3,7 +3,7 @@ module Main where
 import Config
 import Load
 import Data.Default
-import Text.Show.Pretty
+-- import Text.Show.Pretty
 import qualified Datum.Script.Eval      as Eval
 import qualified System.Environment     as System
 
@@ -23,9 +23,10 @@ main
         let state       = Eval.stateInit xCore
 
         -- Evaluate the script.
-        state'          <- eval state
+        _state'         <- eval state
 
-        putStrLn $ ppShow state'
+--        putStrLn $ ppShow state'
+        return ()
 
 
 eval state

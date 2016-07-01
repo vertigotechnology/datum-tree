@@ -5,6 +5,7 @@ module Datum.Script.Eval.Error
         , ErrorPrim     (..))
 where
 import Datum.Script.Core.Exp
+import Datum.Script.Eval.State
 
 
 -- | Evaluation errors.
@@ -15,11 +16,15 @@ data Error
 
 deriving instance Show Error
 
+
 -- | Errors from the ambient core language.
 data ErrorCore
-        = ErrorCoreUnboundVariable      Bound
+        = ErrorCoreStuck
+        | ErrorCoreType             State
+        | ErrorCoreUnboundVariable  Bound
 
 deriving instance Show ErrorCore
+
 
 -- | Primitive operator errors.
 data ErrorPrim

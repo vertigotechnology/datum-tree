@@ -9,13 +9,12 @@ module Datum.Script.Eval
 where
 import Datum.Script.Eval.State
 import Datum.Script.Eval.Error
-import Datum.Script.Eval.Env            (Thunk(..), PAP (..))
+import Datum.Script.Eval.Env                    (Env, Thunk(..), PAP (..))
 import Datum.Script.Core.Exp
-import qualified Datum.Script.Eval.Env  as Env
-import qualified Data.Set               as Set
-import qualified Datum.Script.Eval.Prim as Prim
-import Text.Show.Pretty
-import qualified Data.List              as List
+import qualified Datum.Script.Eval.Env          as Env
+import qualified Data.Set                       as Set
+import qualified Datum.Script.Eval.Prim         as Prim
+import qualified Data.List                      as List
 
 
 -- | Perform a single step evaluation of the expression.
@@ -28,25 +27,30 @@ step   state@(State env ctx ctl)
 
    in case ctl of
         -- Silently look through annotations.
-        Left (XAnnot _ x)
-         ->     step $ State env ctx  (Left x)
+        ControlExp (XAnnot _ x)
+         ->     step $ State env ctx $ ControlExp x
 
-        -- Silently promote prims to paps
-        Left (XPrim p)
-         ->     step $ State env ctx (Right $ PAP p [])
+
+        -- Silently promote prims to PAPs.
+        ControlExp (XPrim p)
+         ->     step $ State env ctx $ ControlPAP (PAP p [])
+
 
         -- Silently look through casts.
-        Left (XCast _ x)
-         ->     step $ State env ctx (Left x)
+        ControlExp (XCast _ x)
+         ->     step $ State env ctx $ ControlExp x
+
 
         -- Lookup value of variable from the environment.
-        Left (XVar u)
+        ControlExp (XVar u)
          -> case Env.lookup u env of
                 Just (VClosure x' env')
-                 -> progress $ State env' ctx (Left x')
+                 -> progress $ State env' ctx 
+                             $ ControlExp x'
 
                 Just (VPAP (PAP p ts))
-                 -> progress $ State Env.empty ctx (Right $ PAP p ts)
+                 -> progress $ State Env.empty ctx 
+                             $ ControlPAP (PAP p ts)
 
                 Nothing
                  -> failure  $ ErrorCore $ ErrorCoreUnboundVariable u
@@ -54,15 +58,16 @@ step   state@(State env ctx ctl)
 
         -- Stash the argument expression in the context and
         -- begin evaluating the functional expression.
-        Left (XApp x1 x2)
+        ControlExp (XApp x1 x2)
          -> do  let ctx'  = FrameAppArg (VClosure x2 env) : ctx
-                progress $ State env ctx' (Left x1)
+                progress $ State env ctx' 
+                         $ ControlExp x1
 
 
         -- Add recursive let-bindings to the environment.
         --   While we're here we trim them to only the ones that are
         --   actually needed free in the body.
-        Left (XRec bxs x2)
+        ControlExp (XRec bxs x2)
          -> do  
                 -- Build thunks for each of the bindings.
                 let (bs, xs) = unzip bxs
@@ -84,18 +89,23 @@ step   state@(State env ctx ctl)
                 -- Add new environment to existing one.
                 let env'' = Env.union env env'
 
-                progress $ State env'' ctx (Left x2)
+                progress $ State env'' ctx 
+                         $ ControlExp x2
 
-        Right (PAP (PVOp op) args)
+
+        -- Evaluate fully applied primitive applications in PAP form.
+        ControlPAP (PAP (PVOp op) args)
          | length args == arityOfOp op
          -> do  result  <- Prim.step step state op args
                 case result of
-                 Left err -> error $ show err
+                 Left err 
+                  -> failure err
+
                  Right (VClosure x' env') 
-                  -> progress $ State env' ctx (Left x')
+                  -> progress $ State env' ctx      $ ControlExp x'
 
                  Right (VPAP pap)
-                  -> progress $ State Env.empty ctx (Right pap)
+                  -> progress $ State Env.empty ctx $ ControlPAP pap
 
 
         _ -> case ctx of
@@ -104,15 +114,21 @@ step   state@(State env ctx ctl)
                 FrameAppArg (VClosure xArg envArg) : ctx'
                  -> do  let thunk = Env.trimThunk $ thunkify ctl env
                         let ctx'' = FrameAppFun thunk : ctx'
-                        progress $ State envArg ctx'' (Left xArg)
+                        progress $ State envArg ctx'' 
+                                 $ ControlExp xArg
+
 
                 -- Finished evaluating the argument, 
                 -- so grab the function from the context and apply it.
                 FrameAppFun (VClosure (XAbs b _t xBody) envFun) : ctx'
                  -> do  let thunk = Env.trimThunk $ thunkify ctl env
                         let env'  = Env.insert b thunk envFun
-                        progress $ State env' ctx'(Left xBody)
+                        progress $ State env' ctx'
+                                 $ ControlExp xBody
 
+
+                -- Application of a primitive where its next argument
+                -- comes from the context.
                 FrameAppFun thunk : ctx'
                  | Just (PVOp op, ts) 
                    <- case thunk of
@@ -123,25 +139,34 @@ step   state@(State env ctx ctl)
                  -> do  let t'     = Env.trimThunk $ thunkify ctl env
                         let state' = state { stateContext = ctx' }
                         result <- Prim.step step state' op (ts ++ [t'])
-
                         case result of
-                         Left  err    -> error    $ show err
+                         Left  err    
+                          -> failure err
 
                          Right (VClosure x' env')
-                          -> progress $ State env' ctx' (Left x')
+                          -> progress $ State env' ctx'       $ ControlExp x'
 
                          Right (VPAP pap)
-                          -> progress $ State Env.empty ctx' (Right pap)
+                          -> progress $ State Env.empty ctx'  $ ControlPAP pap
 
+
+                -- When the context is empty we should have ended up with
+                -- a value. If not then our evaluation rules are borked.
                 [] -> case ctl of
-                        Left XAbs{}  -> done
-                        Right{}      -> done
-                        _            -> error $ "invalid state " ++ ppShow state
-
-                _ -> error $ "invalid state " ++ ppShow state
+                        ControlExp XAbs{} -> done
+                        ControlPAP{}      -> done
+                        _                 -> failure $ ErrorCore ErrorCoreStuck
 
 
+                -- The context is not empty but we can't make progress.
+                -- This is probably cause by a type error in the user program.
+                _ -> failure $ ErrorCore $ ErrorCoreType state
+
+
+-- | Pack a control with the current environment into a thunk.
+thunkify :: Control -> Env -> Thunk
 thunkify ctl env
  = case ctl of
-        Left xx          -> VClosure xx env
-        Right (PAP p ts) -> VPAP (PAP p ts)
+        ControlExp xx  -> VClosure xx env
+        ControlPAP pap -> VPAP pap
+

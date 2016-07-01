@@ -6,45 +6,52 @@ import Datum.Script.Core.Exp
 import qualified Datum.Script.Eval.Env  as Env
 
 
--- | Evaluation state of an expression.
+-------------------------------------------------------------------------------
+-- | Evaluation state of an expression,
+--   for a CEK-like machine.
 data State
         = State
         { -- | Environment.
           stateEnv      :: !Env
 
-          -- | Context (kontinuation) consisting of a stack of evaluation frames.
-          --   This records what part of a larger expression we are currently evaluating.
-        , stateContext  :: [Frame]
+          -- | Current context (kontinuation).
+        , stateContext  :: ![Frame]
 
-          -- | Current (control) focus of evaluation, either an expression that 
-          --   requires more evaluation, or a value which has finished
-          --   evaluation.
-        , stateControl  :: Either Exp PAP}
+          -- | Current focus of evaluation (control).
+        , stateControl  :: !Control
+        }
 
 deriving instance Show State
-
 
 
 -- | Context of evaluation.
 data Frame
         -- | In an application we are evaluating the functional expression,
         --   and the frame holds the unevaluated argument.
-        = FrameAppArg  Thunk
+        = FrameAppArg  !Thunk
 
         -- | In an application we are evaluating the argument,
         --   and the frame holds the evaluated function.
-        | FrameAppFun  Thunk
+        | FrameAppFun  !Thunk
 
 deriving instance Show Frame
 
+
+-- | Control of state machine.
+data Control
+        = ControlExp !Exp
+        | ControlPAP !PAP
+
+deriving instance Show Control
 
 
 -- | Yield an initial evaluation state for the given expression.
 stateInit :: Exp -> State
 stateInit xx
-        = State Env.empty [] (Left xx)
+        = State Env.empty [] (ControlExp xx)
 
 
+-------------------------------------------------------------------------------
 pattern VVPrim p        = VPAP (PAP p [])
 
 pattern VName n         = VVPrim (PVName     n)

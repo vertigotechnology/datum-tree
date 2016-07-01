@@ -194,12 +194,12 @@ liftForestTransformIO sstep thunk state0 _path0 forest0
  = orivour
  $ case curryThunkPrim thunk (PVForest forest0) of
         VClosure x1 env 
-         -> state0 { stateEnv = env
-                   , stateControl = Left x1 }
+         -> state0 { stateEnv      = env
+                   , stateControl  = ControlExp x1 }
 
         VPAP pap
-         -> state0 { stateEnv = Env.empty
-                   , stateControl = Right pap }
+         -> state0 { stateEnv      = Env.empty
+                   , stateControl  = ControlPAP pap }
 
  where
         orivour state
@@ -209,7 +209,7 @@ liftForestTransformIO sstep thunk state0 _path0 forest0
                  Right (Just state') -> orivour state'
                  Right Nothing
                   -> case stateControl state of
-                        Right (PAP (PVForest t) [])
+                        ControlPAP (PAP (PVForest t) [])
                                 -> return t
                         focus   -> error $ "datum-tree: wrong type in internal forest evaluation "
                                 ++ Text.ppShow focus
@@ -229,10 +229,12 @@ liftTreeTransformIO sstep thunk state0 _path0 tree0
  = orivour
  $ case curryThunkPrim thunk (PVTree tree0) of
         VClosure x1 env 
-         -> state0 { stateEnv = env, stateControl = Left x1 }
+         -> state0 { stateEnv     = env
+                   , stateControl = ControlExp x1 }
 
         VPAP pap
-         -> state0 { stateEnv = Env.empty, stateControl = Right pap }
+         -> state0 { stateEnv     = Env.empty
+                   , stateControl = ControlPAP pap }
 
  where
         orivour state
@@ -242,7 +244,7 @@ liftTreeTransformIO sstep thunk state0 _path0 tree0
                  Right (Just state') -> orivour state'
                  Right Nothing
                   -> case stateControl state of
-                        Right (PAP (PVTree t) [])
+                        ControlPAP (PAP (PVTree t) [])
                                 -> return t
                         focus   -> error 
                                 $  "datum-tree: wrong type in internal evaluation "

@@ -56,7 +56,7 @@ mapForestOfTree name f path tree
  $  forests
 
 
--- | Apply a per-forest functio to the forest with the given branch path.
+-- | Apply a function to the forest with the given branch path.
 mapForestOfTreeOn 
         :: [Name]
         -> (Path -> Forest c -> Forest c')
@@ -131,10 +131,8 @@ applyForestsOfTree f
                 = unzip
                 $ map     takeForest
                 $ f
-                $ zipWith 
-                        Forest 
-                        (unboxes gs0)
-                        (unboxes bts0)
+                $ zipWith Forest (unboxes gs0) (unboxes bts0)
 
    in   Tree    (B  k0     $ boxes gs1) 
                 (BT n0 kt0 $ boxes bts1)
+

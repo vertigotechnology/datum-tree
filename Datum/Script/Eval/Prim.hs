@@ -74,12 +74,15 @@ step _ _ PPFinal     [VNat n, VTree tree]
 step _ _ PPSample    [VInt n, VTree tree]
  =      progress $ VTree $ T.sample n tree
 
+step _ _ PPSample    [VInt n, VForest forest]
+ =      progress $ VForest $ T.sample n forest
+
 
 -- Tree Gather / Group ----------------------------------------------
 -- Gather subtrees.
-step _ _ PPGather    [VTreePath treePath, VTree tree]
- = do   let path' = map Text.unpack treePath
-        progress $ VTree $ T.gatherTree path' tree
+step _ _ PPGather    [VList _ names, VTree tree]
+ = do   let names' = [ Text.unpack n | XName n <- names]
+        progress $ VTree $ T.gatherTree names' tree
 
 
 -- Group by a given key.

@@ -33,6 +33,7 @@ strPervasive
         , "store                = store#;"
         , "sample               = sample#;"
         , "group                = group#;"
+        , "gather               = gather#;"
         , "rename-fields        = rename-fields#;"
         , "on                   = on#;"
         ]

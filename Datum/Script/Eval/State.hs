@@ -1,7 +1,7 @@
 
 -- | Evaluation state for Datum Scripts.
 module Datum.Script.Eval.State where
-import Datum.Script.Eval.Env            (Env, Thunk(..))
+import Datum.Script.Eval.Env            (Env, Thunk(..), PAP(..))
 import Datum.Script.Core.Exp
 import qualified Datum.Script.Eval.Env  as Env
 
@@ -9,41 +9,34 @@ import qualified Datum.Script.Eval.Env  as Env
 -- | Evaluation state of an expression.
 data State
         = State
-        { -- | Environment mapping the free variables of the expression
-          --   to values.
-          stateEnv      :: Env
+        { -- | Environment.
+          stateEnv      :: !Env
 
-          -- | Context consisting of a stack of evaluation frames.
-          --   This records what part of a larger expression we are
-          --   currently evaluating.
+          -- | Context (kontinuation) consisting of a stack of evaluation frames.
+          --   This records what part of a larger expression we are currently evaluating.
         , stateContext  :: [Frame]
 
-          -- | Current focus of evaluation, either an expression that 
+          -- | Current (control) focus of evaluation, either an expression that 
           --   requires more evaluation, or a value which has finished
           --   evaluation.
-        , stateFocus    :: Either Exp Thunk }
+        , stateControl  :: Either Exp PAP}
 
 deriving instance Show State
+
 
 
 -- | Context of evaluation.
 data Frame
         -- | In an application we are evaluating the functional expression,
         --   and the frame holds the unevaluated argument.
-        = FrameAppLeft  Exp 
+        = FrameAppArg  Thunk
 
         -- | In an application we are evaluating the argument,
         --   and the frame holds the evaluated function.
-        | FrameAppRight Thunk
+        | FrameAppFun  Thunk
 
 deriving instance Show Frame
 
-
--- | Check if the evaluation of the expression in the given state is done.
-isDone :: State -> Bool
-isDone (State _ [] (Right t))   = Env.isNormalThunk t
-isDone (State _ _  (Left  _))   = False
-isDone _                        = False
 
 
 -- | Yield an initial evaluation state for the given expression.
@@ -52,7 +45,7 @@ stateInit xx
         = State Env.empty [] (Left xx)
 
 
-pattern VVPrim p        = VPrim p []
+pattern VVPrim p        = VPAP (PAP p [])
 
 pattern VName n         = VVPrim (PVName     n)
 pattern VList t xs      = VVPrim (PVList     t xs)

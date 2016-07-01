@@ -50,13 +50,14 @@ data GExp l
         -- | Function application.
         | XApp   !(GExp    l) !(GExp l)
 
+        -- | Recursive let-bindings.
+        | XRec   ![(GXBind l, GExp l)] !(GExp l)
+
 
         -- Sugar Constructors ---------------------------------------
         --   These define syntactic sugar in the source language,
         --   which is removed when transforming to the core language.
 
-        -- | Non-recursive let-bindings.
-        | XLet      !(GXBind l) (Maybe (GExp l)) (GExp l) (GExp l)
 
         -- | An infix expression that needs to have infix ops removed.
         | XDefix    ![GExp l]

@@ -26,13 +26,12 @@ toCoreX xx
         S.XAbs  b  mt x -> C.XAbs  <$> toCoreBind  b  <*> toCoreMT mt <*> toCoreX x
         S.XApp  x1 x2   -> C.XApp  <$> toCoreX     x1 <*> toCoreX x2
 
-        S.XLet  b mt x1 x2
-         -> C.XApp 
-                <$> (C.XAbs 
-                        <$> toCoreBind b
-                        <*> toCoreMT mt
-                        <*> toCoreX x2)
-                <*> toCoreX x1
+        S.XRec  bxs x2  
+         -> do  let (bs, xs)    = unzip bxs
+                bs'     <- mapM toCoreBind bs
+                xs'     <- mapM toCoreX xs
+                x2'     <- toCoreX x2
+                return  $ C.XRec (zip bs' xs') x2'
 
 
         S.XDefix{}      -> Left $ ErrorSugaredInfix xx

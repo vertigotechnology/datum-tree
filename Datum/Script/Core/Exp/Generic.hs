@@ -29,6 +29,10 @@ data GExp l
         -- | Function application.
         | XApp   (GExp    l) (GExp l)
 
+        -- | Group of recursive let-bindings.
+        | XRec   [(GXBind l, GExp l)] (GExp l)
+
+
 
 type ShowGExp l
         = ( Show (GXAnnot l), Show (GXPrim  l)

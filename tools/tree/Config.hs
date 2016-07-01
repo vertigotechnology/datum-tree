@@ -11,14 +11,18 @@ data Config
           configFile            :: Maybe FilePath
 
           -- Dump intermediate representations.
-        , configDump            :: Bool }
+        , configDump            :: Bool 
+
+          -- Trace interpreter evaluation.
+        , configTrace           :: Bool }
 
 deriving instance Show Config
 
 instance Default Config where
  def    = Config
         { configFile            = Nothing
-        , configDump            = False }
+        , configDump            = False 
+        , configTrace           = False }
 
 
 -------------------------------------------------------------------------------
@@ -32,6 +36,11 @@ parseArgs args config
  | "-dump" : rest       <- args
  = parseArgs rest
  $ config { configDump = True }
+
+ | "-trace" : rest       <- args
+ = parseArgs rest
+ $ config { configTrace = True }
+
 
  | file : rest          <- args
  , Just c               <- List.takeHead file

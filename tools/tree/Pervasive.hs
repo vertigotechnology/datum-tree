@@ -11,6 +11,11 @@ strPervasive
           -- Reverse application, which implements the '&' operator.
         , "applyr x f = f x;" 
 
+          -- Reverse function composition
+          -- TODO: there is a name clash somewhere in interpreter, 
+          -- maybe merged environments in the wrong way.
+        , "composer f g x  = g (f x);"
+
           -- Aliases for primitive operators.
         , "neg          = neg#;"
         , "add          = add#;"

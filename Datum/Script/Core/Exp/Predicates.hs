@@ -1,7 +1,8 @@
 
 module Datum.Script.Core.Exp.Predicates
-        (isNormalOpenX)
+--        (isNormalOpenX)
 where
+{-
 import Datum.Script.Core.Exp.Generic
 import Datum.Script.Core.Exp.Compounds
 
@@ -35,3 +36,5 @@ isNormalOpenX arityOfPrim xx
                  XAbs{}         -> False
                  XApp{}         -> False
 
+        XLet
+-}

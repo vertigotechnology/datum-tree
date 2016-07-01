@@ -63,7 +63,13 @@ instance GXBound l ~ Name => Defix GExp l where
         XCast c x       -> liftM  (XCast c)   (down x)
         XAbs b t x      -> liftM  (XAbs  b t) (down x)
         XApp x1 x2      -> liftM2  XApp       (down x1) (down x2)
-        XLet b mt x1 x2 -> liftM2 (XLet b mt) (down x1) (down x2)
+
+        XRec bxs x2 
+         -> do  let (bs, xs) =  unzip bxs
+                xs'          <- mapM down xs
+                let bxs'     =  zip bs xs'
+                x2'          <- down x2
+                return  $ XRec bxs' x2'
 
         XDefix xs     
          -> do  xs'     <- mapM down xs

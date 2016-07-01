@@ -15,12 +15,13 @@ stripXAnnot :: GExp l -> GExp l
 stripXAnnot xx
  = let down = stripXAnnot
    in case xx of
-        XAnnot _ x        -> down x
-        XPrim{}           -> xx
-        XVar{}            -> xx
-        XCast  c x        -> XCast c   (down x)
-        XAbs   b t x      -> XAbs  b t (down x)
-        XApp   x1 x2      -> XApp (down x1) (down x2)
+        XAnnot _ x      -> down x
+        XPrim{}         -> xx
+        XVar{}          -> xx
+        XCast  c x      -> XCast c   (down x)
+        XAbs   b t x    -> XAbs  b t (down x)
+        XApp   x1 x2    -> XApp (down x1) (down x2)
+        XRec   bxs x2   -> XRec [(b, down x) | (b, x) <- bxs] (down x2)
 
 
 -------------------------------------------------------------------------------

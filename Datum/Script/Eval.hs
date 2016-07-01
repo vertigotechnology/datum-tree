@@ -2,7 +2,6 @@
 module Datum.Script.Eval
         ( Frame (..)
         , State (..)
-        , isDone
         , stateInit
 
         , Error (..)
@@ -10,99 +9,128 @@ module Datum.Script.Eval
 where
 import Datum.Script.Eval.State
 import Datum.Script.Eval.Error
-import Datum.Script.Eval.Env            (Thunk(..))
+import Datum.Script.Eval.Env            (Thunk(..), PAP (..))
 import Datum.Script.Core.Exp
 import qualified Datum.Script.Eval.Env  as Env
+import qualified Data.Set               as Set
 import qualified Datum.Script.Eval.Prim as Prim
-import Data.Function
-
+import Text.Show.Pretty
+import qualified Data.List              as List
 
 
 -- | Perform a single step evaluation of the expression.
-step :: State -> IO (Either Error State)
+step :: State -> IO (Either Error (Maybe State))
 
-step   (State env ctx (Left xx))
- = case xx of
-        -- Look through annotations.
-        XAnnot _ x
-         ->     return  $ Right $ State env ctx (Left x)
+step   state@(State env ctx ctl)
+ = let  failure  err = return $ Left err
+        progress ss  = return $ Right $ Just ss
+        done         = return $ Right $ Nothing
+
+   in case ctl of
+        -- Silently look through annotations.
+        Left (XAnnot _ x)
+         ->     step $ State env ctx  (Left x)
+
+        -- Silently promote prims to paps
+        Left (XPrim p)
+         ->     step $ State env ctx (Right $ PAP p [])
+
+        -- Silently look through casts.
+        Left (XCast _ x)
+         ->     step $ State env ctx (Left x)
 
         -- Lookup value of variable from the environment.
-        XVar u
+        Left (XVar u)
          -> case Env.lookup u env of
-                Nothing -> return $ Left  $ ErrorCore $ ErrorCoreUnboundVariable u
-                Just v' -> return $ Right $ State env ctx (Right v')
+                Just (VClosure x' env')
+                 -> progress $ State env' ctx (Left x')
 
-        -- Primitives are already values.
-        XPrim p
-         -> case ctx of
-                FrameAppLeft x2 : ctx'
-                 -> let ctx2    = FrameAppRight (VPrim p []) : ctx'
-                    in  return  $ Right $ State env ctx2 (Left x2)
+                Just (VPAP (PAP p ts))
+                 -> progress $ State Env.empty ctx (Right $ PAP p ts)
 
-                _ ->    return  $ Right $ State env ctx  (Right (VPrim p []))
+                Nothing
+                 -> failure  $ ErrorCore $ ErrorCoreUnboundVariable u
 
-        -- Look through type casts.
-        XCast _ x
-         ->     return  $ Right $ State env ctx (Left x)
 
-        -- Abstractions are already values.
-        XAbs{}
-         ->     return  $ Right $ State env ctx (Right (VClosure xx env))
+        -- Stash the argument expression in the context and
+        -- begin evaluating the functional expression.
+        Left (XApp x1 x2)
+         -> do  let ctx'  = FrameAppArg (VClosure x2 env) : ctx
+                progress $ State env ctx' (Left x1)
 
-        -- Evaluate application.
-        XApp x1 x2
-         -> let ctx'    = FrameAppLeft x2 : ctx
-            in  return  $ Right $ State env ctx' (Left x1)
 
-step state@(State env ctx  (Right vv))
- = case (ctx, vv) of
+        -- Add recursive let-bindings to the environment.
+        --   While we're here we trim them to only the ones that are
+        --   actually needed free in the body.
+        Left (XRec bxs x2)
+         -> do  
+                -- Build thunks for each of the bindings.
+                let (bs, xs) = unzip bxs
+                let ts    = map (\x -> Env.trimThunk $ VClosure x env) xs
 
-        -- Fully applied primitive in an empty context.
-        (_, VPrim (PVOp p) xs)
-          |  length xs == arityOfOp p
-          -> do result     <- Prim.step step state p xs
-                case result of
-                 Left err -> return $ Left err
-                 Right v' -> return $ Right $ State env ctx $ Right v'
+                -- Make a new environment containing the thunks,
+                -- trimmed to just those that are needed in the body.
+                -- Trim enviroment to just 
+                let fvs   = Env.freeVarsX Set.empty x2
+                let keep uu 
+                     = case uu of
+                        UName n -> Set.member n fvs
+                        _       -> True
 
-        -- We have reduced the left of an application to a value,
-        -- now reduce the argument.
-        (FrameAppLeft x2 : ctx', v1)
-         -> case v1 of
-                VClosure (XAbs{}) _
-                 -> let ctx2    = FrameAppRight v1 : ctx'
-                    in  return  $ Right $ State env ctx2 (Left x2)
+                let env'  = Env.trim keep
+                          $ List.foldl' (\e (b, t) -> Env.insert b t e) Env.empty
+                          $ zip bs ts
 
-                VPrim{}
-                 -> let ctx2    = FrameAppRight v1 : ctx'
-                    in  return  $ Right $ State env ctx2 (Left x2)
+                -- Add new environment to existing one.
+                let env'' = Env.union env env'
 
-                _ -> return $ Left $ Error "invalid state on left of app"
+                progress $ State env'' ctx (Left x2)
 
-        -- We have reduced the right of an application to a value,
-        -- so perform the application.
-        (FrameAppRight v1 : ctx', v2)
-         -> case v1 of
-                -- Application of an abstraction to an argument.
-                --   Build a closure that binds the formal parameter to the argument.
-                VClosure (XAbs b _t x11) env'
-                 -> do  let env''  = env 
-                                   & Env.union  env'
-                                   & Env.insert b v2
 
-                        return $ Right $ State env'' ctx' $ Left x11
+        _ -> case ctx of
+                -- Finished evaluating the functional expression, 
+                -- so stash that in the context and evaluate the argument.
+                FrameAppArg (VClosure xArg envArg) : ctx'
+                 -> do  let thunk = Env.trimThunk $ thunkify ctl env
+                        let ctx'' = FrameAppFun thunk : ctx'
+                        progress $ State envArg ctx'' (Left xArg)
 
-                -- Application of a primitive operator to some arguments.
-                --   The primitive may or may not be partially applied.
-                VPrim (PVOp p) args
-                 -> do  result <- Prim.step step state p (args ++ [v2])
+                -- Finished evaluating the argument, 
+                -- so grab the function from the context and apply it.
+                FrameAppFun (VClosure (XAbs b _t xBody) envFun) : ctx'
+                 -> do  let thunk = Env.trimThunk $ thunkify ctl env
+                        let env'  = Env.insert b thunk envFun
+                        progress $ State env' ctx'(Left xBody)
+
+                FrameAppFun thunk : ctx'
+                 | Just (PVOp op, ts) 
+                   <- case thunk of
+                        VClosure (XPrim p) _envFun -> Just (p, [])
+                        VPAP (PAP p ts)            -> Just (p, ts)
+                        _                          -> Nothing
+
+                 -> do  let t'     = Env.trimThunk $ thunkify ctl env
+                        let state' = state { stateContext = ctx' }
+                        result <- Prim.step step state' op (ts ++ [t'])
+
                         case result of
-                         Left err -> return $ Left err
-                         Right v' -> return $ Right $ State env ctx' $ Right v'
+                         Left  err    -> error    $ show err
 
-                _ -> return $ Left $ Error "invalid state on right of app"
+                         Right (VClosure x' env')
+                          -> progress $ State env' ctx' (Left x')
+
+                         Right (VPAP pap)
+                          -> progress $ State Env.empty ctx' (Right pap)
+
+                [] -> case ctl of
+                        Left XAbs{}  -> done
+                        Right{}      -> done
+                        _            -> error $ "invalid state " ++ ppShow state
+
+                _ -> error $ "invalid state " ++ ppShow state
 
 
-        _ -> return $ Left  $ Error "invalid state"
-
+thunkify ctl env
+ = case ctl of
+        Left xx          -> VClosure xx env
+        Right (PAP p ts) -> VPAP (PAP p ts)

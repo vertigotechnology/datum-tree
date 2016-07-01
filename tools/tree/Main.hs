@@ -3,7 +3,8 @@ module Main where
 import Config
 import Load
 import Data.Default
--- import Text.Show.Pretty
+import Text.Show.Pretty
+import Control.Monad
 import qualified Datum.Script.Eval      as Eval
 import qualified System.Environment     as System
 
@@ -23,18 +24,21 @@ main
         let state       = Eval.stateInit xCore
 
         -- Evaluate the script.
-        _state'         <- eval state
+        state'         <- eval config state
 
---        putStrLn $ ppShow state'
+        putStrLn $ ppShow state'
         return ()
 
 
-eval state
- = do   -- putStrLn $ ppShow state
+eval :: Config -> Eval.State -> IO Eval.State
+eval config state
+ = do   
+        when (configTrace config)
+         $ putStrLn $ ppShow state
+
         result  <- Eval.step state
         case result of 
          Left  err              -> error $ show err
-         Right state'
-          | Eval.isDone state'  -> return state'
-          | otherwise           -> eval state'
+         Right Nothing          -> return state
+         Right (Just state')    -> eval config state'
 

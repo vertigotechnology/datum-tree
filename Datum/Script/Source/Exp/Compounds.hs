@@ -42,9 +42,9 @@ extractExpOfModule mm
  = let  tops    = moduleTops mm
 
         supers  = Map.fromList 
-                $ [(v, makeXAbss bts xBody) | TBind v bts xBody <- tops]
+                $ [(b, makeXAbss bts xBody) | TBind b bts xBody <- tops]
 
-        tMain   = Text.pack "main"
+        tMain           = Text.pack "main"
         supersNonMain   = Map.delete tMain supers
 
    in   case Map.lookup tMain supers of
@@ -52,8 +52,7 @@ extractExpOfModule mm
           -> Nothing
 
          Just xMain     
-          -> Just $ foldl (\xBody (b, xBind) -> XLet b Nothing xBind xBody) xMain
-                  $ Map.toList supersNonMain
+          -> Just $ XRec (Map.toList supersNonMain) xMain
 
 
 -------------------------------------------------------------------------------
@@ -76,16 +75,16 @@ stripXAnnotX :: GExp l -> GExp l
 stripXAnnotX xx
  = let down = stripXAnnotX
    in case xx of
-        XAnnot _ x        -> down x
-        XPrim{}           -> xx
-        XVar{}            -> xx
-        XCast  c x        -> XCast c   (down x)
-        XAbs   b t x      -> XAbs  b t (down x)
-        XApp   x1 x2      -> XApp (down x1) (down x2)
-        XLet   b mt x1 x2 -> XLet b (fmap down mt) (down x1) (down x2)
-        XDefix xs         -> XDefix (map down xs)
-        XInfixOp{}        -> xx
-        XInfixVar{}       -> xx
+        XAnnot _ x      -> down x
+        XPrim{}         -> xx
+        XVar{}          -> xx
+        XCast  c x      -> XCast c   (down x)
+        XAbs   b t x    -> XAbs  b t (down x)
+        XApp   x1 x2    -> XApp (down x1) (down x2)
+        XRec   bxs x2   -> XRec [(b, down x) | (b, x) <- bxs] (down x2)
+        XDefix xs       -> XDefix (map down xs)
+        XInfixOp{}      -> xx
+        XInfixVar{}     -> xx
 
 
 -------------------------------------------------------------------------------

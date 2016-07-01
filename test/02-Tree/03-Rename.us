@@ -2,8 +2,8 @@
 
 main
  = load   "demo/data/ASXListedCompanies-cut.csv"
- & rename-fields ['name, 'symbol, 'grouping]
+ & on ['root, 'row] (rename-fields ['name, 'symbol, 'grouping])
  & on ['root, 'row] (group 'grouping)
  & sample 10
- & store  "demo/tmp/stock-sample.tree";
+ & store  "demo/tmp/03-stock-rename.tree";
 

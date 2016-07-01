@@ -86,6 +86,17 @@ step   state@(State env ctx ctl)
 
                 progress $ State env'' ctx (Left x2)
 
+        Right (PAP (PVOp op) args)
+         | length args == arityOfOp op
+         -> do  result  <- Prim.step step state op args
+                case result of
+                 Left err -> error $ show err
+                 Right (VClosure x' env') 
+                  -> progress $ State env' ctx (Left x')
+
+                 Right (VPAP pap)
+                  -> progress $ State Env.empty ctx (Right pap)
+
 
         _ -> case ctx of
                 -- Finished evaluating the functional expression, 

@@ -4,6 +4,6 @@ twice f x
 
 main
  = load "demo/data/ASXListedCompanies-cut.csv"
- & twice (store "demo/tmp/stock.tree");
+ & store "demo/tmp/01-stock-identity.tree";
 
 

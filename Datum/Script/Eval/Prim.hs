@@ -194,10 +194,12 @@ liftForestTransformIO sstep thunk state0 _path0 forest0
  = orivour
  $ case curryThunkPrim thunk (PVForest forest0) of
         VClosure x1 env 
-         -> state0 { stateEnv = env, stateControl = Left x1 }
+         -> state0 { stateEnv = env
+                   , stateControl = Left x1 }
 
         VPAP pap
-         -> state0 { stateEnv = Env.empty, stateControl = Right pap }
+         -> state0 { stateEnv = Env.empty
+                   , stateControl = Right pap }
 
  where
         orivour state
@@ -209,8 +211,8 @@ liftForestTransformIO sstep thunk state0 _path0 forest0
                   -> case stateControl state of
                         Right (PAP (PVForest t) [])
                                 -> return t
-                        focus   -> error $ "datum-tree: wrong type in internal evaluation "
-                                         ++ show focus
+                        focus   -> error $ "datum-tree: wrong type in internal forest evaluation "
+                                ++ Text.ppShow focus
 
 
 -------------------------------------------------------------------------------
@@ -242,8 +244,9 @@ liftTreeTransformIO sstep thunk state0 _path0 tree0
                   -> case stateControl state of
                         Right (PAP (PVTree t) [])
                                 -> return t
-                        focus   -> error $ "datum-tree: wrong type in internal evaluation "
-                                ++ show focus
+                        focus   -> error 
+                                $  "datum-tree: wrong type in internal evaluation "
+                                ++ Text.ppShow focus
 
 
 curryThunkPrim  :: Thunk -> Prim -> Thunk

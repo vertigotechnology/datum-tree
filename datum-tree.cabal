@@ -100,6 +100,7 @@ Library
         Datum.Script.Eval.Error
         Datum.Script.Eval.Prim
         Datum.Script.Eval.State
+        Datum.Script.Eval.Value
 
         Datum.Script.Source.Transform.Defix.Error
         Datum.Script.Source.Transform.Defix.FixTable

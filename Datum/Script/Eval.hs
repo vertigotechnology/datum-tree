@@ -10,7 +10,8 @@ module Datum.Script.Eval
 where
 import Datum.Script.Eval.State
 import Datum.Script.Eval.Error
-import Datum.Script.Eval.Env                    (Env, Thunk(..), PAP (..))
+import Datum.Script.Eval.Env                    (Env)
+import Datum.Script.Eval.Value
 import Datum.Script.Core.Exp
 import qualified Datum.Script.Eval.Env          as Env
 import qualified Data.Set                       as Set
@@ -72,12 +73,12 @@ step   state@(State env ctx ctl)
          -> do  
                 -- Build thunks for each of the bindings.
                 let (bs, xs) = unzip bxs
-                let ts    = map (\x -> Env.trimThunk $ VClosure x env) xs
+                let ts    = map (\x -> trimThunk $ VClosure x env) xs
 
                 -- Make a new environment containing the thunks,
                 -- trimmed to just those that are needed in the body.
                 -- Trim enviroment to just 
-                let fvs   = Env.freeVarsX Set.empty x2
+                let fvs   = freeVarsX Set.empty x2
                 let keep uu 
                      = case uu of
                         UName n -> Set.member n fvs
@@ -122,7 +123,7 @@ step   state@(State env ctx ctl)
                 -- Finished evaluating the functional expression, 
                 -- so stash that in the context and evaluate the argument.
                 ContextAppArg (VClosure xArg envArg) ctx'
-                 -> do  let thunk = Env.trimThunk $ thunkify ctl env
+                 -> do  let thunk = trimThunk $ thunkify ctl env
                         let ctx'' = ContextAppFun thunk ctx'
                         progress $ State envArg ctx'' 
                                  $ ControlExp xArg
@@ -131,7 +132,7 @@ step   state@(State env ctx ctl)
                 -- Finished evaluating the argument, 
                 -- so grab the function from the context and apply it.
                 ContextAppFun (VClosure (XAbs b _t xBody) envFun) ctx'
-                 -> do  let thunk = Env.trimThunk $ thunkify ctl env
+                 -> do  let thunk = trimThunk $ thunkify ctl env
                         let env'  = Env.insert b thunk envFun
                         progress $ State env' ctx'
                                  $ ControlExp xBody
@@ -146,7 +147,7 @@ step   state@(State env ctx ctl)
                         VPAP (PAP p ts)            -> Just (p, ts)
                         _                          -> Nothing
 
-                 -> do  let t'     = Env.trimThunk $ thunkify ctl env
+                 -> do  let t'     = trimThunk $ thunkify ctl env
                         let state' = state { stateContext = ctx' }
                         result <- Prim.step step state' op (ts ++ [t'])
                         case result of

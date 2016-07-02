@@ -14,27 +14,14 @@ data State
         { -- | Environment.
           stateEnv      :: !Env
 
-          -- | Current context (kontinuation).
-        , stateContext  :: ![Frame]
+          -- | Current context (Kontinuation).
+        , stateContext  :: !Context
 
-          -- | Current focus of evaluation (control).
+          -- | Current focus of evaluation (Control).
         , stateControl  :: !Control
         }
 
 deriving instance Show State
-
-
--- | Context of evaluation.
-data Frame
-        -- | In an application we are evaluating the functional expression,
-        --   and the frame holds the unevaluated argument.
-        = FrameAppArg  !Thunk
-
-        -- | In an application we are evaluating the argument,
-        --   and the frame holds the evaluated function.
-        | FrameAppFun  !Thunk
-
-deriving instance Show Frame
 
 
 -- | Control of state machine.
@@ -45,10 +32,28 @@ data Control
 deriving instance Show Control
 
 
+-- | Context of evaluation.
+data Context
+        = ContextNil
+
+        -- | In an application we are evaluating the functional expression,
+        --   and the frame holds the unevaluated argument.
+        | ContextAppArg  !Thunk !Context
+
+        -- | In an application we are evaluating the argument,
+        --   and the frame holds the evaluated function.
+        | ContextAppFun  !Thunk !Context
+
+deriving instance Show Context
+
+
 -- | Yield an initial evaluation state for the given expression.
 stateInit :: Exp -> State
 stateInit xx
-        = State Env.empty [] (ControlExp xx)
+        = State 
+        { stateEnv      = Env.empty
+        , stateContext  = ContextNil 
+        , stateControl  = ControlExp xx }
 
 
 -------------------------------------------------------------------------------

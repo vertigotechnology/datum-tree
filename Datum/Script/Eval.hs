@@ -1,7 +1,8 @@
 
 module Datum.Script.Eval
-        ( Frame (..)
-        , State (..)
+        ( State   (..)
+        , Control (..)
+        , Context (..)
         , stateInit
 
         , Error (..)
@@ -59,7 +60,7 @@ step   state@(State env ctx ctl)
         -- Stash the argument expression in the context and
         -- begin evaluating the functional expression.
         ControlExp (XApp x1 x2)
-         -> do  let ctx'  = FrameAppArg (VClosure x2 env) : ctx
+         -> do  let ctx'  = ContextAppArg (VClosure x2 env) ctx
                 progress $ State env ctx' 
                          $ ControlExp x1
 
@@ -109,18 +110,27 @@ step   state@(State env ctx ctl)
 
 
         _ -> case ctx of
+                -- When the context is empty we should have ended up with
+                -- a value. If not then our evaluation rules are borked.
+                ContextNil 
+                 -> case ctl of
+                        ControlExp XAbs{} -> done
+                        ControlPAP{}      -> done
+                        _                 -> failure $ ErrorCore ErrorCoreStuck
+
+
                 -- Finished evaluating the functional expression, 
                 -- so stash that in the context and evaluate the argument.
-                FrameAppArg (VClosure xArg envArg) : ctx'
+                ContextAppArg (VClosure xArg envArg) ctx'
                  -> do  let thunk = Env.trimThunk $ thunkify ctl env
-                        let ctx'' = FrameAppFun thunk : ctx'
+                        let ctx'' = ContextAppFun thunk ctx'
                         progress $ State envArg ctx'' 
                                  $ ControlExp xArg
 
 
                 -- Finished evaluating the argument, 
                 -- so grab the function from the context and apply it.
-                FrameAppFun (VClosure (XAbs b _t xBody) envFun) : ctx'
+                ContextAppFun (VClosure (XAbs b _t xBody) envFun) ctx'
                  -> do  let thunk = Env.trimThunk $ thunkify ctl env
                         let env'  = Env.insert b thunk envFun
                         progress $ State env' ctx'
@@ -129,7 +139,7 @@ step   state@(State env ctx ctl)
 
                 -- Application of a primitive where its next argument
                 -- comes from the context.
-                FrameAppFun thunk : ctx'
+                ContextAppFun thunk ctx'
                  | Just (PVOp op, ts) 
                    <- case thunk of
                         VClosure (XPrim p) _envFun -> Just (p, [])
@@ -148,15 +158,6 @@ step   state@(State env ctx ctl)
 
                          Right (VPAP pap)
                           -> progress $ State Env.empty ctx'  $ ControlPAP pap
-
-
-                -- When the context is empty we should have ended up with
-                -- a value. If not then our evaluation rules are borked.
-                [] -> case ctl of
-                        ControlExp XAbs{} -> done
-                        ControlPAP{}      -> done
-                        _                 -> failure $ ErrorCore ErrorCoreStuck
-
 
                 -- The context is not empty but we can't make progress.
                 -- This is probably cause by a type error in the user program.

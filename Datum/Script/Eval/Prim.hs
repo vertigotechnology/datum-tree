@@ -113,7 +113,8 @@ step self state PPAt [VList _ names, thunk, VTree tree0]
                 = T.promiseTree
                 $ System.unsafePerformIO
                 $ liftTreeTransformIO 
-                        self thunk state { stateContext = [] }
+                        self thunk 
+                        state { stateContext = ContextNil }
                         path tree
 
         progress $ VTree
@@ -139,7 +140,8 @@ step self state PPOn [VList _ names, thunk, VTree tree0]
                 = T.promiseForest
                 $ System.unsafePerformIO
                 $ liftForestTransformIO 
-                        self thunk state { stateContext = [] }
+                        self thunk 
+                        state { stateContext = ContextNil }
                         path forest
 
         progress $ VTree

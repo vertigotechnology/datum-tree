@@ -4,27 +4,31 @@ module Datum.Script.Eval.Prim
 where
 import Datum.Script.Eval.Error
 import Datum.Script.Eval.State
-import Datum.Script.Eval.Env                    (Thunk(..), PAP(..))
+import Datum.Script.Eval.Value
 import Datum.Script.Core.Exp
+
 import qualified Datum.Data.Tree                as T
 import qualified Datum.Data.Tree.Codec          as T
 import qualified Datum.Data.Tree.SExp.Pretty    as T
 import qualified Datum.Data.Tree.Operator.Cast  as T
-import qualified Data.ByteString.Lazy.Char8     as BS8
-import qualified System.FilePath                as FilePath
-import qualified System.IO                      as System
-import qualified Text.PrettyPrint.Leijen        as PP
-import qualified Data.Text                      as Text
-import qualified System.IO.Unsafe               as System
-import qualified Text.Show.Pretty               as Text
 import qualified Datum.Script.Eval.Env          as Env
+
+import qualified System.FilePath                as FilePath
+import qualified System.IO.Unsafe               as System
+import qualified System.IO                      as System
+
+import qualified Text.PrettyPrint.Leijen        as PP
+import qualified Text.Show.Pretty               as Text
+
+import qualified Data.ByteString.Lazy.Char8     as BS8
+import qualified Data.Text                      as Text
 
 
 ---------------------------------------------------------------------------------------------------
 -- | Evaluate a primitive applied to some arguments.
 step    :: (State -> IO (Either Error (Maybe State)))
         -> State
-        -> PrimOp -> [Thunk] -> IO (Either Error Thunk)
+        -> PrimOp -> [Value] -> IO (Either Error Value)
 
 
 -- Numeric ----------------------------------------------------------
@@ -171,7 +175,7 @@ failure  err   = return $ Left  err
 
 
 ---------------------------------------------------------------------------------------------------
-redNum2 :: PrimOp -> Thunk -> Thunk -> Maybe Thunk
+redNum2 :: PrimOp -> Value -> Value -> Maybe Value
 redNum2 op (VInt x1) (VInt x2)
  = case op of
         PPAdd   -> Just $ VInt (x1 +     x2)
@@ -196,7 +200,7 @@ takeXName xx
 liftForestTransformIO
         :: (State -> IO (Either Error (Maybe State)))
                         -- ^ Stepper function for general expressions.
-        -> Thunk        -- ^ Expression mapping trees to trees.
+        -> Value        -- ^ Expression mapping trees to trees.
         -> State        -- ^ Starting state.
         -> T.Path
         -> T.Forest 'T.O
@@ -205,7 +209,7 @@ liftForestTransformIO
 liftForestTransformIO sstep thunk state0 _path0 forest0
  = orivour
  $ case curryThunkPrim thunk (PVForest forest0) of
-        VClosure x1 env 
+        VClo (Clo x1 env)
          -> state0 { stateEnv      = env
                    , stateControl  = ControlExp x1 }
 
@@ -231,7 +235,7 @@ liftForestTransformIO sstep thunk state0 _path0 forest0
 liftTreeTransformIO
         :: (State -> IO (Either Error (Maybe State)))
                         -- ^ Stepper function for general expressions.
-        -> Thunk        -- ^ Expression mapping trees to trees.
+        -> Value        -- ^ Expression mapping trees to trees.
         -> State        -- ^ Starting state.
         -> T.Path
         -> T.Tree 'T.O
@@ -240,7 +244,7 @@ liftTreeTransformIO
 liftTreeTransformIO sstep thunk state0 _path0 tree0
  = orivour
  $ case curryThunkPrim thunk (PVTree tree0) of
-        VClosure x1 env 
+        VClo (Clo x1 env)
          -> state0 { stateEnv     = env
                    , stateControl = ControlExp x1 }
 
@@ -263,11 +267,11 @@ liftTreeTransformIO sstep thunk state0 _path0 tree0
 
 
 -- | Curry the given primitive argument onto a thunk.
-curryThunkPrim  :: Thunk -> Prim -> Thunk
+curryThunkPrim  :: Value -> Prim -> Value
 curryThunkPrim tt pArg
  = case tt of
-        VClosure x1 env
-         -> VClosure (XApp x1 (XPrim pArg)) env
+        VClo (Clo x1 env)
+         -> VClo (Clo (XApp x1 (XPrim pArg)) env)
 
         VPAP (PAP p ts)
          -> VPAP (PAP p (ts ++ [VPAP (PAP pArg [])]))

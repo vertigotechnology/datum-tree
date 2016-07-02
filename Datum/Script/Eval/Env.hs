@@ -1,7 +1,8 @@
 {-# LANGUAGE UndecidableInstances #-}
 module Datum.Script.Eval.Env 
         ( Env    (..)
-        , Thunk  (..)
+        , Value  (..)
+        , Clo    (..)
         , PAP    (..)
         , empty
         , lookup, insert
@@ -18,28 +19,34 @@ import Prelude hiding (lookup)
 -- | Environment holding names of bound variables.
 data Env
         = Env
-        { envNamed              :: !(Map Name Thunk)
-        , envStack              :: ![Thunk] 
+        { envNamed              :: !(Map Name Value)
+        , envStack              :: ![Value] 
         , envStackLength        :: !Int }
 
 deriving instance Show Env
 
 
 -- | Closure packages up an expression with its environment.
-data Thunk
-        -- | An expression with values for free variables
-        --   defined by the given environemnt.
-        = VClosure !Exp !Env
+data Value
+        -- | Closure 
+        = VClo !Clo
 
-        | VPAP     !PAP
+        -- | Partially applied primitive.
+        | VPAP !PAP
+
+deriving instance Show Value
 
 
-deriving instance Show Thunk
+-- | Closure consisting of an expression and its environment.
+data Clo
+        = Clo !Exp  !Env
+
+deriving instance Show Clo
 
 
 -- | Partially applied primitive.
 data PAP
-        = PAP !Prim ![Thunk]
+        = PAP !Prim ![Value]
 
 deriving instance Show PAP
 
@@ -50,7 +57,7 @@ empty   = Env Map.empty [] 0
 
 
 -- | Lookup an expression in the environment.
-lookup :: Bound -> Env -> Maybe Thunk
+lookup :: Bound -> Env -> Maybe Value
 lookup uu env
  = case uu of
         UIx i
@@ -62,7 +69,7 @@ lookup uu env
 
 
 -- | Insert a new expression into the environment.
-insert :: Bind -> Thunk -> Env -> Env
+insert :: Bind -> Value -> Env -> Env
 insert bb xx env
  = case bb of
         BAnon   -> env { envStack = xx : envStack env }

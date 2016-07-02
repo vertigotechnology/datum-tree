@@ -1,7 +1,8 @@
 
 -- | Evaluation state for Datum Scripts.
 module Datum.Script.Eval.State where
-import Datum.Script.Eval.Env            (Env, Thunk(..), PAP(..))
+import Datum.Script.Eval.Value
+import Datum.Script.Eval.Env            (Env)
 import Datum.Script.Core.Exp
 import qualified Datum.Script.Eval.Env  as Env
 
@@ -38,11 +39,11 @@ data Context
 
         -- | In an application we are evaluating the functional expression,
         --   and the frame holds the unevaluated argument.
-        | ContextAppArg  !Thunk !Context
+        | ContextAppArg  !Value !Context
 
         -- | In an application we are evaluating the argument,
         --   and the frame holds the evaluated function.
-        | ContextAppFun  !Thunk !Context
+        | ContextAppFun  !Value !Context
 
 deriving instance Show Context
 
@@ -57,21 +58,21 @@ stateInit xx
 
 
 -------------------------------------------------------------------------------
-pattern VVPrim p        = VPAP (PAP p [])
+pattern VVPAP p         = VPAP (PAP p [])
 
-pattern VName n         = VVPrim (PVName     n)
-pattern VList t xs      = VVPrim (PVList     t xs)
-pattern VForest f       = VVPrim (PVForest   f)
-pattern VTree t         = VVPrim (PVTree     t)
-pattern VTreePath ts    = VVPrim (PVTreePath ts)
-pattern VFilePath fp    = VVPrim (PVFilePath fp)
+pattern VName n         = VVPAP (PVName     n)
+pattern VList t xs      = VVPAP (PVList     t xs)
+pattern VForest f       = VVPAP (PVForest   f)
+pattern VTree t         = VVPAP (PVTree     t)
+pattern VTreePath ts    = VVPAP (PVTreePath ts)
+pattern VFilePath fp    = VVPAP (PVFilePath fp)
 
-pattern VUnit           = VVPrim (PVAtom  AUnit)
-pattern VBool    x      = VVPrim (PVAtom (ABool    x))
-pattern VInt     x      = VVPrim (PVAtom (AInt     x))
-pattern VFloat   x      = VVPrim (PVAtom (AFloat   x))
-pattern VNat     x      = VVPrim (PVAtom (ANat     x))
-pattern VDecimal x      = VVPrim (PVAtom (ADecimal x))
-pattern VText    x      = VVPrim (PVAtom (AText    x))
-pattern VTime    x      = VVPrim (PVAtom (ATime    x))
+pattern VUnit           = VVPAP (PVAtom  AUnit)
+pattern VBool    x      = VVPAP (PVAtom (ABool    x))
+pattern VInt     x      = VVPAP (PVAtom (AInt     x))
+pattern VFloat   x      = VVPAP (PVAtom (AFloat   x))
+pattern VNat     x      = VVPAP (PVAtom (ANat     x))
+pattern VDecimal x      = VVPAP (PVAtom (ADecimal x))
+pattern VText    x      = VVPAP (PVAtom (AText    x))
+pattern VTime    x      = VVPAP (PVAtom (ATime    x))
 

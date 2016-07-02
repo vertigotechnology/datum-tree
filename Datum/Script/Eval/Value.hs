@@ -1,8 +1,9 @@
 
 module Datum.Script.Eval.Value
-        ( Thunk (..)
+        ( Value (..)
+        , Clo   (..)
         , PAP   (..)
-        , trimThunk
+        , trimValue
         , freeVarsX)
 where
 import Datum.Script.Eval.Env
@@ -13,24 +14,23 @@ import qualified Data.Set               as Set
 import Prelude hiding (lookup)
 
 
----------------------------------------------------------------------------------------------------
+-- | Trim the environments stored in a value to just the elements that
+--   are needed by the free variables. This process fulfills the role
+--   of garbage collection in the interpreter.
+trimValue :: Value -> Value
+trimValue vv
+ = case vv of
+        VClo (Clo x env)
+         -> let fvs     = freeVarsX Set.empty x
+                keep uu
+                 = case uu of
+                        UName n -> Set.member n fvs
+                        _       -> True
 
+            in  VClo (Clo x (trim keep env))
 
-trimThunk :: Thunk -> Thunk
-trimThunk (VClosure x env)
- = let  fvs     = freeVarsX Set.empty x
-
-        keep uu
-         = case uu of
-                UName n -> Set.member n fvs
-                _       -> True
-
-        env'    = trim keep env
-
-   in   VClosure x env'
-
-trimThunk (VPAP (PAP p ts))
- = VPAP (PAP p (map trimThunk ts))
+        VPAP (PAP p vs)
+         ->     VPAP (PAP p (map trimValue vs))
 
 
 -- | Determine the set of unbound variables that are not

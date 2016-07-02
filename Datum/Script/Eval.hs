@@ -46,7 +46,7 @@ step   state@(State env ctx ctl)
         -- Lookup value of variable from the environment.
         ControlExp (XVar u)
          -> case Env.lookup u env of
-                Just (VClosure x' env')
+                Just (VClo (Clo x' env'))
                  -> progress $ State env' ctx 
                              $ ControlExp x'
 
@@ -61,7 +61,7 @@ step   state@(State env ctx ctl)
         -- Stash the argument expression in the context and
         -- begin evaluating the functional expression.
         ControlExp (XApp x1 x2)
-         -> do  let ctx'  = ContextAppArg (VClosure x2 env) ctx
+         -> do  let ctx'  = ContextAppArg (VClo (Clo x2 env)) ctx
                 progress $ State env ctx' 
                          $ ControlExp x1
 
@@ -73,7 +73,7 @@ step   state@(State env ctx ctl)
          -> do  
                 -- Build thunks for each of the bindings.
                 let (bs, xs) = unzip bxs
-                let ts    = map (\x -> trimThunk $ VClosure x env) xs
+                let ts    = map (\x -> trimValue $ VClo (Clo x env)) xs
 
                 -- Make a new environment containing the thunks,
                 -- trimmed to just those that are needed in the body.
@@ -103,7 +103,7 @@ step   state@(State env ctx ctl)
                  Left err 
                   -> failure err
 
-                 Right (VClosure x' env') 
+                 Right (VClo (Clo x' env'))
                   -> progress $ State env' ctx      $ ControlExp x'
 
                  Right (VPAP pap)
@@ -122,8 +122,8 @@ step   state@(State env ctx ctl)
 
                 -- Finished evaluating the functional expression, 
                 -- so stash that in the context and evaluate the argument.
-                ContextAppArg (VClosure xArg envArg) ctx'
-                 -> do  let thunk = trimThunk $ thunkify ctl env
+                ContextAppArg (VClo (Clo xArg envArg)) ctx'
+                 -> do  let thunk = trimValue $ thunkify ctl env
                         let ctx'' = ContextAppFun thunk ctx'
                         progress $ State envArg ctx'' 
                                  $ ControlExp xArg
@@ -131,8 +131,8 @@ step   state@(State env ctx ctl)
 
                 -- Finished evaluating the argument, 
                 -- so grab the function from the context and apply it.
-                ContextAppFun (VClosure (XAbs b _t xBody) envFun) ctx'
-                 -> do  let thunk = trimThunk $ thunkify ctl env
+                ContextAppFun (VClo (Clo (XAbs b _t xBody) envFun)) ctx'
+                 -> do  let thunk = trimValue $ thunkify ctl env
                         let env'  = Env.insert b thunk envFun
                         progress $ State env' ctx'
                                  $ ControlExp xBody
@@ -143,18 +143,17 @@ step   state@(State env ctx ctl)
                 ContextAppFun thunk ctx'
                  | Just (PVOp op, ts) 
                    <- case thunk of
-                        VClosure (XPrim p) _envFun -> Just (p, [])
+                        VClo (Clo (XPrim p) _env)  -> Just (p, [])
                         VPAP (PAP p ts)            -> Just (p, ts)
                         _                          -> Nothing
 
-                 -> do  let t'     = trimThunk $ thunkify ctl env
+                 -> do  let t'     = trimValue $ thunkify ctl env
                         let state' = state { stateContext = ctx' }
                         result <- Prim.step step state' op (ts ++ [t'])
                         case result of
-                         Left  err    
-                          -> failure err
+                         Left  err    -> failure err
 
-                         Right (VClosure x' env')
+                         Right (VClo (Clo x' env'))
                           -> progress $ State env' ctx'       $ ControlExp x'
 
                          Right (VPAP pap)
@@ -166,9 +165,9 @@ step   state@(State env ctx ctl)
 
 
 -- | Pack a control with the current environment into a thunk.
-thunkify :: Control -> Env -> Thunk
+thunkify :: Control -> Env -> Value
 thunkify ctl env
  = case ctl of
-        ControlExp xx  -> VClosure xx env
+        ControlExp xx  -> VClo (Clo xx env)
         ControlPAP pap -> VPAP pap
 

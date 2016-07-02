@@ -175,28 +175,6 @@ failure  err   = return $ Left  err
 
 
 ---------------------------------------------------------------------------------------------------
-redNum2 :: PrimOp -> Value -> Value -> Maybe Value
-redNum2 op (VInt x1) (VInt x2)
- = case op of
-        PPAdd   -> Just $ VInt (x1 +     x2)
-        PPSub   -> Just $ VInt (x1 -     x2)
-        PPMul   -> Just $ VInt (x1 *     x2)
-        PPDiv   -> Just $ VInt (x1 `div` x2)
-        _       -> Nothing
-
-redNum2 _ _ _
- = Nothing
-
-
-takeXName :: Exp -> Maybe T.Name
-takeXName xx
- = case xx of
-        XAnnot _ x      -> takeXName x
-        XName n         -> Just (Text.unpack n)
-        _               -> Nothing
-
-
----------------------------------------------------------------------------------------------------
 liftForestTransformIO
         :: (State -> IO (Either Error (Maybe State)))
                         -- ^ Stepper function for general expressions.
@@ -275,4 +253,28 @@ curryThunkPrim tt pArg
 
         VPAP (PAP p ts)
          -> VPAP (PAP p (ts ++ [VPAP (PAP pArg [])]))
+
+
+---------------------------------------------------------------------------------------------------
+-- | Reduce a binary numeric primop.
+redNum2 :: PrimOp -> Value -> Value -> Maybe Value
+redNum2 op (VInt x1) (VInt x2)
+ = case op of
+        PPAdd   -> Just $ VInt (x1 +     x2)
+        PPSub   -> Just $ VInt (x1 -     x2)
+        PPMul   -> Just $ VInt (x1 *     x2)
+        PPDiv   -> Just $ VInt (x1 `div` x2)
+        _       -> Nothing
+
+redNum2 _ _ _
+ = Nothing
+
+
+-- | Take the name from an expression, if there is one.
+takeXName :: Exp -> Maybe T.Name
+takeXName xx
+ = case xx of
+        XAnnot _ x      -> takeXName x
+        XName n         -> Just (Text.unpack n)
+        _               -> Nothing
 

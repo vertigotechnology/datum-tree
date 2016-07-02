@@ -19,9 +19,9 @@ import Prelude hiding (lookup)
 -- | Environment holding names of bound variables.
 data Env
         = Env
-        { envNamed              :: !(Map Name Value)
-        , envStack              :: ![Value] 
-        , envStackLength        :: !Int }
+        { envNamed      :: !(Map Name Value)
+        , envStack      :: ![Value] 
+        , envStackLen   :: !Int }
 
 deriving instance Show Env
 
@@ -61,28 +61,28 @@ lookup :: Bound -> Env -> Maybe Value
 lookup uu env
  = case uu of
         UIx i
-         | i <  0                  -> Nothing
-         | i >= envStackLength env -> Nothing
-         | otherwise               -> Just (envStack env !! i)
+         | i <  0               -> Nothing
+         | i >= envStackLen env -> Nothing
+         | otherwise            -> Just (envStack env !! i)
 
-        UName n                    -> Map.lookup n (envNamed env)
+        UName n                 -> Map.lookup n (envNamed env)
 
 
 -- | Insert a new expression into the environment.
 insert :: Bind -> Value -> Env -> Env
 insert bb xx env
  = case bb of
-        BAnon   -> env { envStack = xx : envStack env }
-        BName n -> env { envNamed = Map.insert n xx (envNamed env) }
+        BAnon           -> env { envStack = xx : envStack env }
+        BName n         -> env { envNamed = Map.insert n xx (envNamed env) }
 
 
 -- | Take the union of two environments.
 union :: Env -> Env -> Env
 union env1 env2
         = Env
-        { envNamed              = Map.union (envNamed env1) (envNamed env2)
-        , envStack              = envStack env2       ++ envStack env1
-        , envStackLength        = envStackLength env2 +  envStackLength env1 }
+        { envNamed      = Map.union (envNamed env1) (envNamed env2)
+        , envStack      = envStack    env2 ++ envStack    env1
+        , envStackLen   = envStackLen env2 +  envStackLen env1 }
 
 
 trim :: (Bound -> Bool) -> Env -> Env

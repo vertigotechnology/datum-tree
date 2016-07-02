@@ -70,7 +70,7 @@ freeVarsX env xx
                  $ x2 : xs
 
 
-
+-- | Take the name of a binder, if there is one.
 takeNameOfBind :: Bind -> Maybe Name
 takeNameOfBind bb
  = case bb of

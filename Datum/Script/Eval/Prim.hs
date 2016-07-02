@@ -62,20 +62,32 @@ step _ _ PPStore     [VText filePath, VTree tree]
 
 -- Tree Sampling ----------------------------------------------------
 -- Take the initial n branches of each subtree.
-step _ _ PPInitial   [VNat n, VTree tree]
- =      progress $ VTree $ T.initial n tree
+step _ _ PPInitial [vn, VTree   tree]
+ | Just n  <- takeVNat vn
+ =      progress $ VTree   $ T.initial n tree
+
+step _ _ PPInitial [vn, VForest forest]
+ | Just n  <- takeVNat vn
+ =      progress $ VForest $ T.initial n forest
 
 
 -- Take the final n branches of each subtree.
-step _ _ PPFinal     [VNat n, VTree tree]
- =      progress $ VTree $ T.final n tree
+step _ _ PPFinal   [vn, VTree   tree]
+ | Just n  <- takeVNat vn
+ =      progress $ VTree   $ T.final n tree
+
+step _ _ PPFinal   [vn, VForest forest]
+ | Just n  <- takeVNat vn
+ =      progress $ VForest $ T.final n forest
 
 
 -- Sample n intermediate branches of each subtree.
-step _ _ PPSample    [VInt n, VTree tree]
- =      progress $ VTree $ T.sample n tree
+step _ _ PPSample  [vn, VTree   tree]
+ | Just n  <- takeVNat vn
+ =      progress $ VTree   $ T.sample n tree
 
-step _ _ PPSample    [VInt n, VForest forest]
+step _ _ PPSample  [vn, VForest forest]
+ | Just n  <- takeVNat vn
  =      progress $ VForest $ T.sample n forest
 
 
@@ -91,6 +103,7 @@ step _ _ PPGroup   [VName name, VForest forest]
  =      progress $ VForest
                  $ T.promiseForest
                  $ T.groupForest (Text.unpack name) forest
+
 
 -- Tree Renaming ----------------------------------------------------
 step _ _ PPRenameFields [ VList _ names, VForest forest ]
@@ -116,8 +129,7 @@ step self state PPAt [VList _ names, thunk, VTree tree0]
             inception path tree
                 = T.promiseTree
                 $ System.unsafePerformIO
-                $ liftTreeTransformIO 
-                        self thunk 
+                $ liftTreeTransformIO self thunk 
                         state { stateContext = ContextNil }
                         path tree
 
@@ -143,8 +155,7 @@ step self state PPOn [VList _ names, thunk, VTree tree0]
             inception path forest
                 = T.promiseForest
                 $ System.unsafePerformIO
-                $ liftForestTransformIO 
-                        self thunk 
+                $ liftForestTransformIO self thunk 
                         state { stateContext = ContextNil }
                         path forest
 
@@ -276,5 +287,15 @@ takeXName xx
  = case xx of
         XAnnot _ x      -> takeXName x
         XName n         -> Just (Text.unpack n)
+        _               -> Nothing
+
+
+-- | Take a natural number from a value, if there is one.
+--   This works for VNat and VInt.
+takeVNat :: Value -> Maybe Int
+takeVNat vv
+ = case vv of
+        VNat n          -> Just n
+        VInt n | n >= 0 -> Just n
         _               -> Nothing
 

@@ -7,14 +7,23 @@ import Text.Show.Pretty
 import Control.Monad
 import qualified Datum.Script.Eval      as Eval
 import qualified System.Environment     as System
+import qualified System.Exit            as System
+
 
 main
  = do   args    <- System.getArgs 
         config  <- parseArgs args def
 
-        let Just filePath = configFile config
+        case configFile config of
+         Just filePath  -> runScript config filePath
+         _              -> do   putStrLn usage
+                                System.exitSuccess
 
-        -- Read the client module.
+
+-- | Run the script in the given file.
+runScript :: Config -> FilePath -> IO ()
+runScript config filePath
+ = do   -- Read the client module.
         strSource       <- readFile filePath
 
         -- Parse the client module text and convert to the core language.
@@ -30,6 +39,7 @@ main
         return ()
 
 
+-- | Eval loop for a script state.
 eval :: Config -> Eval.State -> IO Eval.State
 eval config state
  = do   

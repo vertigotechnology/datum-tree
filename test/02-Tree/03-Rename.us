@@ -5,4 +5,4 @@ main
  & on /row $ rename-fields ['name, 'symbol, 'grouping]
  & on /row $ group 'grouping
  & sample 10
- & store  "test/02-03-Rename.tree";
+ & store  "test/output/02-03-Rename.csv";

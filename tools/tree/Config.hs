@@ -59,6 +59,7 @@ usage
  = unlines
  [ "datum-tree: hierarchical data processing."
  , ""
+ , "Usage"
  , " datum-tree [FLAGS..] <script.us>"
  , ""
  , "Debugging"

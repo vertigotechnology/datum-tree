@@ -17,6 +17,7 @@ import qualified Data.List                      as List
 
 ---------------------------------------------------------------------------------------------------
 -- | Encode a tree to CSV in a lazy `ByteString`. 
+--   TODO: write header.
 encodeCSV :: Csv.HasHeader -> Tree 'O -> BS8.ByteString
 encodeCSV _hasHeader tt
  = BB.toLazyByteString $ encodeTree tt
@@ -103,3 +104,4 @@ decodeCSV hasHeader bs
                         (tbranch "row" 
                                 (TT $ A.fromList 
                                     $ map (flip telement ttext) lsName)))
+

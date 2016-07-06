@@ -9,6 +9,7 @@ import Datum.Script.Core.Exp
 
 import qualified Datum.Data.Tree                as T
 import qualified Datum.Data.Tree.Codec          as T
+import qualified Datum.Data.Tree.Codec.Matryo   as T
 import qualified Datum.Data.Tree.SExp.Pretty    as T
 import qualified Datum.Data.Tree.Operator.Cast  as T
 import qualified Datum.Script.Eval.Env          as Env
@@ -55,6 +56,11 @@ step _ _ PPStore     [VText filePath, VTree tree]
         ".csv"
          -> do  System.withFile filePath System.WriteMode
                  $ \h -> BS8.hPutStr h (T.encodeCSV T.HasHeader tree)
+                progress $ VUnit
+
+        ".matryo"
+         -> do  System.withFile filePath System.WriteMode
+                 $ \h -> BS8.hPutStr h (T.encodeMatryo tree)
                 progress $ VUnit
 
         ".tree"

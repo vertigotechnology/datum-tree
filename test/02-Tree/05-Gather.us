@@ -1,7 +1,7 @@
 
 
-companies = "demo/data/ASXListedCompanies.csv";
-output    = "demo/tmp/05-stock-gathered.matryo";
+companies = "test/data/ASXListedCompanies.csv";
+output    = "test/02-Tree/05-Gather.matryo";
 
 main
  = load companies

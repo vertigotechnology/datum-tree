@@ -1,6 +1,6 @@
 
-companies = "demo/data/ASXListedCompanies.csv";
-output    = "demo/tmp/04-stock-grouped.matryo";
+companies = "test/data/ASXListedCompanies.csv";
+output    = "test/output/02-04-Transform.matryo";
 
 main
  = load companies

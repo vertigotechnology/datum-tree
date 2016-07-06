@@ -1,6 +1,7 @@
 
 module Config where
 import Data.Default
+import qualified System.Exit            as System
 import qualified Datum.Data.List        as List
 
 
@@ -33,11 +34,11 @@ parseArgs []   config
  = return config
 
 parseArgs args config
- | "-dump" : rest       <- args
+ | "--dump" : rest       <- args
  = parseArgs rest
  $ config { configDump = True }
 
- | "-trace" : rest       <- args
+ | "--trace" : rest       <- args
  = parseArgs rest
  $ config { configTrace = True }
 
@@ -49,4 +50,18 @@ parseArgs args config
  $ config { configFile = Just file }
 
  | otherwise
- = error "usage derp"
+ = do   putStrLn usage
+        System.exitFailure
+
+
+-------------------------------------------------------------------------------
+usage
+ = unlines
+ [ "datum-tree: hierarchical data processing."
+ , ""
+ , " datum-tree [FLAGS..] <script.us>"
+ , ""
+ , "Debugging"
+ , " --dump           Dump intermediate representations of script."
+ , " --trace          Trace script evaluation."
+ ]

@@ -3,7 +3,7 @@ twice f x
  = f (f x);
 
 main
- = load "demo/data/ASXListedCompanies-cut.csv"
- & store "demo/tmp/01-stock-identity.tree";
+ = load  "test/data/ASXListedCompanies-cut.csv"
+ & store "test/output/02-01-Identity.tree";
 
 

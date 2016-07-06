@@ -1,16 +1,58 @@
 
 module Datum.Data.Tree.Codec
-        ( decodeCSV
+        ( encodeCSV
+        , decodeCSV
         , Csv.HasHeader (..))
 where
 import Datum.Data.Tree.Exp
 import Datum.Data.Tree.SExp
+import Data.Monoid
 import qualified Data.Csv                       as Csv
 import qualified Data.ByteString.Lazy.Char8     as BS8
+import qualified Data.ByteString.Builder        as BB
 import qualified Data.Vector                    as V
 import qualified Data.Repa.Array                as A
+import qualified Data.List                      as List
 
 
+---------------------------------------------------------------------------------------------------
+-- | Encode a tree to CSV in a lazy `ByteString`. 
+encodeCSV :: Csv.HasHeader -> Tree 'O -> BS8.ByteString
+encodeCSV _hasHeader tt
+ = BB.toLazyByteString $ encodeTree tt
+ where
+        encodeTree   (Tree b _)
+         = encodeBranch b
+
+        encodeGroup  (G _name bs)
+         = mconcat   $ map encodeBranch $ unboxes bs
+
+        encodeBranch (B t gs)
+         =   encodeTuple t
+         <> (mconcat $ map encodeGroup  $ unboxes gs)
+
+        encodeTuple  (T as)
+         = case unboxes as of
+                -- The root note of the tree usually has an empty tuple,
+                -- which we want to supppress in the output.
+                []      -> mempty
+                as'     -> ( mconcat $ List.intersperse (BB.string8 ",") 
+                           $ map encodeAtom as')
+                        <> (BB.string8 "\n")
+
+        encodeAtom a
+         = case a of
+                AUnit{}      -> BB.string8  "()"
+                ABool    b   -> BB.string8   (show b)
+                AInt     i   -> BB.intDec    i
+                AFloat   f   -> BB.doubleDec f
+                ANat     n   -> BB.intDec    n
+                ADecimal n   -> BB.doubleDec n
+                AText    str -> BB.string8   $ show str
+                ATime    str -> BB.string8   str
+
+
+---------------------------------------------------------------------------------------------------
 -- | Decode a CSV file from a lazy `ByteString`
 decodeCSV :: Csv.HasHeader -> BS8.ByteString -> Either String (Tree 'O)
 decodeCSV hasHeader bs

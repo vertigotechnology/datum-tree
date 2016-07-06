@@ -52,6 +52,11 @@ step _ _ PPLoad      [VText filePath]
 -- Store to the file system.
 step _ _ PPStore     [VText filePath, VTree tree]
  = case FilePath.takeExtension filePath of
+        ".csv"
+         -> do  System.withFile filePath System.WriteMode
+                 $ \h -> BS8.hPutStr h (T.encodeCSV T.HasHeader tree)
+                progress $ VUnit
+
         ".tree"
          -> do  System.withFile filePath System.WriteMode
                  $ \h -> PP.hPutDoc h (T.ppTree mempty tree PP.<> PP.line)

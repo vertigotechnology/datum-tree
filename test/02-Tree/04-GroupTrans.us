@@ -1,6 +1,6 @@
 
 companies = "demo/data/ASXListedCompanies.csv";
-output    = "demo/tmp/04-stock-grouped.tree";
+output    = "demo/tmp/04-stock-grouped.csv";
 
 main
  = load companies

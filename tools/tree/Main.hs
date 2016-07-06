@@ -5,9 +5,11 @@ import Load
 import Data.Default
 import Text.Show.Pretty
 import Control.Monad
-import qualified Datum.Script.Eval      as Eval
-import qualified System.Environment     as System
-import qualified System.Exit            as System
+import qualified Datum.Script.Eval              as Eval
+import qualified Datum.Script.Eval.Pretty       as Eval
+import qualified System.Environment             as System
+import qualified System.Exit                    as System
+import qualified Data.Text.Lazy.IO              as LText
 
 
 main
@@ -35,7 +37,9 @@ runScript config filePath
         -- Evaluate the script.
         state'         <- eval config state
 
-        putStrLn $ ppShow state'
+        let ppConfig    = Eval.Config
+                        { Eval.configTreeFormat = Eval.TreeFormatMatryo }
+        LText.putStrLn (Eval.pprControl ppConfig $ Eval.stateControl state')
         return ()
 
 

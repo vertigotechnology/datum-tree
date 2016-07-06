@@ -1,21 +1,22 @@
 
 module Datum.Data.Tree.Codec.Matryo
-        (encodeMatryo)
+        ( encodeMatryo
+        , encodeTree)
 where
 import Datum.Data.Tree.Exp
 import Data.Monoid
-import Data.ByteString.Builder                  (Builder)
-import qualified Data.ByteString.Builder        as BB
-import qualified Data.ByteString.Lazy.Char8     as BS8
+import Data.Text.Lazy                           (Text)
 import qualified Data.List                      as List
 import qualified Data.Repa.Array                as A
 
+import Data.Text.Lazy.Builder                   
+        (Builder, toLazyText, fromString)
+
 
 -- | Encode a tree to a lazy `ByteString` in Matryoshka format.
-encodeMatryo :: Tree 'O -> BS8.ByteString
+encodeMatryo :: Tree 'O -> Text
 encodeMatryo tree'
- = BB.toLazyByteString $ encodeTree 0 tree'
- where
+ = toLazyText $ encodeTree 0 tree'
 
 
 -- | Encode a tree.
@@ -32,18 +33,18 @@ encodeBranchType :: Int -> Bool -> BranchType -> Builder
 encodeBranchType i bFirst (BT _n tt bts)
         |  [] <- unboxes bts
         =  encodeTupleType tt
-        <> BB.string8 "\n"
+        <> fromString "\n"
 
         | otherwise
-        =  BB.string8 "{ "
+        =  fromString "{ "
         <> encodeTupleType tt
-        <> BB.string8 "\n"
+        <> fromString "\n"
         <> encodeBranchTypes (i + 4) (unboxes bts)
-        <> BB.string8 "\n"
+        <> fromString "\n"
         <> (if bFirst
                then mempty
-               else BB.string8 (replicate (i + 2) ' '))
-        <> BB.string8 "}\n"
+               else fromString (replicate (i + 2) ' '))
+        <> fromString "}\n"
 
 
 -- | Encode a list of branch types.
@@ -52,17 +53,17 @@ encodeBranchTypes _i []
         = mempty
 
 encodeBranchTypes i0 bts
- =   BB.string8 (replicate i0 ' ') <> BB.string8 "[ "
+ =   fromString (replicate i0 ' ') <> fromString "[ "
  <> (encodeBranchTypess i0 (0 :: Int) bts)
- <>  BB.string8 (replicate i0 ' ') <> BB.string8 "]"
+ <>  fromString (replicate i0 ' ') <> fromString "]"
 
  where  encodeBranchTypess i 0 (b : bs)
          =  encodeBranchType i False b
          <> encodeBranchTypess i 1 bs
 
         encodeBranchTypess i n (b : bs)
-         =  BB.string8 (replicate i ' ')
-         <> BB.string8 ", " <> encodeBranchType i False b
+         =  fromString (replicate i ' ')
+         <> fromString ", " <> encodeBranchType i False b
          <> encodeBranchTypess i (n + 1) bs
 
         encodeBranchTypess _ _ []
@@ -72,17 +73,17 @@ encodeBranchTypes i0 bts
 -- | Encode a tuple type.
 encodeTupleType :: TupleType -> Builder
 encodeTupleType (TT kts)
-        =  BB.char8 '('
-        <> ( mconcat $ List.intersperse (BB.string8 ", ")
+        =  fromString "("
+        <> ( mconcat $ List.intersperse (fromString ", ")
            $ map encodeKeyType $ A.toList kts)
-        <> BB.char8 ')'
+        <> fromString ")"
 
 
 -- | Encode a key type.
 encodeKeyType :: (Box Name :*: Box AtomType) -> Builder
 encodeKeyType (Box n :*: Box at)
-        =  BB.string8 (show n)
-        <> BB.string8 ": "
+        =  fromString (show n)
+        <> fromString ": "
         <> encodeAtomType at
 
 
@@ -93,34 +94,34 @@ encodeBranch :: Int -> Bool -> Branch -> Builder
 encodeBranch i bFirst (B t gs)
         |  [] <- unboxes gs
         =  encodeTuple t
-        <> BB.string8 "\n"
+        <> fromString "\n"
 
         | otherwise
-        =  BB.string8 "{ "
+        =  fromString "{ "
         <> encodeTuple t
-        <> BB.string8 "\n"
+        <> fromString "\n"
         <> (mconcat $ map (encodeGroup (i + 4)) $ unboxes gs)
-        <> BB.string8 "\n"
+        <> fromString "\n"
         <> (if bFirst
                then mempty
-               else BB.string8 (replicate (i + 2) ' '))
-        <> BB.string8 "}\n"
+               else fromString (replicate (i + 2) ' '))
+        <> fromString "}\n"
 
 
 -- | Encode a branch group.
 encodeGroup :: Int -> Group -> Builder
 encodeGroup  i0 (G _name bs0)
- =   BB.string8 (replicate i0 ' ') <> BB.string8 "[ "
+ =   fromString (replicate i0 ' ') <> fromString "[ "
  <> (encodeGroupBranches   i0 0 $ unboxes bs0)
- <>  BB.string8 (replicate i0 ' ') <> BB.string8 "]"
+ <>  fromString (replicate i0 ' ') <> fromString "]"
 
  where  encodeGroupBranches i (0 :: Int) (b : bs)
          =  encodeBranch i False b 
          <> encodeGroupBranches i 1 bs
 
         encodeGroupBranches i n (b : bs)
-         =  BB.string8 (replicate i ' ') 
-         <> BB.string8 ", " <> encodeBranch i False b
+         =  fromString (replicate i ' ') 
+         <> fromString ", " <> encodeBranch i False b
          <> encodeGroupBranches i (n + 1) bs
 
         encodeGroupBranches _ _ []
@@ -130,36 +131,36 @@ encodeGroup  i0 (G _name bs0)
 -- | Encode a tuple.
 encodeTuple :: Tuple -> Builder
 encodeTuple  (T as)
-        =  BB.char8 '('
-        <> ( mconcat $ List.intersperse (BB.string8 ", ") 
+        =  fromString "("
+        <> ( mconcat $ List.intersperse (fromString ", ") 
            $ map encodeAtom $ unboxes as)
-        <> BB.char8 ')'
+        <> fromString ")"
 
 
 -- | Encode an atom.
 encodeAtom :: Atom -> Builder
 encodeAtom a
  = case a of
-        AUnit{}      -> BB.string8  "()"
-        ABool    b   -> BB.string8   (show b)
-        AInt     i   -> BB.intDec    i
-        AFloat   f   -> BB.doubleDec f
-        ANat     n   -> BB.intDec    n
-        ADecimal n   -> BB.doubleDec n
-        AText    str -> BB.string8   $ show str
-        ATime    str -> BB.string8   str
+        AUnit{}         -> fromString "Unit"
+        ABool    b      -> fromString $ show b
+        AInt     i      -> fromString $ show i
+        AFloat   f      -> fromString $ show f
+        ANat     n      -> fromString $ show n
+        ADecimal n      -> fromString $ show n
+        AText    str    -> fromString $ show str
+        ATime    str    -> fromString   str
 
 
 -- | Encode an atom type.
 encodeAtomType :: AtomType -> Builder
 encodeAtomType at
  = case at of
-        ATUnit          -> BB.string8 "()"
-        ATBool          -> BB.string8 "Bool"
-        ATInt           -> BB.string8 "Int"
-        ATFloat         -> BB.string8 "Float"
-        ATNat           -> BB.string8 "Nat"
-        ATDecimal       -> BB.string8 "Decimal"
-        ATText          -> BB.string8 "Text"
-        ATTime          -> BB.string8 "Time"
+        ATUnit          -> fromString "Unit"
+        ATBool          -> fromString "Bool"
+        ATInt           -> fromString "Int"
+        ATFloat         -> fromString "Float"
+        ATNat           -> fromString "Nat"
+        ATDecimal       -> fromString "Decimal"
+        ATText          -> fromString "Text"
+        ATTime          -> fromString "Time"
 

@@ -23,6 +23,7 @@ import qualified Text.Show.Pretty               as Text
 
 import qualified Data.ByteString.Lazy.Char8     as BS8
 import qualified Data.Text                      as Text
+import qualified Data.Text.Lazy.IO              as LText
 
 
 ---------------------------------------------------------------------------------------------------
@@ -60,7 +61,7 @@ step _ _ PPStore     [VText filePath, VTree tree]
 
         ".matryo"
          -> do  System.withFile filePath System.WriteMode
-                 $ \h -> BS8.hPutStr h (T.encodeMatryo tree)
+                 $ \h -> LText.hPutStr h (T.encodeMatryo tree)
                 progress $ VUnit
 
         ".tree"

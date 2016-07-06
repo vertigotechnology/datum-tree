@@ -10,7 +10,7 @@ import qualified Data.ByteString.Lazy.Char8     as BS8
 import qualified Data.List                      as List
 import qualified Data.Repa.Array                as A
 
----------------------------------------------------------------------------------------------------
+
 -- | Encode a tree to a lazy `ByteString` in Matryoshka format.
 encodeMatryo :: Tree 'O -> BS8.ByteString
 encodeMatryo tree'

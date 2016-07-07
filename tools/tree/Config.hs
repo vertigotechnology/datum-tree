@@ -13,6 +13,9 @@ data Config
         { -- Script file.
           configFile            :: Maybe FilePath
 
+          -- Script expression provided on the command line.
+        , configExec            :: Maybe Text
+
           -- Dump intermediate representations.
         , configDump            :: Bool 
 
@@ -32,6 +35,7 @@ deriving instance Show Config
 instance Default Config where
  def    = Config
         { configFile            = Nothing
+        , configExec            = Nothing 
         , configDump            = False 
         , configTrace           = False 
         , configShowUnit        = False 
@@ -58,8 +62,15 @@ parseArgs args config
  = parseArgs rest
  $ config { configShowUnit = True }
 
- -- Load arguments to the script.
- | dparam : value : rest <- args
+ -- Execute the given expression.
+ | "--exec" : strExp : rest <- args
+ = parseArgs rest
+ $ config { configExec     = Just (Text.pack strExp) }
+
+ -- If we have a script to execute then interpret remaining
+ -- flags starting with '-' as arguments to the script.
+ | Just _       <- configFile config
+ , dparam : value : rest <- args
  , Just param   <- List.stripPrefix "-" dparam
  , Just c       <- List.takeHead param
  , c /= '-'
@@ -87,11 +98,15 @@ usage
  [ "datum-tree: hierarchical data processing."
  , ""
  , "Usage"
- , " datum-tree [FLAGS..] <script.us>"
+ , " datum-tree <script.us>  [FLAGS..]"
+ , " datum-tree --exec <EXP> [FLAGS..]"
+ , ""
+ , "Execution"
+ , " --exec <EXP>        Execute the given script expression."
  , ""
  , "Debugging"
- , " --dump           Dump intermediate representations of script."
- , " --trace          Trace script evaluation."
- , " --show-unit      Show the unit value in script results."
+ , " --dump              Dump intermediate representations of script."
+ , " --trace             Trace script evaluation."
+ , " --show-unit         Show the unit value in script results."
  ]
 

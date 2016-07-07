@@ -12,24 +12,60 @@ import qualified Datum.Script.Eval.Env          as Eval
 import qualified System.Environment             as System
 import qualified System.Exit                    as System
 import qualified Data.Text.Lazy.IO              as LText
+import qualified Data.Text                      as Text
 
 
+-------------------------------------------------------------------------------
 main
  = do   args    <- System.getArgs 
         config  <- parseArgs args def
-
-        case configFile config of
-         Just filePath  -> runScript config filePath
-         _              -> do   putStrLn usage
-                                System.exitSuccess
+        dispatch config
 
 
+dispatch config
+ -- Can't supply both a script file path and an expression
+ -- on the command line, as we don't know which one to use.
+ | Just _               <- configFile config
+ , Just _               <- configExec config
+ = do   putStrLn usage
+        System.exitFailure
+
+ -- Run a script from a file.
+ | Just filePath        <- configFile config
+ =      runScriptFromFile config filePath
+
+ -- Execute an expression provided on the command line.
+ | Just strSource       <- configExec config
+ = do   -- Set a dummy file path to use in error messages.
+        let filePath    = "<command-line>"
+
+        -- The source we have is for an expression, so assign it 
+        -- to the main variable so it it will parse as a complete script.
+        runScript config filePath
+                $  "main = "
+                ++ Text.unpack strSource
+                ++ ";"
+
+ -- We don't have a script to execute.
+ | otherwise
+ = do   putStrLn usage
+        System.exitSuccess
+
+
+-------------------------------------------------------------------------------
 -- | Run the script in the given file.
-runScript :: Config -> FilePath -> IO ()
-runScript config filePath
+runScriptFromFile :: Config -> FilePath -> IO ()
+runScriptFromFile config filePath
  = do   -- Read the client module.
         strSource       <- readFile filePath
+        runScript config filePath strSource
 
+
+-------------------------------------------------------------------------------
+-- | Run the script in the given file.
+runScript :: Config -> FilePath -> String -> IO ()
+runScript config filePath strSource
+ = do   
         -- Parse the client module text and convert to the core language.
         xCore           <- loadToCore (configDump config) filePath strSource
 
@@ -58,12 +94,18 @@ runScript config filePath
 
          -- Evaluation has produced some non-unit result, 
          -- so print it to the console.
-         _ -> do let ppConfig = Eval.Config
-                              { Eval.configTreeFormat = Eval.TreeFormatMatryo }
-                 LText.putStrLn (Eval.pprControl ppConfig $ Eval.stateControl state')
+         _ -> do let ppConfig 
+                        = Eval.Config
+                        { Eval.configTreeFormat = Eval.TreeFormatMatryo }
+
+                 LText.putStrLn 
+                        $ Eval.pprControl ppConfig 
+                        $ Eval.stateControl state'
+
                  return ()
 
 
+-------------------------------------------------------------------------------
 -- | Eval loop for a script state.
 eval :: Config -> Eval.State -> IO Eval.State
 eval config state

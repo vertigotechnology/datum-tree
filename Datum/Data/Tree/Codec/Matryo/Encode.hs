@@ -1,7 +1,7 @@
 
-module Datum.Data.Tree.Codec.Matryo
-        ( encodeMatryo
-        , encodeTree)
+module Datum.Data.Tree.Codec.Matryo.Encode
+        ( encodeTree
+        , prettyTree)
 where
 import Datum.Data.Tree.Exp
 import Data.Monoid
@@ -21,8 +21,8 @@ text s  = fromString s
 
 
 -- | Encode a tree to a lazy `ByteString` in Matryoshka format.
-encodeMatryo :: Tree 'O -> Text
-encodeMatryo tree'
+prettyTree :: Tree 'O -> Text
+prettyTree tree'
  = toLazyText $ encodeTree 0 tree'
 
 

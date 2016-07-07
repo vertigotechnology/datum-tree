@@ -4,8 +4,8 @@ import Datum.Script.Eval.State
 import Datum.Script.Eval.Env
 import Datum.Script.Core.Exp
 import Data.Monoid
-import Data.Text.Lazy                           (Text)
-import qualified Datum.Data.Tree.Codec.Matryo   as CodecMatryo
+import Data.Text.Lazy                                   (Text)
+import qualified Datum.Data.Tree.Codec.Matryo.Encode    as Matryo
 
 import Data.Text.Lazy.Builder                   
         (Builder, fromText, toLazyText, fromString)
@@ -124,14 +124,9 @@ buildPrim c p
 
         PVTree t       
          -> case configTreeFormat c of
-                TreeFormatInternal
-                 -> error "buildPrim: internal"
-
-                TreeFormatSExp
-                 -> error "buildPrim: sexp"
-
-                TreeFormatMatryo        
-                 -> CodecMatryo.encodeTree 0 t
+                TreeFormatInternal      -> error "buildPrim: internal"
+                TreeFormatSExp          -> error "buildPrim: sexp"
+                TreeFormatMatryo        -> Matryo.encodeTree 0 t
 
         PVTreePath{}    -> error "buildPrim: tree path"
         PVFilePath p'   -> fromString $ show p'

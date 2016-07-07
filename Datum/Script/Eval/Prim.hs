@@ -7,12 +7,12 @@ import Datum.Script.Eval.State
 import Datum.Script.Eval.Value
 import Datum.Script.Core.Exp
 
-import qualified Datum.Data.Tree                as T
-import qualified Datum.Data.Tree.Codec          as T
-import qualified Datum.Data.Tree.Codec.Matryo   as T
-import qualified Datum.Data.Tree.SExp.Pretty    as T
-import qualified Datum.Data.Tree.Operator.Cast  as T
-import qualified Datum.Script.Eval.Env          as Env
+import qualified Datum.Data.Tree                        as T
+import qualified Datum.Data.Tree.Codec                  as T
+import qualified Datum.Data.Tree.Codec.Matryo.Encode    as Matryo
+import qualified Datum.Data.Tree.SExp.Pretty            as T
+import qualified Datum.Data.Tree.Operator.Cast          as T
+import qualified Datum.Script.Eval.Env                  as Env
 
 import qualified System.FilePath                as FilePath
 import qualified System.IO.Unsafe               as System
@@ -72,7 +72,7 @@ step _ _ PPStore     [VText filePath, VTree tree]
 
         ".matryo"
          -> do  System.withFile filePath System.WriteMode
-                 $ \h -> LText.hPutStr h (T.encodeMatryo tree)
+                 $ \h -> LText.hPutStr h (Matryo.prettyTree tree)
                 progress $ VUnit
 
         ".tree"

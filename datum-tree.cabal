@@ -122,7 +122,7 @@ Library
         Datum.Data.Tree.SExp.Pretty
         Datum.Data.Tree.Check.Error
 
-        Datum.Data.Tree.Codec.Matryo
+        Datum.Data.Tree.Codec.Matryo.Encode
 
         Datum.Data.Tree.Operator.Cast
         Datum.Data.Tree.Operator.Filter

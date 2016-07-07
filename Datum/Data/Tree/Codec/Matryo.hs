@@ -13,6 +13,13 @@ import Data.Text.Lazy.Builder
         (Builder, toLazyText, fromString)
 
 
+-------------------------------------------------------------------------------
+line    = fromString "\n"
+pad  i  = fromString (replicate i ' ')
+text s  = fromString s
+-------------------------------------------------------------------------------
+
+
 -- | Encode a tree to a lazy `ByteString` in Matryoshka format.
 encodeMatryo :: Tree 'O -> Text
 encodeMatryo tree'
@@ -23,28 +30,30 @@ encodeMatryo tree'
 encodeTree :: Int -> Tree 'O -> Builder
 encodeTree   i (Tree b bt)
         =  encodeBranchType i True bt
-        <> encodeBranch     i True b
+        <> encodeBranch     i True bt b
 
 
 -- | Encode a branch type. 
 --   We track the current indent and whether this is the
 --   first branch type in the tree meta-data.
 encodeBranchType :: Int -> Bool -> BranchType -> Builder
-encodeBranchType i bFirst (BT _n tt bts)
+encodeBranchType i bFirst (BT n tt bts)
         |  [] <- unboxes bts
-        =  encodeTupleType tt
-        <> fromString "\n"
+        =  text (show n) <> text ": "
+        <> encodeTupleType tt
+        <> text "\n"
 
         | otherwise
-        =  fromString "{ "
-        <> encodeTupleType tt
-        <> fromString "\n"
+        =  (if i == 0 
+                then mempty
+                else text (show n) <> line <> pad i <> text ": ")
+        <> text "{ " <> encodeTupleType tt <> line
         <> encodeBranchTypes (i + 4) (unboxes bts)
-        <> fromString "\n"
+        <> line
         <> (if bFirst
                then mempty
-               else fromString (replicate (i + 2) ' '))
-        <> fromString "}\n"
+               else text (replicate (i + 2) ' '))
+        <> text "}" <> line
 
 
 -- | Encode a list of branch types.
@@ -53,17 +62,17 @@ encodeBranchTypes _i []
         = mempty
 
 encodeBranchTypes i0 bts
- =   fromString (replicate i0 ' ') <> fromString "[ "
+ =   text (replicate i0 ' ') <> text "[ "
  <> (encodeBranchTypess i0 (0 :: Int) bts)
- <>  fromString (replicate i0 ' ') <> fromString "]"
+ <>  text (replicate i0 ' ') <> text "]"
 
  where  encodeBranchTypess i 0 (b : bs)
-         =  encodeBranchType i False b
-         <> encodeBranchTypess i 1 bs
+         =  encodeBranchType   i False b
+         <> encodeBranchTypess i 1     bs
 
         encodeBranchTypess i n (b : bs)
-         =  fromString (replicate i ' ')
-         <> fromString ", " <> encodeBranchType i False b
+         =  text (replicate i ' ')
+         <> text ", " <> encodeBranchType i False b
          <> encodeBranchTypess i (n + 1) bs
 
         encodeBranchTypess _ _ []
@@ -73,94 +82,93 @@ encodeBranchTypes i0 bts
 -- | Encode a tuple type.
 encodeTupleType :: TupleType -> Builder
 encodeTupleType (TT kts)
-        =  fromString "("
-        <> ( mconcat $ List.intersperse (fromString ", ")
+        =  text "("
+        <> ( mconcat $ List.intersperse (text ", ")
            $ map encodeKeyType $ A.toList kts)
-        <> fromString ")"
+        <> text ")"
 
 
 -- | Encode a key type.
 encodeKeyType :: (Box Name :*: Box AtomType) -> Builder
 encodeKeyType (Box n :*: Box at)
-        =  fromString (show n)
-        <> fromString ": "
+        =  text (show n)
+        <> text ": "
         <> encodeAtomType at
 
 
 -- | Encode a branch. 
 --   We track the current indent and whether this is the
 --   first branch type in the tree.
-encodeBranch :: Int -> Bool -> Branch -> Builder
-encodeBranch i bFirst (B t gs)
+encodeBranch :: Int -> Bool -> BranchType -> Branch -> Builder
+encodeBranch i bFirst (BT _n _ bts) (B t gs)
         |  [] <- unboxes gs
-        =  encodeTuple t
-        <> fromString "\n"
+        =  encodeTuple t <> line
 
         | otherwise
-        =  fromString "{ "
-        <> encodeTuple t
-        <> fromString "\n"
-        <> (mconcat $ map (encodeGroup (i + 4)) $ unboxes gs)
-        <> fromString "\n"
+        =  text "{ " <> encodeTuple t <> line
+        <> (mconcat $ zipWith (encodeGroup (i + 4)) (unboxes bts) (unboxes gs))
+        <> line
         <> (if bFirst
                then mempty
-               else fromString (replicate (i + 2) ' '))
-        <> fromString "}\n"
+               else text (replicate (i + 2) ' '))
+        <> text "}"  <> line
 
 
 -- | Encode a branch group.
-encodeGroup :: Int -> Group -> Builder
-encodeGroup  i0 (G _name bs0)
- =   fromString (replicate i0 ' ') <> fromString "[ "
- <> (encodeGroupBranches   i0 0 $ unboxes bs0)
- <>  fromString (replicate i0 ' ') <> fromString "]"
+encodeGroup :: Int -> BranchType -> Group -> Builder
+encodeGroup  i0 bt@(BT name tt _) (G _name bs0)
+ =  pad  i0   <> text (show name)                <> line
+ <> pad  i0   <> text ": " <> encodeTupleType tt <> line
+ <> pad  i0   <> text "[ "
+ <> (encodeGroupBranches   i0 0 (unboxes bs0))
+ <> pad  i0   <> text "]"
 
  where  encodeGroupBranches i (0 :: Int) (b : bs)
-         =  encodeBranch i False b 
-         <> encodeGroupBranches i 1 bs
+         =  encodeBranch        i False bt  b 
+         <> encodeGroupBranches i 1     bs
 
-        encodeGroupBranches i n (b : bs)
-         =  fromString (replicate i ' ') 
-         <> fromString ", " <> encodeBranch i False b
+        encodeGroupBranches i n          (b : bs)
+         =  text (replicate i ' ') 
+         <> text ", " <> encodeBranch i False bt b
          <> encodeGroupBranches i (n + 1) bs
 
-        encodeGroupBranches _ _ []
+        encodeGroupBranches _ _ _
          = mempty
 
 
 -- | Encode a tuple.
 encodeTuple :: Tuple -> Builder
 encodeTuple  (T as)
-        =  fromString "("
-        <> ( mconcat $ List.intersperse (fromString ", ") 
+        =  text "("
+        <> ( mconcat $ List.intersperse (text ", ") 
            $ map encodeAtom $ unboxes as)
-        <> fromString ")"
+        <> text ")"
 
 
 -- | Encode an atom.
 encodeAtom :: Atom -> Builder
 encodeAtom a
  = case a of
-        AUnit{}         -> fromString "Unit"
-        ABool    b      -> fromString $ show b
-        AInt     i      -> fromString $ show i
-        AFloat   f      -> fromString $ show f
-        ANat     n      -> fromString $ show n
-        ADecimal n      -> fromString $ show n
-        AText    str    -> fromString $ show str
-        ATime    str    -> fromString   str
+        AUnit{}         -> text "Unit"
+        ABool    b      -> text $ show b
+        AInt     i      -> text $ show i
+        AFloat   f      -> text $ show f
+        ANat     n      -> text $ show n
+        ADecimal n      -> text $ show n
+        AText    str    -> text $ show str
+        ATime    str    -> text   str
 
 
 -- | Encode an atom type.
 encodeAtomType :: AtomType -> Builder
 encodeAtomType at
  = case at of
-        ATUnit          -> fromString "Unit"
-        ATBool          -> fromString "Bool"
-        ATInt           -> fromString "Int"
-        ATFloat         -> fromString "Float"
-        ATNat           -> fromString "Nat"
-        ATDecimal       -> fromString "Decimal"
-        ATText          -> fromString "Text"
-        ATTime          -> fromString "Time"
+        ATUnit          -> text "Unit"
+        ATBool          -> text "Bool"
+        ATInt           -> text "Int"
+        ATFloat         -> text "Float"
+        ATNat           -> text "Nat"
+        ATDecimal       -> text "Decimal"
+        ATText          -> text "Text"
+        ATTime          -> text "Time"
 

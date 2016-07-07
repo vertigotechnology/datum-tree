@@ -1,10 +1,14 @@
 
 module Main where
-import Config
 import Load
+import Pipeline
 import Data.Default
 import Text.Show.Pretty
 import Control.Monad
+import Datum.Script.Core.Exp                    (Exp)
+import Config                                   (Config(..))
+import Data.Maybe
+import qualified Config                         as Config
 import qualified Datum.Script.Core.Exp          as Exp
 import qualified Datum.Script.Eval              as Eval
 import qualified Datum.Script.Eval.Pretty       as Eval
@@ -18,25 +22,41 @@ import qualified Data.Text                      as Text
 -------------------------------------------------------------------------------
 main
  = do   args    <- System.getArgs 
-        config  <- parseArgs args def
+        config  <- Config.parseArgs args def
         dispatch config
 
 
 dispatch config
  -- Can't supply both a script file path and an expression
  -- on the command line, as we don't know which one to use.
- | Just _               <- configFile config
- , Just _               <- configExec config
- = do   putStrLn usage
+ | sum  [ if isJust $ configFile config         then 1 else 0
+        , if isJust $ configExec config         then 1 else 0
+        , if not $ null $ configPipeline config then 1 else 0 ]
+   > (1 :: Int)
+ = do   putStrLn Config.usage
         System.exitFailure
-
+ 
  -- Run a script from a file.
  | Just filePath        <- configFile config
  =      runScriptFromFile config filePath
 
+ -- Execute a pipeline defined on the command line.
+ | stages               <- configPipeline config
+ , not $ null stages
+ = do   
+        -- Dummy file path to use in error messages.
+        let filePath    = "<command-line>"
+
+        -- Build a core expression from the stage definitions.
+        let Just xCore  = Exp.expOfPipeline
+                        $ map expOfStage stages
+
+        runExp config filePath xCore
+
  -- Execute an expression provided on the command line.
  | Just strSource       <- configExec config
- = do   -- Set a dummy file path to use in error messages.
+ = do   
+        -- Dummy file path to use in error messages.
         let filePath    = "<command-line>"
 
         -- The source we have is for an expression, so assign it 
@@ -48,7 +68,7 @@ dispatch config
 
  -- We don't have a script to execute.
  | otherwise
- = do   putStrLn usage
+ = do   putStrLn Config.usage
         System.exitSuccess
 
 
@@ -61,23 +81,27 @@ runScriptFromFile config filePath
         runScript config filePath strSource
 
 
--------------------------------------------------------------------------------
 -- | Run the script in the given file.
 runScript :: Config -> FilePath -> String -> IO ()
 runScript config filePath strSource
  = do   
         -- Parse the client module text and convert to the core language.
         xCore           <- loadToCore (configDump config) filePath strSource
+        runExp config filePath xCore
 
+
+-- | Run the given core expression.
+runExp   :: Config -> FilePath -> Exp -> IO ()
+runExp config _filePath xCore
+ = do
         -- Create a new machine state to evaluate the core expression.
         let world       = Eval.World 
                         { Eval.worldArguments   = configArguments config }
 
         let state       = Eval.stateInit world xCore
 
-        -- Evaluate the script.
+        -- Evaluate the state.
         state'         <- eval config state
-
 
         case Eval.stateControl state' of
          -- Suppress printing of unit value.

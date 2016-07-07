@@ -270,6 +270,8 @@ pattern XRenameFields   = XPrim (PVOp PPRenameFields)
 pattern XAt             = XPrim (PVOp PPAt)
 pattern XOn             = XPrim (PVOp PPOn)
 
+(@@) a b  = XApp a b
+infixl 9 @@
 
 (~>) a b  = XApp (XApp (XPrim (PFun 1)) a) b
 infixr ~>

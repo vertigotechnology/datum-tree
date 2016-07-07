@@ -6,6 +6,7 @@ module Datum.Script.Eval.Error
 where
 import Datum.Script.Core.Exp
 import Datum.Script.Eval.State
+import Data.Text                (Text)
 
 
 -- | Evaluation errors.
@@ -28,7 +29,8 @@ deriving instance Show ErrorCore
 
 -- | Primitive operator errors.
 data ErrorPrim
-        = ErrorStoreUnknownFileFormat   FilePath
+        = ErrorArgumentUnknown          Text
+        | ErrorStoreUnknownFileFormat   FilePath
         | ErrorLoadUnknownFileFormat    FilePath
 
 deriving instance Show ErrorPrim

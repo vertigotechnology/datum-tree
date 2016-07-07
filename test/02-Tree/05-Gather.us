@@ -1,7 +1,7 @@
 
 
 companies = "test/data/ASXListedCompanies.csv";
-output    = "test/02-Tree/05-Gather.matryo";
+output    = "test/date/02-05-Gather.matryo";
 
 main
  = load companies

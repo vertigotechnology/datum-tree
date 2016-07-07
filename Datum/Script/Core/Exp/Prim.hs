@@ -61,6 +61,7 @@ data PrimOp
         | PPLt                          -- ^ Less-than.
         | PPLe                          -- ^ Less-than-equal.
 
+        | PPArgument                    -- ^ Get the value of a script argument.
         | PPLoad                        -- ^ Load  a value from the file system.
         | PPStore                       -- ^ Store a value to the file system.
         | PPInitial                     -- ^ Select the initial n branches of each subtree.
@@ -163,8 +164,9 @@ typeOfOp op
         PPLt            -> error "typeOfOp: finish me"
         PPLe            -> error "typeOfOp: finish me"
 
-        PPLoad          -> XTFilePath ~> XTS XTTree
-        PPStore         -> XTFilePath ~> XTTree ~> XTS XTUnit
+        PPArgument      -> XTText        ~> XTS XTText
+        PPLoad          -> XTFilePath    ~> XTS XTTree
+        PPStore         -> XTFilePath    ~> XTTree ~> XTS XTUnit
         PPInitial       -> XTNat         ~> XTTree ~> XTTree
         PPFinal         -> XTNat         ~> XTTree ~> XTTree
         PPSample        -> XTNat         ~> XTTree ~> XTTree
@@ -174,6 +176,7 @@ typeOfOp op
 
         PPAt            -> XTList XTName ~> (XTTree   ~> XTTree)   ~> XTTree ~> XTTree
         PPOn            -> XTList XTName ~> (XTForest ~> XTForest) ~> XTTree ~> XTTree
+
 
 -- | Yield the arity of a primitive.
 arityOfPrim :: GPrim x -> Int
@@ -199,6 +202,7 @@ arityOfOp op
         PPLt            -> 2
         PPLe            -> 2
 
+        PPArgument      -> 1
         PPLoad          -> 1
         PPStore         -> 2
         PPInitial       -> 2
@@ -253,6 +257,7 @@ pattern XDecimal  x     = XPrim (PVAtom (T.ADecimal x))
 pattern XText     x     = XPrim (PVAtom (T.AText    x))
 pattern XTime     x     = XPrim (PVAtom (T.ATime    x))
 
+pattern XArgument       = XPrim (PVOp PPArgument)
 pattern XLoad           = XPrim (PVOp PPLoad)
 pattern XStore          = XPrim (PVOp PPStore)
 pattern XInitial        = XPrim (PVOp PPInitial)

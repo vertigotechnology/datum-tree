@@ -1,6 +1,7 @@
 
 module Datum.Script.Eval
         ( State   (..)
+        , World   (..)
         , Control (..)
         , Context (..)
         , stateInit
@@ -22,7 +23,7 @@ import qualified Data.List                      as List
 -- | Perform a single step evaluation of the expression.
 step :: State -> IO (Either Error (Maybe State))
 
-step   state@(State env ctx ctl)
+step   state@(State world env ctx ctl)
  = let  failure  err = return $ Left err
         progress ss  = return $ Right $ Just ss
         done         = return $ Right $ Nothing
@@ -30,28 +31,28 @@ step   state@(State env ctx ctl)
    in case ctl of
         -- Silently look through annotations.
         ControlExp (XAnnot _ x)
-         ->     step $ State env ctx $ ControlExp x
+         ->     step $ State world env ctx $ ControlExp x
 
 
         -- Silently promote prims to PAPs.
         ControlExp (XPrim p)
-         ->     step $ State env ctx $ ControlPAP (PAP p [])
+         ->     step $ State world env ctx $ ControlPAP (PAP p [])
 
 
         -- Silently look through casts.
         ControlExp (XCast _ x)
-         ->     step $ State env ctx $ ControlExp x
+         ->     step $ State world env ctx $ ControlExp x
 
 
         -- Lookup value of variable from the environment.
         ControlExp (XVar u)
          -> case Env.lookup u env of
                 Just (VClo (Clo x' env'))
-                 -> progress $ State env' ctx 
+                 -> progress $ State world env' ctx 
                              $ ControlExp x'
 
                 Just (VPAP (PAP p ts))
-                 -> progress $ State Env.empty ctx 
+                 -> progress $ State world Env.empty ctx 
                              $ ControlPAP (PAP p ts)
 
                 Nothing
@@ -62,7 +63,7 @@ step   state@(State env ctx ctl)
         -- begin evaluating the functional expression.
         ControlExp (XApp x1 x2)
          -> do  let ctx'  = ContextAppArg (VClo (Clo x2 env)) ctx
-                progress $ State env ctx' 
+                progress $ State world env ctx' 
                          $ ControlExp x1
 
 
@@ -91,7 +92,7 @@ step   state@(State env ctx ctl)
                 -- Add new environment to existing one.
                 let env'' = Env.union env env'
 
-                progress $ State env'' ctx 
+                progress $ State world env'' ctx 
                          $ ControlExp x2
 
 
@@ -104,10 +105,10 @@ step   state@(State env ctx ctl)
                   -> failure err
 
                  Right (VClo (Clo x' env'))
-                  -> progress $ State env' ctx      $ ControlExp x'
+                  -> progress $ State world env' ctx      $ ControlExp x'
 
                  Right (VPAP pap)
-                  -> progress $ State Env.empty ctx $ ControlPAP pap
+                  -> progress $ State world Env.empty ctx $ ControlPAP pap
 
 
         _ -> case ctx of
@@ -125,8 +126,7 @@ step   state@(State env ctx ctl)
                 ContextAppArg (VClo (Clo xArg envArg)) ctx'
                  -> do  let thunk = trimValue $ thunkify ctl env
                         let ctx'' = ContextAppFun thunk ctx'
-                        progress $ State envArg ctx'' 
-                                 $ ControlExp xArg
+                        progress $ State world envArg ctx'' $ ControlExp xArg
 
 
                 -- Finished evaluating the argument, 
@@ -134,8 +134,7 @@ step   state@(State env ctx ctl)
                 ContextAppFun (VClo (Clo (XAbs b _t xBody) envFun)) ctx'
                  -> do  let thunk = trimValue $ thunkify ctl env
                         let env'  = Env.insert b thunk envFun
-                        progress $ State env' ctx'
-                                 $ ControlExp xBody
+                        progress $ State world env' ctx' $ ControlExp xBody
 
 
                 -- Application of a primitive where its next argument
@@ -154,10 +153,10 @@ step   state@(State env ctx ctl)
                          Left  err    -> failure err
 
                          Right (VClo (Clo x' env'))
-                          -> progress $ State env' ctx'       $ ControlExp x'
+                          -> progress $ State world env' ctx'      $ ControlExp x'
 
                          Right (VPAP pap)
-                          -> progress $ State Env.empty ctx'  $ ControlPAP pap
+                          -> progress $ State world Env.empty ctx' $ ControlPAP pap
 
                 -- The context is not empty but we can't make progress.
                 -- This is probably cause by a type error in the user program.

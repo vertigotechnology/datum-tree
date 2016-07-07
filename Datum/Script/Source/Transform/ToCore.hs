@@ -123,6 +123,7 @@ toCoreBoundX tt
         "lt#"                   -> op C.PPLt
         "le#"                   -> op C.PPLe
 
+        "argument#"             -> op C.PPArgument
         "load#"                 -> op C.PPLoad
         "store#"                -> op C.PPStore
         "initial#"              -> op C.PPInitial

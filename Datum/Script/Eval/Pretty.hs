@@ -178,6 +178,7 @@ buildPrimOp _ op
         PPGe            -> fromString "ge#"
         PPLt            -> fromString "lt#"
         PPLe            -> fromString "le#"
+        PPArgument      -> fromString "argument#"
         PPLoad          -> fromString "load#"
         PPStore         -> fromString "store#"
         PPInitial       -> fromString "initial#"

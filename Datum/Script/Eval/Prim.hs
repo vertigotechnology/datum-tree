@@ -39,6 +39,17 @@ step _ _ op      [v1@(VInt _), v2@(VInt _)]
  =      return  $ Right x
 
 
+-- World ------------------------------------------------------------
+-- Get the value of a command-line argument.
+step _ state PPArgument [VText name]
+ = case lookup (Text.pack name) $ worldArguments $ stateWorld state of
+        Just value     
+         -> progress $ VText (Text.unpack value)
+
+        Nothing 
+         -> failure $ ErrorPrim $ ErrorArgumentUnknown (Text.pack name)
+
+
 -- Tree IO  ---------------------------------------------------------
 -- Load from the file system.
 step _ _ PPLoad      [VText filePath]

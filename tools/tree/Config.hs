@@ -1,8 +1,10 @@
 
 module Config where
 import Data.Default
+import Data.Text                        (Text)
 import qualified System.Exit            as System
 import qualified Datum.Data.List        as List
+import qualified Data.Text              as Text
 
 
 -------------------------------------------------------------------------------
@@ -19,6 +21,9 @@ data Config
 
           -- Show the unit value in script results, instead of suppressing it.
         , configShowUnit        :: Bool 
+
+          -- Arguments to the script.
+        , configArguments       :: [(Text, Text)]
         }
 
 
@@ -29,7 +34,8 @@ instance Default Config where
         { configFile            = Nothing
         , configDump            = False 
         , configTrace           = False 
-        , configShowUnit        = False }
+        , configShowUnit        = False 
+        , configArguments       = [] }
 
 
 -------------------------------------------------------------------------------
@@ -40,7 +46,7 @@ parseArgs []   config
  = return config
 
 parseArgs args config
- | "--dump" : rest       <- args
+ | "--dump" : rest      <- args
  = parseArgs rest
  $ config { configDump = True }
 
@@ -52,12 +58,24 @@ parseArgs args config
  = parseArgs rest
  $ config { configShowUnit = True }
 
- | file : rest          <- args
- , Just c               <- List.takeHead file
+ -- Load arguments to the script.
+ | dparam : value : rest <- args
+ , Just param   <- List.stripPrefix "-" dparam
+ , Just c       <- List.takeHead param
+ , c /= '-'
+ = parseArgs rest
+ $ config { configArguments 
+                =  (configArguments config) 
+                ++ [(Text.pack param, Text.pack value)] }
+
+ -- Load script file name.
+ | file : rest  <- args
+ , Just c       <- List.takeHead file
  , c /= '-'
  = parseArgs rest
  $ config { configFile = Just file }
 
+ -- Some argument that we don't recognise.
  | otherwise
  = do   putStrLn usage
         System.exitFailure
@@ -76,8 +94,4 @@ usage
  , " --trace          Trace script evaluation."
  , " --show-unit      Show the unit value in script results."
  ]
-
-
-
-
 

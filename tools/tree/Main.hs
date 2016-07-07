@@ -34,7 +34,10 @@ runScript config filePath
         xCore           <- loadToCore (configDump config) filePath strSource
 
         -- Create a new machine state to evaluate the core expression.
-        let state       = Eval.stateInit xCore
+        let world       = Eval.World 
+                        { Eval.worldArguments   = configArguments config }
+
+        let state       = Eval.stateInit world xCore
 
         -- Evaluate the script.
         state'         <- eval config state

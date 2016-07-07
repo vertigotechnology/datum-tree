@@ -29,6 +29,7 @@ strPervasive
         , "lt           = lt#;"
         , "le           = le#;"
 
+        , "argument             = argument#;"
         , "load                 = load#;"
         , "store                = store#;"
         , "sample               = sample#;"

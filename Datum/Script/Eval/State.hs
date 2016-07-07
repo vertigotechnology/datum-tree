@@ -4,6 +4,8 @@ module Datum.Script.Eval.State where
 import Datum.Script.Eval.Value
 import Datum.Script.Eval.Env            (Env)
 import Datum.Script.Core.Exp
+import Data.Default
+import Data.Text                        (Text)
 import qualified Datum.Script.Eval.Env  as Env
 
 
@@ -12,8 +14,11 @@ import qualified Datum.Script.Eval.Env  as Env
 --   for a CEK-like machine.
 data State
         = State
-        { -- | Environment.
-          stateEnv      :: !Env
+        { -- | World that the machine is executing in.
+          stateWorld    :: World
+
+          -- | Environment.
+        , stateEnv      :: !Env
 
           -- | Current context (Kontinuation).
         , stateContext  :: !Context
@@ -24,7 +29,33 @@ data State
 
 deriving instance Show State
 
+stateInit :: World -> Exp -> State
+stateInit world xx
+        = State
+        { stateWorld    = world
+        , stateEnv      = Env.empty
+        , stateContext  = ContextNil 
+        , stateControl  = ControlExp xx }
 
+
+-------------------------------------------------------------------------------
+-- | Information about the state of the outside world that the machine
+--   is executing in. This is static configuration information like the 
+--   command line arguments that were passed to the script.
+data World
+        = World
+        { -- | Command line arguments passed to the script.
+          worldArguments:: [(Text, Text)] 
+        }
+
+deriving instance Show World
+
+instance Default World where
+ def    = World
+        { worldArguments        = [] }
+
+
+-------------------------------------------------------------------------------
 -- | Control of state machine.
 data Control
         = ControlExp !Exp
@@ -33,6 +64,7 @@ data Control
 deriving instance Show Control
 
 
+-------------------------------------------------------------------------------
 -- | Context of evaluation.
 data Context
         = ContextNil
@@ -48,13 +80,8 @@ data Context
 deriving instance Show Context
 
 
--- | Yield an initial evaluation state for the given expression.
-stateInit :: Exp -> State
-stateInit xx
-        = State 
-        { stateEnv      = Env.empty
-        , stateContext  = ContextNil 
-        , stateControl  = ControlExp xx }
+
+
 
 
 -------------------------------------------------------------------------------

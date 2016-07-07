@@ -34,8 +34,17 @@ pprControl c cc   = toLazyText $ buildControl c cc
 buildControl :: Config -> Control -> Builder
 buildControl c cc
  = case cc of
-        ControlExp x    -> buildExp c 0 x
         ControlPAP p    -> buildPAP c p
+        ControlExp x    -> buildExp c 0 x
+
+
+-------------------------------------------------------------------------------
+buildPAP   :: Config -> PAP -> Builder
+buildPAP c (PAP p [])
+        = buildPrim c p
+
+buildPAP _c (PAP _p _vs)
+        = fromText "<closure>"
 
 
 -------------------------------------------------------------------------------
@@ -180,12 +189,4 @@ buildPrimOp _ op
         PPAt            -> fromString "at#"
         PPOn            -> fromString "on#"
 
-
--------------------------------------------------------------------------------
-buildPAP   :: Config -> PAP -> Builder
-buildPAP c (PAP p [])
-        = buildPrim c p
-
-buildPAP _c (PAP _p _vs)
-        = fromText "<closure>"
 

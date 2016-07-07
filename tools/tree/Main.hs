@@ -5,8 +5,10 @@ import Load
 import Data.Default
 import Text.Show.Pretty
 import Control.Monad
+import qualified Datum.Script.Core.Exp          as Exp
 import qualified Datum.Script.Eval              as Eval
 import qualified Datum.Script.Eval.Pretty       as Eval
+import qualified Datum.Script.Eval.Env          as Eval
 import qualified System.Environment             as System
 import qualified System.Exit                    as System
 import qualified Data.Text.Lazy.IO              as LText
@@ -37,10 +39,26 @@ runScript config filePath
         -- Evaluate the script.
         state'         <- eval config state
 
-        let ppConfig    = Eval.Config
-                        { Eval.configTreeFormat = Eval.TreeFormatMatryo }
-        LText.putStrLn (Eval.pprControl ppConfig $ Eval.stateControl state')
-        return ()
+
+        case Eval.stateControl state' of
+         -- Suppress printing of unit value.
+         -- Many scripts store their results to some destination file, 
+         -- and we don't need the '()' from the final store operation
+         -- printed to the console. The GHCi console also does this.
+         Eval.ControlPAP (Eval.PAP (Exp.PVAtom Exp.AUnit) [])
+          |  not $ configShowUnit config
+          -> return ()
+
+         Eval.ControlExp (Exp.XPrim (Exp.PVAtom Exp.AUnit))
+          |  not $ configShowUnit config
+          -> return ()
+
+         -- Evaluation has produced some non-unit result, 
+         -- so print it to the console.
+         _ -> do let ppConfig = Eval.Config
+                              { Eval.configTreeFormat = Eval.TreeFormatMatryo }
+                 LText.putStrLn (Eval.pprControl ppConfig $ Eval.stateControl state')
+                 return ()
 
 
 -- | Eval loop for a script state.

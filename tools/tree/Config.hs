@@ -15,7 +15,12 @@ data Config
         , configDump            :: Bool 
 
           -- Trace interpreter evaluation.
-        , configTrace           :: Bool }
+        , configTrace           :: Bool 
+
+          -- Show the unit value in script results, instead of suppressing it.
+        , configShowUnit        :: Bool 
+        }
+
 
 deriving instance Show Config
 
@@ -23,7 +28,8 @@ instance Default Config where
  def    = Config
         { configFile            = Nothing
         , configDump            = False 
-        , configTrace           = False }
+        , configTrace           = False 
+        , configShowUnit        = False }
 
 
 -------------------------------------------------------------------------------
@@ -38,10 +44,13 @@ parseArgs args config
  = parseArgs rest
  $ config { configDump = True }
 
- | "--trace" : rest       <- args
+ | "--trace" : rest     <- args
  = parseArgs rest
  $ config { configTrace = True }
 
+ | "--show-unit" : rest <- args
+ = parseArgs rest
+ $ config { configShowUnit = True }
 
  | file : rest          <- args
  , Just c               <- List.takeHead file
@@ -65,4 +74,10 @@ usage
  , "Debugging"
  , " --dump           Dump intermediate representations of script."
  , " --trace          Trace script evaluation."
+ , " --show-unit      Show the unit value in script results."
  ]
+
+
+
+
+

@@ -7,23 +7,25 @@ import Datum.Script.Eval.State
 import Datum.Script.Eval.Value
 import Datum.Script.Core.Exp
 
+import Datum.Data.Tree.Codec.Matryo.Decode              ()
 import qualified Datum.Data.Tree                        as T
 import qualified Datum.Data.Tree.Codec                  as T
 import qualified Datum.Data.Tree.Codec.Matryo.Encode    as Matryo
+import qualified Datum.Data.Tree.Codec.Matryo.Decode    as Matryo
 import qualified Datum.Data.Tree.SExp.Pretty            as T
 import qualified Datum.Data.Tree.Operator.Cast          as T
 import qualified Datum.Script.Eval.Env                  as Env
 
-import qualified System.FilePath                as FilePath
-import qualified System.IO.Unsafe               as System
-import qualified System.IO                      as System
+import qualified System.FilePath                        as FilePath
+import qualified System.IO.Unsafe                       as System
+import qualified System.IO                              as System
 
-import qualified Text.PrettyPrint.Leijen        as PP
-import qualified Text.Show.Pretty               as Text
+import qualified Text.PrettyPrint.Leijen                as PP
+import qualified Text.Show.Pretty                       as Text
 
-import qualified Data.ByteString.Lazy.Char8     as BS8
-import qualified Data.Text                      as Text
-import qualified Data.Text.Lazy.IO              as LText
+import qualified Data.ByteString.Lazy.Char8             as BS8
+import qualified Data.Text                              as Text
+import qualified Data.Text.Lazy.IO                      as LText
 
 
 ---------------------------------------------------------------------------------------------------
@@ -58,6 +60,11 @@ step _ _ PPLoad      [VText filePath]
          -> do  bs              <- BS8.readFile filePath
                 let Right t     =  T.decodeCSV T.HasHeader bs        
                 progress $ VTree t
+
+        ".matryo"
+         -> do  bs      <- BS8.readFile filePath
+                result  <- Matryo.scanMatryo filePath (BS8.unpack bs)
+                error $ show result
 
         _ ->    failure  $ ErrorPrim $ ErrorStoreUnknownFileFormat filePath
 

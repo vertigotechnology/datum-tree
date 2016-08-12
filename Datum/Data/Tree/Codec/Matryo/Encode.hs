@@ -28,17 +28,14 @@ data Config
 
 instance Default Config where
  def    = Config 
-        { configSuppressRoot            = False
-        , configSuppressEmptyGroups     = False }
+        { configSuppressRoot            = True
+        , configSuppressEmptyGroups     = True }
 
 
 -- | Encode a tree to a lazy `ByteString` in Matryoshka format.
 prettyTree :: Tree 'O -> Text
 prettyTree tree'
- = toLazyText $ encodeTree cc 0 tree'
- where  cc      = Config 
-                { configSuppressRoot            = False
-                , configSuppressEmptyGroups     = False }
+ = toLazyText $ encodeTree def 0 tree'
 
 
 -- | Encode a tree.

@@ -2,7 +2,9 @@
 module Datum.Data.Tree.Codec.Matryo.Decode
         ( parseMatryo
         , scanMatryo
-        , Located (..))
+        , Located (..)
+        , pTreeRoot
+        , pTree)
 where
 import Datum.Data.Tree.Codec.Matryo.Lexer
 import Datum.Data.Tree.Codec.Matryo.Token
@@ -13,7 +15,6 @@ import qualified Text.Parsec                    as P
 import qualified Data.Repa.Array                as A
 
 
--- Parser ---------------------------------------------------------------------
 type Parser a
         = P.ParsecT [Located Token] () Identity a
 
@@ -24,8 +25,16 @@ parseMatryo
         -> [Located Token]
         -> Either P.ParseError (T.Tree 'T.X)
 
-parseMatryo      filePath tokens
- = P.parse pTree filePath tokens
+parseMatryo          filePath tokens
+ = P.parse pTreeRoot filePath tokens
+
+
+-- Tree -----------------------------------------------------------------------
+pTreeRoot :: Parser (T.Tree 'T.X)
+ = do   bt      <- pBranchTypeRoot
+        b       <- pBranch
+        return  $  T.Tree b bt
+ <?> "a tree"
 
 
 -- | Parse a `Tree`.
@@ -37,6 +46,25 @@ pTree
  <?> "a tree"
 
 
+-- BranchType -----------------------------------------------------------------
+-- | For the root branch type, allow the 'root' name to be elided.
+pBranchTypeRoot :: Parser T.BranchType
+pBranchTypeRoot
+ = do   name    <- P.choice 
+                [ do    n       <- pName
+                        _       <- pTok KColon
+                        return n
+
+                , do    return "root"]
+
+        _       <- pTok KBraceBra
+        tt      <- pTupleType
+        bts     <- P.choice [pBranchTypes, return []]
+        _       <- pTok KBraceKet
+        return  $  T.BT name tt (T.boxes bts)
+ <?> "a branch type"
+
+
 -- | Parse a `BranchType`.
 --
 --   BRANCHTYPE   ::= NAME ':' '{' TUPLETYPE BRANCHTYPES '}'
@@ -45,11 +73,16 @@ pBranchType :: Parser T.BranchType
 pBranchType
  = do   name    <- pName
         _       <- pTok KColon
-        _       <- pTok KBraceBra
-        tt      <- pTupleType
-        bts     <- P.choice [pBranchTypes, return []]
-        _       <- pTok KBraceKet
-        return  $  T.BT name tt (T.boxes bts)
+        P.choice
+         [ do   _       <- pTok KBraceBra
+                tt      <- pTupleType
+                bts     <- pBranchTypes
+                _       <- pTok KBraceKet
+                return  $  T.BT name tt (T.boxes bts)
+
+         , do   tt      <- pTupleType
+                return  $  T.BT name tt (T.boxes [])
+         ]
  <?> "a branch type"
 
 
@@ -100,11 +133,20 @@ pAtomType
 -- | Parse a `Branch`.
 pBranch    :: Parser T.Branch
 pBranch 
- = do   _       <- pTok KBraceBra
+ = P.choice
+ [ -- Full branch syntax,
+   -- with sub groups.
+   do   _       <- pTok KBraceBra
         tuple   <- pTuple
         groups  <- P.many pGroup
         _       <- pTok KBraceKet
         return  $  T.B tuple (T.boxes groups)
+
+   -- Simple branch syntax,
+   -- if there are no sub groups then we accept just the tuple.
+ , do   tuple   <- pTuple
+        return  $  T.B tuple (T.boxes [])
+ ]
  <?> "a branch"
 
 

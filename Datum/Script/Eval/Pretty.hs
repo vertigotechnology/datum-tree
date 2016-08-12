@@ -4,6 +4,7 @@ import Datum.Script.Eval.State
 import Datum.Script.Eval.Env
 import Datum.Script.Core.Exp
 import Data.Monoid
+import Data.Default
 import Data.Text.Lazy                                   (Text)
 import qualified Datum.Data.Tree.Codec.Matryo.Encode    as Matryo
 
@@ -126,7 +127,7 @@ buildPrim c p
          -> case configTreeFormat c of
                 TreeFormatInternal      -> error "buildPrim: internal"
                 TreeFormatSExp          -> error "buildPrim: sexp"
-                TreeFormatMatryo        -> Matryo.encodeTree 0 t
+                TreeFormatMatryo        -> Matryo.encodeTree def 0 t
 
         PVTreePath{}    -> error "buildPrim: tree path"
         PVFilePath p'   -> fromString $ show p'

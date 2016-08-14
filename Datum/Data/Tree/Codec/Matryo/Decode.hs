@@ -284,14 +284,20 @@ pGroup
 --
 -- @
 -- Tuple     ::= '(' Atom,* ')'
+--            |  Atom
 -- @
 --
 pTuple :: Parser T.Tuple
 pTuple 
- = do   _       <- pTok KRoundBra
+ = P.choice
+ [ do   _       <- pTok KRoundBra
         fs      <- P.sepBy pAtom (pTok KComma)
         _       <- pTok KRoundKet
         return  $  T.T (T.boxes fs)
+
+ , do   a       <- pAtom
+        return  $  T.T (T.boxes [a])
+ ]
  <?> "a tuple"
  
 

@@ -117,10 +117,16 @@ layoutGroup cc bt (G _name2 bs)
 -- | Layout a `Tuple`.
 layoutTuple :: Tuple -> Layout
 layoutTuple  (T as)
-        =  text "("
+ -- If there is a single atom then just print that, without the parens.
+ | [a]  <- unboxes as
+ = layoutAtom a
+
+ -- Print a full tuple in parens.
+ | otherwise
+ =  text "("
         <> ( mconcat $ List.intersperse (text ", ") 
            $ map layoutAtom $ unboxes as)
-        <> text ")"
+ <> text ")"
 
 
 -- | Layout an `Atom`.

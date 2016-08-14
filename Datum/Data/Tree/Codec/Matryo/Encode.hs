@@ -1,7 +1,7 @@
 
 module Datum.Data.Tree.Codec.Matryo.Encode
-        ( encodeTree
-        , prettyTree
+        ( prettyTree
+        , encodeTree
         , Config (..))
 where
 import Datum.Data.Tree.Exp
@@ -14,13 +14,7 @@ import qualified Data.Repa.Array                as A
 import Data.Text.Lazy.Builder                   
         (Builder, toLazyText, fromString)
 
-
 -------------------------------------------------------------------------------
-line    = fromString "\n"
-pad  i  = fromString (replicate i ' ')
-text s  = fromString s
--------------------------------------------------------------------------------
-
 data Config
         = Config
         { configSuppressRoot            :: Bool
@@ -32,136 +26,106 @@ instance Default Config where
         , configSuppressEmptyGroups     = True }
 
 
--- | Encode a tree to a lazy `ByteString` in Matryoshka format.
+-------------------------------------------------------------------------------
+-- | Pretty print a tree.
 prettyTree :: Tree 'O -> Text
-prettyTree tree'
- = toLazyText $ encodeTree def 0 tree'
+prettyTree tree
+ = let  (_, b)  = runLayout (layoutTree def tree) 0 1
+   in   toLazyText b
+
+-- | Encode a tree as a text builder.
+encodeTree :: Config -> Tree 'O -> Builder
+encodeTree cc tree
+ = let  (_, b)  = runLayout (layoutTree cc tree) 0 1
+   in   b
 
 
--- | Encode a tree.
-encodeTree :: Config -> Int -> Tree 'O -> Builder
-encodeTree   cc i (Tree b bt)
-        =  encodeBranchType cc i True bt
-        <> encodeBranch     cc i True bt b
+-- | Layout a whole `Tree`.
+layoutTree :: Config -> Tree 'O -> Layout
+layoutTree cc (Tree b bt)
+ =  layoutBranchType cc True bt
+ <> line
+ <> layoutBranch     cc True bt b
 
 
--- | Encode a branch type. 
---   We track the current indent and whether this is the
---   first branch type in the tree meta-data.
-encodeBranchType :: Config -> Int -> Bool -> BranchType -> Builder
-encodeBranchType cc i bFirst (BT n tt bts)
+-------------------------------------------------------------------------------
+-- | Layout a `BranchType`.
+layoutBranchType :: Config -> Bool -> BranchType -> Layout
+layoutBranchType cc bRoot (BT n tt bts)
+        -- If there are no subdimensions then don't show the empty list.
         | configSuppressEmptyGroups cc 
         , [] <- unboxes bts
-        =  text (show n) <> text ": "
-        <> encodeTupleType tt
-        <> text "\n"
-
-        | otherwise
-        =  (if configSuppressRoot cc && i == 0
+        =  (if configSuppressRoot cc && bRoot
                 then mempty
-                else text (show n) <> line <> pad i <> text ": ")
-        <> text "{ " <> encodeTupleType tt <> line
-        <> encodeBranchTypes cc (i + 4) (unboxes bts)
+                else text (show n) <> text ": ")
+        <> layoutTupleType tt
+
+        -- We have a branch type with sub dimensions.
+        |  otherwise
+        =  (if configSuppressRoot cc && bRoot
+                then mempty
+                else text (show n) <> line <> text ": ")
+        <> layoutTupleType tt
         <> line
-        <> (if bFirst
-               then mempty
-               else text (replicate (i + 2) ' '))
-        <> text "}" <> line
+        <> indentCollect '{' ',' '}' 4
+                (map (layoutBranchType cc False) (unboxes bts))
 
 
--- | Encode a list of branch types.
-encodeBranchTypes :: Config -> Int -> [BranchType] -> Builder
-encodeBranchTypes _cc _i []
-        = mempty
-
-encodeBranchTypes cc i0 bts
- =   text (replicate i0 ' ') <> text "[ "
- <> (encodeBranchTypess i0 (0 :: Int) bts)
- <>  text (replicate i0 ' ') <> text "]"
-
- where  encodeBranchTypess        i 0 (b : bs)
-         =  encodeBranchType   cc i False b
-         <> encodeBranchTypess    i 1     bs
-
-        encodeBranchTypess        i n (b : bs)
-         =  text (replicate i ' ')
-         <> text ", " <> encodeBranchType cc i False b
-         <> encodeBranchTypess    i (n + 1) bs
-
-        encodeBranchTypess _ _ []
-         = mempty
-
-
--- | Encode a tuple type.
-encodeTupleType :: TupleType -> Builder
-encodeTupleType (TT kts)
+-- | Layout a tuple type.
+layoutTupleType :: TupleType -> Layout
+layoutTupleType (TT kts)
         =  text "("
         <> ( mconcat $ List.intersperse (text ", ")
-           $ map encodeKeyType $ A.toList kts)
+           $ map layoutKeyType $ A.toList kts)
         <> text ")"
 
-
--- | Encode a key type.
-encodeKeyType :: (Box Name :*: Box AtomType) -> Builder
-encodeKeyType (Box n :*: Box at)
+-- | Layout a key type.
+layoutKeyType :: (Box Name :*: Box AtomType) -> Layout
+layoutKeyType (Box n :*: Box at)
         =  text (show n)
         <> text ": "
-        <> encodeAtomType at
+        <> layoutAtomType at
 
 
--- | Encode a branch. 
---   We track the current indent and whether this is the
---   first branch type in the tree.
-encodeBranch :: Config -> Int -> Bool -> BranchType -> Branch -> Builder
-encodeBranch cc i bFirst (BT _n _ bts) (B t gs)
-        |  configSuppressEmptyGroups cc
-        ,  [] <- unboxes gs
-        =  encodeTuple t <> line
+-------------------------------------------------------------------------------
+-- | Layout a branch.
+layoutBranch :: Config -> Bool -> BranchType -> Branch -> Layout
+layoutBranch cc _bFirst (BT _n _tt bts0) (B t gs0)
+ |  A.length gs0 == 0
+ =  layoutTuple t
 
-        | otherwise
-        =  text "{ " <> encodeTuple t <> line
-        <> (mconcat $ zipWith (encodeGroup cc (i + 4)) (unboxes bts) (unboxes gs))
-        <> line
-        <> (if bFirst
-               then mempty
-               else text (replicate (i + 2) ' '))
-        <> text "}"  <> line
+ |  (bt : []) <- unboxes bts0
+ ,  (g  : []) <- unboxes gs0
+ =  layoutTuple t <> line
+ <> indent 2
+        (layoutGroup cc bt g)
 
-
--- | Encode a branch group.
-encodeGroup :: Config -> Int -> BranchType -> Group -> Builder
-encodeGroup  cc i0 bt@(BT name tt _) (G _name bs0)
- =  pad  i0   <> text (show name)                <> line
- <> pad  i0   <> text ": " <> encodeTupleType tt <> line
- <> pad  i0   <> text "[ "
- <> (encodeGroupBranches   i0 0 (unboxes bs0))
- <> pad  i0   <> text "]"
-
- where  encodeGroupBranches i (0 :: Int) (b : bs)
-         =  encodeBranch        cc i False bt  b 
-         <> encodeGroupBranches    i 1     bs
-
-        encodeGroupBranches i n          (b : bs)
-         =  text (replicate i ' ') 
-         <> text ", " <> encodeBranch cc i False bt b
-         <> encodeGroupBranches i (n + 1) bs
-
-        encodeGroupBranches _ _ _
-         = mempty
+ |  otherwise
+ =  layoutTuple t <> line
+ <> indentCollect '{' ',' '}' 2
+        (zipWith (layoutGroup cc) (unboxes bts0) (unboxes gs0))
 
 
--- | Encode a tuple.
-encodeTuple :: Tuple -> Builder
-encodeTuple  (T as)
+-- | Layout a group.
+layoutGroup  :: Config -> BranchType -> Group -> Layout
+layoutGroup cc bt (G _name2 bs)
+ = indentCollect '[' ',' ']'  2
+        (map (layoutBranch cc False bt) (unboxes bs))
+
+
+-------------------------------------------------------------------------------
+-- | Layout a `Tuple`.
+layoutTuple :: Tuple -> Layout
+layoutTuple  (T as)
         =  text "("
         <> ( mconcat $ List.intersperse (text ", ") 
-           $ map encodeAtom $ unboxes as)
+           $ map layoutAtom $ unboxes as)
         <> text ")"
 
 
--- | Encode an atom.
-encodeAtom :: Atom -> Builder
-encodeAtom a
+-- | Layout an `Atom`.
+layoutAtom :: Atom -> Layout
+layoutAtom a
  = case a of
         AUnit{}         -> text "Unit"
         ABool    b      -> text $ show b
@@ -173,9 +137,9 @@ encodeAtom a
         ATime    str    -> text   str
 
 
--- | Encode an atom type.
-encodeAtomType :: AtomType -> Builder
-encodeAtomType at
+-- | Layout an `AtomType`.
+layoutAtomType :: AtomType -> Layout
+layoutAtomType at
  = case at of
         ATUnit          -> text "Unit"
         ATBool          -> text "Bool"
@@ -186,3 +150,69 @@ encodeAtomType at
         ATText          -> text "Text"
         ATTime          -> text "Time"
 
+
+-------------------------------------------------------------------------------
+-- | Layout computation handles indentation.
+data Layout
+        = Layout
+        { runLayout 
+                :: Int                  -- Current indentation position.
+                -> Int                  -- Current column.
+                -> (Int, Builder)       -- Result column, and text builder.
+        }
+
+-- | Insert a new line.
+line   :: Layout
+line
+ =  Layout $ \i _
+ -> ( i
+    , fromString "\n" <> fromString (replicate i ' '))
+
+
+-- | Insert some text.
+text   :: String -> Layout
+text tx
+ =  Layout $ \_i p
+ -> ( p + length tx
+    , fromString tx)
+
+
+-- | Insert an indented sub layout.
+indent :: Int -> Layout -> Layout
+indent n (Layout l1)
+ =  Layout $ \i p
+ -> let i' = i + n
+    in  if i' > p
+         then let (p', b) = l1 i' i'
+              in  (p', fromString (replicate (i' - p) ' ') <> b)
+         else l1 (i + n) p
+
+instance Monoid Layout where
+ mempty 
+  =  Layout $ \_ p
+  -> (p, mempty)
+
+ mappend (Layout l1) (Layout l2)
+  =  Layout $ \i0 p0
+  -> let (p1, b1) = l1 i0 p0 
+         (p2, b2) = l2 i0 p1
+     in  (p2, b1 <> b2)
+
+
+-- | Layout a collection.
+indentCollect :: Char -> Char -> Char -> Int -> [Layout] -> Layout
+indentCollect cStart cSep cEnd n ls0
+ = case ls0 of
+        []      -> text [cStart] <> text [cEnd]
+        _       -> start ls0
+
+ where  start ls
+         = text [cStart] <> first ls
+
+        first []        = end
+        first (l : ls)  = indent n l  <> line <> rest ls
+
+        rest  []        = end
+        rest  (l : ls)  = text [cSep] <> indent n l <> line <> rest ls
+
+        end             = text [cEnd]

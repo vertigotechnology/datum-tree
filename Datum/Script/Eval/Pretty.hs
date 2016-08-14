@@ -127,7 +127,7 @@ buildPrim c p
          -> case configTreeFormat c of
                 TreeFormatInternal      -> error "buildPrim: internal"
                 TreeFormatSExp          -> error "buildPrim: sexp"
-                TreeFormatMatryo        -> Matryo.encodeTree def 0 t
+                TreeFormatMatryo        -> Matryo.encodeTree def t
 
         PVTreePath{}    -> error "buildPrim: tree path"
         PVFilePath p'   -> fromString $ show p'

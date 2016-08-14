@@ -13,7 +13,6 @@ module Datum.Data.Tree.Codec.Matryo.Decode
         -- ** Types
         , pBranchTypeRoot
         , pBranchType
-        , pBranchTypes
         , pTupleType
         , pFieldType
         , pAtomType
@@ -121,16 +120,20 @@ pBranchTypeRoot
 
                 , do    return "root"]
 
-        P.choice
-         [ do   tt      <- pTupleType
-                return  $  T.BT name tt (T.boxes [])
+        tt      <- pTupleType
+        bts     <- P.choice
+                [ do    _       <- pTok KBraceBra
+                        bts'    <- P.sepBy pBranchType (pTok KComma)
+                        _       <- pTok KBraceKet
+                        return bts'
 
-         , do   _       <- pTok KBraceBra
-                tt      <- pTupleType
-                bts     <- pBranchTypes
-                _       <- pTok KBraceKet
-                return  $  T.BT name tt (T.boxes bts)
-         ]
+                , do    bt      <- pBranchType
+                        return  [bt]
+
+                , return []
+                ]
+
+        return  $ T.BT name tt (T.boxes bts)
  <?> "a branch type"
 
 
@@ -145,19 +148,25 @@ pBranchType :: Parser T.BranchType
 pBranchType
  = do   name    <- pName
         _       <- pTok KColon
-        P.choice
-         [ do   _       <- pTok KBraceBra
-                tt      <- pTupleType
-                bts     <- pBranchTypes
-                _       <- pTok KBraceKet
-                return  $  T.BT name tt (T.boxes bts)
 
-         , do   tt      <- pTupleType
-                return  $  T.BT name tt (T.boxes [])
-         ]
+        tt      <- pTupleType
+        bts     <- P.choice
+                [ do    _       <- pTok KBraceBra
+                        bts'    <- P.sepBy pBranchType (pTok KComma)
+                        _       <- pTok KBraceKet
+                        return bts'
+
+                , do    bt      <- pBranchType
+                        return [bt]
+
+                , do    return []
+                ]
+
+        return  $ T.BT name tt (T.boxes bts)
  <?> "a branch type"
 
 
+{-
 -- | Parse a list of `BranchType`.
 -- 
 -- @
@@ -171,7 +180,7 @@ pBranchTypes
         _       <- pTok KSquareKet
         return  bts
  <?> "a list of branch types"
-
+-}
 
 -- | Parse a `T.TupleType`.
 --
@@ -217,46 +226,58 @@ pAtomType
 -- | Parse a `T.Branch`.
 --
 -- @
--- Branch   ::= '{' Tuple Group* '}'
+-- Branch   ::= '{' Tuple Group,* '}'
 --           |  Tuple
 -- @
 --
 pBranch    :: Parser T.Branch
 pBranch 
- = P.choice
- [ -- Full branch syntax,
-   -- with sub groups.
-   do   _       <- pTok KBraceBra
+ = do   
         tuple   <- pTuple
-        groups  <- P.many pGroup
-        _       <- pTok KBraceKet
-        return  $  T.B tuple (T.boxes groups)
 
-   -- Simple branch syntax,
-   -- if there are no sub groups then we accept just the tuple.
- , do   tuple   <- pTuple
-        return  $  T.B tuple (T.boxes [])
- ]
+        groups  <- P.choice
+                [ 
+                  -- Multiple sub groups.
+                  do    _    <- pTok KBraceBra
+                        gs   <- P.sepBy pGroup (pTok KComma)
+                        _    <- pTok KBraceKet
+                        return gs
+
+                  -- A single sub group.
+                , do    g   <- pGroup
+                        return [g]
+
+                , do   return []
+                ]
+
+        return  $ T.B tuple (T.boxes groups)
+
  <?> "a branch"
 
 
 -- | Parse a branch `T.Group`.
 --
 -- @
--- Group    ::= Name \':\' TupleType? '[' Branch,* ']'
+-- Group    ::= (Name (\':\' TupleType?))? '[' Branch,* ']
 -- @
 pGroup  :: Parser T.Group
 pGroup
- = do   name    <- pName
-        _       <- pTok KColon
+ = do   sName   <- P.choice
+                [ do    name    <- pName
+                        _       <- pTok KColon
+                        return  $ T.Some name
+
+                , do    return  $ T.None ]
 
         -- TODO: we allow a tuple type here, but we don't check it on load.
         _       <- P.choice [fmap Just pTupleType, return Nothing]
+
         _       <- pTok KSquareBra
         bs      <- P.sepBy pBranch (pTok KComma)
         _       <- pTok KSquareKet
-        return  $  T.G (T.Some name) (T.boxes bs)
+        return  $  T.G sName (T.boxes bs)
  <?> "a branch group"
+
 
 
 -- | Parse a `T.Tuple`.

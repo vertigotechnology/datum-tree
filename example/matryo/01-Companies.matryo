@@ -1,0 +1,28 @@
+("name": Text)
+{       "company"
+        : ("symbol": Text, "name": Text) 
+          {     "office" : ("name": Text,  "address": Text) 
+          ,     "website": ("name": Text,  "url": Text)
+          }
+}
+("Companies Example")
+{       [ ("CBA", "Commonwealth Bank of Australia")
+          {     [ ("Dulwich Hill",  "552 Marrickville Rd, Dulwich Hill, NSW 2203")
+                , ("Marrickville",  "267 Marrickville Rd, Marrickville, NSW 2204")
+                , ("Petersham",     "90-92 Audley St, Petersham, NSW 2049")
+                ]
+
+          ,     [ ("homepage",      "http://commbank.com.au")
+                ]
+          }
+
+        , ("NAB", "National Australia Bank Limited")
+          {     [ ("George Street", "345 George St, Sydney, NSW 2000")
+                , ("Harbourside",   "Harbourside Shopping Complex, Darling Harbour, NSW, 2161")
+                ]
+
+          ,     [ ("homepage",      "http://nab.com.au")
+                ]
+          }
+        ]
+}

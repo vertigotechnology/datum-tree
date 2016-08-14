@@ -10,8 +10,8 @@ Matryosha is an external representation for datum trees, named after the Russian
 A complete tree contains a branch type followed by a branch value. 
 
 ```
-TreeRoot       ::= BranchTypeRoot Branch
-Tree           ::= BranchType     Branch
+TreeRoot      ::= BranchTypeRoot Branch
+Tree          ::= BranchType     Branch
 ```
 
 ## Types
@@ -20,19 +20,19 @@ A branch type consists of a dimension name, a tuple types, and some sub-branch t
 A tuple type consists of a sequence of named field types. Each field is associated with an atom type.
 
 ```
-BranchTypeRoot  ::= (Name ':')? '{' TupleType BranchTypes '}'
-                 |  (Name ':')?     TupleType
+BranchTypeRoot ::= (Name ':')? '{' TupleType BranchTypes '}'
+                |  (Name ':')?     TupleType
 
-BranchType      ::=  Name ':'   '{' TupleType BranchTypes '}'
-                 |   Name ':'       TupleType
+BranchType     ::=  Name ':'   '{' TupleType BranchTypes '}'
+                |   Name ':'       TupleType
 
-BranchTypes     ::= '[' BranchType,* ']'
+BranchTypes    ::= '[' BranchType,* ']'
 
-TupleType       ::= '(' FieldType,* ')'
+TupleType      ::= '(' FieldType,* ')'
 
-FieldType       ::= Name \':\' AtomType
+FieldType      ::= Name ':' AtomType
 
-AtomType        ::= ...
+AtomType       ::= ...
 ```
 
 
@@ -42,14 +42,14 @@ A branch consists of a tuple followed by some groups of sub branches. A group co
 A tuple consists of a sequence of atoms.
 
 ```
-Branch          ::= '{' Tuple Group,* '}'
-                 |  Tuple
+Branch         ::= '{' Tuple Group,* '}'
+                |  Tuple
 
-Group           ::= Name ':' TupleType? '[' Branch,* ']'
+Group          ::= Name ':' TupleType? '[' Branch,* ']'
 
-Tuple           ::= '(' Atom,* ')'
+Tuple          ::= '(' Atom,* ')'
 
-Name            ::= ...
+Name           ::= ...
 
-Atom            ::= ...
+Atom           ::= ...
 ```

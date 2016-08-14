@@ -108,8 +108,8 @@ pTree
 --
 -- @
 -- BranchTypeRoot 
---            ::= Name \':\' '{' TupleType BranchTypes? '}'
---             |           '{' TupleType BranchTypes? '}'
+--            ::= (Name \':\')? '{' TupleType BranchTypes '}'
+--             |  (Name \':\')?     TupleType
 -- @
 --
 pBranchTypeRoot :: Parser T.BranchType
@@ -121,11 +121,16 @@ pBranchTypeRoot
 
                 , do    return "root"]
 
-        _       <- pTok KBraceBra
-        tt      <- pTupleType
-        bts     <- P.choice [pBranchTypes, return []]
-        _       <- pTok KBraceKet
-        return  $  T.BT name tt (T.boxes bts)
+        P.choice
+         [ do   tt      <- pTupleType
+                return  $  T.BT name tt (T.boxes [])
+
+         , do   _       <- pTok KBraceBra
+                tt      <- pTupleType
+                bts     <- pBranchTypes
+                _       <- pTok KBraceKet
+                return  $  T.BT name tt (T.boxes bts)
+         ]
  <?> "a branch type"
 
 

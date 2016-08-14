@@ -24,9 +24,10 @@ import qualified Text.PrettyPrint.Leijen                as PP
 import qualified Text.Show.Pretty                       as Text
 
 import qualified Data.ByteString.Lazy.Char8             as BS8
+import qualified Data.ByteString                        as BS
 import qualified Data.Text                              as Text
 import qualified Data.Text.Lazy.IO                      as LText
-
+import qualified Data.Text.Encoding                     as Text
 
 ---------------------------------------------------------------------------------------------------
 -- | Evaluate a primitive applied to some arguments.
@@ -62,17 +63,14 @@ step _ _ PPLoad      [VText filePath]
                 progress $ VTree t
 
         ".matryo"
-         -> do  bs      <- BS8.readFile filePath
-                result  <- Matryo.scanMatryo filePath (BS8.unpack bs)
-                case result of
-                 (lts, _loc, [])
-                  -> case Matryo.parseMatryo filePath lts of
-                        Left err   -> error $ show err
-                        Right tree -> progress $ VTree (T.promiseTree tree)
-                                -- TODO: check the loaded tree.
+         -> do  bs        <- BS.readFile filePath
+                let result = Matryo.decodeTree filePath 
+                           $ Text.decodeUtf8 bs
 
-                 (_lts, _loc, _)
-                  -> error $ "lexical error"
+                case result of
+                 Left  err      -> error $ show err
+                 Right tree     -> progress $ VTree $ T.promiseTree tree
+                                -- TODO: check the loaded tree.
 
 
         _ ->    failure  $ ErrorPrim $ ErrorStoreUnknownFileFormat filePath

@@ -89,6 +89,7 @@ Library
         Datum.Data.Tree.Chrome
         Datum.Data.Tree.Compounds
         Datum.Data.Tree.Codec
+        Datum.Data.Tree.Codec.Matryo
         Datum.Data.Tree.Operator
         Datum.Data.Tree.Operator.Extract
         Datum.Data.Tree.Operator.Fields
@@ -127,6 +128,9 @@ Library
         Datum.Data.Tree.Check.Error
 
         Datum.Data.Tree.Codec.Matryo.Encode
+        Datum.Data.Tree.Codec.Matryo.Decode
+        Datum.Data.Tree.Codec.Matryo.Lexer
+        Datum.Data.Tree.Codec.Matryo.Token
 
         Datum.Data.Tree.Operator.Cast
         Datum.Data.Tree.Operator.Filter

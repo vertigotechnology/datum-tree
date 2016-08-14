@@ -1,22 +1,72 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Datum.Data.Tree.Codec.Matryo.Decode
-        ( parseMatryo
-        , scanMatryo
-        , Located (..)
+        ( decodeTree
+        , Error (..)
+
+        -- * Parsing
+        , type Parser
+
+        -- ** Trees
         , pTreeRoot
-        , pTree)
+        , pTree
+
+        -- ** Types
+        , pBranchTypeRoot
+        , pBranchType
+        , pBranchTypes
+        , pTupleType
+        , pFieldType
+        , pAtomType
+
+        -- ** Values
+        , pBranch
+        , pGroup
+        , pTuple
+        , pName
+        , pAtom)
 where
 import Datum.Data.Tree.Codec.Matryo.Lexer
 import Datum.Data.Tree.Codec.Matryo.Token
 import Data.Functor.Identity
 import Text.Parsec                              (SourcePos, (<?>))
 import qualified Datum.Data.Tree.Exp            as T
+import qualified Text.Lexer.Inchworm.Char       as I
 import qualified Text.Parsec                    as P
+import qualified Text.Parsec.Pos                as P
 import qualified Data.Repa.Array                as A
+import qualified System.IO.Unsafe               as System
+import qualified Data.Text                      as Text
 
 
 type Parser a
         = P.ParsecT [Located Token] () Identity a
+
+
+-- | Things that can go wrong when loading Matryoshka trees.
+data Error
+        = ErrorLexical  SourcePos
+        | ErrorParse    P.ParseError
+        deriving Show
+
+
+-- | Decode a Matryoshka tree from a `Text` object.
+decodeTree
+        :: FilePath
+        -> Text.Text
+        -> Either Error (T.Tree 'T.X)
+
+decodeTree filePath text
+ = System.unsafePerformIO
+ $ do   result  <- scanMatryo filePath (Text.unpack text)
+        case result of
+         (toks, (I.Location line col), strLeftover)
+          |  not $ null strLeftover
+          -> return $ Left (ErrorLexical $ P.newPos filePath line col)
+
+          |  otherwise
+          -> case parseMatryo filePath toks of
+                Left err        -> return $ Left  (ErrorParse err)
+                Right tree      -> return $ Right tree
 
 
 -- | Run a parser on located tokens.
@@ -30,6 +80,10 @@ parseMatryo          filePath tokens
 
 
 -- Tree -----------------------------------------------------------------------
+-- | Parse a tree, starting from the root.
+--   
+-- @TreeRoot   ::= BranchTypeRoot Branch@
+--
 pTreeRoot :: Parser (T.Tree 'T.X)
  = do   bt      <- pBranchTypeRoot
         b       <- pBranch
@@ -38,6 +92,9 @@ pTreeRoot :: Parser (T.Tree 'T.X)
 
 
 -- | Parse a `Tree`.
+--
+-- @Tree       ::= BranchType Branch@
+--
 pTree :: Parser (T.Tree 'T.X)
 pTree
  = do   bt      <- pBranchType
@@ -48,6 +105,13 @@ pTree
 
 -- BranchType -----------------------------------------------------------------
 -- | For the root branch type, allow the 'root' name to be elided.
+--
+-- @
+-- BranchTypeRoot 
+--            ::= Name \':\' '{' TupleType BranchTypes? '}'
+--             |           '{' TupleType BranchTypes? '}'
+-- @
+--
 pBranchTypeRoot :: Parser T.BranchType
 pBranchTypeRoot
  = do   name    <- P.choice 
@@ -67,7 +131,10 @@ pBranchTypeRoot
 
 -- | Parse a `BranchType`.
 --
---   BRANCHTYPE   ::= NAME ':' '{' TUPLETYPE BRANCHTYPES '}'
+-- @
+-- BranchType  ::= Name \':\' '{' TupleType BranchTypes '}'
+--              |  Name \':\' TupleType
+-- @
 --
 pBranchType :: Parser T.BranchType
 pBranchType
@@ -86,9 +153,11 @@ pBranchType
  <?> "a branch type"
 
 
--- | Parse a list of branchtypes.
+-- | Parse a list of `BranchType`.
 -- 
----  BRANCHTYPES ::= '[' BRANCHTYPE,+ ']'
+-- @
+-- BranchTypes ::= '[' BranchType,* ']'
+-- @
 --
 pBranchTypes :: Parser [T.BranchType]
 pBranchTypes
@@ -99,7 +168,12 @@ pBranchTypes
  <?> "a list of branch types"
 
 
--- | Parse a `TupleType`.
+-- | Parse a `T.TupleType`.
+--
+-- @
+-- TupleType   ::= '(' FieldType,* ')'
+-- @
+--
 pTupleType :: Parser T.TupleType
 pTupleType
  = do   _       <- pTok KRoundBra
@@ -111,6 +185,11 @@ pTupleType
 
 
 -- | Parse a `FieldType`.
+--
+-- @ 
+-- FieldType    ::= Name \':\' AtomType
+-- @
+--
 pFieldType :: Parser (T.Name, T.AtomType)
 pFieldType 
  = do   name    <- pName
@@ -120,7 +199,7 @@ pFieldType
  <?> "a field type"
 
 
--- | Parse an `AtomType`.
+-- | Parse an `T.AtomType`.
 pAtomType  :: Parser T.AtomType
 pAtomType 
  = (fmap snd $ pTokMaybe 
@@ -130,7 +209,13 @@ pAtomType
  <?> "an atom type"
 
 
--- | Parse a `Branch`.
+-- | Parse a `T.Branch`.
+--
+-- @
+-- Branch   ::= '{' Tuple Group* '}'
+--           |  Tuple
+-- @
+--
 pBranch    :: Parser T.Branch
 pBranch 
  = P.choice
@@ -150,7 +235,11 @@ pBranch
  <?> "a branch"
 
 
--- | Parse a branch `Group`.
+-- | Parse a branch `T.Group`.
+--
+-- @
+-- Group    ::= Name \':\' TupleType? '[' Branch,* ']'
+-- @
 pGroup  :: Parser T.Group
 pGroup
  = do   name    <- pName
@@ -165,17 +254,12 @@ pGroup
  <?> "a branch group"
 
 
--- | Parse a dimension `Name`.
-pName   :: Parser T.Name
-pName
- = (fmap snd $ pTokMaybe 
-   $ \t -> case t of
-                KAtom (T.AText str)     -> Just str
-                _                       -> Nothing)
- <?> "a group name"
-
-
--- | Parse a `Tuple`.
+-- | Parse a `T.Tuple`.
+--
+-- @
+-- Tuple     ::= '(' Atom,* ')'
+-- @
+--
 pTuple :: Parser T.Tuple
 pTuple 
  = do   _       <- pTok KRoundBra
@@ -185,7 +269,18 @@ pTuple
  <?> "a tuple"
  
 
--- | Parse an `Atom`.
+
+-- | Parse a dimension `T.Name`.
+pName   :: Parser T.Name
+pName
+ = (fmap snd $ pTokMaybe 
+   $ \t -> case t of
+                KAtom (T.AText str)     -> Just str
+                _                       -> Nothing)
+ <?> "a group name"
+
+
+-- | Parse an `T.Atom`.
 pAtom  :: Parser T.Atom
 pAtom 
  = ( fmap snd $ pTokMaybe 

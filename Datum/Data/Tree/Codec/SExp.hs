@@ -9,7 +9,7 @@
 --   arguments. For example, you can construct 2-tuples, 3-tuples and 4-tuples
 --   all with the same 'tuple' function using a uniform syntax.
 --
-module Datum.Data.Tree.SExp 
+module Datum.Data.Tree.Codec.SExp 
 (       -- * Tree Objects
         -- ** Checked
         -- | Tree objects package up data and meta-data into the same value,
@@ -73,7 +73,7 @@ module Datum.Data.Tree.SExp
         , MakeGroup
         , MakeTuple)
 where
-import Datum.Data.Tree.SExp.Pretty
+import Datum.Data.Tree.Codec.SExp.Pretty
 import Datum.Data.Tree.Exp
 import Datum.Data.Tree.Check
 import qualified Data.Repa.Array        as A

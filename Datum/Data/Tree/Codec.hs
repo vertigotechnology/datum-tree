@@ -5,7 +5,7 @@ module Datum.Data.Tree.Codec
         , Csv.HasHeader (..))
 where
 import Datum.Data.Tree.Exp
-import Datum.Data.Tree.SExp
+import Datum.Data.Tree.Codec.SExp
 import Data.Monoid
 import qualified Data.Csv                       as Csv
 import qualified Data.ByteString.Lazy.Char8     as BS8

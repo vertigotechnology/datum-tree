@@ -4,7 +4,7 @@ module Datum.Data.Tree.Check.Error
         , ppError)
 where
 import Datum.Data.Tree.Exp
-import Datum.Data.Tree.SExp.Pretty
+import Datum.Data.Tree.Codec.SExp.Pretty
 import Text.PrettyPrint.Leijen
 import Data.Repa.Array                  (Array)
 

@@ -1,5 +1,5 @@
 
-module Datum.Data.Tree.Chrome where
+module Datum.Data.Tree.Codec.Chrome where
 import Datum.Data.Tree.Compounds
 import Datum.Data.Tree.Exp
 import Text.PrettyPrint.Leijen

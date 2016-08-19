@@ -12,7 +12,7 @@ import qualified Datum.Data.Tree                        as T
 import qualified Datum.Data.Tree.Codec                  as T
 import qualified Datum.Data.Tree.Codec.Matryo.Encode    as Matryo
 import qualified Datum.Data.Tree.Codec.Matryo.Decode    as Matryo
-import qualified Datum.Data.Tree.SExp.Pretty            as T
+import qualified Datum.Data.Tree.Codec.SExp.Pretty      as T
 import qualified Datum.Data.Tree.Operator.Cast          as T
 import qualified Datum.Script.Eval.Env                  as Env
 

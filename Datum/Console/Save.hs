@@ -4,7 +4,7 @@ module Datum.Console.Save
 where
 import Datum.Console.Check
 
-import Datum.Data.Tree.SExp
+import Datum.Data.Tree.Codec.SExp
 import Datum.Data.Tree.Exp
 import Text.PrettyPrint.Leijen
 import qualified System.IO      as System

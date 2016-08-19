@@ -84,20 +84,23 @@ Library
         Datum.Console
 
         Datum.Data.Tree
-        Datum.Data.Tree.Exp
-        Datum.Data.Tree.Check
-        Datum.Data.Tree.Chrome
-        Datum.Data.Tree.Compounds
-        Datum.Data.Tree.Codec
+
         Datum.Data.Tree.Codec.Matryo
-        Datum.Data.Tree.Operator
+        Datum.Data.Tree.Codec.SExp
+        Datum.Data.Tree.Codec.Chrome
+
         Datum.Data.Tree.Operator.Extract
         Datum.Data.Tree.Operator.Fields
         Datum.Data.Tree.Operator.Project
         Datum.Data.Tree.Operator.Strip
         Datum.Data.Tree.Operator.Trees
         Datum.Data.Tree.Operator.Limit
-        Datum.Data.Tree.SExp
+
+        Datum.Data.Tree.Check
+        Datum.Data.Tree.Codec
+        Datum.Data.Tree.Compounds
+        Datum.Data.Tree.Exp
+        Datum.Data.Tree.Operator
 
         Datum.Script.Core.Exp.Prim
         Datum.Script.Core.Exp
@@ -124,13 +127,14 @@ Library
         Datum.Console.Dump
         Datum.Console.Save
 
-        Datum.Data.Tree.SExp.Pretty
         Datum.Data.Tree.Check.Error
 
         Datum.Data.Tree.Codec.Matryo.Encode
         Datum.Data.Tree.Codec.Matryo.Decode
         Datum.Data.Tree.Codec.Matryo.Lexer
         Datum.Data.Tree.Codec.Matryo.Token
+
+        Datum.Data.Tree.Codec.SExp.Pretty
 
         Datum.Data.Tree.Operator.Cast
         Datum.Data.Tree.Operator.Filter

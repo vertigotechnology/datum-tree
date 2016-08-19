@@ -4,7 +4,7 @@ module Datum.Console.Dump
 where
 import qualified Datum.Console.Check    as C
 
-import Datum.Data.Tree.SExp
+import Datum.Data.Tree.Codec.SExp
 import Datum.Data.Tree.Exp
 import Datum.Data.Tree                  as T
 import Text.PrettyPrint.Leijen

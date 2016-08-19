@@ -9,7 +9,7 @@ module Datum.Console
         , loadCSV
         , HasHeader (..)
 
-        , module Datum.Data.Tree.SExp
+        , module Datum.Data.Tree.Codec.SExp
         , module Control.Monad
         , module Data.Maybe)
 where
@@ -19,7 +19,7 @@ import Datum.Console.Save
 
 import Datum.Data.Tree
 import Datum.Data.Tree.Codec
-import Datum.Data.Tree.SExp
+import Datum.Data.Tree.Codec.SExp
 
 import Control.Monad
 import Data.Maybe

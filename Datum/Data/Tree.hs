@@ -106,6 +106,9 @@ module Datum.Data.Tree
           -- ** Gathering
         , gatherTree
 
+          -- ** Flattening
+        , flattenTree
+
           -- ** Traversal
         , traverseTree
 

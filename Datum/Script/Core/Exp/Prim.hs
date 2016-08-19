@@ -69,6 +69,7 @@ data PrimOp
         | PPSample                      -- ^ Sample n intermediate branches of each subtree.
         | PPGroup                       -- ^ Group branches by given key field.
         | PPGather                      -- ^ Gather branches of a tree into sub trees.
+        | PPFlatten                     -- ^ Flatten branches.
         | PPRenameFields                -- ^ Rename fields of key.
 
         | PPAt                          -- ^ Apply a per-tree function at the given path.
@@ -172,6 +173,7 @@ typeOfOp op
         PPSample        -> XTNat         ~> XTTree ~> XTTree
         PPGroup         -> XTName        ~> XTTree ~> XTTree
         PPGather        -> XTTreePath    ~> XTTree ~> XTTree
+        PPFlatten       -> XTTree        ~> XTTree
         PPRenameFields  -> XTList XTName ~> XTTree ~> XTTree
 
         PPAt            -> XTList XTName ~> (XTTree   ~> XTTree)   ~> XTTree ~> XTTree
@@ -210,6 +212,7 @@ arityOfOp op
         PPSample        -> 2
         PPGroup         -> 2
         PPGather        -> 2
+        PPFlatten       -> 1
         PPRenameFields  -> 2
 
         PPAt            -> 3
@@ -265,6 +268,7 @@ pattern XFinal          = XPrim (PVOp PPFinal)
 pattern XSample         = XPrim (PVOp PPSample)
 pattern XGroup          = XPrim (PVOp PPGroup)
 pattern XGather         = XPrim (PVOp PPGather)
+pattern XFlatten        = XPrim (PVOp PPFlatten)
 pattern XRenameFields   = XPrim (PVOp PPRenameFields)
 
 pattern XAt             = XPrim (PVOp PPAt)

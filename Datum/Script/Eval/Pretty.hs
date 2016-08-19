@@ -182,6 +182,7 @@ buildPrimOp _ op
         PPSample        -> fromString "sample#"
         PPGroup         -> fromString "group#"
         PPGather        -> fromString "gather#"
+        PPFlatten       -> fromString "flatten#"
         PPRenameFields  -> fromString "rename-fields#"
         PPAt            -> fromString "at#"
         PPOn            -> fromString "on#"

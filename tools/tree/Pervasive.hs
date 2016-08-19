@@ -36,5 +36,6 @@ strPervasive
         , "group                = group#;"
         , "gather               = gather#;"
         , "rename-fields        = rename-fields#;"
+        , "flatten              = flatten#;"
         , "on                   = on#;"
         ]

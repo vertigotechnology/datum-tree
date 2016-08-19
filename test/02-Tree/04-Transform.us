@@ -7,5 +7,6 @@ main
  & on /row ( rename-fields ['name, 'symbol, 'grouping] 
            @ group 'grouping)
  & sample 10
+ & flatten
  & store output;
 

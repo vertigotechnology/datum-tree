@@ -142,6 +142,11 @@ step _ _ PPGroup   [VName name, VForest forest]
                  $ T.groupForest (Text.unpack name) forest
 
 
+-- Tree Flattening --------------------------------------------------
+step _ _ PPFlatten      [VTree tree]
+ = do   progress $ VTree $ T.flattenTree tree
+
+
 -- Tree Renaming ----------------------------------------------------
 step _ _ PPRenameFields [ VList _ names, VForest forest ]
  = do   let names' = [ Text.unpack n | XName n <- names]

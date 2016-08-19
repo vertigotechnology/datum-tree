@@ -132,6 +132,7 @@ toCoreBoundX tt
         "group#"                -> op C.PPGroup
         "gather#"               -> op C.PPGather
         "rename-fields#"        -> op C.PPRenameFields
+        "flatten#"              -> op C.PPFlatten
 
         "at#"                   -> op C.PPAt
         "on#"                   -> op C.PPOn

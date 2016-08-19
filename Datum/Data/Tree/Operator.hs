@@ -91,6 +91,9 @@ module Datum.Data.Tree.Operator
           -- * Traversal
         , traverseTree
 
+          -- * Flattening
+        , flattenTree
+
           -- * Limiting
         , initial
         , final
@@ -100,6 +103,7 @@ import Datum.Data.Tree.Operator.Cast
 import Datum.Data.Tree.Operator.Elements
 import Datum.Data.Tree.Operator.Extract
 import Datum.Data.Tree.Operator.Fields
+import Datum.Data.Tree.Operator.Flatten
 import Datum.Data.Tree.Operator.Forests
 import Datum.Data.Tree.Operator.Gather
 import Datum.Data.Tree.Operator.Group

@@ -118,8 +118,8 @@ layoutGroup cc bt (G _name2 bs)
 layoutTuple :: Tuple -> Layout
 layoutTuple  (T as)
  -- If there is a single atom then just print that, without the parens.
- | [a]  <- unboxes as
- = layoutAtom a
+ -- | [a]  <- unboxes as
+ -- = layoutAtom a
 
  -- Print a full tuple in parens.
  | otherwise

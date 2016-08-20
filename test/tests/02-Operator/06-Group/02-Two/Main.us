@@ -4,8 +4,13 @@ objects
 
 main
  = load objects
- & on /row      (rename-fields ['name, 'classification, 'orbits])
- & on /row      (group 'classification)
- & on /row/row  (group 'orbits);
+ & on   /row
+        (rename-fields ['name, 'classification, 'orbits])
+
+ & on   /row
+        (group 'classification)
+
+ & on   /classification/row 
+        (group 'orbits);
 
 

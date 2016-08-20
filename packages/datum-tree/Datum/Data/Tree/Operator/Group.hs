@@ -43,7 +43,7 @@ groupForest name f@(Forest (G onGroup bs) (BT nBranch tt ts))
         bt'     = BT nBranch tt' ts
 
    in   Forest  (G  onGroup (boxes bs'))
-                (BT nBranch (TT (A.singleton (Box name :*: Box tyField)))
+                (BT name (TT (A.singleton (Box name :*: Box tyField)))
                             (A.singleton (Box bt')))
 
 

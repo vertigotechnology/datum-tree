@@ -1,4 +1,4 @@
-{  "row"
+{  "grouping"
     : { "row": ("name": Text, "symbol": Text)
     }
 }

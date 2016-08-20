@@ -6,8 +6,8 @@ main
  = load companies
  & on /row      $ rename-fields ['name, 'symbol, 'grouping] 
                 @ group 'grouping
- & on /row/row  $ sample 10     & gather /row/row
- & on /row      $ group 'name   & gather /row/row
- & on /row      $ group 'symbol & gather /row/row;
+ & on /grouping/row  $ sample 10     & gather /grouping/row
+ & on /row           $ group 'name   & gather /name/row
+ & on /row           $ group 'symbol & gather /symbol/row;
 
 

@@ -150,6 +150,7 @@ Library
         Datum.Script.Kernel.Exp.Cast
         Datum.Script.Kernel.Exp.Compounds
         Datum.Script.Kernel.Exp.Generic
+        Datum.Script.Kernel.Exp.Prim
 
         Datum.Script.Source.Exp.Generic
         

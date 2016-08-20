@@ -30,17 +30,14 @@ module Datum.Script.Core.Exp
         , takeXApps, takeXApps'
         , expOfPipeline
 
---          -- * Predicates
---        , isNormalOpenX
-
           -- ** Pattern Synonyms
         , module Datum.Script.Core.Exp.Prim)
 where
 import Datum.Script.Core.Exp.Prim
-import Datum.Script.Core.Kernel.Bind
-import Datum.Script.Core.Kernel.Cast
-import Datum.Script.Core.Kernel.Generic
-import Datum.Script.Core.Kernel.Compounds
+import Datum.Script.Kernel.Exp.Bind
+import Datum.Script.Kernel.Exp.Cast
+import Datum.Script.Kernel.Exp.Generic
+import Datum.Script.Kernel.Exp.Compounds
 import qualified Datum.Data.Tree        as T
 import qualified Datum.Data.Tree.Exp    as T
 

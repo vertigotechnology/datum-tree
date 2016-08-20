@@ -25,6 +25,7 @@ data Bound n
         -- | A named variable.
         | UName n
 
+
 deriving instance Show n => Show (Bound n)
 deriving instance Eq   n => Eq   (Bound n)
 

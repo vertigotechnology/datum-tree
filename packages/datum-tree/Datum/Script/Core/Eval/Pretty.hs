@@ -94,6 +94,7 @@ buildPrim c p
  = case p of
         -- Universal.
         PHole{}         -> fromString "?"
+        PMeta _ i       -> fromString "!"    <> (fromString $ show i)
         PType i         -> fromString "Type" <> (fromString $ show i)
         PFun{}          -> fromString "(→)"
 

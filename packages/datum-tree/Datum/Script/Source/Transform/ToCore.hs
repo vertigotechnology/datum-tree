@@ -69,6 +69,7 @@ toCorePrim pp
  = case pp of
         -- Universal
         S.PHole t       -> C.PHole <$> toCoreX t
+        S.PMeta t i     -> C.PMeta <$> toCoreX t  <*> pure i
         S.PType i       -> return $ C.PType i
         S.PFun  i       -> return $ C.PFun  i
         S.PAll  n k t   -> C.PAll n <$> toCoreX k <*> toCoreX t

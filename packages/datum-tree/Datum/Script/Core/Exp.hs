@@ -66,7 +66,6 @@ type Bound      = K.Bound Name
 pattern UIx   i = K.UIx   i
 pattern UName n = K.UName n
 
-
 -- | Tag for the core lanugage with a unit annotation.
 data Core       = Core
 type Exp        = K.GExp   Core

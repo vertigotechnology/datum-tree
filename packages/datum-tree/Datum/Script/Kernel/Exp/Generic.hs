@@ -3,11 +3,12 @@ module Datum.Script.Kernel.Exp.Generic where
 
 
 type family GXAnnot l
-type family GXPrim  l
 type family GXBind  l
 type family GXBound l
 type family GXCast  l
+type family GXPrim  l
 type family GXFrag  l
+type family GXMeta  l
 
 
 -- | Generic expression language.

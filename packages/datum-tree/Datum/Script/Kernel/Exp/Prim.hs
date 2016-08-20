@@ -7,12 +7,14 @@ import Datum.Script.Kernel.Exp.Generic
 ---------------------------------------------------------------------------------------------------
 -- | Primitive objects in the kernel language.
 data GPrim x
+        -- Meta things
+        = PMeta x Int           -- ^ A meta variable, used during type checking.
+        | PHole x               -- ^ A hole, used during type checking.
+
         -- Universal, works at all levels.
-        = PHole x               -- ^ A hole of the given type, to be elaborated.
         | PType Int             -- ^ Type of types at the given level.
         | PFun  Int             -- ^ Function arrow at the given level.
-        | PAll  Int x x
-                                -- ^ Universal quantification with a kind and bound.
+        | PAll  Int x x         -- ^ Universal quantification with a kind and bound.
 
         -- Baked in Kinds
         | PKData                -- ^ Kind of data types.
@@ -38,12 +40,11 @@ typeOfPrim
 
 typeOfPrim pp
  = case pp of
+        PMeta t _       -> t
+        PHole t         -> t
+
         -- Types of Generic things.
-        PHole t         
-         -> t
-        
-        PType n         
-         -> XType (n + 1)
+        PType n         -> XType (n + 1)
 
         PFun  n
          -> let n' = n + 1

@@ -1,7 +1,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 module Datum.Script.Core.Exp.Prim where
-import Datum.Script.Core.Exp.Generic
+import Datum.Script.Kernel.Exp.Generic
 import qualified Datum.Data.Tree.Exp    as T
 import Data.Text                        (Text)
 

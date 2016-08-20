@@ -1,5 +1,5 @@
 
-module Datum.Script.Core.Exp.Bind
+module Datum.Script.Kernel.Exp.Bind
         ( Name
         , Bind  (..)
         , Bound (..))

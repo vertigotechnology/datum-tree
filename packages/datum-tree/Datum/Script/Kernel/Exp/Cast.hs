@@ -1,5 +1,5 @@
 
-module Datum.Script.Core.Exp.Cast where
+module Datum.Script.Kernel.Exp.Cast where
 
         
 -- | Type casts.

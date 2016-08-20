@@ -1,12 +1,12 @@
 
-module Datum.Script.Core.Exp.Compounds
+module Datum.Script.Kernel.Exp.Compounds
         ( stripXAnnot
         , makeXAbss
         , makeXApps
         , takeXApps, takeXApps'
         , expOfPipeline)
 where
-import Datum.Script.Core.Exp.Generic
+import Datum.Script.Kernel.Exp.Generic
 
 
 -------------------------------------------------------------------------------

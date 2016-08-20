@@ -146,11 +146,10 @@ Library
         Datum.Data.Tree.Operator.Slice
         Datum.Data.Tree.Operator.Traverse
 
-        Datum.Script.Core.Exp.Bind
-        Datum.Script.Core.Exp.Cast
-        Datum.Script.Core.Exp.Compounds
-        Datum.Script.Core.Exp.Predicates
-        Datum.Script.Core.Exp.Generic
+        Datum.Script.Kernel.Exp.Bind
+        Datum.Script.Kernel.Exp.Cast
+        Datum.Script.Kernel.Exp.Compounds
+        Datum.Script.Kernel.Exp.Generic
 
         Datum.Script.Source.Exp.Generic
         

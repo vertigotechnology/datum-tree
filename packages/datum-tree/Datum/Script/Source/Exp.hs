@@ -37,10 +37,10 @@ module Datum.Script.Source.Exp
         -- ** Pattern Synonyms
         , module Datum.Script.Core.Exp.Prim)
 where
-import Datum.Script.Core.Exp.Bind
-import Datum.Script.Core.Exp.Cast
 import Datum.Script.Core.Exp.Prim
-import Datum.Script.Core.Exp.Generic    ()
+import Datum.Script.Kernel.Exp.Bind
+import Datum.Script.Kernel.Exp.Cast
+import Datum.Script.Kernel.Exp.Generic    ()
 import Datum.Script.Source.Exp.Compounds
 import Datum.Script.Source.Exp.Generic
 import Text.Parsec                      (SourcePos)

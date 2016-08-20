@@ -36,12 +36,11 @@ module Datum.Script.Core.Exp
           -- ** Pattern Synonyms
         , module Datum.Script.Core.Exp.Prim)
 where
-import Datum.Script.Core.Exp.Bind
-import Datum.Script.Core.Exp.Cast
 import Datum.Script.Core.Exp.Prim
-import Datum.Script.Core.Exp.Generic
-import Datum.Script.Core.Exp.Compounds
--- import Datum.Script.Core.Exp.Predicates
+import Datum.Script.Core.Kernel.Bind
+import Datum.Script.Core.Kernel.Cast
+import Datum.Script.Core.Kernel.Generic
+import Datum.Script.Core.Kernel.Compounds
 import qualified Datum.Data.Tree        as T
 import qualified Datum.Data.Tree.Exp    as T
 

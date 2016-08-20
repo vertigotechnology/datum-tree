@@ -28,6 +28,9 @@ data Token
         | KSquareBra            -- ^ Open  round parenthesis.
         | KSquareKet            -- ^ Close round parenthesis.
 
+        | KBraceBra             -- ^ Open braces
+        | KBraceKet             -- ^ Close braces
+
         | KLam                  -- ^ Lambda symbol.
         | KRightArrow           -- ^ Right arrow.
 
@@ -51,7 +54,7 @@ sayToken :: Token -> String
 sayToken tok
  = case tok of
         KEndOfFile      -> "end of file"
-        KErrorJunk   _  -> "unexpected character"
+        KErrorJunk   _  -> "character"
         KErrorUnterm _  -> "unterminated string"
 
         KRoundBra       -> "open round parenthesis"
@@ -59,6 +62,9 @@ sayToken tok
 
         KSquareBra      -> "open square parenthesis"
         KSquareKet      -> "close square parenthesis"
+
+        KBraceBra       -> "open braces"
+        KBraceKet       -> "close braces"
 
         KLam            -> "lambda"
         KRightArrow     -> "right arrow"

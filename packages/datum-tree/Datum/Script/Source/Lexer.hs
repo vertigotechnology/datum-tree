@@ -119,6 +119,9 @@ tokensFixed
         , ("[",         KSquareBra)
         , ("]",         KSquareKet)
 
+        , ("{",         KBraceBra)
+        , ("}",         KBraceKet)
+
         , ("\\",        KLam),          ("λ",           KLam)
         , ("->",        KRightArrow),   ("→",           KRightArrow)
         , (".",         KDot) 
@@ -129,7 +132,8 @@ tokensFixed
         , ("in",        KKey "in")
         , ("if",        KKey "if")
         , ("then",      KKey "then")
-        , ("else",      KKey "else") ]
+        , ("else",      KKey "else") 
+        , ("do",        KKey "do") ]
 
 
 -- | Character can start a variable name.

@@ -13,6 +13,9 @@ data Bind n
         -- | A named binder.
         | BName n
 
+        -- | A nothing binder.
+        | BNone
+
 deriving instance Show n => Show (Bind n)
 deriving instance Eq   n => Eq   (Bind n)
 

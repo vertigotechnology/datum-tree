@@ -36,6 +36,23 @@ toCoreX xx
         S.XPrim p       -> C.XPrim <$> toCorePrim p
         S.XFrag p       -> C.XFrag <$> toCoreFrag p
 
+        S.XDo ss0 xEnd
+         -> let go (S.SBind b x : ss) 
+                 = do   ss'     <- go ss
+                        t'      <- toCoreMT Nothing
+                        x'      <- toCoreX x
+                        return  $ C.XApp (C.XAbs (C.BName b) t' ss') x'
+
+                go (S.SStmt x   : ss)
+                 = do   ss'     <- go ss
+                        t'      <- toCoreMT Nothing
+                        x'      <- toCoreX x
+                        return  $ C.XApp (C.XAbs S.BNone     t' ss') x'
+                go [] 
+                 = do   toCoreX xEnd
+
+            in  go ss0
+
         S.XDefix{}      -> Left $ ErrorSugaredInfix xx
         S.XInfixOp{}    -> Left $ ErrorSugaredInfix xx
         S.XInfixVar{}   -> Left $ ErrorSugaredInfix xx

@@ -10,7 +10,7 @@ module Datum.Script.Source.Exp.Compounds
         , stripXAnnotX
 
           -- * Abstractions
-         ,makeXAbss
+        , makeXAbss
 
           -- * Applications
         , makeXApps
@@ -83,9 +83,18 @@ stripXAnnotX xx
         XAbs   b t x    -> XAbs  b t (down x)
         XApp   x1 x2    -> XApp (down x1) (down x2)
         XRec   bxs x2   -> XRec [(b, down x) | (b, x) <- bxs] (down x2)
+        XDo    ss x     -> XDo  (map stripXAnnotS ss) (down x)
         XDefix xs       -> XDefix (map down xs)
         XInfixOp{}      -> xx
         XInfixVar{}     -> xx
+
+
+-- | Strip annotations from a source statement.
+stripXAnnotS :: GStmt l -> GStmt l
+stripXAnnotS ss
+ = case ss of
+        SStmt x         -> SStmt (stripXAnnotX x)
+        SBind b x       -> SBind b (stripXAnnotX x)
 
 
 -------------------------------------------------------------------------------

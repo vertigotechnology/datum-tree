@@ -98,6 +98,18 @@ pExpAtom
         (_,  x) <- pExp
         return  (sp, XAnnot sp $ XAbs n Nothing x)
 
+ , do   -- do expression
+        sp      <- pTok (KKey "do")
+        _       <- pTok KBraceBra
+        ss      <- P.endBy pStmt (pTok KSemi)
+        _       <- pTok KBraceKet
+
+        case reverse ss of
+         (SStmt xE : ssFront)
+           -> return (sp, XAnnot sp $ XDo (reverse ssFront) xE)
+
+         _ -> fail "malformed do expression"
+
  , do   -- list
         sp      <- pTok KSquareBra
         xs      <- fmap (map snd) $ P.sepBy1 pExp (pTok KComma)
@@ -132,6 +144,21 @@ pExpAtom
         return  (sp, XAnnot sp $ XFrag (PVAtom (T.AInt n)))
  ]
  <?> "an atomic expression"
+
+
+-- | Parse a statement.
+pStmt :: Parser Stmt
+pStmt 
+ = P.choice 
+ [ P.try $
+    do  (_, v)  <- pVar 
+        _       <- pTok (KOp "=")
+        (_, x)  <- pExp 
+        return  $ SBind v x
+
+ , do   (_, x)  <- pExp
+        return  $ SStmt x
+ ]
 
 
 -------------------------------------------------------------------------------

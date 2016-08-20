@@ -34,33 +34,33 @@ data GExp l
         --   These form the core language.
 
         -- | Annotated expression.
-        = XAnnot !(GXAnnot l) !(GExp l)
+        = XAnnot   !(GXAnnot l) !(GExp l)
 
         -- | Bound variable.
-        | XVar   !(GXBound l)
+        | XVar     !(GXBound l)
 
         -- | Function abstraction with optional type and body.
-        | XAbs   !(GXBind  l) !(Maybe (GExp l)) !(GExp l)
+        | XAbs     !(GXBind  l) !(Maybe (GExp l)) !(GExp l)
 
         -- | Function application.
-        | XApp   !(GExp    l) !(GExp l)
+        | XApp     !(GExp    l) !(GExp l)
 
         -- | Recursive let-bindings.
-        | XRec   ![(GXBind l, GExp l)] !(GExp l)
+        | XRec     ![(GXBind l, GExp l)] !(GExp l)
 
-        -- | Type cast.
-        | XCast  !(GXCast  l) !(GExp l)
+        -- | Type   cast.
+        | XCast    !(GXCast  l) !(GExp l)
 
         -- | Ambient primitive.
-        | XPrim  !(GXPrim  l)
+        | XPrim    !(GXPrim  l)
 
         -- | Fragment specific primitive.
-        | XFrag  !(GXFrag  l)
+        | XFrag    !(GXFrag  l)
 
         -- Sugar Constructors ---------------------------------------
         --   These define syntactic sugar in the source language,
         --   which is removed when transforming to the core language.
-
+        | XDo       ![GStmt l] !(GExp l)
 
         -- | An infix expression that needs to have infix ops removed.
         | XDefix    ![GExp l]
@@ -74,11 +74,18 @@ data GExp l
         | XInfixVar !(GXBound l)
 
 
+data GStmt l
+        = SStmt     (GExp l)
+        | SBind     (GXBind l) (GExp l)
+
+
 type ShowGExp l
         = ( Show (GXAnnot l), Show (GXPrim  l)
           , Show (GXBind  l), Show (GXBound l)
-          , Show (GXCast  l), Show (GXFrag  l))
+          , Show (GXCast  l), Show (GXFrag  l)
+          , Show (GStmt l))
 
 
 deriving instance ShowGExp l => Show (GExp l)
+deriving instance ShowGExp l => Show (GStmt l)
 

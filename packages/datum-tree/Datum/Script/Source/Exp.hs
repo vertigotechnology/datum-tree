@@ -2,9 +2,11 @@
 module Datum.Script.Source.Exp
         ( -- * Binding
           Name
+        , K.Bind        (..)
+        , K.Bound       (..)
 
           -- * Syntax
-        , Source (..)
+        , Source        (..)
 
           -- ** Top-level definitions
         , Module, S.GModule (..)
@@ -12,14 +14,15 @@ module Datum.Script.Source.Exp
 
           -- ** Expressions
         , Exp,    S.GExp    (..)
+        , Stmt,   S.GStmt   (..)
 
           -- ** Casts
         , K.Cast (..)
 
           -- ** Primitives
         , Prim, Frag
-        , C.GCPrim (..)
-        , K.GPrim  (..)
+        , C.GCPrim      (..)
+        , K.GPrim       (..)
 
         , T.AtomType    (..)
         , T.Atom        (..)
@@ -48,6 +51,7 @@ import Data.Text                                        (Text)
 import qualified Datum.Script.Core.Exp                  as C
 import qualified Datum.Script.Kernel.Exp.Cast           as K
 import qualified Datum.Script.Kernel.Exp.Prim           as K
+import qualified Datum.Script.Kernel.Exp.Bind           as K
 import qualified Datum.Script.Source.Exp.Compounds      as S
 import qualified Datum.Script.Source.Exp.Generic        as S
 import qualified Datum.Data.Tree.Exp                    as T
@@ -59,6 +63,7 @@ data Source     = Source
 type Module     = S.GModule Source
 type Top        = S.GTop    Source
 type Exp        = S.GExp    Source
+type Stmt       = S.GStmt   Source
 type Prim       = K.GPrim   Exp
 type Frag       = C.GCPrim  Exp
 

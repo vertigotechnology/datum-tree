@@ -72,6 +72,11 @@ instance GXBound l ~ Name => Defix GExp l where
                 x2'          <- down x2
                 return  $ XRec bxs' x2'
 
+        XDo ss x
+         -> do  ss'     <- mapM (defixStmt table a) ss
+                x'      <- down x
+                return  $ XDo ss' x'
+
         XDefix xs     
          -> do  xs'     <- mapM down xs
                 xs_apps <- defixApps table a xs'
@@ -83,6 +88,11 @@ instance GXBound l ~ Name => Defix GExp l where
          -> case lookupDefInfixOfSymbol table str of
                 Just def -> return (fixDefExp def a)
                 Nothing  -> Left $ ErrorNoInfixDef a str
+
+defixStmt table a ss
+ = case ss of
+        SStmt x         -> SStmt    <$> defix table a x
+        SBind b x       -> SBind b  <$> defix table a x
 
 
 -------------------------------------------------------------------------------

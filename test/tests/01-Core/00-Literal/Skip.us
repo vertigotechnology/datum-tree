@@ -1,8 +1,11 @@
 
 
-string  = "derp";
-nat     = 5;
+string  = "I am a string";
+nat     = 23;
+
+main    
+ = do { print string;
+        print nat; };
 
 
-main    = print 5;
 

@@ -4,6 +4,7 @@ module Datum.Script.Source.Transform.ToCore
         (toCoreX)
 where
 import Data.Text                                (Text)
+import qualified Data.Text                      as Text
 import qualified Datum.Script.Source.Exp        as S
 import qualified Datum.Script.Core.Exp          as C
 
@@ -123,34 +124,7 @@ toCoreFrag ff
 --
 toCoreBoundX :: Text -> Either Error C.Exp
 toCoreBoundX tt
- = let  op p  = return $ C.XFrag (C.PVOp p)
-   in case tt of
-        "neg#"                  -> op C.PPNeg
-        "add#"                  -> op C.PPAdd
-        "sub#"                  -> op C.PPSub
-        "mul#"                  -> op C.PPMul
-        "div#"                  -> op C.PPDiv
-
-        "eq#"                   -> op C.PPEq
-        "gt#"                   -> op C.PPGt
-        "ge#"                   -> op C.PPGe
-        "lt#"                   -> op C.PPLt
-        "le#"                   -> op C.PPLe
-
-        "argument#"             -> op C.PPArgument
-        "load#"                 -> op C.PPLoad
-        "store#"                -> op C.PPStore
-        "initial#"              -> op C.PPInitial
-        "final#"                -> op C.PPFinal
-        "sample#"               -> op C.PPSample
-        "group#"                -> op C.PPGroup
-        "gather#"               -> op C.PPGather
-        "rename-fields#"        -> op C.PPRenameFields
-        "permute-fields#"       -> op C.PPPermuteFields
-        "flatten#"              -> op C.PPFlatten
-
-        "at#"                   -> op C.PPAt
-        "on#"                   -> op C.PPOn
-        
-        _                       -> return $ C.XVar (C.UName tt)
+ = case lookup (Text.unpack tt) C.primOpsOfNames of
+        Just p  -> return $ C.XFrag (C.PVOp p)
+        Nothing -> return $ C.XVar (C.UName tt)
 

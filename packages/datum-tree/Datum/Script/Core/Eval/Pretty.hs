@@ -23,12 +23,18 @@ data Config
         = Config
         { configTreeFormat      :: TreeFormat }
 
+instance Default Config where
+ def    = Config
+        { configTreeFormat      = TreeFormatMatryo }
+
 
 -------------------------------------------------------------------------------
 -- | Pretty print a control as lazy text.
 pprControl :: Config -> Control -> Text
 pprControl c cc   = toLazyText $ buildControl c cc
 
+pprAtom    :: Atom -> Text
+pprAtom a         = toLazyText $ buildAtom def a
 
 -------------------------------------------------------------------------------
 -- | Pretty print the machine control as a bytestring.
@@ -179,29 +185,8 @@ buildAtom _c aa
 
 buildPrimOp  :: Config -> PrimOp -> Builder
 buildPrimOp _ op 
- = case op of
-        PPNeg           -> fromString "neg#"
-        PPAdd           -> fromString "add#"
-        PPSub           -> fromString "sub#"
-        PPMul           -> fromString "mul#"
-        PPDiv           -> fromString "div#"
-        PPEq            -> fromString "eq#"
-        PPGt            -> fromString "gt#"
-        PPGe            -> fromString "ge#"
-        PPLt            -> fromString "lt#"
-        PPLe            -> fromString "le#"
-        PPArgument      -> fromString "argument#"
-        PPLoad          -> fromString "load#"
-        PPStore         -> fromString "store#"
-        PPInitial       -> fromString "initial#"
-        PPFinal         -> fromString "final#"
-        PPSample        -> fromString "sample#"
-        PPGroup         -> fromString "group#"
-        PPGather        -> fromString "gather#"
-        PPFlatten       -> fromString "flatten#"
-        PPRenameFields  -> fromString "rename-fields#"
-        PPPermuteFields -> fromString "permute-fields#"
-        PPAt            -> fromString "at#"
-        PPOn            -> fromString "on#"
-
-
+ = case Prelude.lookup op namesOfPrimOps of
+        -- The primops table should have all the names,
+        -- if it doesn't then add the name for your new primop.
+        Nothing         -> error "datum.buildPrimOp: 'namesOfPrimOps table' is inexhaustive"
+        Just name       -> fromString name

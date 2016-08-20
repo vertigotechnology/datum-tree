@@ -1,13 +1,23 @@
 
 module Datum.Script.Kernel.Exp.Compounds
         ( stripXAnnot
+
+          -- * Abstractions
         , makeXAbss
+
+          -- * Applications
         , makeXApps
         , takeXApps, takeXApps'
+
+          -- * Foralls
+        , makeXForall
+
+          -- *Pipelines
         , expOfPipeline)
 where
 import Datum.Script.Kernel.Exp.Generic
-
+import Datum.Script.Kernel.Exp.Prim
+import Datum.Script.Kernel.Exp.Bind
 
 -------------------------------------------------------------------------------
 -- | Strip annotations from a source expression.
@@ -69,6 +79,17 @@ takeXApps' x1 x2
             in  (x1f, x1s ++ [x12])
 
         _ -> (x1, [x2])
+
+
+-------------------------------------------------------------------------------
+-- | Make a Forall type.
+makeXForall 
+        :: ( GXPrim  l ~ GPrim (GExp l)
+           , GXBind  l ~ Bind  n
+           , GXBound l ~ Bound n)
+        => GExp l -> GExp l -> (GExp l -> GExp l) -> GExp l
+makeXForall k b f
+        = XApp (XPrim (PAll 1 k b)) (XAbs BAnon k (f (XVar (UIx 0))))
 
 
 -------------------------------------------------------------------------------

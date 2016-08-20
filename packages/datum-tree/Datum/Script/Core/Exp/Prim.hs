@@ -1,9 +1,11 @@
 {-# LANGUAGE UndecidableInstances #-}
 module Datum.Script.Core.Exp.Prim where
 import Datum.Script.Kernel.Exp.Generic
-import Data.Text                                (Text)
-import qualified Datum.Script.Kernel.Exp.Prim   as K
-import qualified Datum.Data.Tree.Exp            as T
+import Data.Text                                        (Text)
+import qualified Datum.Script.Kernel.Exp.Prim           as K
+import qualified Datum.Script.Kernel.Exp.Compounds      as K
+import qualified Datum.Script.Kernel.Exp.Bind           as K
+import qualified Datum.Data.Tree.Exp                    as T
 
 
 
@@ -40,6 +42,8 @@ data GCPrim x
         | PVAtom     T.Atom             -- ^ Atomic Values.
         | PVOp       PrimOp             -- ^ Primitive operators with the given type arguments.
 
+
+-- Primitive operators.
 data PrimOp
         = PPNeg                         -- ^ Negation.
         | PPAdd                         -- ^ Addition.
@@ -68,15 +72,58 @@ data PrimOp
         | PPAt                          -- ^ Apply a per-tree function at the given path.
         | PPOn                          -- ^ Apply a per-forest function at the given path. 
 
+        | PPPrint                       -- ^ Print an object to the console.
+        deriving Eq
+
+-- | Table of names of primitive operators.
+namesOfPrimOps :: [(PrimOp, String)]
+namesOfPrimOps
+ =      [ (PPNeg,               "neg#")
+        , (PPAdd,               "add#")
+        , (PPSub,               "sub#")
+        , (PPMul,               "mul#")
+        , (PPDiv,               "div#")
+        , (PPEq,                "eq#")
+        , (PPGt,                "gt#")
+        , (PPGe,                "ge#")
+        , (PPLt,                "lt#")
+        , (PPLe,                "le#")
+        , (PPArgument,          "argument#")
+        , (PPLoad,              "load#")
+        , (PPStore,             "store#")
+        , (PPInitial,           "initial#")
+        , (PPFinal,             "final#")
+        , (PPSample,            "sample#")
+        , (PPGroup,             "group#")
+        , (PPGather,            "gather#")
+        , (PPFlatten,           "flatten#")
+        , (PPRenameFields,      "rename-fields#")
+        , (PPPermuteFields,     "permute-fields#")
+        , (PPAt,                "at#")
+        , (PPOn,                "on#")
+        , (PPPrint,             "print#") ]
+
+
+-- | Tables of primitive operators of names.
+primOpsOfNames :: [(String, PrimOp)]
+primOpsOfNames 
+ = [ (name, op) | (op, name) <- namesOfPrimOps]
+
+
 deriving instance Show x => Show (GCPrim x)
 deriving instance Show PrimOp
+
+type GExpStd l n
+ =      ( GXPrim l  ~ K.GPrim (GExp l)
+        , GXFrag l  ~ GCPrim  (GExp l)
+        , GXBind l  ~ K.Bind  n
+        , GXBound l ~ K.Bound n)
 
 
 ---------------------------------------------------------------------------------------------------
 -- | Yield the type of the given primitive.
 typeOfPrim 
-        :: ( GXPrim l ~ K.GPrim (GExp l)
-           , GXFrag l ~ GCPrim  (GExp l))
+        :: GExpStd l n
         => GCPrim (GExp l)
         -> GExp   l
 
@@ -128,8 +175,7 @@ typeOfAtom aa
 
 
 -- | Yield the type of the given primop.
-typeOfOp :: ( GXPrim l ~ K.GPrim (GExp l)
-            , GXFrag l ~ GCPrim  (GExp l))
+typeOfOp :: GExpStd l n
          => PrimOp -> GExp l
 typeOfOp op
  = case op of
@@ -160,6 +206,10 @@ typeOfOp op
 
         PPAt            -> XTList XTName ~> (XTTree   ~> XTTree)   ~> XTTree ~> XTTree
         PPOn            -> XTList XTName ~> (XTForest ~> XTForest) ~> XTTree ~> XTTree
+
+        PPPrint
+         -> K.makeXForall K.XKData K.XKData 
+                $ \u -> u ~> K.XTS K.XTUnit
 
 
 -- | Yield the arity of a primitive.
@@ -201,6 +251,7 @@ arityOfOp op
         PPAt            -> 3
         PPOn            -> 3
 
+        PPPrint         -> 1
 
 ---------------------------------------------------------------------------------------------------
 -- Types

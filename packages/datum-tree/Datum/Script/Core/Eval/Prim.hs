@@ -5,6 +5,7 @@ where
 import Datum.Script.Core.Eval.Error
 import Datum.Script.Core.Eval.State
 import Datum.Script.Core.Eval.Value
+import Datum.Script.Core.Eval.Pretty
 import Datum.Script.Core.Exp
 
 import Datum.Data.Tree.Codec.Matryo.Decode              ()
@@ -174,6 +175,17 @@ step _ _ PPPermuteFields [ VList _ names, VForest forest ]
         progress $ VForest
                  $ T.promiseForest
                  $ T.permuteFields names' forest
+
+-- Tree Printing ----------------------------------------------------
+step _ _ PPPrint [VTree tree]
+ = do   LText.hPutStr System.stdout (Matryo.prettyTree tree)
+        progress $ VUnit
+
+step _ _ PPPrint [VVPAF (PVAtom a)]
+ = do   LText.hPutStr System.stdout $ pprAtom a
+        putStr "\n"
+        progress $ VUnit
+
 
 -- Tree Traversal ---------------------------------------------------
 -- | Apply a per-tree function to the trees at the given path.

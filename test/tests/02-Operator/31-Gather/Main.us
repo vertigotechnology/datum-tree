@@ -1,0 +1,24 @@
+
+
+companies 
+ = "test/data/csv/ASXListedCompanies.csv";
+
+main
+ = load companies
+ & on /row
+        $ rename-fields ['name, 'symbol, 'grouping] 
+        @ group 'grouping
+
+ & on /grouping/row  
+        $ sample 10
+        & gather /grouping/row
+
+ & on /row           
+        $ group 'name
+        & gather /name/row
+
+ & on /row           
+        $ group 'symbol
+        & gather /symbol/row;
+
+

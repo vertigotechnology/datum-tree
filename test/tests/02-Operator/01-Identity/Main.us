@@ -1,7 +1,0 @@
-
-twice f x
- = f (f x);
-
-main
- = load  "test/data/csv/SolarSystem.csv";
-

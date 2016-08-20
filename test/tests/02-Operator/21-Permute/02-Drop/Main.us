@@ -1,0 +1,6 @@
+
+main
+ = load   "test/data/csv/ASXListedCompanies.csv"
+ & on /row $ rename-fields  ['name,   'symbol, 'grouping]
+ & on /row $ permute-fields ['symbol, 'name]
+ & sample 10;

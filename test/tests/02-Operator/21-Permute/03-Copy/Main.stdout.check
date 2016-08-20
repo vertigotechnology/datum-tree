@@ -1,0 +1,14 @@
+{  "row": ("symbol": Text, "name": Text, "grouping": Text, "symbol": Text, "symbol": Text)
+}
+{ [ ("1PG", "1-PAGE LIMITED", "Software & Services", "1PG", "1PG")
+  , ("ANW", "AUS TIN MINING LTD", "Materials", "ANW", "ANW")
+  , ("CIN", "CARLTON INVESTMENTS LIMITED", "Diversified Financials", "CIN", "CIN")
+  , ("EAL", "E & A LIMITED", "Capital Goods", "EAL", "EAL")
+  , ("GNC", "GRAINCORP LIMITED", "Food, Beverage & Tobacco", "GNC", "GNC")
+  , ("KFW", "KFW", "Not Applic", "KFW", "KFW")
+  , ("MND", "MONADELPHOUS GROUP LIMITED", "Capital Goods", "MND", "MND")
+  , ("PSA", "PETSEC ENERGY LIMITED", "Energy", "PSA", "PSA")
+  , ("SYA", "SAYONA MINING LIMITED", "Materials", "SYA", "SYA")
+  , ("ZYL", "ZYL LIMITED", "Materials", "ZYL", "ZYL")
+  ]
+}

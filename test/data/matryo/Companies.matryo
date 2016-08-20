@@ -1,11 +1,9 @@
-("name": Text)
-{       "company"
+{ "company"
         : ("symbol": Text, "name": Text, "industry group": Text)
           {     "office" : ("name": Text,  "address": Text) 
           ,     "website": ("name": Text,  "url": Text)
           }
 }
-"Companies Example"
 {       [ ("ANZ", "Australia and New Zealand Banking Group Limited", "Banks")
 
         , ("CBA", "Commonwealth Bank of Australia", "Banks")

@@ -85,7 +85,7 @@ parseMatryo          filePath tokens
 --
 pTreeRoot :: Parser (T.Tree 'T.X)
  = do   bt      <- pBranchTypeRoot
-        b       <- pBranch
+        b       <- pBranch True
         return  $  T.Tree b bt
  <?> "a tree"
 
@@ -97,7 +97,7 @@ pTreeRoot :: Parser (T.Tree 'T.X)
 pTree :: Parser (T.Tree 'T.X)
 pTree
  = do   bt      <- pBranchType
-        b       <- pBranch
+        b       <- pBranch False
         return  $  T.Tree b bt
  <?> "a tree"
 
@@ -113,14 +113,17 @@ pTree
 --
 pBranchTypeRoot :: Parser T.BranchType
 pBranchTypeRoot
- = do   name    <- P.choice 
+ = P.choice
+ [ do   name    <- P.choice 
                 [ do    n       <- pName
                         _       <- pTok KColon
                         return n
 
                 , do    return "root"]
 
-        tt      <- pTupleType
+        tt      <- P.choice
+                [ pTupleType, return mempty]
+
         bts     <- P.choice
                 [ do    _       <- pTok KBraceBra
                         bts'    <- P.sepBy pBranchType (pTok KComma)
@@ -134,6 +137,9 @@ pBranchTypeRoot
                 ]
 
         return  $ T.BT name tt (T.boxes bts)
+
+ , do   return  $ T.BT "root" mempty (T.boxes [])
+ ]
  <?> "a branch type"
 
 
@@ -223,6 +229,7 @@ pAtomType
  <?> "an atom type"
 
 
+-------------------------------------------------------------------------------
 -- | Parse a `T.Branch`.
 --
 -- @
@@ -230,14 +237,15 @@ pAtomType
 --           |  Tuple
 -- @
 --
-pBranch    :: Parser T.Branch
-pBranch 
+pBranch    :: Bool -> Parser T.Branch
+pBranch bRoot
  = do   
-        tuple   <- pTuple
+        tuple   <- if bRoot
+                        then P.choice [ pTuple, return mempty ]
+                        else pTuple
 
         groups  <- P.choice
-                [ 
-                  -- Multiple sub groups.
+                [ -- Multiple sub groups.
                   do    _    <- pTok KBraceBra
                         gs   <- P.sepBy pGroup (pTok KComma)
                         _    <- pTok KBraceKet
@@ -273,7 +281,7 @@ pGroup
         _       <- P.choice [fmap Just pTupleType, return Nothing]
 
         _       <- pTok KSquareBra
-        bs      <- P.sepBy pBranch (pTok KComma)
+        bs      <- P.sepBy (pBranch False) (pTok KComma)
         _       <- pTok KSquareKet
         return  $  T.G sName (T.boxes bs)
  <?> "a branch group"

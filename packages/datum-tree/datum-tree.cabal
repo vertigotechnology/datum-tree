@@ -105,11 +105,12 @@ Library
         Datum.Script.Core.Exp.Prim
         Datum.Script.Core.Exp
 
-        Datum.Script.Eval.Env
-        Datum.Script.Eval.Error
-        Datum.Script.Eval.Prim
-        Datum.Script.Eval.State
-        Datum.Script.Eval.Value
+        Datum.Script.Core.Eval.Env
+        Datum.Script.Core.Eval.Error
+        Datum.Script.Core.Eval.Prim
+        Datum.Script.Core.Eval.State
+        Datum.Script.Core.Eval.Value
+        Datum.Script.Core.Eval
 
         Datum.Script.Source.Transform.Defix.Error
         Datum.Script.Source.Transform.Defix.FixTable
@@ -120,7 +121,6 @@ Library
         Datum.Script.Source.Parser
         Datum.Script.Source.Token
 
-        Datum.Script.Eval
 
  other-modules:
         Datum.Console.Check

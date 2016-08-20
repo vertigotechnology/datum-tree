@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Datum.Script.Eval.Pretty where
-import Datum.Script.Eval.State
-import Datum.Script.Eval.Env
+module Datum.Script.Core.Eval.Pretty where
+import Datum.Script.Core.Eval.State
+import Datum.Script.Core.Eval.Env
 import Datum.Script.Core.Exp
 import Data.Monoid
 import Data.Default

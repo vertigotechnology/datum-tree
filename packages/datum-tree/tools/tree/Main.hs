@@ -10,9 +10,9 @@ import Config                                   (Config(..))
 import Data.Maybe
 import qualified Config                         as Config
 import qualified Datum.Script.Core.Exp          as Exp
-import qualified Datum.Script.Eval              as Eval
-import qualified Datum.Script.Eval.Pretty       as Eval
-import qualified Datum.Script.Eval.Env          as Eval
+import qualified Datum.Script.Core.Eval         as Eval
+import qualified Datum.Script.Core.Eval.Pretty  as Eval
+import qualified Datum.Script.Core.Eval.Env     as Eval
 import qualified System.Environment             as System
 import qualified System.Exit                    as System
 import qualified Data.Text.Lazy.IO              as LText

@@ -1,10 +1,10 @@
 
-module Datum.Script.Eval.Prim
+module Datum.Script.Core.Eval.Prim
         ( step, Error(..) )
 where
-import Datum.Script.Eval.Error
-import Datum.Script.Eval.State
-import Datum.Script.Eval.Value
+import Datum.Script.Core.Eval.Error
+import Datum.Script.Core.Eval.State
+import Datum.Script.Core.Eval.Value
 import Datum.Script.Core.Exp
 
 import Datum.Data.Tree.Codec.Matryo.Decode              ()
@@ -14,7 +14,7 @@ import qualified Datum.Data.Tree.Codec.Matryo.Encode    as Matryo
 import qualified Datum.Data.Tree.Codec.Matryo.Decode    as Matryo
 import qualified Datum.Data.Tree.Codec.SExp.Pretty      as T
 import qualified Datum.Data.Tree.Operator.Cast          as T
-import qualified Datum.Script.Eval.Env                  as Env
+import qualified Datum.Script.Core.Eval.Env             as Env
 
 import qualified System.FilePath                        as FilePath
 import qualified System.IO.Unsafe                       as System

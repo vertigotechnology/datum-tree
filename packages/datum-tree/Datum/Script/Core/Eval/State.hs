@@ -1,12 +1,12 @@
 
 -- | Evaluation state for Datum Scripts.
-module Datum.Script.Eval.State where
-import Datum.Script.Eval.Value
-import Datum.Script.Eval.Env            (Env)
+module Datum.Script.Core.Eval.State where
+import Datum.Script.Core.Eval.Value
+import Datum.Script.Core.Eval.Env               (Env)
 import Datum.Script.Core.Exp
 import Data.Default
-import Data.Text                        (Text)
-import qualified Datum.Script.Eval.Env  as Env
+import Data.Text                                (Text)
+import qualified Datum.Script.Core.Eval.Env  as Env
 
 
 -------------------------------------------------------------------------------

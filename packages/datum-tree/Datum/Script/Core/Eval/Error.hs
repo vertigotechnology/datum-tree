@@ -1,11 +1,11 @@
 
-module Datum.Script.Eval.Error
+module Datum.Script.Core.Eval.Error
         ( Error         (..)
         , ErrorCore     (..)
         , ErrorPrim     (..))
 where
 import Datum.Script.Core.Exp
-import Datum.Script.Eval.State
+import Datum.Script.Core.Eval.State
 import Data.Text                (Text)
 
 

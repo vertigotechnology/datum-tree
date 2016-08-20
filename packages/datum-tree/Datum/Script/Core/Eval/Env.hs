@@ -1,5 +1,5 @@
 {-# LANGUAGE UndecidableInstances #-}
-module Datum.Script.Eval.Env 
+module Datum.Script.Core.Eval.Env 
         ( Env    (..)
         , Value  (..)
         , Clo    (..)

@@ -1,5 +1,5 @@
 
-module Datum.Script.Eval
+module Datum.Script.Core.Eval
         ( State   (..)
         , World   (..)
         , Control (..)
@@ -9,14 +9,14 @@ module Datum.Script.Eval
         , Error (..)
         , step)
 where
-import Datum.Script.Eval.State
-import Datum.Script.Eval.Error
-import Datum.Script.Eval.Env                    (Env)
-import Datum.Script.Eval.Value
+import Datum.Script.Core.Eval.State
+import Datum.Script.Core.Eval.Error
+import Datum.Script.Core.Eval.Env               (Env)
+import Datum.Script.Core.Eval.Value
 import Datum.Script.Core.Exp
-import qualified Datum.Script.Eval.Env          as Env
+import qualified Datum.Script.Core.Eval.Env     as Env
+import qualified Datum.Script.Core.Eval.Prim    as Prim
 import qualified Data.Set                       as Set
-import qualified Datum.Script.Eval.Prim         as Prim
 import qualified Data.List                      as List
 
 

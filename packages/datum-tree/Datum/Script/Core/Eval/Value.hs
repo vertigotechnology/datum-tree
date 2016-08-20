@@ -1,12 +1,12 @@
 
-module Datum.Script.Eval.Value
+module Datum.Script.Core.Eval.Value
         ( Value (..)
         , Clo   (..)
         , PAP   (..)
         , trimValue
         , freeVarsX)
 where
-import Datum.Script.Eval.Env
+import Datum.Script.Core.Eval.Env
 import Datum.Script.Core.Exp
 import Data.Maybe
 import Data.Set                         (Set)

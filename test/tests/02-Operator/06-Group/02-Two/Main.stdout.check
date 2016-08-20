@@ -1,0 +1,98 @@
+{  "row"
+    : { "row"
+        : { "row": ("name": Text)
+        }
+    }
+}
+{ [ ("Planet")
+    { [ ("Jupiter")
+        { [ ("Io")
+          , ("Europa")
+          , ("Ganymede")
+          , ("Callisto")
+          ]
+        }
+      , ("Sol")
+        { [ ("Mercury")
+          , ("Venus")
+          , ("Earth")
+          , ("Mars")
+          , ("Jupiter")
+          , ("Saturn")
+          , ("Uranus")
+          , ("Neptune")
+          ]
+        }
+      ]
+    }
+  , ("Star")
+    { [ ("None")
+        { [ ("Sol")
+          ]
+        }
+      ]
+    }
+  , ("Dwarf Planet")
+    { [ ("Sol")
+        { [ ("Ceres")
+          , ("Pluto")
+          ]
+        }
+      ]
+    }
+  , ("Moon")
+    { [ ("Pluto")
+        { [ ("Charon")
+          , ("Styx")
+          , ("Nix")
+          , ("Kerberos")
+          ]
+        }
+      , ("Mars")
+        { [ ("Phobos")
+          , ("Deimos")
+          ]
+        }
+      , ("Uranus")
+        { [ ("Puck")
+          , ("Miranda")
+          , ("Ariel")
+          , ("Umbriel")
+          , ("Titania")
+          , ("Oberon")
+          ]
+        }
+      , ("Saturn")
+        { [ ("Mimas")
+          , ("Enceladus")
+          , ("Tethys")
+          , ("Dione")
+          , ("Rhea")
+          , ("Titan")
+          , ("Iapetus")
+          ]
+        }
+      , ("Neptune")
+        { [ ("Naiad")
+          , ("Thalassa")
+          , ("Despina")
+          , ("Galatea")
+          , ("Larissa")
+          , ("Proteus")
+          , ("Triton")
+          , ("Nereid")
+          , ("Halimede")
+          , ("Sao")
+          , ("Laomedeia")
+          , ("Psamathe")
+          , ("Neso")
+          ]
+        }
+      , ("Earth")
+        { [ ("Luna")
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{  "row"
+    : { "row": ("name": Text, "orbits": Text)
+    }
+}
+{ [ ("Planet")
+    { [ ("Neptune", "Sol")
+      , ("Uranus", "Sol")
+      , ("Saturn", "Sol")
+      , ("Callisto", "Jupiter")
+      , ("Ganymede", "Jupiter")
+      , ("Europa", "Jupiter")
+      , ("Io", "Jupiter")
+      , ("Jupiter", "Sol")
+      , ("Mars", "Sol")
+      , ("Earth", "Sol")
+      , ("Venus", "Sol")
+      , ("Mercury", "Sol")
+      ]
+    }
+  , ("Star")
+    { [ ("Sol", "None")
+      ]
+    }
+  , ("Dwarf Planet")
+    { [ ("Pluto", "Sol")
+      , ("Ceres", "Sol")
+      ]
+    }
+  , ("Moon")
+    { [ ("Kerberos", "Pluto")
+      , ("Nix", "Pluto")
+      , ("Styx", "Pluto")
+      , ("Charon", "Pluto")
+      , ("Neso", "Neptune")
+      , ("Psamathe", "Neptune")
+      , ("Laomedeia", "Neptune")
+      , ("Sao", "Neptune")
+      , ("Halimede", "Neptune")
+      , ("Nereid", "Neptune")
+      , ("Triton", "Neptune")
+      , ("Proteus", "Neptune")
+      , ("Larissa", "Neptune")
+      , ("Galatea", "Neptune")
+      , ("Despina", "Neptune")
+      , ("Thalassa", "Neptune")
+      , ("Naiad", "Neptune")
+      , ("Oberon", "Uranus")
+      , ("Titania", "Uranus")
+      , ("Umbriel", "Uranus")
+      , ("Ariel", "Uranus")
+      , ("Miranda", "Uranus")
+      , ("Puck", "Uranus")
+      , ("Iapetus", "Saturn")
+      , ("Titan", "Saturn")
+      , ("Rhea", "Saturn")
+      , ("Dione", "Saturn")
+      , ("Tethys", "Saturn")
+      , ("Enceladus", "Saturn")
+      , ("Mimas", "Saturn")
+      , ("Deimos", "Mars")
+      , ("Phobos", "Mars")
+      , ("Luna", "Earth")
+      ]
+    }
+  ]
+}

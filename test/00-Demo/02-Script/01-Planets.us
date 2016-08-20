@@ -1,0 +1,58 @@
+
+objects =
+table   ( "name":               Text
+        , "classification":     Text
+        , "orbits":             Text)
+{*      
+        "Sol"           "Star"          "None"       
+        "Mercury"       "Planet"        "Sol"
+        "Venus"         "Planet"        "Sol"
+        "Earth"         "Planet"        "Sol"
+        "Luna"          "Moon"          "Earth"
+        "Mars"          "Planet"        "Sol"
+        "Phobos"        "Moon"          "Mars"
+        "Deimos"        "Moon"          "Mars"
+        "Ceres"         "Dwarf Planet"  "Sol"
+        "Jupiter"       "Planet"        "Sol"
+        "Io"            "Planet"        "Jupiter"
+        "Europa"        "Planet"        "Jupiter"
+        "Ganymede"      "Planet"        "Jupiter"
+        "Callisto"      "Planet"        "Jupiter"
+        "Saturn"        "Planet"        "Sol"
+        "Mimas"         "Moon"          "Saturn"
+        "Enceladus"     "Moon"          "Saturn"
+        "Tethys"        "Moon"          "Saturn"
+        "Dione"         "Moon"          "Saturn"
+        "Rhea"          "Moon"          "Saturn"
+        "Titan"         "Moon"          "Saturn"
+        "Iapetus"       "Moon"          "Saturn"
+        "Uranus"        "Planet"        "Sol"        
+        "Puck"          "Moon"          "Uranus"
+        "Miranda"       "Moon"          "Uranus"
+        "Ariel"         "Moon"          "Uranus"
+        "Umbriel"       "Moon"          "Uranus"
+        "Titania"       "Moon"          "Uranus"
+        "Oberon"        "Moon"          "Uranus"
+        "Neptune"       "Planet"        "Sol"
+        "Naiad"         "Moon"          "Neptune"
+        "Thalassa"      "Moon"          "Neptune"
+        "Despina"       "Moon"          "Neptune"
+        "Galatea"       "Moon"          "Neptune"
+        "Larissa"       "Moon"          "Neptune"
+        "Proteus"       "Moon"          "Neptune"
+        "Triton"        "Moon"          "Neptune"
+        "Nereid"        "Moon"          "Neptune"
+        "Halimede"      "Moon"          "Neptune"
+        "Sao"           "Moon"          "Neptune"
+        "Laomedeia"     "Moon"          "Neptune"
+        "Psamathe"      "Moon"          "Neptune"
+        "Neso"          "Moon"          "Neptune"
+        "Pluto"         "Dwarf Planet"  "Sol"
+        "Charon"        "Moon"          "Pluto"
+        "Styx"          "Moon"          "Pluto"
+        "Nix"           "Moon"          "Pluto"
+        "Kerberos"      "Moon"          "Pluto"
+*};
+
+
+main = planets;

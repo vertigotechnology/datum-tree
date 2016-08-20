@@ -149,7 +149,13 @@ step _ _ PPFlatten      [VTree tree]
 
 
 -- Tree Rename Fields -----------------------------------------------
-step _ _ PPRenameFields [ VList _ names, VForest forest ]
+step _ _ PPRenameFields [VList _ names, VTree tree ]
+ = do   let names' = [ Text.unpack n | XName n <- names]
+        progress $ VTree
+                 $ T.promiseTree
+                 $ T.renameFields names' tree
+
+step _ _ PPRenameFields [VList _ names, VForest forest ]
  = do   let names' = [ Text.unpack n | XName n <- names]
         progress $ VForest
                  $ T.promiseForest

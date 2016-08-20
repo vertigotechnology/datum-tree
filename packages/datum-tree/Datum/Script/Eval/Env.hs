@@ -66,7 +66,7 @@ lookup uu env
          | otherwise            -> Just (envStack env !! i)
 
         UName n                 -> Map.lookup n (envNamed env)
-
+        _                       -> Nothing
 
 -- | Insert a new expression into the environment.
 insert :: Bind -> Value -> Env -> Env
@@ -74,6 +74,7 @@ insert bb xx env
  = case bb of
         BAnon           -> env { envStack = xx : envStack env }
         BName n         -> env { envNamed = Map.insert n xx (envNamed env) }
+        _               -> env
 
 
 -- | Take the union of two environments.

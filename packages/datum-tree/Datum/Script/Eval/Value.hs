@@ -49,6 +49,7 @@ freeVarsX env xx
          | Set.member n env     
                         -> Set.empty
          | otherwise    -> Set.singleton n
+        XVar _          -> Set.empty
 
         XCast _ x       -> freeVarsX env x
 
@@ -56,6 +57,9 @@ freeVarsX env xx
          -> freeVarsX (Set.insert n env) x
 
         XAbs BAnon _ x
+         -> freeVarsX env x
+
+        XAbs _ _ x
          -> freeVarsX env x
 
         XApp x1 x2
@@ -76,4 +80,5 @@ takeNameOfBind bb
  = case bb of
         BAnon{} -> Nothing
         BName n -> Just n
+        _       -> Nothing
 

@@ -78,6 +78,7 @@ buildBind _cc b
  = case b of
         BAnon   -> fromString "^"
         BName n -> fromText n
+        _       -> fromString "?"
 
 
 buildBound :: Config -> Bound -> Builder
@@ -85,6 +86,7 @@ buildBound _cc u
  = case u of
         UIx i   -> fromString "^" <> (fromString $ show i)
         UName n -> fromText n
+        _       -> fromString "?"
 
 
 buildPrim  :: Config -> Prim -> Builder

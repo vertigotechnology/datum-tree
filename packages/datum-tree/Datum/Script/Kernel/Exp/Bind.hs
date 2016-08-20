@@ -1,37 +1,30 @@
 
 module Datum.Script.Kernel.Exp.Bind
-        ( Name
-        , Bind  (..)
+        ( Bind  (..)
         , Bound (..))
 where
-import Data.Text                (Text)
-
-
--- | Names of variables.
-type Name
-        = Text
 
 
 -- | Binding occurrences of variables.
-data Bind
+data Bind n
         -- | An anonymous binder.
         = BAnon
 
         -- | A named binder.
-        | BName Name
+        | BName n
 
-deriving instance Show Bind
-deriving instance Eq   Bind
+deriving instance Show n => Show (Bind n)
+deriving instance Eq   n => Eq   (Bind n)
 
 
 -- | Bound occurrences of variables.
-data Bound
+data Bound n
         -- | A debruijn index.
         = UIx   Int
 
         -- | A named variable.
-        | UName Name
+        | UName n
 
-deriving instance Show Bound
-deriving instance Eq   Bound
+deriving instance Show n => Show (Bound n)
+deriving instance Eq   n => Eq   (Bound n)
 

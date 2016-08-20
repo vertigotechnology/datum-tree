@@ -1,18 +1,25 @@
 
 module Datum.Script.Core.Exp
         ( -- * Binding
-          Bind  (..)
-        , Bound (..)
+          Bind
+        , pattern BAnon
+        , pattern BName
+
+        , Bound
+        , pattern UIx
+        , pattern UName
+
+
         , Name
 
           -- * Syntax
         , Core (..)
 
           -- ** Expressions
-        , Exp,  GExp (..)
+        , Exp,  K.GExp (..)
 
           -- ** Casts
-        , Cast  (..)
+        , K.Cast  (..)
 
           -- ** Primitives
         , Prim, GPrim (..)
@@ -20,37 +27,51 @@ module Datum.Script.Core.Exp
         , T.Atom        (..)
 
           -- * Generics
-        , GXAnnot, GXPrim
-        , GXBound, GXBind
-        , GXCast
+        , K.GXAnnot, K.GXPrim
+        , K.GXBound, K.GXBind
+        , K.GXCast
 
           -- * Compounds
-        , makeXAbss
-        , makeXApps
-        , takeXApps, takeXApps'
-        , expOfPipeline
+        , K.makeXAbss
+        , K.makeXApps
+        , K.takeXApps, K.takeXApps'
+        , K.expOfPipeline
 
           -- ** Pattern Synonyms
         , module Datum.Script.Core.Exp.Prim)
 where
 import Datum.Script.Core.Exp.Prim
-import Datum.Script.Kernel.Exp.Bind
-import Datum.Script.Kernel.Exp.Cast
-import Datum.Script.Kernel.Exp.Generic
-import Datum.Script.Kernel.Exp.Compounds
-import qualified Datum.Data.Tree        as T
-import qualified Datum.Data.Tree.Exp    as T
+import Data.Text                                        (Text)
+import qualified Datum.Script.Core.Exp.Prim             as C
+import qualified Datum.Script.Kernel.Exp.Bind           as K
+import qualified Datum.Script.Kernel.Exp.Cast           as K
+import qualified Datum.Script.Kernel.Exp.Generic        as K
+import qualified Datum.Script.Kernel.Exp.Compounds      as K
+import qualified Datum.Data.Tree                        as T
+import qualified Datum.Data.Tree.Exp                    as T
+
+
+-- | Names of variables.
+type Name       = Text
+
+type Bind       = K.Bind  Name
+pattern BAnon   = K.BAnon
+pattern BName n = K.BName n
+
+type Bound      = K.Bound Name
+pattern UIx   i = K.UIx   i
+pattern UName n = K.UName n
 
 
 -- | Tag for the core lanugage with a unit annotation.
 data Core       = Core
-type Exp        = GExp  Core
-type Prim       = GPrim (GExp Core)
+type Exp        = K.GExp  Core
+type Prim       = C.GPrim (K.GExp Core)
 
-type instance GXAnnot Core = ()
-type instance GXPrim  Core = Prim
-type instance GXBind  Core = Bind
-type instance GXBound Core = Bound
-type instance GXCast  Core = Cast
+type instance K.GXAnnot Core = ()
+type instance K.GXPrim  Core = Prim
+type instance K.GXBind  Core = Bind
+type instance K.GXBound Core = Bound
+type instance K.GXCast  Core = K.Cast
 
 deriving instance Show Core

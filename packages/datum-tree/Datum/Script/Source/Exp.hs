@@ -7,14 +7,14 @@ module Datum.Script.Source.Exp
         , Source (..)
 
           -- ** Top-level definitions
-        , Module, GModule (..)
-        , Top,    GTop    (..)
+        , Module, S.GModule (..)
+        , Top,    S.GTop    (..)
 
           -- ** Expressions
-        , Exp, GExp (..)
+        , Exp,    S.GExp    (..)
 
           -- ** Casts
-        , Cast (..)
+        , K.Cast (..)
 
           -- ** Primitives
         , Prim, GPrim (..)
@@ -22,40 +22,41 @@ module Datum.Script.Source.Exp
         , T.Atom        (..)
 
           -- ** Generics
-        , GXAnnot, GXPrim
-        , GXBound, GXBind
-        , GXCast
-        , type ShowGExp
+        , S.GXAnnot, S.GXPrim
+        , S.GXBound, S.GXBind
+        , S.GXCast
+        , type S.ShowGExp
 
         -- * Compounds
-        , globModules
-        , extractExpOfModule
-        , stripXAnnotM, stripXAnnotT, stripXAnnotX
-        , makeXApps
-        , takeXApps
+        , S.globModules
+        , S.extractExpOfModule
+        , S.stripXAnnotM, S.stripXAnnotT, S.stripXAnnotX
+        , S.makeXApps
+        , S.takeXApps
 
         -- ** Pattern Synonyms
         , module Datum.Script.Core.Exp.Prim)
 where
+import Text.Parsec                                      (SourcePos)
 import Datum.Script.Core.Exp.Prim
-import Datum.Script.Kernel.Exp.Bind
-import Datum.Script.Kernel.Exp.Cast
-import Datum.Script.Kernel.Exp.Generic    ()
-import Datum.Script.Source.Exp.Compounds
-import Datum.Script.Source.Exp.Generic
-import Text.Parsec                      (SourcePos)
-import qualified Datum.Data.Tree.Exp    as T
+import Data.Text                                        (Text)
+import qualified Datum.Script.Core.Exp                  as C
+import qualified Datum.Script.Kernel.Exp.Cast           as K
+import qualified Datum.Script.Source.Exp.Compounds      as S
+import qualified Datum.Script.Source.Exp.Generic        as S
+import qualified Datum.Data.Tree.Exp                    as T
 
+type Name       = Text
 
 -- | Tag for the core lanugage with a unit annotation.
 data Source     = Source
-type Module     = GModule Source
-type Top        = GTop    Source
-type Exp        = GExp    Source
-type Prim       = GPrim (GExp Source)
+type Module     = S.GModule Source
+type Top        = S.GTop    Source
+type Exp        = S.GExp    Source
+type Prim       = C.GPrim (S.GExp Source)
 
-type instance GXAnnot Source = SourcePos
-type instance GXPrim  Source = Prim
-type instance GXBind  Source = Name
-type instance GXBound Source = Name
-type instance GXCast  Source = Cast
+type instance S.GXAnnot Source = SourcePos
+type instance S.GXPrim  Source = Prim
+type instance S.GXBind  Source = Name
+type instance S.GXBound Source = Name
+type instance S.GXCast  Source = K.Cast

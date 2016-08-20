@@ -1,13 +1,13 @@
 
 companies = "test/data/ASXListedCompanies.csv";
-output    = "test/output/02-04-Transform.matryo";
+output    = "test/output/02-04-Transform.csv";
 
 main
  = load companies
- & on /row ( rename-fields    ['name, 'symbol, 'grouping] 
-           @ group 'grouping)
+ & on /row    (rename-fields    ['name, 'symbol, 'grouping] 
+              @ group 'grouping)
  & sample 20
  & flatten
- & on /tuples (permute-fields ['symbol, 'name, 'grouping])
+ & on /tuples (permute-fields   ['symbol, 'name, 'grouping])
  & store output;
 

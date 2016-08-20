@@ -36,7 +36,7 @@ jobsFromFile fs f
  | takeFileName f == "Main.us"
  = [ JobExec
         { jobCommandName        = f
-        , jobCommand            = "dist/build/datum-tree/datum-tree " ++ f
+        , jobCommand            = "bin/tree " ++ f
         , jobInputFile          = Nothing
         , jobArgsFile           = Nothing
         , jobCompareStdout      = Just $ replaceExtension f ".stdout.check" 

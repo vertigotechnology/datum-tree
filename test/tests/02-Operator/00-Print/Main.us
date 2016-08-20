@@ -1,2 +1,2 @@
 
-main = load "test/data/ASXListedCompanies-cut.csv";
+main = load "test/data/csv/SolarSystem.csv";

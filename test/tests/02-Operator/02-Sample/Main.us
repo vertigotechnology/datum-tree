@@ -1,7 +1,6 @@
 
 
 main
- = load   "test/data/ASXListedCompanies-cut.csv"
+ = load   "test/data/csv/ASXListedCompanies.csv"
  & on /row $ (group 'grouping)
- & sample 10
- & store  "test/output/02-02-Sample.tree";
+ & sample 10;

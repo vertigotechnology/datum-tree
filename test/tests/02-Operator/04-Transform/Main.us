@@ -1,6 +1,5 @@
 
-companies = "test/data/ASXListedCompanies.csv";
-output    = "test/output/02-04-Transform.csv";
+companies = "test/data/csv/ASXListedCompanies.csv";
 
 main
  = load companies
@@ -8,6 +7,5 @@ main
               @ group 'grouping)
  & sample 20
  & flatten
- & on /tuples (permute-fields   ['symbol, 'name, 'grouping])
- & store output;
+ & on /tuples (permute-fields   ['symbol, 'name, 'grouping]);
 

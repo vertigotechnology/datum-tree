@@ -1,7 +1,6 @@
 
 
-companies = "test/data/ASXListedCompanies.csv";
-output    = "test/output/02-05-Gather.matryo";
+companies = "test/data/csv/ASXListedCompanies.csv";
 
 main
  = load companies
@@ -9,7 +8,6 @@ main
                 @ group 'grouping
  & on /row/row  $ sample 10     & gather /row/row
  & on /row      $ group 'name   & gather /row/row
- & on /row      $ group 'symbol & gather /row/row
- & store output;
+ & on /row      $ group 'symbol & gather /row/row;
 
 

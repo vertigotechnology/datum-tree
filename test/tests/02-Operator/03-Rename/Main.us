@@ -1,8 +1,7 @@
 
 
 main
- = load   "test/data/ASXListedCompanies-cut.csv"
+ = load   "test/data/csv/ASXListedCompanies.csv"
  & on /row $ rename-fields ['name, 'symbol, 'grouping]
  & on /row $ group 'grouping
- & sample 10
- & store  "test/output/02-03-Rename.csv";
+ & sample 10;

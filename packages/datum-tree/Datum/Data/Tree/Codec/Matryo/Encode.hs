@@ -64,8 +64,8 @@ layoutBranchType cc bRoot (BT n tt bts)
         |  otherwise
         =  (if configSuppressRoot cc && bRoot
                 then mempty
-                else text (show n) <> line <> text ": ")
---      <> layoutTupleType tt <> line
+                else text (show n) <> line 
+                        <> text ": " <> layoutTupleType tt <> line)
         <> indentCollect '{' ',' '}' 4
                 (map (layoutBranchType cc False) (unboxes bts))
 

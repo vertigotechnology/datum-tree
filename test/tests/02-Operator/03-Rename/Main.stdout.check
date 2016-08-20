@@ -1,5 +1,6 @@
 {  "grouping"
-    : { "row": ("name": Text, "symbol": Text)
+    : ("grouping": Text)
+    {   "row": ("name": Text, "symbol": Text)
     }
 }
 { [ ("Energy")

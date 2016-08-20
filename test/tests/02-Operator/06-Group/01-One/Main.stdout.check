@@ -1,5 +1,6 @@
 {  "classification"
-    : { "row": ("name": Text, "orbits": Text)
+    : ("classification": Text)
+    {   "row": ("name": Text, "orbits": Text)
     }
 }
 { [ ("Planet")

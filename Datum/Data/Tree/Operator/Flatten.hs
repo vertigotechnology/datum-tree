@@ -10,6 +10,7 @@ import qualified Data.Repa.Array        as A
 import qualified Data.List              as List
 
 
+-- | Flatten nesting in a tree, producing a flat sequence of tuples.
 flattenTree :: Tree 'O -> Tree 'O
 flattenTree (Tree b0 bt0)
  = case goTree b0 bt0 of
@@ -18,6 +19,7 @@ flattenTree (Tree b0 bt0)
 
         Just (ts0', tt0')
          -> let g       = G   None     (boxes [B t A.empty | t <- ts0'])
+                -- TODO: Don't hard-code the result dimension name.
                 bt      = BT  "tuples" tt0' A.empty
             in  Tree (B         mempty (A.singleton $ Box g))
                      (BT "root" mempty (A.singleton $ Box bt))
@@ -60,8 +62,9 @@ flattenTree (Tree b0 bt0)
                 _ -> Nothing
 
         -- Merge tuple types.
-        -- TODO: we need a sump type constructor to handle the case when 
+        -- TODO: We need a sum type constructor to handle the case when 
         --       the tuple may include atoms of different types.
+        -- TODO: Some tuples will also be shorter than others.
         mergeTupleType (TT atsL) (TT atsR)
          = TT (A.fromList (go (A.toList atsL) (A.toList atsR)))
          where

@@ -71,6 +71,9 @@ module Datum.Data.Tree
           -- ** Renaming
         , renameFields
 
+          -- ** Permuting
+        , permuteFields
+
           -- ** Mapping
         , mapTrees
         , mapTrees'

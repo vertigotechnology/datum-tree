@@ -36,6 +36,7 @@ strPervasive
         , "group                = group#;"
         , "gather               = gather#;"
         , "rename-fields        = rename-fields#;"
+        , "permute-fields       = permute-fields#;"
         , "flatten              = flatten#;"
         , "on                   = on#;"
         ]

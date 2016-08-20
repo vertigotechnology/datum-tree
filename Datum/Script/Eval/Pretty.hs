@@ -184,6 +184,7 @@ buildPrimOp _ op
         PPGather        -> fromString "gather#"
         PPFlatten       -> fromString "flatten#"
         PPRenameFields  -> fromString "rename-fields#"
+        PPPermuteFields -> fromString "permute-fields#"
         PPAt            -> fromString "at#"
         PPOn            -> fromString "on#"
 

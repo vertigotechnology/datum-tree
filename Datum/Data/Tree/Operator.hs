@@ -53,6 +53,9 @@ module Datum.Data.Tree.Operator
           -- ** Renaming
         , renameFields
 
+          -- ** Permuting
+        , permuteFields
+
           -- ** Mapping
         , mapTrees
         , mapTrees'

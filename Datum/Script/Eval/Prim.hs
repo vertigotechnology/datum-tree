@@ -147,13 +147,26 @@ step _ _ PPFlatten      [VTree tree]
  = do   progress $ VTree $ T.flattenTree tree
 
 
--- Tree Renaming ----------------------------------------------------
+-- Tree Rename Fields -----------------------------------------------
 step _ _ PPRenameFields [ VList _ names, VForest forest ]
  = do   let names' = [ Text.unpack n | XName n <- names]
         progress $ VForest
                  $ T.promiseForest
                  $ T.renameFields names' forest
 
+
+-- Tree Permute Fields -----------------------------------------------
+step _ _ PPPermuteFields [ VList _ names, VTree tree ]
+ = do   let names' = [ Text.unpack n | XName n <- names]
+        progress $ VTree
+                 $ T.promiseTree
+                 $ T.permuteFields names' tree
+
+step _ _ PPPermuteFields [ VList _ names, VForest forest ]
+ = do   let names' = [ Text.unpack n | XName n <- names]
+        progress $ VForest
+                 $ T.promiseForest
+                 $ T.permuteFields names' forest
 
 -- Tree Traversal ---------------------------------------------------
 -- | Apply a per-tree function to the trees at the given path.

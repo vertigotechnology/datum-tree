@@ -71,6 +71,7 @@ data PrimOp
         | PPGather                      -- ^ Gather branches of a tree into sub trees.
         | PPFlatten                     -- ^ Flatten branches.
         | PPRenameFields                -- ^ Rename fields of key.
+        | PPPermuteFields               -- ^ Permute fields of a key.
 
         | PPAt                          -- ^ Apply a per-tree function at the given path.
         | PPOn                          -- ^ Apply a per-forest function at the given path. 
@@ -175,6 +176,7 @@ typeOfOp op
         PPGather        -> XTTreePath    ~> XTTree ~> XTTree
         PPFlatten       -> XTTree        ~> XTTree
         PPRenameFields  -> XTList XTName ~> XTTree ~> XTTree
+        PPPermuteFields -> XTList XTName ~> XTTree ~> XTTree
 
         PPAt            -> XTList XTName ~> (XTTree   ~> XTTree)   ~> XTTree ~> XTTree
         PPOn            -> XTList XTName ~> (XTForest ~> XTForest) ~> XTTree ~> XTTree
@@ -214,6 +216,7 @@ arityOfOp op
         PPGather        -> 2
         PPFlatten       -> 1
         PPRenameFields  -> 2
+        PPPermuteFields -> 2
 
         PPAt            -> 3
         PPOn            -> 3
@@ -270,6 +273,7 @@ pattern XGroup          = XPrim (PVOp PPGroup)
 pattern XGather         = XPrim (PVOp PPGather)
 pattern XFlatten        = XPrim (PVOp PPFlatten)
 pattern XRenameFields   = XPrim (PVOp PPRenameFields)
+pattern XPermuteFields  = XPrim (PVOp PPPermuteFields)
 
 pattern XAt             = XPrim (PVOp PPAt)
 pattern XOn             = XPrim (PVOp PPOn)

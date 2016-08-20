@@ -4,9 +4,10 @@ output    = "test/output/02-04-Transform.matryo";
 
 main
  = load companies
- & on /row ( rename-fields ['name, 'symbol, 'grouping] 
+ & on /row ( rename-fields    ['name, 'symbol, 'grouping] 
            @ group 'grouping)
- & sample 10
+ & sample 20
  & flatten
+ & on /tuples (permute-fields ['symbol, 'name, 'grouping])
  & store output;
 

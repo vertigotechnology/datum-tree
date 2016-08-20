@@ -11,14 +11,10 @@ main
 
  & on /grouping/row  
         $ sample 10
-        & gather /grouping/row
 
- & on /row           
-        $ group 'name
-        & gather /name/row
+ & gather /grouping/row
 
- & on /row           
-        $ group 'symbol
-        & gather /symbol/row;
-
+ & on /row
+        $ permute-fields ['symbol, 'name, 'grouping];
+        
 

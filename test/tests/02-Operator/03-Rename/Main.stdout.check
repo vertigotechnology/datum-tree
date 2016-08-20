@@ -1,12 +1,9 @@
-()
-{   "row"
-    : ("grouping": Text)
-    {   "row": ("name": Text, "symbol": Text)
+{  "row"
+    : { "row": ("name": Text, "symbol": Text)
     }
 }
-()
-  [ ("Energy")
-      [ ("ZEUS RESOURCES LIMITED", "ZEU")
+{ [ ("Energy")
+    { [ ("ZEUS RESOURCES LIMITED", "ZEU")
       , ("UNIVERSAL COAL PLC", "UNV")
       , ("STRIKE ENERGY LIMITED", "STX")
       , ("PURA VIDA ENERGY NL", "PVD")
@@ -17,8 +14,9 @@
       , ("COCKATOO COAL LIMITED", "COK")
       , ("3D OIL LIMITED", "TDO")
       ]
+    }
   , ("Class Pend")
-      [ ("WISETECH GLOBAL LIMITED", "WTC")
+    { [ ("WISETECH GLOBAL LIMITED", "WTC")
       , ("VOLPARA HEALTH TECHNOLOGIES LIMITED", "VHT")
       , ("TEST SECURITY", "TES")
       , ("SUGAR DRAGON LIMITED", "SDC")
@@ -29,8 +27,9 @@
       , ("IRON MOUNTAIN INCORPORATED", "INM")
       , ("ABUNDANT PRODUCE LIMITED", "ABT")
       ]
+    }
   , ("Insurance")
-      [ ("TOWER LIMITED", "TWR")
+    { [ ("TOWER LIMITED", "TWR")
       , ("SUNCORP-METWAY LIMITED .", "SBK")
       , ("SUNCORP GROUP LIMITED", "SUN")
       , ("STEADFAST GROUP LIMITED", "SDF")
@@ -41,8 +40,9 @@
       , ("INSURANCE AUSTRALIA GROUP LIMITED", "IAG")
       , ("AMP LIMITED", "AMP")
       ]
+    }
   , ("Telecommunication Services")
-      [ ("ZIPTEL LIMITED", "ZIP")
+    { [ ("ZIPTEL LIMITED", "ZIP")
       , ("TPG TELECOM LIMITED", "TPM")
       , ("TELSTRA CORPORATION LIMITED.", "TLS")
       , ("SPEEDCAST INTERNATIONAL LIMITED", "SDA")
@@ -53,8 +53,9 @@
       , ("FRESHTEL HOLDINGS LIMITED", "FRE")
       , ("AMAYSIM AUSTRALIA LIMITED", "AYS")
       ]
+    }
   , ("Capital Goods")
-      [ ("ZICOM GROUP LIMITED", "ZGL")
+    { [ ("ZICOM GROUP LIMITED", "ZGL")
       , ("THO SERVICES LIMITED", "THO")
       , ("SEYMOUR WHYTE LIMITED", "SWL")
       , ("REDFLOW LIMITED", "RFX")
@@ -65,8 +66,9 @@
       , ("EMBELTON LIMITED", "EMB")
       , ("ADG GLOBAL SUPPLY LIMITED.", "ADQ")
       ]
+    }
   , ("Not Applic")
-      [ ("WESTPAC TPS TRUST", "WCT")
+    { [ ("WESTPAC TPS TRUST", "WCT")
       , ("SUNVEST CORPORATION LIMITED", "SVS")
       , ("SERIES 2010-1 REDS TRUST", "REK")
       , ("PUMA SERIES 2014-1", "PUK")
@@ -77,14 +79,16 @@
       , ("CHINA CONSTRUCTION BANK CORPORATION", "CCB")
       , ("360 CAPITAL TOTAL RETURN FUND", "TOT")
       ]
+    }
   , ("Food & Staples Retailing")
-      [ ("WOOLWORTHS LIMITED", "WOW")
+    { [ ("WOOLWORTHS LIMITED", "WOW")
       , ("WESFARMERS LIMITED", "WES")
       , ("METCASH LIMITED", "MTS")
       , ("AUSTRALIAN AGRICULTURAL PROJECTS LIMITED", "AAP")
       ]
+    }
   , ("Materials")
-      [ ("ZYL LIMITED", "ZYL")
+    { [ ("ZYL LIMITED", "ZYL")
       , ("TANAMI GOLD NL", "TAM")
       , ("RESOURCE BASE LIMITED", "RBX")
       , ("ORION METALS LIMITED", "ORM")
@@ -95,8 +99,9 @@
       , ("CARBINE TUNGSTEN LIMITED", "CNQ")
       , ("3D RESOURCES LIMITED", "DDD")
       ]
+    }
   , ("Food, Beverage & Tobacco")
-      [ ("YOWIE GROUP LTD", "YOW")
+    { [ ("YOWIE GROUP LTD", "YOW")
       , ("WARRNAMBOOL CHEESE & BUTTER FACTORY CO.HOLD.LTD", "WCB")
       , ("THE A2 MILK COMPANY LIMITED", "A2M")
       , ("SELECT HARVESTS LIMITED", "SHV")
@@ -107,10 +112,13 @@
       , ("CHINA DAIRY CORPORATION LIMITED", "CDC")
       , ("AUSTRALIAN AGRICULTURAL COMPANY LIMITED.", "AAC")
       ]
+    }
   , ("Semiconductors & Semiconductor Equipment")
-      [ ("SILEX SYSTEMS LIMITED", "SLX")
+    { [ ("SILEX SYSTEMS LIMITED", "SLX")
       , ("DYESOL LIMITED", "DYE")
       , ("BLUGLASS LIMITED", "BLG")
       , ("4DS MEMORY LIMITED", "4DS")
       ]
+    }
   ]
+}

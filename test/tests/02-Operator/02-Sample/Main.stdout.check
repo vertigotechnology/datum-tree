@@ -1,8 +1,6 @@
-()
-{   "row": ("Company name": Text, "ASX code": Text, "GICS industry group": Text)
+{  "row": ("Company name": Text, "ASX code": Text, "GICS industry group": Text)
 }
-()
-  [ ("1-PAGE LIMITED", "1PG", "Software & Services")
+{ [ ("1-PAGE LIMITED", "1PG", "Software & Services")
   , ("AUS TIN MINING LTD", "ANW", "Materials")
   , ("CARLTON INVESTMENTS LIMITED", "CIN", "Diversified Financials")
   , ("E & A LIMITED", "EAL", "Capital Goods")
@@ -13,3 +11,4 @@
   , ("SAYONA MINING LIMITED", "SYA", "Materials")
   , ("ZYL LIMITED", "ZYL", "Materials")
   ]
+}

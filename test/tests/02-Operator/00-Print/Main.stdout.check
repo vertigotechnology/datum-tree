@@ -1,8 +1,6 @@
-()
-{   "row": ("Name": Text, "Classification": Text, "Orbits": Text)
+{  "row": ("Name": Text, "Classification": Text, "Orbits": Text)
 }
-()
-  [ ("Sol", "Star", "None")
+{ [ ("Sol", "Star", "None")
   , ("Mercury", "Planet", "Sol")
   , ("Venus", "Planet", "Sol")
   , ("Earth", "Planet", "Sol")
@@ -51,3 +49,4 @@
   , ("Nix", "Moon", "Pluto")
   , ("Kerberos", "Moon", "Pluto")
   ]
+}

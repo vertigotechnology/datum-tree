@@ -1,8 +1,6 @@
-()
-{   "row": ("symbol": Text, "name": Text, "grouping": Text)
+{  "row": ("symbol": Text, "name": Text, "grouping": Text)
 }
-()
-  [ ("MOC", "MORTGAGE CHOICE LIMITED", "Banks")
+{ [ ("MOC", "MORTGAGE CHOICE LIMITED", "Banks")
   , ("TDO", "3D OIL LIMITED", "Energy")
   , ("BKL", "BLACKMORES LIMITED", "Household & Personal Products")
   , ("BWX", "BWX LIMITED", "Household & Personal Products")
@@ -246,3 +244,4 @@
   , ("JKA", "JACKA RESOURCES LIMITED", "Energy")
   , ("MTS", "METCASH LIMITED", "Food & Staples Retailing")
   ]
+}

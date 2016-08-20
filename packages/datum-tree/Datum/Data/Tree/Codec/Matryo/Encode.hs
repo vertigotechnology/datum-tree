@@ -65,8 +65,7 @@ layoutBranchType cc bRoot (BT n tt bts)
         =  (if configSuppressRoot cc && bRoot
                 then mempty
                 else text (show n) <> line <> text ": ")
-        <> layoutTupleType tt
-        <> line
+--      <> layoutTupleType tt <> line
         <> indentCollect '{' ',' '}' 4
                 (map (layoutBranchType cc False) (unboxes bts))
 
@@ -90,15 +89,21 @@ layoutKeyType (Box n :*: Box at)
 -------------------------------------------------------------------------------
 -- | Layout a branch.
 layoutBranch :: Config -> Bool -> BranchType -> Branch -> Layout
-layoutBranch cc _bFirst (BT _n _tt bts0) (B t gs0)
+layoutBranch cc bFirst (BT _n _tt bts0) (B t gs0)
  |  A.length gs0 == 0
  =  layoutTuple t
 
+{-
  |  (bt : []) <- unboxes bts0
  ,  (g  : []) <- unboxes gs0
  =  layoutTuple t <> line
  <> indent 2
         (layoutGroup cc bt g)
+-}
+
+ | bFirst
+ = indentCollect '{' ',' '}' 2
+        (zipWith (layoutGroup cc) (unboxes bts0) (unboxes gs0))
 
  |  otherwise
  =  layoutTuple t <> line

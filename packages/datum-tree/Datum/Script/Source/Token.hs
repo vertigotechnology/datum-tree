@@ -38,6 +38,7 @@ data Token
         | KComma                -- ^ Comma charater.
         | KSemi                 -- ^ Semicolon.
         | KSlashForward         -- ^ Forward slash.
+        | KUnit                 -- ^ The unit value '()'
 
         | KKey  String          -- ^ Keyword.
         | KVar  String          -- ^ Variable name.
@@ -73,6 +74,7 @@ sayToken tok
         KComma          -> "comma"
         KSemi           -> "semicolon"
         KSlashForward   -> "forward slash"
+        KUnit           -> "unit value"
 
         KKey k          -> "keyword '"  ++ k ++ "'"
         KVar v          -> "variable '" ++ v ++ "'"

@@ -141,7 +141,15 @@ toCoreFrag ff
 --
 toCoreBoundX :: Text -> Either Error C.Exp
 toCoreBoundX tt
- = case lookup (Text.unpack tt) C.primOpsOfNames of
-        Just p  -> return $ C.XFrag (C.PVOp p)
-        Nothing -> return $ C.XVar (C.UName tt)
+ | Just p       <- lookup (Text.unpack tt) C.primOpsOfNames
+ = return $ C.XFrag (C.PVOp p)
+
+ | Just x       <- case Text.unpack tt of
+                        "True"  -> Just $ C.XBool True
+                        "False" -> Just $ C.XBool False
+                        _       -> Nothing
+ = return x
+
+ | otherwise
+ = return $ C.XVar (C.UName tt)
 

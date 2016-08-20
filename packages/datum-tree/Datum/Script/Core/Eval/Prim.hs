@@ -186,6 +186,10 @@ step _ _ PPPrint [VVPAF (PVAtom a)]
         putStr "\n"
         progress $ VUnit
 
+step _ _ PPPrint [VVPAP PVUnit]
+ = do   putStr "()\n"
+        progress $ VUnit
+
 
 -- Tree Traversal ---------------------------------------------------
 -- | Apply a per-tree function to the trees at the given path.

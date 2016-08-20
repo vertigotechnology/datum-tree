@@ -81,6 +81,7 @@ deriving instance Show Context
 
 
 -------------------------------------------------------------------------------
+pattern VVPAP p         = VPAP (PAP p [])
 pattern VVPAF p         = VPAP (PAF p [])
 
 pattern VName n         = VVPAF (PVName     n)

@@ -142,6 +142,10 @@ pExpAtom
  , do   -- literal integer
         (sp, n)   <- pLitInt
         return  (sp, XAnnot sp $ XFrag (PVAtom (T.AInt n)))
+
+ , do   -- literal unit
+        sp      <- pTok KUnit
+        return  (sp, XAnnot sp $ XPrim PVUnit)
  ]
  <?> "an atomic expression"
 

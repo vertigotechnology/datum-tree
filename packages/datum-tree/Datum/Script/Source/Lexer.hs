@@ -113,7 +113,9 @@ matchFixed str
 --   Each of the unicode symbols has a corresponding plain ascii one.
 tokensFixed :: [(String, Token)]
 tokensFixed
- =      [ ("(",         KRoundBra)
+ =      [ ("()",        KUnit)
+
+        , ("(",         KRoundBra)
         , (")",         KRoundKet)
 
         , ("[",         KSquareBra)
@@ -133,7 +135,8 @@ tokensFixed
         , ("if",        KKey "if")
         , ("then",      KKey "then")
         , ("else",      KKey "else") 
-        , ("do",        KKey "do") ]
+        , ("do",        KKey "do")  ]
+
 
 
 -- | Character can start a variable name.

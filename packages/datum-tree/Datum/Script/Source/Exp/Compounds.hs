@@ -77,6 +77,7 @@ stripXAnnotX xx
    in case xx of
         XAnnot _ x      -> down x
         XPrim{}         -> xx
+        XFrag{}         -> xx
         XVar{}          -> xx
         XCast  c x      -> XCast c   (down x)
         XAbs   b t x    -> XAbs  b t (down x)

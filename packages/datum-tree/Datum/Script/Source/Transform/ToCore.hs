@@ -20,7 +20,6 @@ toCoreX :: S.Exp -> Either Error C.Exp
 toCoreX xx
  = case xx of
         S.XAnnot _ x    -> toCoreX x
-        S.XPrim p       -> C.XPrim <$> toCorePrim  p
         S.XVar  u       -> toCoreBoundX u
         S.XCast c x     -> C.XCast <$> toCoreCast  c  <*> toCoreX x
         S.XAbs  b  mt x -> C.XAbs  <$> toCoreBind  b  <*> toCoreMT mt <*> toCoreX x
@@ -33,6 +32,8 @@ toCoreX xx
                 x2'     <- toCoreX x2
                 return  $ C.XRec (zip bs' xs') x2'
 
+        S.XPrim p       -> C.XPrim <$> toCorePrim p
+        S.XFrag p       -> C.XFrag <$> toCoreFrag p
 
         S.XDefix{}      -> Left $ ErrorSugaredInfix xx
         S.XInfixOp{}    -> Left $ ErrorSugaredInfix xx
@@ -62,7 +63,7 @@ toCoreMT mt
         Just t          -> toCoreX t
 
 
--- | Convert a source primitive to core.
+-- | Convert a source ambient primitive to core.
 toCorePrim :: S.Prim -> Either Error C.Prim
 toCorePrim pp
  = case pp of
@@ -73,12 +74,24 @@ toCorePrim pp
         S.PAll  n k t   -> C.PAll n <$> toCoreX k <*> toCoreX t
 
         -- Kinds (level 2)
-        S.PKComp        -> return $ C.PKComp
         S.PKData        -> return $ C.PKData
-        S.PKAtom        -> return $ C.PKAtom
+        S.PKEffect      -> return $ C.PKEffect
 
         -- Types (level 1)
         S.PTS           -> return $ C.PTS
+        S.PTVoid        -> return $ C.PTVoid
+        S.PTUnit        -> return $ C.PTUnit
+
+        -- Values
+        S.PVUnit        -> return $ C.PVUnit
+
+
+-- | Convert a source fragment primitive to core.
+toCoreFrag :: S.Frag -> Either Error C.Frag
+toCoreFrag ff
+ = case ff of
+        S.PKAtom        -> return $ C.PKAtom
+
         S.PTNum         -> return $ C.PTNum
         S.PTList        -> return $ C.PTList
 
@@ -109,7 +122,7 @@ toCorePrim pp
 --
 toCoreBoundX :: Text -> Either Error C.Exp
 toCoreBoundX tt
- = let  op p  = return $ C.XPrim (C.PVOp p)
+ = let  op p  = return $ C.XFrag (C.PVOp p)
    in case tt of
         "neg#"                  -> op C.PPNeg
         "add#"                  -> op C.PPAdd

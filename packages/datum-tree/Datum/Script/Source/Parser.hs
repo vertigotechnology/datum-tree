@@ -102,14 +102,14 @@ pExpAtom
         sp      <- pTok KSquareBra
         xs      <- fmap (map snd) $ P.sepBy1 pExp (pTok KComma)
         _       <- pTok KSquareKet
-        return  (sp, XAnnot sp $ XPrim (PVList (XPrim (PHole (XPrim PKData))) xs))
+        return  (sp, XAnnot sp $ XFrag (PVList (XPrim (PHole (XPrim PKData))) xs))
 
  , do   -- branch path sugar
         sp      <- pTok KSlashForward
         ns      <- fmap (map snd) $ P.sepBy1 pVar (pTok KSlashForward)
-        let xs  =  [XPrim (PVName n) | n <- Text.pack "root" : ns]
+        let xs   = [XFrag (PVName n) | n <- Text.pack "root" : ns]
         let hole = XPrim (PHole (XPrim PKData))
-        return  (sp, XAnnot sp $ XPrim (PVList hole xs))
+        return  (sp, XAnnot sp $ XFrag (PVList hole xs))
 
  , do   -- variables
         (sp, u) <- pVar
@@ -121,15 +121,15 @@ pExpAtom
 
  , do   -- symbols
         (sp, s) <- pSymbol
-        return  (sp, XAnnot sp $ XPrim (PVName (Text.pack s)))
+        return  (sp, XAnnot sp $ XFrag (PVName (Text.pack s)))
 
  , do   -- literal text
         (sp, str) <- pLitString
-        return  (sp, XAnnot sp $ XPrim (PVAtom (T.AText str)))
+        return  (sp, XAnnot sp $ XFrag (PVAtom (T.AText str)))
 
  , do   -- literal integer
         (sp, n)   <- pLitInt
-        return  (sp, XAnnot sp $ XPrim (PVAtom (T.AInt n)))
+        return  (sp, XAnnot sp $ XFrag (PVAtom (T.AInt n)))
  ]
  <?> "an atomic expression"
 

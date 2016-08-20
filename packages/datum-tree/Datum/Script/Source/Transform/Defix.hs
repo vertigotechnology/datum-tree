@@ -59,6 +59,7 @@ instance GXBound l ~ Name => Defix GExp l where
     in case xx of
         XAnnot a' x     -> liftM  (XAnnot a') (defix table a' x)
         XPrim{}         -> return xx
+        XFrag{}         -> return xx
         XVar{}          -> return xx
         XCast c x       -> liftM  (XCast c)   (down x)
         XAbs b t x      -> liftM  (XAbs  b t) (down x)

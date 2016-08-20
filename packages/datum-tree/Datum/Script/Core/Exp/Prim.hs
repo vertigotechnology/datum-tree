@@ -1,27 +1,19 @@
 {-# LANGUAGE UndecidableInstances #-}
-
 module Datum.Script.Core.Exp.Prim where
 import Datum.Script.Kernel.Exp.Generic
-import qualified Datum.Data.Tree.Exp    as T
-import Data.Text                        (Text)
+import Data.Text                                (Text)
+import qualified Datum.Script.Kernel.Exp.Prim   as K
+import qualified Datum.Data.Tree.Exp            as T
+
 
 
 ---------------------------------------------------------------------------------------------------
 -- | Primitive objects in the core language.
-data GPrim x
-        -- Universal, works at all levels.
-        = PHole x                       -- ^ A hole of the given type, to be elaborated.
-        | PType Int                     -- ^ Type of types at the given level.
-        | PFun  Int                     -- ^ Function arrow at the given level.
-        | PAll  Int x x                 -- ^ Universal quantification with a kind and bound.
-
+data GCPrim x
         -- Kinds  (level 2)
-        | PKComp                        -- ^ Kind of computation types.
-        | PKData                        -- ^ Kind of data types.
-        | PKAtom                        -- ^ Kind of atom types.
+        = PKAtom                        -- ^ Kind of atom types.
 
         -- Types  (level 1)
-        | PTS                           -- ^ State computation type constructor.
         | PTList                        -- ^ List type constructor.
 
         | PTName                        -- ^ Name type.
@@ -76,50 +68,36 @@ data PrimOp
         | PPAt                          -- ^ Apply a per-tree function at the given path.
         | PPOn                          -- ^ Apply a per-forest function at the given path. 
 
-deriving instance Show x => Show (GPrim x)
+deriving instance Show x => Show (GCPrim x)
 deriving instance Show PrimOp
 
 
 ---------------------------------------------------------------------------------------------------
 -- | Yield the type of the given primitive.
 typeOfPrim 
-        :: (GXPrim l ~ GPrim (GExp l))
-        => GPrim (GExp l) -> GExp l
+        :: ( GXPrim l ~ K.GPrim (GExp l)
+           , GXFrag l ~ GCPrim  (GExp l))
+        => GCPrim (GExp l)
+        -> GExp   l
+
 typeOfPrim pp
  = case pp of
-        -- Generic
-        PHole t         -> t
-
-        PType n 
-         -> XType (n + 1)
-
-        PFun  n         
-         -> let n'      = n + 1
-            in  XFun n' (XType n') (XFun n' (XType n') (XType n'))
-
-        PAll  n k t
-         -> let n'      = n + 1
-            in  XFun n' k (XFun n' t (XType n'))
-
         -- Types of Kinds
-        PKComp          -> XType 2
-        PKData          -> XType 2
-        PKAtom          -> XType 2
+        PKAtom          -> K.XType 2
 
         -- Types of Types
-        PTS             -> XType 1 ~~> XType 1
-        PTNum           -> XType 1
-        PTList          -> XType 1 ~~> XType 1
+        PTNum           -> K.XType 1
+        PTList          -> K.XType 1 ~~> K.XType 1
 
-        PTName          -> XType 1
+        PTName          -> K.XType 1
 
-        PTForest        -> XType 1
-        PTTree          -> XType 1
-        PTTreePath      -> XType 1
+        PTForest        -> K.XType 1
+        PTTree          -> K.XType 1
+        PTTreePath      -> K.XType 1
 
-        PTFilePath      -> XType 1
+        PTFilePath      -> K.XType 1
 
-        PTAtom _        -> XType 1
+        PTAtom _        -> K.XType 1
 
         -- Types of Values
         PVName _        -> XTName
@@ -131,7 +109,7 @@ typeOfPrim pp
 
         PVFilePath  _   -> XTFilePath
 
-        PVAtom a        -> XPrim (PTAtom (typeOfAtom a))
+        PVAtom a        -> XFrag (PTAtom (typeOfAtom a))
         PVOp   op       -> typeOfOp op
 
 
@@ -150,7 +128,8 @@ typeOfAtom aa
 
 
 -- | Yield the type of the given primop.
-typeOfOp :: (GXPrim l ~ GPrim (GExp l))
+typeOfOp :: ( GXPrim l ~ K.GPrim (GExp l)
+            , GXFrag l ~ GCPrim  (GExp l))
          => PrimOp -> GExp l
 typeOfOp op
  = case op of
@@ -166,9 +145,10 @@ typeOfOp op
         PPLt            -> error "typeOfOp: finish me"
         PPLe            -> error "typeOfOp: finish me"
 
-        PPArgument      -> XTText        ~> XTS XTText
-        PPLoad          -> XTFilePath    ~> XTS XTTree
-        PPStore         -> XTFilePath    ~> XTTree ~> XTS XTUnit
+        PPArgument      -> XTText        ~> K.XTS XTText
+
+        PPLoad          -> XTFilePath    ~> K.XTS XTTree
+        PPStore         -> XTFilePath    ~> XTTree ~> K.XTS K.XTUnit
         PPInitial       -> XTNat         ~> XTTree ~> XTTree
         PPFinal         -> XTNat         ~> XTTree ~> XTTree
         PPSample        -> XTNat         ~> XTTree ~> XTTree
@@ -183,7 +163,7 @@ typeOfOp op
 
 
 -- | Yield the arity of a primitive.
-arityOfPrim :: GPrim x -> Int
+arityOfPrim :: GCPrim x -> Int
 arityOfPrim pp
  = case pp of
         PVOp op         -> arityOfOp op
@@ -223,68 +203,62 @@ arityOfOp op
 
 
 ---------------------------------------------------------------------------------------------------
--- Generic
-pattern XType n         = XPrim (PType n)
-pattern XFun  n a b     = XApp (XApp (XPrim (PFun n)) a) b
-
 -- Types
-pattern XTS a           = XApp (XPrim PTS) a
-pattern XTList a        = XApp (XPrim PTList) a
+pattern XTList a        = XApp (XFrag PTList) a
 
-pattern XTName          = XPrim PTName
-pattern XTForest        = XPrim PTForest
-pattern XTTree          = XPrim PTTree
-pattern XTTreePath      = XPrim PTTreePath
-pattern XTFilePath      = XPrim PTFilePath
+pattern XTName          = XFrag PTName
+pattern XTForest        = XFrag PTForest
+pattern XTTree          = XFrag PTTree
+pattern XTTreePath      = XFrag PTTreePath
+pattern XTFilePath      = XFrag PTFilePath
 
-pattern XTUnit          = XPrim (PTAtom T.ATUnit)
-pattern XTBool          = XPrim (PTAtom T.ATBool)
-pattern XTInt           = XPrim (PTAtom T.ATInt)
-pattern XTFloat         = XPrim (PTAtom T.ATFloat)
-pattern XTNat           = XPrim (PTAtom T.ATNat)
-pattern XTDecimal       = XPrim (PTAtom T.ATDecimal)
-pattern XTText          = XPrim (PTAtom T.ATText)
-pattern XTTime          = XPrim (PTAtom T.ATTime)
+pattern XTBool          = XFrag (PTAtom T.ATBool)
+pattern XTInt           = XFrag (PTAtom T.ATInt)
+pattern XTFloat         = XFrag (PTAtom T.ATFloat)
+pattern XTNat           = XFrag (PTAtom T.ATNat)
+pattern XTDecimal       = XFrag (PTAtom T.ATDecimal)
+pattern XTText          = XFrag (PTAtom T.ATText)
+pattern XTTime          = XFrag (PTAtom T.ATTime)
 
 -- Values
-pattern XName     n     = XPrim (PVName     n)
-pattern XList     t xs  = XPrim (PVList     t xs)
-pattern XForest   f     = XPrim (PVForest   f)
-pattern XTree     t     = XPrim (PVTree     t)
-pattern XTreePath ts    = XPrim (PVTreePath ts)
-pattern XFilePath fp    = XPrim (PVFilePath fp)
+pattern XName     n     = XFrag (PVName     n)
+pattern XList     t xs  = XFrag (PVList     t xs)
+pattern XForest   f     = XFrag (PVForest   f)
+pattern XTree     t     = XFrag (PVTree     t)
+pattern XTreePath ts    = XFrag (PVTreePath ts)
+pattern XFilePath fp    = XFrag (PVFilePath fp)
 
-pattern XUnit           = XPrim (PVAtom  T.AUnit)
-pattern XBool     x     = XPrim (PVAtom (T.ABool    x))
-pattern XInt      x     = XPrim (PVAtom (T.AInt     x))
-pattern XFloat    x     = XPrim (PVAtom (T.AFloat   x))
-pattern XNat      x     = XPrim (PVAtom (T.ANat     x))
-pattern XDecimal  x     = XPrim (PVAtom (T.ADecimal x))
-pattern XText     x     = XPrim (PVAtom (T.AText    x))
-pattern XTime     x     = XPrim (PVAtom (T.ATime    x))
+pattern XBool     x     = XFrag (PVAtom (T.ABool    x))
+pattern XInt      x     = XFrag (PVAtom (T.AInt     x))
+pattern XFloat    x     = XFrag (PVAtom (T.AFloat   x))
+pattern XNat      x     = XFrag (PVAtom (T.ANat     x))
+pattern XDecimal  x     = XFrag (PVAtom (T.ADecimal x))
+pattern XText     x     = XFrag (PVAtom (T.AText    x))
+pattern XTime     x     = XFrag (PVAtom (T.ATime    x))
 
-pattern XArgument       = XPrim (PVOp PPArgument)
-pattern XLoad           = XPrim (PVOp PPLoad)
-pattern XStore          = XPrim (PVOp PPStore)
-pattern XInitial        = XPrim (PVOp PPInitial)
-pattern XFinal          = XPrim (PVOp PPFinal)
-pattern XSample         = XPrim (PVOp PPSample)
-pattern XGroup          = XPrim (PVOp PPGroup)
-pattern XGather         = XPrim (PVOp PPGather)
-pattern XFlatten        = XPrim (PVOp PPFlatten)
-pattern XRenameFields   = XPrim (PVOp PPRenameFields)
-pattern XPermuteFields  = XPrim (PVOp PPPermuteFields)
+pattern XArgument       = XFrag (PVOp PPArgument)
+pattern XLoad           = XFrag (PVOp PPLoad)
+pattern XStore          = XFrag (PVOp PPStore)
+pattern XInitial        = XFrag (PVOp PPInitial)
+pattern XFinal          = XFrag (PVOp PPFinal)
+pattern XSample         = XFrag (PVOp PPSample)
+pattern XGroup          = XFrag (PVOp PPGroup)
+pattern XGather         = XFrag (PVOp PPGather)
+pattern XFlatten        = XFrag (PVOp PPFlatten)
+pattern XRenameFields   = XFrag (PVOp PPRenameFields)
+pattern XPermuteFields  = XFrag (PVOp PPPermuteFields)
 
-pattern XAt             = XPrim (PVOp PPAt)
-pattern XOn             = XPrim (PVOp PPOn)
+pattern XAt             = XFrag (PVOp PPAt)
+pattern XOn             = XFrag (PVOp PPOn)
 
-(@@) a b  = XApp a b
-infixl 9 @@
 
-(~>) a b  = XApp (XApp (XPrim (PFun 1)) a) b
+(~>)    ::  (GXPrim l ~ K.GPrim (GExp l))
+        =>  GExp l -> GExp l -> GExp l
+(~>) a b  = XApp (XApp (XPrim (K.PFun 1)) a) b
 infixr ~>
 
-(~~>) a b = XApp (XApp (XPrim (PFun 2)) a) b
+
+(~~>)   ::  (GXPrim l ~ K.GPrim (GExp l))
+        =>  GExp l -> GExp l -> GExp l
+(~~>) a b = XApp (XApp (XPrim (K.PFun 2)) a) b
 infixr ~~>
-
-

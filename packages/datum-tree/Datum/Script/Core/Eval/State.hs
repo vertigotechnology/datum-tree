@@ -80,26 +80,22 @@ data Context
 deriving instance Show Context
 
 
-
-
-
-
 -------------------------------------------------------------------------------
-pattern VVPAP p         = VPAP (PAP p [])
+pattern VVPAF p         = VPAP (PAF p [])
 
-pattern VName n         = VVPAP (PVName     n)
-pattern VList t xs      = VVPAP (PVList     t xs)
-pattern VForest f       = VVPAP (PVForest   f)
-pattern VTree t         = VVPAP (PVTree     t)
-pattern VTreePath ts    = VVPAP (PVTreePath ts)
-pattern VFilePath fp    = VVPAP (PVFilePath fp)
+pattern VName n         = VVPAF (PVName     n)
+pattern VList t xs      = VVPAF (PVList     t xs)
+pattern VForest f       = VVPAF (PVForest   f)
+pattern VTree t         = VVPAF (PVTree     t)
+pattern VTreePath ts    = VVPAF (PVTreePath ts)
+pattern VFilePath fp    = VVPAF (PVFilePath fp)
 
-pattern VUnit           = VVPAP (PVAtom  AUnit)
-pattern VBool    x      = VVPAP (PVAtom (ABool    x))
-pattern VInt     x      = VVPAP (PVAtom (AInt     x))
-pattern VFloat   x      = VVPAP (PVAtom (AFloat   x))
-pattern VNat     x      = VVPAP (PVAtom (ANat     x))
-pattern VDecimal x      = VVPAP (PVAtom (ADecimal x))
-pattern VText    x      = VVPAP (PVAtom (AText    x))
-pattern VTime    x      = VVPAP (PVAtom (ATime    x))
+pattern VUnit           = VVPAF (PVAtom  AUnit)
+pattern VBool    x      = VVPAF (PVAtom (ABool    x))
+pattern VInt     x      = VVPAF (PVAtom (AInt     x))
+pattern VFloat   x      = VVPAF (PVAtom (AFloat   x))
+pattern VNat     x      = VVPAF (PVAtom (ANat     x))
+pattern VDecimal x      = VVPAF (PVAtom (ADecimal x))
+pattern VText    x      = VVPAF (PVAtom (AText    x))
+pattern VTime    x      = VVPAF (PVAtom (ATime    x))
 

@@ -47,6 +47,7 @@ deriving instance Show Clo
 -- | Partially applied primitive.
 data PAP
         = PAP !Prim ![Value]
+        | PAF !Frag ![Value]
 
 deriving instance Show PAP
 

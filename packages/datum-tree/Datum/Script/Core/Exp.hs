@@ -22,7 +22,8 @@ module Datum.Script.Core.Exp
         , K.Cast  (..)
 
           -- ** Primitives
-        , Prim, GPrim (..)
+        , Prim,         K.GPrim  (..)
+        , Frag,         C.GCPrim (..)
         , T.AtomType    (..)
         , T.Atom        (..)
 
@@ -38,15 +39,18 @@ module Datum.Script.Core.Exp
         , K.expOfPipeline
 
           -- ** Pattern Synonyms
-        , module Datum.Script.Core.Exp.Prim)
+        , module Datum.Script.Core.Exp.Prim
+        , module Datum.Script.Kernel.Exp.Prim)
 where
 import Datum.Script.Core.Exp.Prim
+import Datum.Script.Kernel.Exp.Prim                     hiding ((~>), (~~>), typeOfPrim)
 import Data.Text                                        (Text)
 import qualified Datum.Script.Core.Exp.Prim             as C
 import qualified Datum.Script.Kernel.Exp.Bind           as K
 import qualified Datum.Script.Kernel.Exp.Cast           as K
 import qualified Datum.Script.Kernel.Exp.Generic        as K
 import qualified Datum.Script.Kernel.Exp.Compounds      as K
+import qualified Datum.Script.Kernel.Exp.Prim           as K
 import qualified Datum.Data.Tree                        as T
 import qualified Datum.Data.Tree.Exp                    as T
 
@@ -65,13 +69,16 @@ pattern UName n = K.UName n
 
 -- | Tag for the core lanugage with a unit annotation.
 data Core       = Core
-type Exp        = K.GExp  Core
-type Prim       = C.GPrim (K.GExp Core)
+type Exp        = K.GExp   Core
+type Prim       = K.GPrim  Exp
+type Frag       = C.GCPrim Exp
 
 type instance K.GXAnnot Core = ()
 type instance K.GXPrim  Core = Prim
 type instance K.GXBind  Core = Bind
 type instance K.GXBound Core = Bound
 type instance K.GXCast  Core = K.Cast
+type instance K.GXFrag  Core = Frag
 
 deriving instance Show Core
+

@@ -17,7 +17,10 @@ module Datum.Script.Source.Exp
         , K.Cast (..)
 
           -- ** Primitives
-        , Prim, GPrim (..)
+        , Prim, Frag
+        , C.GCPrim (..)
+        , K.GPrim  (..)
+
         , T.AtomType    (..)
         , T.Atom        (..)
 
@@ -35,13 +38,16 @@ module Datum.Script.Source.Exp
         , S.takeXApps
 
         -- ** Pattern Synonyms
-        , module Datum.Script.Core.Exp.Prim)
+        , module Datum.Script.Core.Exp.Prim
+        , module Datum.Script.Kernel.Exp.Prim)
 where
 import Text.Parsec                                      (SourcePos)
 import Datum.Script.Core.Exp.Prim
+import Datum.Script.Kernel.Exp.Prim                     hiding ((~>), (~~>), typeOfPrim)
 import Data.Text                                        (Text)
 import qualified Datum.Script.Core.Exp                  as C
 import qualified Datum.Script.Kernel.Exp.Cast           as K
+import qualified Datum.Script.Kernel.Exp.Prim           as K
 import qualified Datum.Script.Source.Exp.Compounds      as S
 import qualified Datum.Script.Source.Exp.Generic        as S
 import qualified Datum.Data.Tree.Exp                    as T
@@ -53,10 +59,13 @@ data Source     = Source
 type Module     = S.GModule Source
 type Top        = S.GTop    Source
 type Exp        = S.GExp    Source
-type Prim       = C.GPrim (S.GExp Source)
+type Prim       = K.GPrim   Exp
+type Frag       = C.GCPrim  Exp
+
 
 type instance S.GXAnnot Source = SourcePos
 type instance S.GXPrim  Source = Prim
 type instance S.GXBind  Source = Name
 type instance S.GXBound Source = Name
 type instance S.GXCast  Source = K.Cast
+type instance S.GXFrag  Source = Frag

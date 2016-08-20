@@ -38,6 +38,9 @@ step   state@(State world env ctx ctl)
         ControlExp (XPrim p)
          ->     step $ State world env ctx $ ControlPAP (PAP p [])
 
+        ControlExp (XFrag p)
+         ->     step $ State world env ctx $ ControlPAP (PAF p [])
+
 
         -- Silently look through casts.
         ControlExp (XCast _ x)
@@ -51,9 +54,9 @@ step   state@(State world env ctx ctl)
                  -> progress $ State world env' ctx 
                              $ ControlExp x'
 
-                Just (VPAP (PAP p ts))
+                Just (VPAP pp)
                  -> progress $ State world Env.empty ctx 
-                             $ ControlPAP (PAP p ts)
+                             $ ControlPAP pp
 
                 Nothing
                  -> failure  $ ErrorCore $ ErrorCoreUnboundVariable u
@@ -97,7 +100,7 @@ step   state@(State world env ctx ctl)
 
 
         -- Evaluate fully applied primitive applications in PAP form.
-        ControlPAP (PAP (PVOp op) args)
+        ControlPAP (PAF (PVOp op) args)
          | length args == arityOfOp op
          -> do  result  <- Prim.step step state op args
                 case result of
@@ -142,8 +145,8 @@ step   state@(State world env ctx ctl)
                 ContextAppFun thunk ctx'
                  | Just (PVOp op, ts) 
                    <- case thunk of
-                        VClo (Clo (XPrim p) _env)  -> Just (p, [])
-                        VPAP (PAP p ts)            -> Just (p, ts)
+                        VClo (Clo (XFrag p) _env)  -> Just (p, [])
+                        VPAP (PAF p ts)            -> Just (p, ts)
                         _                          -> Nothing
 
                  -> do  let t'     = trimValue $ thunkify ctl env

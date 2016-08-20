@@ -29,6 +29,7 @@ import qualified Data.Text                              as Text
 import qualified Data.Text.Lazy.IO                      as LText
 import qualified Data.Text.Encoding                     as Text
 
+
 ---------------------------------------------------------------------------------------------------
 -- | Evaluate a primitive applied to some arguments.
 step    :: (State -> IO (Either Error (Maybe State)))
@@ -223,7 +224,7 @@ step self state PPOn [VList _ names, thunk, VTree tree0]
 step _ _ p args
  -- Form a thunk from a partially applied primitive.
  | length args < arityOfOp p
- = do   progress $ VPAP (PAP (PVOp p) args)
+ = do   progress $ VPAP (PAF (PVOp p) args)
 
  -- Primitive application is ill-typed.
  | otherwise
@@ -269,7 +270,7 @@ liftForestTransformIO sstep thunk state0 _path0 forest0
                  Right (Just state') -> orivour state'
                  Right Nothing
                   -> case stateControl state of
-                        ControlPAP (PAP (PVForest t) [])
+                        ControlPAP (PAF (PVForest t) [])
                               -> return t
                         focus -> error $ "datum-tree: wrong type in internal forest evaluation "
                               ++ Text.ppShow focus
@@ -304,21 +305,24 @@ liftTreeTransformIO sstep thunk state0 _path0 tree0
                  Right (Just state') -> orivour state'
                  Right Nothing
                   -> case stateControl state of
-                        ControlPAP (PAP (PVTree t) [])
+                        ControlPAP (PAF (PVTree t) [])
                               -> return t
                         focus -> error $ "datum-tree: unexpected type in internal tree evaluation "
                               ++ Text.ppShow focus
 
 
 -- | Curry the given primitive argument onto a thunk.
-curryThunkPrim  :: Value -> Prim -> Value
+curryThunkPrim  :: Value -> Frag -> Value
 curryThunkPrim tt pArg
  = case tt of
         VClo (Clo x1 env)
-         -> VClo (Clo (XApp x1 (XPrim pArg)) env)
+         -> VClo (Clo (XApp x1 (XFrag pArg)) env)
 
         VPAP (PAP p ts)
-         -> VPAP (PAP p (ts ++ [VPAP (PAP pArg [])]))
+         -> VPAP (PAP p (ts ++ [VPAP (PAF pArg [])]))
+
+        VPAP (PAF p ts)
+         -> VPAP (PAF p (ts ++ [VPAP (PAF pArg [])]))
 
 
 ---------------------------------------------------------------------------------------------------

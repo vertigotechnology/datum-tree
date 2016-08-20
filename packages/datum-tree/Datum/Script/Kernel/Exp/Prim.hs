@@ -6,12 +6,13 @@ import Datum.Script.Kernel.Exp.Generic
 
 ---------------------------------------------------------------------------------------------------
 -- | Primitive objects in the kernel language.
-data GPrim p x
+data GPrim x
         -- Universal, works at all levels.
         = PHole x               -- ^ A hole of the given type, to be elaborated.
         | PType Int             -- ^ Type of types at the given level.
         | PFun  Int             -- ^ Function arrow at the given level.
-        | PAll  Int x x         -- ^ Universal quantification with a kind and bound.
+        | PAll  Int x x
+                                -- ^ Universal quantification with a kind and bound.
 
         -- Baked in Kinds
         | PKData                -- ^ Kind of data types.
@@ -25,19 +26,17 @@ data GPrim p x
         -- Baked in Values
         | PVUnit                -- ^ Unit value.
 
-        -- Fragment specific primitives.
-        | PPFrag p              -- ^ Fragment specific primitives.
 
-deriving instance (Show p, Show x) => Show (GPrim p x)
+deriving instance (Show x) => Show (GPrim x)
 
 
 ---------------------------------------------------------------------------------------------------
 typeOfPrim 
-        :: (GXPrim l ~ GPrim p (GExp l))
-        => (p -> GExp l)
-        -> GPrim p (GExp l) -> GExp l
+        :: (x ~ GExp l, GXPrim l ~ GPrim l)
+        => GPrim x
+        -> GExp  l
 
-typeOfPrim tFrag pp
+typeOfPrim pp
  = case pp of
         -- Types of Generic things.
         PHole t         
@@ -54,7 +53,6 @@ typeOfPrim tFrag pp
          -> let n'      = n + 1
             in  XFun n' k (XFun n' t (XType n'))
 
-
         -- Types of Kinds
         PKData          -> XType 2
         PKEffect        -> XType 2
@@ -66,9 +64,6 @@ typeOfPrim tFrag pp
 
         -- Types of Values
         PVUnit          -> XTUnit
-
-        -- Fragments specific
-        PPFrag p        -> tFrag p
 
 
 ---------------------------------------------------------------------------------------------------
@@ -82,12 +77,13 @@ pattern XKEffect        = XPrim PKEffect
 
 
 -- Types
-pattern XTS e a         = XApp  (XApp (XPrim PTS) e) a
+pattern XTS a           = XApp (XPrim PTS) a
 pattern XTUnit          = XPrim PTUnit
 pattern XTVoid          = XPrim PTVoid
 
 -- Values
 pattern XVUnit          = XPrim PVUnit
+
 
 (@@) a b  = XApp a b
 infixl 9 @@

@@ -108,11 +108,11 @@ runExp config _filePath xCore
          -- Many scripts store their results to some destination file, 
          -- and we don't need the '()' from the final store operation
          -- printed to the console. The GHCi console also does this.
-         Eval.ControlPAP (Eval.PAP (Exp.PVAtom Exp.AUnit) [])
+         Eval.ControlPAP (Eval.PAF (Exp.PVAtom Exp.AUnit) [])
           |  not $ configShowUnit config
           -> return ()
 
-         Eval.ControlExp (Exp.XPrim (Exp.PVAtom Exp.AUnit))
+         Eval.ControlExp (Exp.XFrag (Exp.PVAtom Exp.AUnit))
           |  not $ configShowUnit config
           -> return ()
 

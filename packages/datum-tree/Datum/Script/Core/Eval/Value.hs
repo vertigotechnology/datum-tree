@@ -32,6 +32,9 @@ trimValue vv
         VPAP (PAP p vs)
          ->     VPAP (PAP p (map trimValue vs))
 
+        VPAP (PAF p vs)
+         ->     VPAP (PAF p (map trimValue vs))
+
 
 -- | Determine the set of unbound variables that are not
 --   present in the given environment.
@@ -43,6 +46,7 @@ freeVarsX env xx
  = case xx of
         XAnnot _ x      -> freeVarsX env x
         XPrim{}         -> Set.empty
+        XFrag{}         -> Set.empty
 
         XVar (UIx _)    -> Set.empty
         XVar (UName n)

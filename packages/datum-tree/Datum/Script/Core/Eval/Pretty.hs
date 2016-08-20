@@ -41,11 +41,10 @@ buildControl c cc
 
 -------------------------------------------------------------------------------
 buildPAP   :: Config -> PAP -> Builder
-buildPAP c (PAP p [])
-        = buildPrim c p
-
-buildPAP _c (PAP _p _vs)
-        = fromText "<closure>"
+buildPAP c  (PAP  p [])  = buildPrim c p
+buildPAP c  (PAF  p [])  = buildFrag c p
+buildPAP _c (PAP _p _vs) = fromText "<closure>"
+buildPAP _c (PAF _p _vs) = fromText "<closure>"
 
 
 -------------------------------------------------------------------------------
@@ -54,6 +53,7 @@ buildExp c prec xx
  = case xx of
         XAnnot _ x      -> buildExp   c prec x
         XPrim  p        -> buildPrim  c p
+        XFrag  f        -> buildFrag  c f
         XVar   u        -> buildBound c u
         XCast  _ x      -> buildExp   c prec x
 
@@ -105,12 +105,25 @@ buildPrim c p
          <> fromString ")"
 
         -- Kinds
-        PKComp          -> fromString "Comp"
         PKData          -> fromString "Data"
-        PKAtom          -> fromString "Atom"
+        PKEffect        -> fromString "Effect"
 
         -- Types
         PTS             -> fromString "S"
+        PTVoid          -> fromString "Void"
+        PTUnit          -> fromString "Unit"
+
+        -- Values
+        PVUnit          -> fromString "()"
+
+
+buildFrag :: Config -> Frag -> Builder
+buildFrag c f
+ = case f of
+        -- Kinds
+        PKAtom          -> fromString "Atom"
+
+        -- Types
         PTList          -> fromString "List"
         PTName          -> fromString "Name"
         PTNum           -> fromString "Num"

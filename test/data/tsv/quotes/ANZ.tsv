@@ -1,4 +1,4 @@
-symbol	date     open	close	high	low	mid	volume	stamp
+symbol	date	open	close	high	low	mid	volume	stamp
 ANZ.AX	2014-01-01	32.230	32.230	32.230	32.230	28.733	0	2015-05-08
 ANZ.AX	2014-01-02	32.230	32.410	32.055	32.220	28.724	1906900	2015-05-08
 ANZ.AX	2014-01-03	32.150	32.230	31.940	32.210	28.715	1895600	2015-05-08

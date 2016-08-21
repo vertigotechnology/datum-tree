@@ -1,4 +1,4 @@
-symbol  date     open   close   high    low     mid     volume  stamp
+symbol	date	open	close	high	low	mid	volume	stamp
 NAB.AX	2014-01-01	34.830	34.830	34.830	34.830	30.734	0	2015-05-08
 NAB.AX	2014-01-02	34.850	35.000	34.650	34.830	30.734	1355900	2015-05-08
 NAB.AX	2014-01-03	34.550	34.710	34.500	34.690	30.610	1647500	2015-05-08

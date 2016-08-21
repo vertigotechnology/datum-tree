@@ -7,9 +7,9 @@ import Control.Monad
 
 import qualified Datum.Script.Source.Transform.ToCore   as Source
 import qualified Datum.Script.Source.Transform.Defix    as Source
-import qualified Datum.Script.Source.Parser             as Source
-import qualified Datum.Script.Source.Lexer              as Source
-import qualified Datum.Script.Source.Token              as Source
+import qualified Datum.Script.Source.Load.Parser        as Source
+import qualified Datum.Script.Source.Load.Lexer         as Source
+import qualified Datum.Script.Source.Load.Token         as Source
 import qualified Datum.Script.Source.Exp                as Source
 
 import qualified Datum.Script.Core.Exp                  as Core

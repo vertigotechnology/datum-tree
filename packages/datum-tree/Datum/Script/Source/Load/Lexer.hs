@@ -1,9 +1,9 @@
 
-module Datum.Script.Source.Lexer
+module Datum.Script.Source.Load.Lexer
         ( Token (..)
         , tokenize)
 where
-import Datum.Script.Source.Token
+import Datum.Script.Source.Load.Token
 import Control.Monad
 import qualified Data.Char      as Char
 import qualified Data.List      as List

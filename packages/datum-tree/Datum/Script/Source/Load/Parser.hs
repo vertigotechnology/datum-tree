@@ -1,10 +1,10 @@
 
-module Datum.Script.Source.Parser where
+module Datum.Script.Source.Load.Parser where
 import Data.Functor.Identity
 import Datum.Script.Source.Exp
-import Datum.Script.Source.Token                (Token(..), Loc)
+import Datum.Script.Source.Load.Token           (Token(..), Loc)
 import Text.Parsec                              (SourcePos, (<?>))
-import qualified Datum.Script.Source.Token      as K
+import qualified Datum.Script.Source.Load.Token as K
 import qualified Datum.Data.Tree.Exp            as T
 import qualified Text.Parsec                    as P
 import qualified Text.Parsec.Pos                as P

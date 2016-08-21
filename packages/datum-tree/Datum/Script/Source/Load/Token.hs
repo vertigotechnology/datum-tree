@@ -1,5 +1,5 @@
 
-module Datum.Script.Source.Token
+module Datum.Script.Source.Load.Token
         ( Loc   (..)
         , Token (..)
         , sayToken)

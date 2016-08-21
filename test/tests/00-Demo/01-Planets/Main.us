@@ -1,0 +1,13 @@
+
+objects = "test/data/csv/SolarSystem.csv";
+
+main   
+ = load objects
+ & on /row
+        $ rename-fields ['name, 'classification, 'orbits]
+
+ & on /row
+        $ group 'classification
+
+ & on /classification/row
+        $ group 'orbits;

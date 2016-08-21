@@ -1,5 +1,5 @@
-{  "classification"
-    : ("classification": Text)
+{  "cls"
+    : ("cls": Text)
     {   "orbits"
         : ("orbits": Text)
         {   "row": ("name": Text)
@@ -21,7 +21,7 @@
       ]
     }
   , ("Star")
-    { [ ("None")
+    { [ ("Galactic Center")
         { [ ("Sol")
           ]
         }

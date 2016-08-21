@@ -111,14 +111,12 @@ Library
         Datum.Script.Core.Eval.Value
         Datum.Script.Core.Eval
 
-        Datum.Script.Source.Transform.Defix.Error
-        Datum.Script.Source.Transform.Defix.FixTable
-        Datum.Script.Source.Transform.Defix
         Datum.Script.Source.Exp
         Datum.Script.Source.Lexer
         Datum.Script.Source.Load
         Datum.Script.Source.Parser
         Datum.Script.Source.Token
+        Datum.Script.Source.Transform.Defix
 
 
  other-modules:
@@ -165,7 +163,10 @@ Library
         Datum.Script.Kernel.Exp.Prim
 
         Datum.Script.Source.Exp.Generic
-        
+
+        Datum.Script.Source.Transform.Defix.Error
+        Datum.Script.Source.Transform.Defix.FixTable
+
  extensions:
         MultiParamTypeClasses
         ScopedTypeVariables

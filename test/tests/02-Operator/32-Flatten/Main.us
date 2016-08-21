@@ -1,4 +1,9 @@
 
+-- Check flatten operator.
+--   We group the companies by industry grouping,
+--   sample 10 elements from 10 groups,
+--   then flatten the result.
+--   
 main
  = load   "test/data/csv/ASXListedCompanies.csv"
  & on /row $ rename-fields ['name, 'symbol, 'grouping]

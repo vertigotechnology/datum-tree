@@ -1,4 +1,13 @@
 
+-- Combination of grouping, sampling and permutation.
+--   We group the companies by industry grouping code,
+--   sample at most 10 elements from each group,
+--   then permute the tuples in each group to select
+--   only the symbol.
+--
+--   This demonstrates that we can lift per-group operators
+--   to our produced groups.
+--
 main
  = load   "test/data/csv/ASXListedCompanies.csv"
 

@@ -1,4 +1,6 @@
 
+-- Check permute operator.
+-- We can permute the fields in a tuple.
 main
  = load   "test/data/csv/ASXListedCompanies.csv"
  & on /row $ rename-fields  ['name,   'symbol, 'grouping]

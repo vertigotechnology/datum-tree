@@ -1,3 +1,4 @@
 
+-- Check basic higher order functions.
 id   = (λx → x);
 main = id 5;

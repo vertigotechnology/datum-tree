@@ -1,9 +1,10 @@
 
-objects
- = "test/data/csv/SolarSystem.csv";
-
+-- Check group operator.
+-- Group objects by classification,
+--  then group each of those subgroups by the orbits field.
 main
- = load objects
+ = load "test/data/csv/SolarSystem.csv"
+
  & on   /row
         (rename-fields ['name, 'classification, 'orbits])
 

@@ -1,5 +1,5 @@
 
-
+-- Check literal parsing and printing.
 string  = "I am a string";
 nat     = 23;
 bool    = True;

@@ -1,4 +1,6 @@
 
+-- Check permute operator.
+-- We can drop fields in tuples using permute.
 main
  = load   "test/data/csv/ASXListedCompanies.csv"
  & on /row $ rename-fields  ['name,   'symbol, 'grouping]

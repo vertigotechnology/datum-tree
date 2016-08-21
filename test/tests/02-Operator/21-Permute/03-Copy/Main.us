@@ -1,4 +1,6 @@
 
+-- Check permute operator.
+-- We can copy fields in tuples using the permute operator.
 main
  = load   "test/data/csv/ASXListedCompanies.csv"
  & on /row $ rename-fields  ['name,   'symbol, 'grouping]

@@ -1,4 +1,7 @@
 
+-- Combination of grouping and sampling.
+--   We group the companies by industry grouping code,
+--   then sample at most 10 elements from each of those groups.
 main
  = load   "test/data/csv/ASXListedCompanies.csv"
 

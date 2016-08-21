@@ -1,5 +1,6 @@
 
-
+-- Check field rename operator.
+-- We can rename fields from the source file.
 main
  = load   "test/data/csv/ASXListedCompanies.csv"
  & on /row $ rename-fields ['name, 'symbol, 'grouping]

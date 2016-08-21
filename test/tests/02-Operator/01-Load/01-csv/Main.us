@@ -1,3 +1,4 @@
 
+-- Check CSV loader.
 main    = load "test/data/csv/SolarSystem.csv";
 

@@ -1,10 +1,11 @@
 
-
-companies 
- = "test/data/csv/ASXListedCompanies.csv";
-
+-- Check gather operator.
+--   We group by industry grouping then gather the tuples
+--   back to the top level of the tree.
+--   We end up with a flat table where the companies are 
+--   still ordered by industry group.
 main
- = load companies
+ = load "test/data/csv/ASXListedCompanies.csv"
  & on /row
         $ rename-fields ['name, 'symbol, 'grouping] 
         @ group 'grouping

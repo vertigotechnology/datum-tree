@@ -1,4 +1,6 @@
 
+-- Check sample operator.
+-- Sampling selects the given number of sub branches of every branch.
 main
  = load   "test/data/csv/ASXListedCompanies.csv"
  & sample 10;

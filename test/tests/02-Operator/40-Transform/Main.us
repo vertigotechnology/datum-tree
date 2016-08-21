@@ -1,8 +1,9 @@
 
-companies = "test/data/csv/ASXListedCompanies.csv";
 
+-- Check the '@' function composition operator.
+--   We are applying a composed function to sub groups via 'on'.
 main
- = load companies
+ = load "test/data/csv/ASXListedCompanies.csv"
  & on /row    (rename-fields    ['name, 'symbol, 'grouping] 
               @ group 'grouping)
  & sample 20

@@ -1,9 +1,8 @@
 
-objects
- = "test/data/csv/SolarSystem.csv";
-
+-- Check group operator.
+-- Group data by a single key.
 main
- = load objects
- & on /row     (rename-fields ['name, 'classification, 'orbits])
- & on /row     (group 'classification);
+ = load "test/data/csv/SolarSystem.csv"
+ & on /row  $ rename-fields ['name, 'classification, 'orbits]
+ & on /row  $ group 'classification;
 

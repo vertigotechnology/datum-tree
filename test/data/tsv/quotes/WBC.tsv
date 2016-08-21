@@ -1,4 +1,4 @@
-symbol  date            open    close   high    low     mid     volume  stamp
+symbol  date     open   close   high    low     mid     volume  stamp
 WBC.AX	2014-01-01	32.380	32.380	32.380	32.380	28.847	0	2015-05-08
 WBC.AX	2014-01-02	32.450	32.490	32.185	32.340	28.812	2265100	2015-05-08
 WBC.AX	2014-01-03	32.200	32.370	32.055	32.340	28.812	2020300	2015-05-08

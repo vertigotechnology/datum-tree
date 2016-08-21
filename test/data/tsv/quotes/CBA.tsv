@@ -1,4 +1,4 @@
-symbol  date            open    close   high    low     mid     volume  stamp
+symbol  date     open   close   high    low     mid     volume  stamp
 CBA.AX	2014-01-01	77.800	77.800	77.800	77.800	70.063	0	2015-05-08
 CBA.AX	2014-01-02	78.090	78.350	77.540	77.840	70.099	1297600	2015-05-08
 CBA.AX	2014-01-03	77.500	77.590	77.200	77.580	69.865	1134800	2015-05-08

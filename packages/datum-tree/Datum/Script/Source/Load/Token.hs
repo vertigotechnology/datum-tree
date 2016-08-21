@@ -12,6 +12,8 @@ data Token
         | KErrorJunk   Char     -- ^ Some junk or invalid character.
         | KErrorUnterm String   -- ^ Unterminated string.
 
+        | KComment     String   -- ^ Comment string.
+
         | KRoundBra             -- ^ Open  round parenthesis.
         | KRoundKet             -- ^ Close round parenthesis.
 
@@ -47,6 +49,8 @@ sayToken tok
         KEndOfFile      -> "end of file"
         KErrorJunk   _  -> "character"
         KErrorUnterm _  -> "unterminated string"
+
+        KComment _      -> "comment"
 
         KRoundBra       -> "open round parenthesis"
         KRoundKet       -> "close round parenthesis"

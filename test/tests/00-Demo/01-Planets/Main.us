@@ -1,13 +1,48 @@
 
+-- Orbital data example.
+--   Given a flat CSV file listing objects, classification and what they orbit,
+--   group the bodies so we can see the orbital structure.
+--
+-- For example, given:
+--
+--   Name,Classification,Orbits
+--   Sol,Star,None
+--   Earth,Planet,Sol
+--   Luna,Moon,Earth
+--   Enceladus,Moon,Saturn
+--   Saturn,Planet,Sol
+--
+--  We get:
+--
+--  { [ ("Planet")
+--      { [ ("Sol")
+--          { [ ("Earth")
+--            , ("Saturn")
+--            ]
+--          }
+--        ]
+--      }
+--   ...
+--
+--  So Earth and Saturn are Planets which orbit Sol.
+--
+
+-- Planet orbit data.
 objects = "test/data/csv/SolarSystem.csv";
 
 main   
  = load objects
- & on /row
-        $ rename-fields ['name, 'classification, 'orbits]
 
+ -- Rename fields from the source data,
+ -- the original names are ok, but we demonstrate the renaming function.
  & on /row
-        $ group 'classification
+        $ rename-fields ['name, 'cls, 'orbits]
 
- & on /classification/row
+ -- Group objects by classification, whether they're planets or moons etc.
+ & on /row
+        $ group 'cls
+
+ -- Group objects by what they orbit, 
+ -- so the result is structured as cls/orbits/name.
+ & on /cls/row
         $ group 'orbits;

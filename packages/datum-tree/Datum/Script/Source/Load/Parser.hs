@@ -24,7 +24,11 @@ runParser
         -> Either P.ParseError a
 
 runParser filePath tokens p 
-        = P.parse p filePath tokens
+ = P.parse p filePath 
+ $ filter (not . isKComment . L.locatedBody) tokens
+ where
+        isKComment (KComment _) = True
+        isKComment _            = False
 
 
 -- | Yield a source position corresponding to the start of the given file.

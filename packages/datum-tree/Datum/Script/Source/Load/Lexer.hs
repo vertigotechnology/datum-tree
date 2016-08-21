@@ -38,7 +38,13 @@ scanner :: FilePath
 scanner fileName
  = I.skip Char.isSpace
  $ I.alts
-        [ fmap stamp    $ scanPunctuation
+        [ fmap (stamp' KComment)
+                $ I.scanHaskellCommentBlock
+
+        , fmap (stamp' KComment)
+                $ I.scanHaskellCommentLine
+
+        , fmap stamp    $ scanPunctuation
         , fmap stamp    $ scanKeyword
         , fmap stamp    $ scanSymbol
         , fmap stamp    $ scanVar

@@ -9,12 +9,17 @@ import Datum.Script.Core.Exp                    (Exp)
 import Config                                   (Config(..))
 import Data.Maybe
 import qualified Config                         as Config
+
 import qualified Datum.Script.Core.Exp          as Exp
 import qualified Datum.Script.Core.Eval         as Eval
 import qualified Datum.Script.Core.Eval.Pretty  as Eval
 import qualified Datum.Script.Core.Eval.Env     as Eval
+import qualified Datum.Script.Core.Eval.Error   as Eval
+
 import qualified System.Environment             as System
 import qualified System.Exit                    as System
+import qualified System.IO                      as System
+
 import qualified Data.Text.Lazy.IO              as LText
 import qualified Data.Text                      as Text
 
@@ -139,7 +144,30 @@ eval config state
 
         result  <- Eval.step state
         case result of 
-         Left  err              -> error $ show err
+         Left  err              -> errorEval state err
          Right Nothing          -> return state
          Right (Just state')    -> eval config state'
+
+
+errorEval :: Eval.State -> Eval.Error -> IO a
+errorEval _state err
+ = case err of
+        Eval.Error str       
+         -> error str
+
+        Eval.ErrorCore errCore
+         -> error $ "Core error " ++ show errCore
+
+        Eval.ErrorPrim errPrim
+         -> do  System.hPutStr System.stderr
+                 $ "tree: Runtime error during query evaluation.\n\n"
+                 ++ show (Eval.ppErrorPrim errPrim)
+                 ++ "\n\n"
+
+                System.exitFailure
+
+        Eval.ErrorCrash
+         -> error $ "Crash"
+
+
 

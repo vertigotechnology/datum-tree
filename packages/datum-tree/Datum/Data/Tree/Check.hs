@@ -73,6 +73,7 @@ instance Check (Tree c) where
  check' (Path ps pts) 
         (Tree b@(B t subs) bt@(BT name tt@(TT _nts) tsSub))
   = do
+        -- Build the current path into the tree.
         let ps'         = IForest name : ps
         let pts'        = ITForest bt  : pts
         let path'       = Path ps' pts'
@@ -84,10 +85,12 @@ instance Check (Tree c) where
         -- Check the key matches its type.
         _ <- check' path'  (Key t tt)
 
-        -- Check that the number of sub trees matches the number of
-        -- sub dimensions.
-        when (A.length subs /= A.length tsSub)
-         $ throwError $ ErrorArityDim path' subs tsSub
+        -- Check that if we have sub trees then the number of 
+        -- sub trees matches the expected number of dimensions.
+        -- It's ok not to have any sub trees at all.
+        when (  (A.length subs /= 0)
+             && (A.length subs /= A.length tsSub))
+         $ throwError $ ErrorArityDim path' t subs tsSub
 
         -- Check that sub dimension names do not clash.
         let nsSub       = [n | Box (BT n _ _) <- A.toList tsSub]
@@ -96,7 +99,7 @@ instance Check (Tree c) where
 
         -- Check each of the sub forests.
         mapM_   (check' path') 
-                $ zipWith Forest (unboxes subs) (unboxes tsSub)
+         $ zipWith Forest (unboxes subs) (unboxes tsSub)
 
         return (Tree b bt)
 

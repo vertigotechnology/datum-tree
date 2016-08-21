@@ -6,6 +6,7 @@ import Text.PrettyPrint.Leijen
 import Data.Maybe
 import Prelude                          hiding ((<$>))
 import Data.Repa.Array                  (Array)
+import Data.Default
 import qualified Data.Repa.Array        as A
 import qualified Data.List              as L
 
@@ -21,6 +22,8 @@ data Config
           configColumnFormats   :: Maybe [ColumnFormat] }
 
 
+instance Default Config where
+ def    = mempty
 
 instance Monoid Config where
  mempty = Config

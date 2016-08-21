@@ -1,0 +1,31 @@
+tree: Runtime error during query evaluation.
+
+Type error in tree file
+  when loading: "test/tests/02-Operator/01-Load/02-matryo/14-ErrorClashField/Companies-ErrorClashField.matryo"
+
+Field name clash.
+  names:      ["DERP","DERP"]
+  on path:    (pathtype (itforest (tbranch "website"
+        (ttype  (telement "DERP" ttext)
+                (telement "DERP" ttext)))) (itforest (tbranch "company"
+        (ttype  (telement "symbol" ttext)
+                (telement "name" ttext)
+                (telement "industry group" ttext))
+        (tbranch "office"
+                (ttype  (telement "name" ttext)
+                        (telement "address" ttext)))
+        (tbranch "website"
+                (ttype  (telement "DERP" ttext)
+                        (telement "DERP" ttext))))) (itforest (tbranch "root"
+        (ttype)
+        (tbranch "company"
+                (ttype  (telement "symbol" ttext)
+                        (telement "name" ttext)
+                        (telement "industry group" ttext))
+                (tbranch "office"
+                        (ttype  (telement "name" ttext)
+                                (telement "address" ttext)))
+                (tbranch "website"
+                        (ttype  (telement "DERP" ttext)
+                                (telement "DERP" ttext)))))))
+

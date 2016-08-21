@@ -1,0 +1,2 @@
+
+main = load "test/tests/02-Operator/01-Load/02-matryo/13-ErrorClashSubDim/Companies-ErrorClashSubDim.matryo";

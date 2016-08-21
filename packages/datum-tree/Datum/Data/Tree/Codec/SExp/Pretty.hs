@@ -356,6 +356,20 @@ ppIx ix
         IForest n       -> parens $ text "iforest" <+> (text $ show n)
 
 
+-- PathTypes ------------------------------------------------------------------
+ppPathType :: PathType -> Doc
+ppPathType (PathType ixs)
+ = parens $  text "pathtype"
+          <+> (hsep $ map ppIxType ixs)
+
+ppIxType :: IxType -> Doc
+ppIxType ix
+ = case ix of
+        ITField  at     -> parens $ text "itfield"  <+> ppAtomType   at
+        ITTree   tt     -> parens $ text "ittree"   <+> ppTupleType  tt
+        ITForest bt     -> parens $ text "itforest" <+> ppBranchType bt
+
+
 -------------------------------------------------------------------------------
 padL :: Int -> Doc -> Doc
 padL n doc

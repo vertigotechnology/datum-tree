@@ -1,0 +1,3 @@
+
+main = load "test/tests/02-Operator/01-Load/02-matryo/14-ErrorClashField/Companies-ErrorClashField.matryo";
+

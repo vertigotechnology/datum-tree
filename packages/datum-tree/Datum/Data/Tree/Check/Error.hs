@@ -8,7 +8,7 @@ import Datum.Data.Tree.Codec.SExp.Pretty
 import Data.Repa.Array                  (Array)
 import Data.Default
 import Text.PrettyPrint.Leijen
-
+import qualified Data.Repa.Array        as A
 
 -- | Possible type errors.
 data Error
@@ -50,32 +50,35 @@ ppError (ErrorArityDim path tuple gs bts)
  = let  nsGroup  = [mn | G  mn _   <- unboxes gs]
         nsBranch = [n  | BT n  _ _ <- unboxes bts]
 
-   in   vcat
-        $ [ text "Number of branches does not match number of dimensions."
-          , text "  on path:      " <> ppPath path
-          , text "  at branch:    " <> ppTuple def tuple
-          , text "  group  names: " <> text (show nsGroup)
-          , text "  branch names: " <> text (show nsBranch) ]
+   in vcat $
+        [ text "Number of branches does not match number of dimensions."
+        , text "  group  names: "       <> text (show nsGroup)
+        , text "  branch names: "       <> text (show nsBranch) 
+        , text "  at branch:    "       <> ppTuple def tuple 
+        , text "  on path:      "       <> ppPath path ]
+
 
 ppError (ErrorArityTuple path as es)
  = vcat [ text "Number of atoms in tuple does not match tuple type."
-        , text "  on path:    " <> ppPath path
-        , text "  atoms:      " <> text (show as)
-        , text "  tuple type: " <> text (show es) ]
+        , text "  atoms:       "        <> (hsep $ map ppAtom $ unboxes as)
+        , text "  tuple types: "        <> (hsep $ map ppAtomType
+                                                 $ [at | Box _ :*: Box at <- A.toList es ])
+        , text "  on path:     "        <> ppPath path
+        ]
 
 ppError (ErrorClashSubDim pt ns)
  = vcat [ text "Sub dimension name clash."
-        , text "  on path:    " <> text (show pt)
-        , text "  names:      " <> text (show ns) ]
+        , text "  names:      "         <> text (show ns)
+        , text "  on path:    "         <> ppPathType pt ]
 
 ppError (ErrorClashField pt ns)
  = vcat [ text "Field name clash."
-        , text "  on path:    " <> text (show pt)
-        , text "  names:      " <> text (show ns) ]
+        , text "  names:      "         <> text (show ns) 
+        , text "  on path:    "         <> ppPathType pt ]
 
 ppError (ErrorAtom p a at)
  = vcat [ text "Atom type mismatch."
-        , text "  on path:             " <> ppPath p
         , text "  atom:                " <> ppAtom a
-        , text "  does not match type: " <> ppAtomType at ]
+        , text "  does not match type: " <> ppAtomType at 
+        , text "  on path:             " <> ppPath p ]
 

@@ -1,0 +1,29 @@
+tree: Runtime error during query evaluation.
+
+Type error in tree file
+  when loading: "test/tests/02-Operator/01-Load/02-matryo/13-ErrorClashSubDim/Companies-ErrorClashSubDim.matryo"
+
+Sub dimension name clash.
+  names:      ["DERP","DERP"]
+  on path:    (pathtype (itforest (tbranch "company"
+        (ttype  (telement "symbol" ttext)
+                (telement "name" ttext)
+                (telement "industry group" ttext))
+        (tbranch "DERP"
+                (ttype  (telement "name" ttext)
+                        (telement "address" ttext)))
+        (tbranch "DERP"
+                (ttype  (telement "name" ttext)
+                        (telement "url" ttext))))) (itforest (tbranch "root"
+        (ttype)
+        (tbranch "company"
+                (ttype  (telement "symbol" ttext)
+                        (telement "name" ttext)
+                        (telement "industry group" ttext))
+                (tbranch "DERP"
+                        (ttype  (telement "name" ttext)
+                                (telement "address" ttext)))
+                (tbranch "DERP"
+                        (ttype  (telement "name" ttext)
+                                (telement "url" ttext)))))))
+

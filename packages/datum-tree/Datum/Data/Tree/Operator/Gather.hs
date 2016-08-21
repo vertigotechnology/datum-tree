@@ -2,7 +2,6 @@
 module Datum.Data.Tree.Operator.Gather
         (gatherTree)
 where
-import Datum.Data.Tree.Compounds
 import Datum.Data.Tree.Exp
 import Data.Maybe
 import Data.Monoid

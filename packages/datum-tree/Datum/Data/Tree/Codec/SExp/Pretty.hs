@@ -1,6 +1,5 @@
 {-# OPTIONS_HADDOCK hide #-}
 module Datum.Data.Tree.Codec.SExp.Pretty where
-import Datum.Data.Tree.Compounds
 import Datum.Data.Tree.Exp
 
 import Text.PrettyPrint.Leijen

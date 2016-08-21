@@ -1,5 +1,5 @@
 
-module Datum.Data.Tree.Compounds
+module Datum.Data.Tree.Exp.Compounds
         ( -- * Special Trees
           emptyTree
         , emptyForest 
@@ -23,8 +23,11 @@ module Datum.Data.Tree.Compounds
         , elementOfKey
         , hasElement)
 where
-import Datum.Data.Tree.Exp
+import Datum.Data.Tree.Exp.Data
 import Datum.Data.Tree.Operator.Project
+import Data.Repa.Scalar.Box
+import Data.Repa.Scalar.Option           
+import Data.Repa.Scalar.Product
 import qualified Data.Repa.Array        as A
 
 

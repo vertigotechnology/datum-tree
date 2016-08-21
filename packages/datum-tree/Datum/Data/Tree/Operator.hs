@@ -119,5 +119,5 @@ import Datum.Data.Tree.Operator.Slice
 import Datum.Data.Tree.Operator.Strip
 import Datum.Data.Tree.Operator.Traverse
 import Datum.Data.Tree.Operator.Trees
-import Datum.Data.Tree.Compounds
+import Datum.Data.Tree.Exp.Compounds
 

@@ -98,9 +98,8 @@ Library
 
         Datum.Data.Tree.Check
         Datum.Data.Tree.Codec
-        Datum.Data.Tree.Compounds
-        Datum.Data.Tree.Exp
         Datum.Data.Tree.Operator
+        Datum.Data.Tree.Exp
 
         Datum.Script.Core.Exp.Prim
         Datum.Script.Core.Exp
@@ -135,6 +134,9 @@ Library
         Datum.Data.Tree.Codec.Matryo.Token
 
         Datum.Data.Tree.Codec.SExp.Pretty
+
+        Datum.Data.Tree.Exp.Compounds
+        Datum.Data.Tree.Exp.Data
 
         Datum.Data.Tree.Operator.Cast
         Datum.Data.Tree.Operator.Filter

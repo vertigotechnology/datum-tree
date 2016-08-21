@@ -25,11 +25,13 @@ import qualified Data.Text.Encoding                     as Text
 -- Load from the file system.
 step_LoadStore _ _ PPLoad      [VText filePath]
  = case FilePath.takeExtension filePath of
+        -- Load a CSV file as a tree.
         ".csv"  
          -> do  bs              <- BS8.readFile filePath
                 let Right t     =  T.decodeCSV T.HasHeader bs        
                 progress $ VTree t
 
+        -- Load a Matryo file as a tree.
         ".matryo"
          -> do  bs        <- BS.readFile filePath
                 let result = Matryo.decodeTree filePath 
@@ -40,30 +42,36 @@ step_LoadStore _ _ PPLoad      [VText filePath]
                  Right tree     -> progress $ VTree $ T.promiseTree tree
                                 -- TODO: check the loaded tree.
 
-
+        -- We don't recognise the extension on the provided file path.
         _ ->    failure  $ ErrorPrim $ ErrorStoreUnknownFileFormat filePath
 
 
 -- Store to the file system.
 step_LoadStore _ _ PPStore     [VText filePath, VTree tree]
  = case FilePath.takeExtension filePath of
+        -- Store tree as a CSV file.
         ".csv"
          -> do  System.withFile filePath System.WriteMode
                  $ \h -> BS8.hPutStr h (T.encodeCSV T.HasHeader tree)
                 progress $ VUnit
 
+        -- Store tree as a Matryo file.
         ".matryo"
          -> do  System.withFile filePath System.WriteMode
                  $ \h -> LText.hPutStr h (Matryo.prettyTree tree)
                 progress $ VUnit
 
+        -- Store tree as a SExp tree file.
         ".tree"
          -> do  System.withFile filePath System.WriteMode
                  $ \h -> PP.hPutDoc h (T.ppTree mempty tree PP.<> PP.line)
                 progress $ VUnit 
 
+        -- We don't recognise the extension on the provided file path.
         _ ->    failure  $ ErrorPrim $ ErrorLoadUnknownFileFormat filePath
 
+
+-- The current term is ill-typed.
 step_LoadStore _ _ _ _
  =      crash
 

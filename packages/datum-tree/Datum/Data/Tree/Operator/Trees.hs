@@ -6,7 +6,6 @@ module Datum.Data.Tree.Operator.Trees
 where
 import Datum.Data.Tree.Operator.Map
 import Datum.Data.Tree.Operator.Filter
-import Datum.Data.Tree.Compounds
 import Datum.Data.Tree.Exp
 
 

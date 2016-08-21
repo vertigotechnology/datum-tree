@@ -14,7 +14,7 @@ where
 import Datum.Data.Tree.Operator.Cast
 import Datum.Data.Tree.Operator.Path
 import Datum.Data.Tree.Operator.Project
-import Datum.Data.Tree.Compounds
+import Datum.Data.Tree.Exp.Compounds
 import Datum.Data.Tree.Exp
 
 

@@ -5,7 +5,6 @@ module Datum.Data.Tree.Operator.Reduce
         , keysOfTree
         , sizeOfTree)
 where
-import Datum.Data.Tree.Compounds
 import Datum.Data.Tree.Exp
 import qualified Data.List              as L
 import qualified Data.Repa.Array        as A

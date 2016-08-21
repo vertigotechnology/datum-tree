@@ -10,7 +10,7 @@ module Datum.Data.Tree.Operator.Project
         , HasKey  (..)
         , hasKey)
 where
-import Datum.Data.Tree.Exp
+import Datum.Data.Tree.Exp.Data
 
 
 -------------------------------------------------------------------------------

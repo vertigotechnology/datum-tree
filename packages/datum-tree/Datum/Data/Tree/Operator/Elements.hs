@@ -9,10 +9,8 @@ where
 import Datum.Data.Tree.Operator.Strip
 import Datum.Data.Tree.Operator.Extract
 import Datum.Data.Tree.Operator.Project
-import Datum.Data.Tree.Compounds
 import Datum.Data.Tree.Exp
 import Control.Monad
-
 
 
 -- | Take the elements from an object.

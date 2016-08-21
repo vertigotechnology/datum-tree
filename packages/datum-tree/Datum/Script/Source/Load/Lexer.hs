@@ -1,142 +1,149 @@
 
 module Datum.Script.Source.Load.Lexer
-        ( Token (..)
-        , tokenize)
+        ( scanSource
+        , Located (..)
+        , locatedSourcePos
+        , locatedBody)
 where
+import Datum.Data.Tree.Codec.Matryo.Lexer
+        ( Located (..)
+        , locatedSourcePos
+        , locatedBody)
+
 import Datum.Script.Source.Load.Token
-import Control.Monad
-import qualified Data.Char      as Char
-import qualified Data.List      as List
+import qualified Text.Lexer.Inchworm.Char       as I
+import qualified Data.Char                      as Char
 
 
--- | Tokenize a string.
-tokenize :: FilePath -> String -> [Loc Token]
-tokenize filePath xx0
- = eat 1 1 xx0
- where 
-       eat !_l !_c []
-        = []
-
-       eat !l !c !(x : xs)
-
-        -- Increment line counter.
-        | '\n' <- x
-        = eat (l + 1) 1 xs
-
-        -- Ignore whitespace.
-        | Char.isSpace x
-        = eat l (c + 1) xs
-
-        -- Fixed length tokens.
-        | Just (tok, ss, xs') <- matchFixed (x : xs)
-        = wrap tok : eat l (c + length ss) xs'
-
-        -- Literal strings.
-        | '\"' <- x
-        = let 
-                eats n acc ss
-                 | '\\' : ss1 <- ss
-                 , '"'  : ss2 <- ss1
-                 = eats (n + 2) ('"' : acc) ss2
-
-                 | '\\' : ss1 <- ss
-                 , 'n'  : ss2 <- ss1
-                 = eats (n + 2) ('\n' : acc) ss2
-
-                 | '"'  : ss1 <- ss
-                 = wrap (KLitString (reverse acc))
-                    : eat l (c + n) ss1
-
-                 | c'   : ss1 <- ss
-                 = eats (n + 1) (c' : acc) ss1
-
-                 | otherwise
-                 = [wrap (KErrorUnterm ss)]
-
-           in eats 0 [] xs
-
-        -- Literal integers.
-        | Char.isDigit x
-        = let   restOfNum       = takeWhile Char.isDigit   xs
-                restOfString    = drop (length restOfNum)  xs
-                digits          = x : restOfNum
-                num             = (read digits :: Int)
-          in    wrap (KLitInt num) 
-                 : eat l (c + length digits) restOfString
-
-        -- Variables must start with an alphabetic charater.
-        -- Subsequent characters can be alpha or numeric.
-        | isVarStart x
-        = let   restOfVar       = takeWhile isVarBody      xs
-                restOfString    = drop (length restOfVar)  xs
-                name            = x : restOfVar
-          in    wrap (KVar name)
-                 : eat l (c + length name) restOfString
-
-        -- Symbols start with a tick character,
-        -- but the tick is not part of the name.
-        | x == '\''
-        = let   restOfVar       = takeWhile isSymbolBody   xs
-                restOfString    = drop (length restOfVar)  xs
-                name            = restOfVar
-          in    wrap (KSym name)
-                 : eat l (c + 1 + length name) restOfString
-
-        -- Operators
-        | isOperatorBody x
-        = let   restOfVar       = takeWhile isOperatorBody xs
-                restOfString    = drop (length restOfVar)  xs
-                name            = x : restOfVar
-          in    wrap (KOp name)
-                 : eat l (c + length name) restOfString
-
-        -- If we see a junk character then stop scanning.
-        | otherwise
-        = [wrap (KErrorJunk x)]
-
-        where   wrap t = Loc filePath l c t
+-------------------------------------------------------------------------------
+-- | Scan script source.
+scanSource
+        :: FilePath -> String
+        -> IO ([Located Token], I.Location, String)
+scanSource filePath str
+ = I.scanStringIO str (scanner filePath)
+{-# NOINLINE scanSource #-}
 
 
--- | Match a fixed length token.
-matchFixed  :: String -> Maybe (Token, String, String)
-matchFixed str
- = let  match ss (s, t) 
-         = case List.stripPrefix s ss of
-                Nothing         -> Nothing
-                Just ss'        -> Just (t, s, ss')
-
-   in   foldl mplus Nothing
-         $ map (match str) tokensFixed
+-- | Scanner for script soure tokens.
+type Scanner a
+        = I.Scanner IO I.Location [Char] a
 
 
--- | Fixed length tokens.
---   Each of the unicode symbols has a corresponding plain ascii one.
-tokensFixed :: [(String, Token)]
-tokensFixed
- =      [ ("()",        KUnit)
+-------------------------------------------------------------------------------
+-- | Scanner for script source.
+scanner :: FilePath
+        -> I.Scanner IO I.Location [Char] (Located Token)
 
-        , ("(",         KRoundBra)
-        , (")",         KRoundKet)
+scanner fileName
+ = I.skip Char.isSpace
+ $ I.alts
+        [ fmap stamp    $ scanPunctuation
+        , fmap stamp    $ scanKeyword
+        , fmap stamp    $ scanSymbol
+        , fmap stamp    $ scanVar
+        , fmap stamp    $ scanOperator 
 
-        , ("[",         KSquareBra)
-        , ("]",         KSquareKet)
+        , fmap (stamp' KLitString)
+                $ I.scanHaskellString 
 
-        , ("{",         KBraceBra)
-        , ("}",         KBraceKet)
+        , fmap (stamp' (KLitInt . fromIntegral))
+                $ I.scanInteger
+        ]
+ where
+        stamp   :: (I.Location, a) -> Located a
+        stamp (l, t)
+         = Located fileName l t
+        {-# INLINE stamp #-}
 
-        , ("\\",        KLam),          ("λ",           KLam)
-        , ("->",        KRightArrow),   ("→",           KRightArrow)
-        , (".",         KDot) 
-        , (",",         KComma)
-        , (";",         KSemi)
-        , ("/",         KSlashForward)
-        , ("let",       KKey "let")
-        , ("in",        KKey "in")
-        , ("if",        KKey "if")
-        , ("then",      KKey "then")
-        , ("else",      KKey "else") 
-        , ("do",        KKey "do")  ]
+        stamp'  :: (a -> b)
+                -> (I.Location, a) -> Located b
+        stamp' k (l, t) 
+          = Located fileName l (k t)
+        {-# INLINE stamp' #-}
 
+
+-- Punctuation ----------------------------------------------------------------
+-- | Scan a punctuation token.
+scanPunctuation :: Scanner (I.Location, Token)
+scanPunctuation
+ = I.alts     
+        [ I.froms (Just 2) acceptPunctuation2 
+        , I.from           acceptPunctuation1 ]
+ where
+        acceptPunctuation1 :: Char -> Maybe Token
+        acceptPunctuation1 c
+         = case c of
+                '('     -> Just KRoundBra
+                ')'     -> Just KRoundKet
+                '['     -> Just KSquareBra
+                ']'     -> Just KSquareKet
+                '{'     -> Just KBraceBra
+                '}'     -> Just KBraceKet
+                '.'     -> Just KDot
+                ','     -> Just KComma
+                ';'     -> Just KSemi
+                '/'     -> Just KSlashForward
+                '→'     -> Just KRightArrow
+                '\\'    -> Just KLam
+                'λ'     -> Just KLam
+                _       -> Nothing
+
+        acceptPunctuation2 :: String -> Maybe Token
+        acceptPunctuation2 str
+         = case str of
+                "()"    -> Just KUnit
+                "->"    -> Just KRightArrow
+                _       -> Nothing
+{-# INLINE scanPunctuation #-}
+
+
+-- Keywords -------------------------------------------------------------------
+scanKeyword :: Scanner (I.Location, Token)
+scanKeyword
+ =      I.munchPred Nothing matchKeyword acceptKeyword
+ where
+        matchKeyword _ c        = Char.isLower c
+
+        acceptKeyword ss
+         = case ss of
+                "let"   -> Just $ KKey "let"
+                "in"    -> Just $ KKey "in"
+                "if"    -> Just $ KKey "if"
+                "then"  -> Just $ KKey "then"
+                "else"  -> Just $ KKey "else"
+                "do"    -> Just $ KKey "do"
+                _       -> Nothing
+
+
+-- Symbols --------------------------------------------------------------------
+scanSymbol :: Scanner (I.Location, Token)
+scanSymbol
+ =      I.munchPred Nothing matchSymbol acceptSymbol
+ where
+        matchSymbol 0 '\''       = True
+        matchSymbol 0  _         = False
+        matchSymbol _ c          = isSymbolBody c
+
+        acceptSymbol ('\'' : ss) = Just $ KSym ss
+        acceptSymbol _           = Nothing
+
+
+-- | Character can be in an operator name.
+isSymbolBody :: Char -> Bool
+isSymbolBody c
+ = Char.isAlphaNum c || c == '-'  || c == '_'
+
+
+-- Variables ------------------------------------------------------------------
+scanVar :: Scanner (I.Location, Token)
+scanVar
+ =      I.munchPred Nothing matchVar acceptVar
+ where
+        matchVar 0 c    = isVarStart c
+        matchVar _ c    = isVarBody  c
+
+        acceptVar ss    = Just $ KVar ss
 
 
 -- | Character can start a variable name.
@@ -151,10 +158,14 @@ isVarBody c
  = Char.isAlphaNum c || c == '-' || c == '_' || c == '#'
 
 
--- | Character can be in a symbol name.
-isSymbolBody :: Char -> Bool
-isSymbolBody c
- = Char.isAlphaNum c || c == '-'  || c == '_'
+-- Operators ------------------------------------------------------------------
+scanOperator :: Scanner (I.Location, Token)
+scanOperator
+ =      I.munchPred Nothing matchOperator acceptOperator
+ where  
+        matchOperator _ c = isOperatorBody c
+
+        acceptOperator ss = Just $ KOp ss
 
 
 -- | Character can start an operator.

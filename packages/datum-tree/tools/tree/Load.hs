@@ -13,7 +13,7 @@ import qualified Datum.Script.Source.Load.Token         as Source
 import qualified Datum.Script.Source.Exp                as Source
 
 import qualified Datum.Script.Core.Exp                  as Core
-
+import qualified Text.Lexer.Inchworm.Char               as I
 
 
 -- | Load a datum script source file.
@@ -26,9 +26,23 @@ loadToSourceModule
 loadToSourceModule dump filePath strSource
  = do
         -- Tokenise source file.
-        let toksSource   
-                =   Source.tokenize filePath strSource
-                ++ [Source.Loc filePath 0 0 $ Source.KEndOfFile]
+        result <- Source.scanSource filePath strSource
+        let toksSource
+                = case result of
+                        (toks, _, [])
+                         -> toks 
+                         ++ [Source.Located
+                                filePath (I.Location 0 0) 
+                                Source.KEndOfFile]
+
+                        (toks, _, ss)
+                         -> error 
+                         $  unlines 
+                                ["lexical error "
+                                , show ss
+                                , show toks]
+
+
         when dump
          $ writeFile "dump-01-source-scanned.tokens"
          $ ppShow toksSource

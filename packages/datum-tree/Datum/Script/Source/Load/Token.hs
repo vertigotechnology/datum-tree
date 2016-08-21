@@ -1,18 +1,8 @@
 
 module Datum.Script.Source.Load.Token
-        ( Loc   (..)
-        , Token (..)
+        ( Token (..)
         , sayToken)
 where
-
--- | A source file location.
-data Loc a
-        = Loc
-        { locName       :: String
-        , locLine       :: Int
-        , locColumn     :: Int 
-        , locBody       :: a }
-        deriving Show
 
 
 -- | A token in lambda expression syntax.

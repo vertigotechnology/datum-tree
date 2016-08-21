@@ -44,7 +44,7 @@ scanMatryo filePath str
 {-# NOINLINE scanMatryo #-}
 
 
--- | Scanner for a lispy language.
+-- | Scanner for matroshka source.
 scanner :: FilePath
         -> I.Scanner IO I.Location [Char] (Located Token)
 

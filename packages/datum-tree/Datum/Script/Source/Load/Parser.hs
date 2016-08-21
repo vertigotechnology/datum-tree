@@ -2,9 +2,10 @@
 module Datum.Script.Source.Load.Parser where
 import Data.Functor.Identity
 import Datum.Script.Source.Exp
-import Datum.Script.Source.Load.Token           (Token(..), Loc)
+import Datum.Script.Source.Load.Token           (Token(..))
 import Text.Parsec                              (SourcePos, (<?>))
 import qualified Datum.Script.Source.Load.Token as K
+import qualified Datum.Script.Source.Load.Lexer as L
 import qualified Datum.Data.Tree.Exp            as T
 import qualified Text.Parsec                    as P
 import qualified Text.Parsec.Pos                as P
@@ -13,23 +14,17 @@ import qualified Data.Text                      as Text
 
 -------------------------------------------------------------------------------
 type Parser a 
-        = P.ParsecT [K.Loc K.Token] () Identity a
+        = P.ParsecT [L.Located K.Token] () Identity a
 
 -- | Run parser on some input tokens.
 runParser 
         :: FilePath 
-        -> [K.Loc K.Token]
+        -> [L.Located K.Token]
         -> Parser a 
         -> Either P.ParseError a
 
 runParser filePath tokens p 
         = P.parse p filePath tokens
-
-
--- | Take the source position of a location.
-sourcePosOfLoc :: Loc a -> SourcePos
-sourcePosOfLoc loc
-        = P.newPos (K.locName loc) (K.locLine loc) (K.locColumn loc)
 
 
 -- | Yield a source position corresponding to the start of the given file.
@@ -229,9 +224,9 @@ pTok k  = fmap fst
 pTokMaybe :: (Token -> Maybe a) -> Parser (SourcePos, a)
 pTokMaybe f
  = P.token 
-        (K.sayToken . K.locBody)
-        sourcePosOfLoc
-        (\l -> case f (K.locBody l) of
+        (K.sayToken . L.locatedBody)
+        L.locatedSourcePos
+        (\l -> case f (L.locatedBody l) of
                 Nothing -> Nothing
-                Just a  -> Just (sourcePosOfLoc l, a))
+                Just a  -> Just (L.locatedSourcePos l, a))
 

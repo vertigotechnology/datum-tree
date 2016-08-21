@@ -4,12 +4,11 @@ module Datum.Script.Core.Eval.Prim.LoadStore
 where
 import Datum.Script.Core.Eval.Prim.Base
 
-import Datum.Data.Tree.Codec.Matryo.Decode              ()
-import qualified Datum.Data.Tree.Codec                  as T
+import qualified Datum.Data.Tree.Check                  as Tree
+import qualified Datum.Data.Tree.Codec                  as Tree
+import qualified Datum.Data.Tree.Codec.SExp.Pretty      as Tree
 import qualified Datum.Data.Tree.Codec.Matryo.Encode    as Matryo
 import qualified Datum.Data.Tree.Codec.Matryo.Decode    as Matryo
-import qualified Datum.Data.Tree.Codec.SExp.Pretty      as T
-import qualified Datum.Data.Tree.Operator.Cast          as T
 
 import qualified System.FilePath                        as FilePath
 import qualified System.IO                              as System
@@ -28,19 +27,32 @@ step_LoadStore _ _ PPLoad      [VText filePath]
         -- Load a CSV file as a tree.
         ".csv"  
          -> do  bs              <- BS8.readFile filePath
-                let Right t     =  T.decodeCSV T.HasHeader bs        
+                let Right t     =  Tree.decodeCSV Tree.HasHeader bs
                 progress $ VTree t
 
         -- Load a Matryo file as a tree.
         ".matryo"
-         -> do  bs        <- BS.readFile filePath
-                let result = Matryo.decodeTree filePath 
-                           $ Text.decodeUtf8 bs
+         -> do
+                -- Read file and parse the tree.
+                bs        <- BS.readFile filePath
+                let result = Matryo.decodeTree filePath $ Text.decodeUtf8 bs
 
                 case result of
-                 Left  err      -> error $ show err
-                 Right tree     -> progress $ VTree $ T.promiseTree tree
-                                -- TODO: check the loaded tree.
+                 -- Parsing failed.
+                 Left  err
+                  -> failure $ ErrorPrim $ ErrorLoadParseError filePath err
+
+                 -- Parsing succeeded, but we still need to type check it.
+                 Right tree
+                  -> case Tree.check tree of
+                        -- Type checking failed.
+                        Left err
+                         -> failure  $ ErrorPrim $ ErrorLoadTypeError filePath err
+
+                        -- Type checking suceeded, so we have a good tree.
+                        Right tree_checked
+                         -> progress $ VTree tree_checked
+
 
         -- We don't recognise the extension on the provided file path.
         _ ->    failure  $ ErrorPrim $ ErrorStoreUnknownFileFormat filePath
@@ -52,19 +64,19 @@ step_LoadStore _ _ PPStore     [VText filePath, VTree tree]
         -- Store tree as a CSV file.
         ".csv"
          -> do  System.withFile filePath System.WriteMode
-                 $ \h -> BS8.hPutStr h (T.encodeCSV T.HasHeader tree)
+                 $ \h -> BS8.hPutStr   h $ Tree.encodeCSV Tree.HasHeader tree
                 progress $ VUnit
 
         -- Store tree as a Matryo file.
         ".matryo"
          -> do  System.withFile filePath System.WriteMode
-                 $ \h -> LText.hPutStr h (Matryo.prettyTree tree)
+                 $ \h -> LText.hPutStr h $ Matryo.prettyTree tree
                 progress $ VUnit
 
         -- Store tree as a SExp tree file.
         ".tree"
          -> do  System.withFile filePath System.WriteMode
-                 $ \h -> PP.hPutDoc h (T.ppTree mempty tree PP.<> PP.line)
+                 $ \h -> PP.hPutDoc h (Tree.ppTree mempty tree PP.<> PP.line)
                 progress $ VUnit 
 
         -- We don't recognise the extension on the provided file path.

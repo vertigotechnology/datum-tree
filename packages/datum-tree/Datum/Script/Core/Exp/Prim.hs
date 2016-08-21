@@ -24,9 +24,11 @@ data GCPrim x
         | PTForest                      -- ^ Datum forest type.
         | PTTree                        -- ^ Datum tree type.
         | PTTreePath                    -- ^ Datum tree path type.
+        | PTTuple                       -- ^ Super type of tuple types.
 
         | PTFilePath                    -- ^ File path type.
 
+        | PTValue                       -- ^ Super type of values.
         | PTAtom     T.AtomType         -- ^ Atom types.
  
         -- Values (level 0)
@@ -50,29 +52,27 @@ data PrimOp
         | PPSub                         -- ^ Subtraction.
         | PPMul                         -- ^ Multiplication.
         | PPDiv                         -- ^ Division
-
         | PPEq                          -- ^ Equality.
         | PPGt                          -- ^ Greater-than.
         | PPGe                          -- ^ Greater-than-equal.
         | PPLt                          -- ^ Less-than.
         | PPLe                          -- ^ Less-than-equal.
 
-        | PPArgument                    -- ^ Get the value of a script argument.
-        | PPLoad                        -- ^ Load  a value from the file system.
-        | PPStore                       -- ^ Store a value to the file system.
-        | PPInitial                     -- ^ Select the initial n branches of each subtree.
-        | PPFinal                       -- ^ Select the final n branches of each subtree.
-        | PPSample                      -- ^ Sample n intermediate branches of each subtree.
-        | PPGroup                       -- ^ Group branches by given key field.
-        | PPGather                      -- ^ Gather branches of a tree into sub trees.
-        | PPFlatten                     -- ^ Flatten branches.
-        | PPRenameFields                -- ^ Rename fields of key.
-        | PPPermuteFields               -- ^ Permute fields of a key.
-
         | PPAt                          -- ^ Apply a per-tree function at the given path.
+        | PPArgument                    -- ^ Get the value of a script argument.
+        | PPFinal                       -- ^ Select the final n branches of each subtree.
+        | PPFlatten                     -- ^ Flatten branches.
+        | PPGather                      -- ^ Gather branches of a tree into sub trees.
+        | PPGroup                       -- ^ Group branches by given key field.
+        | PPInitial                     -- ^ Select the initial n branches of each subtree.
+        | PPLoad                        -- ^ Load  a value from the file system.
         | PPOn                          -- ^ Apply a per-forest function at the given path. 
-
+        | PPPermuteFields               -- ^ Permute fields of a key.
         | PPPrint                       -- ^ Print an object to the console.
+        | PPRenameFields                -- ^ Rename fields of key.
+        | PPSample                      -- ^ Sample n intermediate branches of each subtree.
+        | PPSortByField                 -- ^ Sort trees in a forest.
+        | PPStore                       -- ^ Store a value to the file system.
         deriving Eq
 
 -- | Table of names of primitive operators.
@@ -88,20 +88,23 @@ namesOfPrimOps
         , (PPGe,                "ge#")
         , (PPLt,                "lt#")
         , (PPLe,                "le#")
-        , (PPArgument,          "argument#")
-        , (PPLoad,              "load#")
-        , (PPStore,             "store#")
-        , (PPInitial,           "initial#")
-        , (PPFinal,             "final#")
-        , (PPSample,            "sample#")
-        , (PPGroup,             "group#")
-        , (PPGather,            "gather#")
-        , (PPFlatten,           "flatten#")
-        , (PPRenameFields,      "rename-fields#")
-        , (PPPermuteFields,     "permute-fields#")
+
         , (PPAt,                "at#")
+        , (PPArgument,          "argument#")
+        , (PPFinal,             "final#")
+        , (PPFlatten,           "flatten#")
+        , (PPGather,            "gather#")
+        , (PPGroup,             "group#")
+        , (PPInitial,           "initial#")
+        , (PPLoad,              "load#")
         , (PPOn,                "on#")
-        , (PPPrint,             "print#") ]
+        , (PPPermuteFields,     "permute-fields#")
+        , (PPPrint,             "print#") 
+        , (PPRenameFields,      "rename-fields#")
+        , (PPSample,            "sample#")
+        , (PPSortByField,       "sortby-field#")
+        , (PPStore,             "store#")
+        ]
 
 
 -- | Tables of primitive operators of names.
@@ -143,6 +146,8 @@ typeOfPrim pp
         PTTreePath      -> K.XType 1
 
         PTFilePath      -> K.XType 1
+        PTTuple         -> K.XType 1
+        PTValue         -> K.XType 1
 
         PTAtom _        -> K.XType 1
 
@@ -184,32 +189,32 @@ typeOfOp op
         PPSub           -> error "typeOfOp: finish me"
         PPMul           -> error "typeOfOp: finish me"
         PPDiv           -> error "typeOfOp: finish me"
-
         PPEq            -> error "typeOfOp: finish me"
         PPGt            -> error "typeOfOp: finish me"
         PPGe            -> error "typeOfOp: finish me"
         PPLt            -> error "typeOfOp: finish me"
         PPLe            -> error "typeOfOp: finish me"
 
-        PPArgument      -> XTText        ~> K.XTS XTText
-
-        PPLoad          -> XTFilePath    ~> K.XTS XTTree
-        PPStore         -> XTFilePath    ~> XTTree ~> K.XTS K.XTUnit
-        PPInitial       -> XTNat         ~> XTTree ~> XTTree
-        PPFinal         -> XTNat         ~> XTTree ~> XTTree
-        PPSample        -> XTNat         ~> XTTree ~> XTTree
-        PPGroup         -> XTName        ~> XTTree ~> XTTree
-        PPGather        -> XTTreePath    ~> XTTree ~> XTTree
-        PPFlatten       -> XTTree        ~> XTTree
-        PPRenameFields  -> XTList XTName ~> XTTree ~> XTTree
-        PPPermuteFields -> XTList XTName ~> XTTree ~> XTTree
-
         PPAt            -> XTList XTName ~> (XTTree   ~> XTTree)   ~> XTTree ~> XTTree
+        PPArgument      -> XTText        ~> K.XTS XTText
+        PPFinal         -> XTNat         ~> XTTree ~> XTTree
+        PPFlatten       -> XTTree        ~> XTTree
+        PPGather        -> XTTreePath    ~> XTTree ~> XTTree
+        PPGroup         -> XTName        ~> XTTree ~> XTTree
+        PPInitial       -> XTNat         ~> XTTree ~> XTTree
+        PPLoad          -> XTFilePath    ~> K.XTS XTTree
         PPOn            -> XTList XTName ~> (XTForest ~> XTForest) ~> XTTree ~> XTTree
+        PPPermuteFields -> XTList XTName ~> XTTree ~> XTTree
+        PPRenameFields  -> XTList XTName ~> XTTree ~> XTTree
+        PPSample        -> XTNat         ~> XTTree ~> XTTree
+        PPSortByField   -> XTName ~> XTForest ~> XTForest
+        PPStore         -> XTFilePath    ~> XTTree ~> K.XTS K.XTUnit
 
         PPPrint
          -> K.makeXForall K.XKData K.XKData 
                 $ \u -> u ~> K.XTS K.XTUnit
+
+
 
 
 -- | Yield the arity of a primitive.
@@ -236,22 +241,22 @@ arityOfOp op
         PPLt            -> 2
         PPLe            -> 2
 
+        PPAt            -> 3
         PPArgument      -> 1
-        PPLoad          -> 1
-        PPStore         -> 2
-        PPInitial       -> 2
         PPFinal         -> 2
-        PPSample        -> 2
+        PPFlatten       -> 1
         PPGroup         -> 2
         PPGather        -> 2
-        PPFlatten       -> 1
-        PPRenameFields  -> 2
-        PPPermuteFields -> 2
-
-        PPAt            -> 3
+        PPInitial       -> 2
+        PPLoad          -> 1
         PPOn            -> 3
-
+        PPPermuteFields -> 2
         PPPrint         -> 1
+        PPRenameFields  -> 2
+        PPSortByField   -> 2
+        PPStore         -> 2
+        PPSample        -> 2
+
 
 ---------------------------------------------------------------------------------------------------
 -- Types
@@ -262,6 +267,8 @@ pattern XTForest        = XFrag PTForest
 pattern XTTree          = XFrag PTTree
 pattern XTTreePath      = XFrag PTTreePath
 pattern XTFilePath      = XFrag PTFilePath
+pattern XTValue         = XFrag PTValue
+pattern XTTuple         = XFrag PTTuple
 
 pattern XTBool          = XFrag (PTAtom T.ATBool)
 pattern XTInt           = XFrag (PTAtom T.ATInt)

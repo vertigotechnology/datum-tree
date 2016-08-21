@@ -1,0 +1,132 @@
+{  "industry"
+    : ("industry": Text)
+    {   "row": ("symbol": Text, "company": Text)
+    }
+}
+{ [ ("Automobiles & Components")
+    { [ ("ABV", "ADVANCED BRAKING TECHNOLOGY LTD")
+      , ("ARB", "ARB CORPORATION LIMITED.")
+      , ("DDT", "DATADOT TECHNOLOGY LIMITED")
+      , ("OEC", "ORBITAL CORPORATION LIMITED")
+      , ("OOK", "OOKAMI LIMITED")
+      , ("PWH", "PWR HOLDINGS LIMITED")
+      , ("SFC", "SCHAFFER CORPORATION LIMITED")
+      , ("SIX", "SPRINTEX LIMITED")
+      , ("VMT", "VMOTO LIMITED")
+      ]
+    }
+  , ("Capital Goods")
+    { [ ("AAX", "AUSENCO LIMITED")
+      , ("BLY", "BOART LONGYEAR LIMITED")
+      , ("CYG", "COVENTRY GROUP LIMITED")
+      , ("EHL", "EMECO HOLDINGS LIMITED")
+      , ("GNG", "GR ENGINEERING SERVICES LIMITED")
+      , ("KTL", "KTL TECHNOLOGIES LIMITED")
+      , ("MSV", "MITCHELL SERVICES LIMITED")
+      , ("POW", "PROTEAN WAVE ENERGY LTD")
+      , ("RFX", "REDFLOW LIMITED")
+      , ("ZGL", "ZICOM GROUP LIMITED")
+      ]
+    }
+  , ("Commercial Services & Supplies")
+    { [ ("1AG", "ALTERRA LIMITED")
+      , ("ASH", "ASHLEY SERVICES GROUP LIMITED")
+      , ("CAB", "CABCHARGE AUSTRALIA LIMITED")
+      , ("CUP", "COUNTPLUS LIMITED")
+      , ("EMC", "EMEFCY GROUP LIMITED")
+      , ("HJB", "HJB CORPORATION LIMITED")
+      , ("MIL", "MILLENNIUM SERVICES GROUP LIMITED")
+      , ("OPG", "OPUS GROUP LIMITED")
+      , ("PSZ", "PS&C LIMITED")
+      , ("YPB", "YPB GROUP LTD")
+      ]
+    }
+  , ("Consumer Services")
+    { [ ("3PL", "3P LEARNING LIMITED..")
+      , ("ALL", "ARISTOCRAT LEISURE LIMITED")
+      , ("CWN", "CROWN RESORTS LIMITED")
+      , ("ENN", "ELANOR INVESTORS GROUP")
+      , ("IB8", "IBOSSES CORPORATION LIMITED")
+      , ("ISU", "ISELECT LIMITED.")
+      , ("LFC", "LIFE CORPORATION LTD")
+      , ("RDH", "REDHILL EDUCATION LIMITED")
+      , ("SHJ", "SHINE CORPORATE LTD")
+      , ("VIA", "VIAGOLD CAPITAL LIMITED")
+      ]
+    }
+  , ("Energy")
+    { [ ("88E", "88 ENERGY LIMITED")
+      , ("AZZ", "ANTARES ENERGY LIMITED")
+      , ("COI", "COMET RIDGE LIMITED")
+      , ("EOR", "ENHANCED OIL & GAS RECOVERY LIMITED")
+      , ("IND", "INDUS ENERGY NL")
+      , ("MEL", "METGASCO LIMITED")
+      , ("OEG", "ORPHEUS ENERGY LIMITED")
+      , ("PVE", "PO VALLEY ENERGY LIMITED")
+      , ("SPB", "SOUTH PACIFIC RESOURCES LIMITED")
+      , ("ZTA", "ZETA PETROLEUM PLC")
+      ]
+    }
+  , ("Food, Beverage & Tobacco")
+    { [ ("A2M", "THE A2 MILK COMPANY LIMITED")
+      , ("AWY", "AUSTRALIAN WHISKY HOLDINGS LIMITED")
+      , ("BNV", "BRAND NEW VINTAGE LIMITED")
+      , ("CGC", "COSTA GROUP HOLDINGS LIMITED")
+      , ("DFM", "DONGFANG MODERN AGRICULTURE HOLDING GROUP LIMITED")
+      , ("FNP", "FREEDOM FOODS GROUP LIMITED")
+      , ("GNC", "GRAINCORP LIMITED")
+      , ("OZB", "OZ BREWING LIMITED")
+      , ("SBI", "STERLING PLANTATIONS LIMITED")
+      , ("YOW", "YOWIE GROUP LTD")
+      ]
+    }
+  , ("Household & Personal Products")
+    { [ ("AHY", "ASALEO CARE LIMITED")
+      , ("BKL", "BLACKMORES LIMITED")
+      , ("BWX", "BWX LIMITED")
+      , ("HCT", "HOLISTA COLLTECH LIMITED")
+      , ("PTL", "PENTAL LIMITED")
+      , ("VIT", "VITACO HOLDINGS LIMITED")
+      ]
+    }
+  , ("Materials")
+    { [ ("AAI", "ALCOA INC.")
+      , ("AUC", "AUSGOLD LIMITED")
+      , ("CAV", "CARNAVALE RESOURCES LIMITED")
+      , ("DKO", "DAKOTA MINERALS LIMITED")
+      , ("GED", "GOLDEN DEEPS LIMITED.")
+      , ("IXR", "IMX RESOURCES LIMITED")
+      , ("MGU", "MAGNUM MINING AND EXPLORATION LIMITED")
+      , ("OGC", "OCEANAGOLD CORPORATION")
+      , ("RIM", "RIMFIRE PACIFIC MINING NL")
+      , ("ZYL", "ZYL LIMITED")
+      ]
+    }
+  , ("Not Applic")
+    { [ ("8EC", "8IP EMERGING COMPANIES LIMITED")
+      , ("AXJ", "AXA")
+      , ("CSN", "CRUSADE EURO TRUST NO.1E OF 2007")
+      , ("GMP", "GOODMAN PLUS TRUST")
+      , ("IEU", "ISHARES EUROPE ETF")
+      , ("IVE", "ISHARES MSCI EAFE ETF")
+      , ("NCC", "NAOS EMERGING OPPORTUNITIES COMPANY LIMITED")
+      , ("PUQ", "PUMA SERIES 2014-4P")
+      , ("SFY", "SPDR S&P/ASX 50 FUND")
+      , ("XVG", "TREASURY CORPORATION OF VICTORIA")
+      ]
+    }
+  , ("Utilities")
+    { [ ("AEJ", "REDBANK ENERGY LIMITED")
+      , ("APA", "APA GROUP")
+      , ("CEN", "CONTACT ENERGY LIMITED")
+      , ("DUE", "DUET GROUP")
+      , ("EPW", "ERM POWER LIMITED")
+      , ("ERJ", "ENERJI LTD")
+      , ("EWC", "ENERGY WORLD CORPORATION LTD")
+      , ("GNE", "GENESIS ENERGY LIMITED")
+      , ("HPR", "HIGH PEAK ROYALTIES LIMITED")
+      , ("WRG", "WATER RESOURCES GROUP LIMITED")
+      ]
+    }
+  ]
+}

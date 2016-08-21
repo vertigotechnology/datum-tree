@@ -29,7 +29,7 @@
 
                 <dict>  <key>name</key> <string>keyword.matryoshka.source.alias</string>
                         <key>match</key>
-                        <string>\b(argument|flatten|gather|group|load|on|permute-fields|print|rename-fields|sample|store)\b</string>
+                        <string>\b(argument|flatten|gather|group|load|on|permute-fields|print|rename-fields|sample|sortby-field|store)\b</string>
                 </dict>
 
                 <dict>  <key>name</key> <string>keyword.matryoshka.source.operator</string>

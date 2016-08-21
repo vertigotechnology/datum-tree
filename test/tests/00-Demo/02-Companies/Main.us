@@ -1,0 +1,27 @@
+
+-- Companies example.
+--   We have a flat csv file of company names, symbols and industry code.
+--   Extract a sample of 10 representive companies from each industry. 
+--
+main   
+ -- Load the companies data.
+ = load "test/data/csv/ASXListedCompanies.csv"
+
+ -- Reorganise fields so we end up with the symbol 
+ -- first after the grouping process.
+ & on /row
+        $ rename-fields  ['company, 'symbol,  'industry]
+        @ permute-fields ['symbol,  'company, 'industry]
+
+ -- Group companies by industry group.
+ & on /row      
+        $ group 'industry
+
+ -- Sort companies in each group by symbol.
+ & on /industry/row
+        $ sortby-field 'symbol
+        @ sample 10
+
+ -- Sort company groups by grouping name.
+ & on /industry
+        $ sortby-field 'industry;

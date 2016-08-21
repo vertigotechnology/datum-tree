@@ -121,6 +121,8 @@ toCoreFrag ff
         S.PTTree        -> return $ C.PTTree
         S.PTTreePath    -> return $ C.PTTreePath
         S.PTFilePath    -> return $ C.PTFilePath
+        S.PTValue       -> return $ C.PTValue
+        S.PTTuple       -> return $ C.PTTuple
 
         S.PTAtom t      -> return $ C.PTAtom t
 

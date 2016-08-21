@@ -1,0 +1,26 @@
+
+-- Check sorting at multiple levels.
+main   
+ = load "test/data/csv/ASXListedCompanies.csv"
+
+ -- Reorganise fields so we end up with the symbol 
+ -- first after the grouping process.
+ & on /row
+        $ rename-fields  ['company, 'symbol,  'industry]
+        @ permute-fields ['symbol,  'company, 'industry]
+
+ -- Group companies by industry group.
+ & on /row      
+        $ group 'industry
+
+ -- Sort companies in each group by symbol.
+ & on /industry/row
+        $ sortby-field 'symbol
+
+ -- Sort company groups by grouping name.
+ & on /industry
+        $ sortby-field 'industry
+
+ -- Sample at most 10 industries with 10 companies each.
+ & sample 10;
+

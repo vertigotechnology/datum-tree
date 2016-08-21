@@ -20,7 +20,6 @@ strPervasive
         , "sub                  = sub#;"
         , "mul                  = mul#;"
         , "div                  = div#;"
-
         , "eq                   = eq#;"
         , "gt                   = gt#;"
         , "ge                   = ge#;"
@@ -37,5 +36,6 @@ strPervasive
         , "print                = print#;"
         , "rename-fields        = rename-fields#;"
         , "sample               = sample#;"
+        , "sortby-field         = sortby-field#;"
         , "store                = store#;"
         ]

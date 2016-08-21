@@ -139,6 +139,8 @@ buildFrag c f
         PTTreePath      -> fromString "TreePath"
         PTFilePath      -> fromString "FilePath"
         PTAtom at       -> buildAtomType c at
+        PTTuple         -> fromString "Tuple"
+        PTValue         -> fromString "Value"
 
         -- Values
         PVName n        -> fromText n

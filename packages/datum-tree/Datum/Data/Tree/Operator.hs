@@ -85,6 +85,9 @@ module Datum.Data.Tree.Operator
         , sliceTree
         , sliceTreeWithNames
 
+          -- * Sorting
+        , sortForest
+
           -- * Grouping
         , groupForest
 
@@ -116,6 +119,7 @@ import Datum.Data.Tree.Operator.Path
 import Datum.Data.Tree.Operator.Project
 import Datum.Data.Tree.Operator.Reduce
 import Datum.Data.Tree.Operator.Slice
+import Datum.Data.Tree.Operator.Sort
 import Datum.Data.Tree.Operator.Strip
 import Datum.Data.Tree.Operator.Traverse
 import Datum.Data.Tree.Operator.Trees

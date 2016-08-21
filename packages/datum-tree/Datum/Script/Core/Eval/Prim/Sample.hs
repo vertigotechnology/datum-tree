@@ -1,3 +1,4 @@
+
 module Datum.Script.Core.Eval.Prim.Sample
         (step_Sample)
 where

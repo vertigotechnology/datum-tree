@@ -66,6 +66,19 @@ data Element (c :: Checked)
         deriving Show
 
 
+instance Eq  (Element c) where
+ (==) (Element a1 _) (Element a2 _)
+  = a1 == a2
+
+ (/=) (Element a1 _) (Element a2 _)
+  = a1 /= a2
+
+
+instance Ord (Element c) where
+ compare (Element a1 _) (Element a2 _)
+  = compare a1 a2
+
+
 -- Meta-data ------------------------------------------------------------------
 -- | Branch type describes the structure of a branch.
 data BranchType
@@ -143,7 +156,7 @@ data Atom
         | ADecimal      !Double
         | AText         !String
         | ATime         !String
-        deriving (Eq, Show)
+        deriving (Eq, Ord, Show)
 
 
 instance Hashable Atom where

@@ -1,0 +1,13 @@
+
+-- Check sorting at the outer level.
+main   
+ = load "test/data/csv/ASXListedCompanies.csv"
+ & on /row      
+        $ rename-fields  ['company, 'symbol, 'industry]
+        @ permute-fields ['symbol, 'company, 'industry]
+
+ & on /row
+        $ sortby-field 'symbol
+
+ & sample 20;
+

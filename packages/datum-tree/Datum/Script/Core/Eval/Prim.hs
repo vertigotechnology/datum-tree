@@ -5,10 +5,11 @@ where
 import Datum.Script.Core.Eval.Prim.Base
 import Datum.Script.Core.Eval.Prim.Console
 import Datum.Script.Core.Eval.Prim.Fields
-import Datum.Script.Core.Eval.Prim.Sample
 import Datum.Script.Core.Eval.Prim.LoadStore
 import Datum.Script.Core.Eval.Prim.Nesting
 import Datum.Script.Core.Eval.Prim.Numeric
+import Datum.Script.Core.Eval.Prim.Sample
+import Datum.Script.Core.Eval.Prim.Sort
 import Datum.Script.Core.Eval.Prim.Traverse
 import Datum.Script.Core.Eval.Prim.World
 
@@ -26,7 +27,7 @@ step _ _ p args
 -- Dispatch to the function that handles each primitive.
 step self state pp vs
  = case pp of
-        -- Numeric
+        -- Numeric        
         PPAdd           -> step_Numeric   self state pp vs
         PPSub           -> step_Numeric   self state pp vs
         PPMul           -> step_Numeric   self state pp vs
@@ -46,6 +47,9 @@ step self state pp vs
         PPInitial       -> step_Sample    self state pp vs
         PPFinal         -> step_Sample    self state pp vs
         PPSample        -> step_Sample    self state pp vs
+
+        -- Sort
+        PPSortByField   -> step_Sort      self state pp vs
 
         -- Traverse
         PPAt            -> step_Traverse  self state pp vs

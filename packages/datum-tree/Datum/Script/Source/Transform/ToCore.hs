@@ -1,7 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Datum.Script.Source.Transform.ToCore
-        (toCoreX)
+        ( toCoreX
+        , Error (..))
 where
 import Data.Text                                (Text)
 import qualified Data.Text                      as Text
@@ -11,6 +12,7 @@ import qualified Datum.Script.Core.Exp          as C
 
 -- | Things that can go wrong when converting to core.
 data Error
+        -- | Found a sugared infix expression.
         = ErrorSugaredInfix S.Exp
 
 deriving instance Show Error
@@ -141,15 +143,18 @@ toCoreFrag ff
 --
 toCoreBoundX :: Text -> Either Error C.Exp
 toCoreBoundX tt
+ -- Detect names of primops.
  | Just p       <- lookup (Text.unpack tt) C.primOpsOfNames
  = return $ C.XFrag (C.PVOp p)
 
+ -- Detect boolean constructor names.
  | Just x       <- case Text.unpack tt of
                         "True"  -> Just $ C.XBool True
                         "False" -> Just $ C.XBool False
                         _       -> Nothing
  = return x
 
+ -- Just a regular variable.
  | otherwise
  = return $ C.XVar (C.UName tt)
 

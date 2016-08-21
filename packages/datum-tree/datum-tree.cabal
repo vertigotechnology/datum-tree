@@ -112,10 +112,12 @@ Library
         Datum.Script.Core.Eval
 
         Datum.Script.Source.Exp
-        Datum.Script.Source.Transform.Defix
         Datum.Script.Source.Load.Lexer
         Datum.Script.Source.Load.Parser
         Datum.Script.Source.Load.Token
+
+        Datum.Script.Source.Transform.Defix
+        Datum.Script.Source.Transform.ToCore
 
 
  other-modules:

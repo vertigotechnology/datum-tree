@@ -146,6 +146,16 @@ Library
         Datum.Data.Tree.Operator.Slice
         Datum.Data.Tree.Operator.Traverse
 
+        Datum.Script.Core.Eval.Prim.Base
+        Datum.Script.Core.Eval.Prim.Console
+        Datum.Script.Core.Eval.Prim.Fields
+        Datum.Script.Core.Eval.Prim.LoadStore
+        Datum.Script.Core.Eval.Prim.Nesting
+        Datum.Script.Core.Eval.Prim.Numeric
+        Datum.Script.Core.Eval.Prim.Sample
+        Datum.Script.Core.Eval.Prim.Traverse
+        Datum.Script.Core.Eval.Prim.World
+        
         Datum.Script.Kernel.Exp.Bind
         Datum.Script.Kernel.Exp.Cast
         Datum.Script.Kernel.Exp.Compounds

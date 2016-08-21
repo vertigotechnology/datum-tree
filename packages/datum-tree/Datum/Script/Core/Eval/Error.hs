@@ -15,6 +15,9 @@ data Error
         | ErrorCore     ErrorCore
         | ErrorPrim     ErrorPrim
 
+        -- | Evaluator got stuck. The core program is ill-typed.
+        | ErrorCrash
+
 deriving instance Show Error
 
 

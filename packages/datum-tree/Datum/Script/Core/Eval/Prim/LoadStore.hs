@@ -5,7 +5,7 @@ where
 import Datum.Script.Core.Eval.Prim.Base
 
 import qualified Datum.Data.Tree.Check                  as Tree
-import qualified Datum.Data.Tree.Codec                  as Tree
+import qualified Datum.Data.Tree.Codec.XSV              as Tree
 import qualified Datum.Data.Tree.Codec.SExp.Pretty      as Tree
 import qualified Datum.Data.Tree.Codec.Matryo.Encode    as Matryo
 import qualified Datum.Data.Tree.Codec.Matryo.Decode    as Matryo
@@ -24,10 +24,16 @@ import qualified Data.Text.Encoding                     as Text
 -- Load from the file system.
 step_LoadStore _ _ PPLoad      [VText filePath]
  = case FilePath.takeExtension filePath of
-        -- Load a CSV file as a tree.
+        -- Load a CSV (Comma Separated Values) file as a tree.
         ".csv"  
          -> do  bs              <- BS8.readFile filePath
                 let Right t     =  Tree.decodeCSV Tree.HasHeader bs
+                progress $ VTree t
+
+        -- Load a TSV (Tab Separated Values) file as a tree.
+        ".tsv"  
+         -> do  bs              <- BS8.readFile filePath
+                let Right t     =  Tree.decodeTSV Tree.HasHeader bs
                 progress $ VTree t
 
         -- Load a Matryo file as a tree.
@@ -61,10 +67,16 @@ step_LoadStore _ _ PPLoad      [VText filePath]
 -- Store to the file system.
 step_LoadStore _ _ PPStore     [VText filePath, VTree tree]
  = case FilePath.takeExtension filePath of
-        -- Store tree as a CSV file.
+        -- Store a tree as a CSV (Comma Separated Values) file.
         ".csv"
          -> do  System.withFile filePath System.WriteMode
                  $ \h -> BS8.hPutStr   h $ Tree.encodeCSV Tree.HasHeader tree
+                progress $ VUnit
+
+        -- Store a tree as a TSV (Tab Separated Values) file.
+        ".tsv"
+         -> do  System.withFile filePath System.WriteMode
+                 $ \h -> BS8.hPutStr   h $ Tree.encodeTSV Tree.HasHeader tree
                 progress $ VUnit
 
         -- Store tree as a Matryo file.

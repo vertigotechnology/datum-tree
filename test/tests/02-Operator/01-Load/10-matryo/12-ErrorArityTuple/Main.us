@@ -2,4 +2,4 @@
 -- Check detection of tuple arity errors.
 -- The loaded file has a tuple that does not contain all
 -- the required fields.
-main = load "test/tests/02-Operator/01-Load/02-matryo/12-ErrorArityTuple/Companies-ErrorArityTuple.matryo";
+main = load "test/tests/02-Operator/01-Load/10-matryo/12-ErrorArityTuple/Companies-ErrorArityTuple.matryo";

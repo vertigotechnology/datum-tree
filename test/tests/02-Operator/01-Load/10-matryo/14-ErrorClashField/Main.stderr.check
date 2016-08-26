@@ -1,7 +1,7 @@
 tree: Runtime error during query evaluation.
 
 Type error in tree file
-  when loading: "test/tests/02-Operator/01-Load/02-matryo/14-ErrorClashField/Companies-ErrorClashField.matryo"
+  when loading: "test/tests/02-Operator/01-Load/10-matryo/14-ErrorClashField/Companies-ErrorClashField.matryo"
 
 Field name clash.
   names:      ["DERP","DERP"]

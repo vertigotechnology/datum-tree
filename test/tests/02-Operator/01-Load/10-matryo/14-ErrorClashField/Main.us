@@ -1,5 +1,5 @@
 
 -- Check detection of field name conflicts.
 -- The loaded file has a tuple with two fields named the same.
-main = load "test/tests/02-Operator/01-Load/02-matryo/14-ErrorClashField/Companies-ErrorClashField.matryo";
+main = load "test/tests/02-Operator/01-Load/10-matryo/14-ErrorClashField/Companies-ErrorClashField.matryo";
 

@@ -90,6 +90,7 @@ Library
         Datum.Data.Tree.Codec.Matryo
         Datum.Data.Tree.Codec.SExp
         Datum.Data.Tree.Codec.Chrome
+        Datum.Data.Tree.Codec.XSV
 
         Datum.Data.Tree.Operator.Extract
         Datum.Data.Tree.Operator.Fields
@@ -99,7 +100,6 @@ Library
         Datum.Data.Tree.Operator.Limit
 
         Datum.Data.Tree.Check
-        Datum.Data.Tree.Codec
         Datum.Data.Tree.Operator
         Datum.Data.Tree.Exp
 

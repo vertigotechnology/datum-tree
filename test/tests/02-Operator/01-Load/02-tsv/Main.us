@@ -1,0 +1,3 @@
+
+-- Check TSV loader.
+main    = load "test/data/tsv/quotes/ANZ.tsv";

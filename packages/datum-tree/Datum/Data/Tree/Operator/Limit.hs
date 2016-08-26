@@ -54,9 +54,9 @@ instance Final Group where
  final n (G name bs)
   = let iStart   = max 0 (A.length bs - n)
         iLen     = max n (A.length bs)
-        Just bs' = A.slice iStart iLen bs
-
-    in  G name  $ A.map (box . final n . unbox) bs'
+    in  case A.slice iStart iLen bs of
+         Nothing  -> G name A.empty
+         Just bs' -> G name  $ A.map (box . final n . unbox) bs'
 
 
 -------------------------

@@ -1,0 +1,23 @@
+
+-- Test of the append operator.
+main
+ = do { 
+        -- Load some separate files containing stock quotes.
+        anz     = load "test/data/tsv/quotes/ANZ.tsv";
+        cba     = load "test/data/tsv/quotes/CBA.tsv";
+        nab     = load "test/data/tsv/quotes/NAB.tsv";
+        wbc     = load "test/data/tsv/quotes/WBC.tsv";
+
+        -- Append all the files together, which also checks they have the same type.
+        append anz (append cba (append nab wbc))
+
+           -- Select only the fields we're interested in.
+         & on /row      $ permute-fields ['symbol, 'date, 'open, 'close, 'volume]
+
+           -- Group quotes by date, and sort by share volume traded.
+         & on /row      $ group        'date
+         & on /date     $ sortby-field 'date
+         & on /date/row $ sortby-field 'volume
+         & sample 10;
+
+   };

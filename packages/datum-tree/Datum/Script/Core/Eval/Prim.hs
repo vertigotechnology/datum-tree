@@ -11,6 +11,7 @@ import Datum.Script.Core.Eval.Prim.Numeric
 import Datum.Script.Core.Eval.Prim.Sample
 import Datum.Script.Core.Eval.Prim.Sort
 import Datum.Script.Core.Eval.Prim.Traverse
+import Datum.Script.Core.Eval.Prim.Union
 import Datum.Script.Core.Eval.Prim.World
 
 
@@ -50,6 +51,9 @@ step self state pp vs
 
         -- Sort
         PPSortByField   -> step_Sort      self state pp vs
+
+        -- Union
+        PPAppend        -> step_Union     self state pp vs
 
         -- Traverse
         PPAt            -> step_Traverse  self state pp vs

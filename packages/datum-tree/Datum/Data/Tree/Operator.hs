@@ -81,6 +81,10 @@ module Datum.Data.Tree.Operator
         , keysOfTree
         , sizeOfTree
 
+          -- * Appending
+        , appendTrees
+        , appendForests
+
           -- * Slicing
         , sliceTree
         , sliceTreeWithNames
@@ -105,6 +109,7 @@ module Datum.Data.Tree.Operator
         , final
         , sample)
 where
+import Datum.Data.Tree.Operator.Append
 import Datum.Data.Tree.Operator.Cast
 import Datum.Data.Tree.Operator.Elements
 import Datum.Data.Tree.Operator.Extract

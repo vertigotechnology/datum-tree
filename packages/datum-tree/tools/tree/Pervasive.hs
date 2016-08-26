@@ -26,10 +26,13 @@ strPervasive
         , "lt                   = lt#;"
         , "le                   = le#;"
 
+        , "append               = append#;"
         , "argument             = argument#;"
+        , "final                = final#;"
         , "flatten              = flatten#;"
         , "gather               = gather#;"
         , "group                = group#;"
+        , "initial              = initial#;"
         , "load                 = load#;"
         , "on                   = on#;"
         , "permute-fields       = permute-fields#;"

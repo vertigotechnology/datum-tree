@@ -58,6 +58,7 @@ data PrimOp
         | PPLt                          -- ^ Less-than.
         | PPLe                          -- ^ Less-than-equal.
 
+        | PPAppend                      -- ^ Append two trees or forests.
         | PPAt                          -- ^ Apply a per-tree function at the given path.
         | PPArgument                    -- ^ Get the value of a script argument.
         | PPFinal                       -- ^ Select the final n branches of each subtree.
@@ -78,7 +79,8 @@ data PrimOp
 -- | Table of names of primitive operators.
 namesOfPrimOps :: [(PrimOp, String)]
 namesOfPrimOps
- =      [ (PPNeg,               "neg#")
+ =      [ (PPAppend,            "append#")
+        , (PPNeg,               "neg#")
         , (PPAdd,               "add#")
         , (PPSub,               "sub#")
         , (PPMul,               "mul#")
@@ -195,6 +197,7 @@ typeOfOp op
         PPLt            -> error "typeOfOp: finish me"
         PPLe            -> error "typeOfOp: finish me"
 
+        PPAppend        -> XTForest      ~> XTForest  ~> XTForest
         PPAt            -> XTList XTName ~> (XTTree   ~> XTTree)   ~> XTTree ~> XTTree
         PPArgument      -> XTText        ~> K.XTS XTText
         PPFinal         -> XTNat         ~> XTTree ~> XTTree
@@ -241,6 +244,7 @@ arityOfOp op
         PPLt            -> 2
         PPLe            -> 2
 
+        PPAppend        -> 2
         PPAt            -> 3
         PPArgument      -> 1
         PPFinal         -> 2
@@ -294,20 +298,20 @@ pattern XDecimal  x     = XFrag (PVAtom (T.ADecimal x))
 pattern XText     x     = XFrag (PVAtom (T.AText    x))
 pattern XTime     x     = XFrag (PVAtom (T.ATime    x))
 
+pattern XAt             = XFrag (PVOp PPAt)
+pattern XAppend         = XFrag (PVOp PPAppend)
 pattern XArgument       = XFrag (PVOp PPArgument)
-pattern XLoad           = XFrag (PVOp PPLoad)
-pattern XStore          = XFrag (PVOp PPStore)
-pattern XInitial        = XFrag (PVOp PPInitial)
 pattern XFinal          = XFrag (PVOp PPFinal)
-pattern XSample         = XFrag (PVOp PPSample)
+pattern XFlatten        = XFrag (PVOp PPFlatten)
 pattern XGroup          = XFrag (PVOp PPGroup)
 pattern XGather         = XFrag (PVOp PPGather)
-pattern XFlatten        = XFrag (PVOp PPFlatten)
-pattern XRenameFields   = XFrag (PVOp PPRenameFields)
-pattern XPermuteFields  = XFrag (PVOp PPPermuteFields)
-
-pattern XAt             = XFrag (PVOp PPAt)
+pattern XInitial        = XFrag (PVOp PPInitial)
+pattern XLoad           = XFrag (PVOp PPLoad)
 pattern XOn             = XFrag (PVOp PPOn)
+pattern XPermuteFields  = XFrag (PVOp PPPermuteFields)
+pattern XRenameFields   = XFrag (PVOp PPRenameFields)
+pattern XStore          = XFrag (PVOp PPStore)
+pattern XSample         = XFrag (PVOp PPSample)
 
 
 (~>)    ::  (GXPrim l ~ K.GPrim (GExp l))

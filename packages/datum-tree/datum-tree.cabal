@@ -139,6 +139,7 @@ Library
         Datum.Data.Tree.Exp.Compounds
         Datum.Data.Tree.Exp.Data
 
+        Datum.Data.Tree.Operator.Append
         Datum.Data.Tree.Operator.Cast
         Datum.Data.Tree.Operator.Filter
         Datum.Data.Tree.Operator.Gather

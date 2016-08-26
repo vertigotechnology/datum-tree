@@ -88,10 +88,24 @@ data BranchType
         deriving Show
 
 
+instance Eq BranchType where
+ (==) (BT n1 tt1 bts1) (BT n2 tt2 bts2)
+  = let bts1'   = unboxes bts1
+        bts2'   = unboxes bts2
+    in  n1 == n2 && tt1 == tt2 && bts1' == bts2'
+
+
 -- | Named tuple types.
 data TupleType
         = TT    !(Array (Box Name :*: Box AtomType))
         deriving Show
+
+
+instance Eq TupleType where
+ (==) (TT nas1)  (TT nas2)
+  = let (ns1, ats1) = unzip [(n, t) | (Box n :*: Box t) <- A.toList nas1]
+        (ns2, ats2) = unzip [(n, t) | (Box n :*: Box t) <- A.toList nas2]
+    in  ns1 == ns2 && ats1 == ats2
 
 
 instance Monoid TupleType where

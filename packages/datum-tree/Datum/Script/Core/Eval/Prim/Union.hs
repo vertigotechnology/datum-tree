@@ -20,5 +20,25 @@ step_Union _ _ PPAppend [VForest f1, VForest f2]
         Just f' -> progress $ VForest f'
 
 
+step_Union _ _ PPConcat [VList _ vs]
+ | Just trees   <- sequence
+                $  map (\v -> case v of
+                                XTree t -> Just t
+                                _       -> Nothing)  vs
+ = do
+        case concatTrees trees of
+         Nothing -> crash
+         Just t' -> progress $ VTree t'
+
+
+step_Union _ _ PPConcat [VList _ vs]
+ | Just forests <- sequence
+                $  map (\v -> case v of
+                                XForest f -> Just f
+                                _         -> Nothing)  vs
+ = case concatForests forests of
+        Nothing -> crash
+        Just f' -> progress $ VForest f'
+
 step_Union _ _ _ _
  = crash

@@ -28,7 +28,7 @@ module Datum.Script.Source.Exp
         , T.Atom        (..)
 
           -- ** Generics
-        , S.GXAnnot, S.GXPrim
+        , S.GXAnnot, S.GXPrim, S.GXFrag
         , S.GXBound, S.GXBind
         , S.GXCast
         , type S.ShowGExp

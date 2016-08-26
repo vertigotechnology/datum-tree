@@ -61,6 +61,7 @@ data PrimOp
         | PPAppend                      -- ^ Append two trees or forests.
         | PPAt                          -- ^ Apply a per-tree function at the given path.
         | PPArgument                    -- ^ Get the value of a script argument.
+        | PPConcat                      -- ^ Concatenate a list of trees or forests.
         | PPFinal                       -- ^ Select the final n branches of each subtree.
         | PPFlatten                     -- ^ Flatten branches.
         | PPGather                      -- ^ Gather branches of a tree into sub trees.
@@ -93,6 +94,7 @@ namesOfPrimOps
 
         , (PPAt,                "at#")
         , (PPArgument,          "argument#")
+        , (PPConcat,            "concat#")
         , (PPFinal,             "final#")
         , (PPFlatten,           "flatten#")
         , (PPGather,            "gather#")
@@ -200,6 +202,7 @@ typeOfOp op
         PPAppend        -> XTForest      ~> XTForest  ~> XTForest
         PPAt            -> XTList XTName ~> (XTTree   ~> XTTree)   ~> XTTree ~> XTTree
         PPArgument      -> XTText        ~> K.XTS XTText
+        PPConcat        -> XTList XTForest ~> XTForest
         PPFinal         -> XTNat         ~> XTTree ~> XTTree
         PPFlatten       -> XTTree        ~> XTTree
         PPGather        -> XTTreePath    ~> XTTree ~> XTTree
@@ -247,6 +250,7 @@ arityOfOp op
         PPAppend        -> 2
         PPAt            -> 3
         PPArgument      -> 1
+        PPConcat        -> 1
         PPFinal         -> 2
         PPFlatten       -> 1
         PPGroup         -> 2
@@ -301,6 +305,7 @@ pattern XTime     x     = XFrag (PVAtom (T.ATime    x))
 pattern XAt             = XFrag (PVOp PPAt)
 pattern XAppend         = XFrag (PVOp PPAppend)
 pattern XArgument       = XFrag (PVOp PPArgument)
+pattern XConcat         = XFrag (PVOp PPConcat)
 pattern XFinal          = XFrag (PVOp PPFinal)
 pattern XFlatten        = XFrag (PVOp PPFlatten)
 pattern XGroup          = XFrag (PVOp PPGroup)

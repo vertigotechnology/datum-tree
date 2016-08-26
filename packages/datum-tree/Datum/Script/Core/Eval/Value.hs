@@ -1,6 +1,8 @@
 
 module Datum.Script.Core.Eval.Value
         ( Value (..)
+        , takeExpOfValue
+
         , Clo   (..)
         , PAP   (..)
         , trimValue
@@ -12,6 +14,22 @@ import Data.Maybe
 import Data.Set                         (Set)
 import qualified Data.Set               as Set
 import Prelude hiding (lookup)
+
+
+-- | Convert a value back to an expression, if possible
+takeExpOfValue :: Value -> Maybe Exp
+takeExpOfValue vv
+ = case vv of
+        VPAP (PAF f vs)
+         |  Just xs     <- sequence $ map takeExpOfValue vs
+         -> Just $ makeXApps (XFrag f) xs
+
+        VPAP (PAP p vs)
+         |  Just xs     <- sequence $ map takeExpOfValue vs
+         -> Just $ makeXApps (XPrim p) xs
+
+        _ -> Nothing
+
 
 
 -- | Trim the environments stored in a value to just the elements that
@@ -46,7 +64,12 @@ freeVarsX env xx
  = case xx of
         XAnnot _ x      -> freeVarsX env x
         XPrim{}         -> Set.empty
-        XFrag{}         -> Set.empty
+
+        XFrag (PVList x xs)
+         -> Set.unions (freeVarsX env x : map (freeVarsX env) xs)
+
+        XFrag{}         
+         -> Set.empty
 
         XVar (UIx _)    -> Set.empty
         XVar (UName n)

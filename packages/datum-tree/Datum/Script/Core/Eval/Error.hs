@@ -8,9 +8,9 @@ module Datum.Script.Core.Eval.Error
 where
 import Datum.Script.Core.Exp
 import Datum.Script.Core.Eval.State
--- import Text.PrettyPrint.Leijen
 import Data.Text                                        (Text)
 import Text.PrettyPrint.Leijen
+import qualified Datum.Data.Tree                        as T
 import qualified Datum.Data.Tree.Codec.Matryo.Decode    as Matryo
 import qualified Datum.Data.Tree.Check                  as Check
 import qualified System.FilePath                        as System
@@ -23,8 +23,6 @@ data Error
         | ErrorCore     ErrorCore
         | ErrorPrim     ErrorPrim
 
-        -- | Evaluator got stuck. The core program is ill-typed.
-        | ErrorCrash
 
 deriving instance Show Error
 
@@ -32,9 +30,21 @@ deriving instance Show Error
 -------------------------------------------------------------------------------
 -- | Errors from the ambient core language.
 data ErrorCore
-        = ErrorCoreStuck
+        -- | Evaluator crashed due to some obvious implementation bug
+        --   or missing functionality.
+        = ErrorCoreCrash
+
+        -- | Evaluation got stuck because the CEK machine did something
+        --   unexpected.
+        | ErrorCoreStuck
+
+        -- | Evaluation got stuck due to some runtime type error in the 
+        --   client program.
         | ErrorCoreType             State
+
+        -- | Evaluation got stuck because we found an unbound variable.
         | ErrorCoreUnboundVariable  Bound
+
 
 deriving instance Show ErrorCore
 
@@ -63,6 +73,16 @@ data ErrorPrim
         | ErrorLoadTypeError
         { errorFilePath :: FilePath
         , errorCheck    :: Check.Error }
+
+        -- | Type error when appending trees.
+        | ErrorAppendTrees
+        { errorTrees    :: [T.Tree   'T.O] }
+
+        -- | Type error when appending forests.
+        | ErrorAppendForests
+        { errorForests  :: [T.Forest 'T.O] }
+
+
 
 deriving instance Show ErrorPrim
 
@@ -103,3 +123,8 @@ ppErrorPrim (ErrorLoadTypeError path err)
         , empty
         , Check.ppError err ]
 
+ppErrorPrim (ErrorAppendTrees _)
+ = vcat [ text "Runtime type error when appending trees." ]
+
+ppErrorPrim (ErrorAppendForests _)
+ = vcat [ text "Runtime type error when appending forests." ]

@@ -166,8 +166,5 @@ errorEval _state err
 
                 System.exitFailure
 
-        Eval.ErrorCrash
-         -> error $ "Crash"
-
 
 

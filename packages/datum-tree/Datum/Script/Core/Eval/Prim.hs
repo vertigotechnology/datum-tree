@@ -54,6 +54,7 @@ step self state pp vs
 
         -- Union
         PPAppend        -> step_Union     self state pp vs
+        PPConcat        -> step_Union     self state pp vs
 
         -- Traverse
         PPAt            -> step_Traverse  self state pp vs

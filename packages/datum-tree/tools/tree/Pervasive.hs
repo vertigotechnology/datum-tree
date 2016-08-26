@@ -28,6 +28,7 @@ strPervasive
 
         , "append               = append#;"
         , "argument             = argument#;"
+        , "concat               = concat#;"
         , "final                = final#;"
         , "flatten              = flatten#;"
         , "gather               = gather#;"

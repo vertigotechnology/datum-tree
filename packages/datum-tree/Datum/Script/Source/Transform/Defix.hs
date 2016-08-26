@@ -24,12 +24,18 @@ module Datum.Script.Source.Transform.Defix
         , Error         (..)
         , Defix         (..))
 where
+
 import Datum.Script.Source.Transform.Defix.FixTable
 import Datum.Script.Source.Transform.Defix.Error
 import Datum.Script.Source.Exp
 import Datum.Data.List
 import Control.Monad
 import Data.Maybe
+import qualified Datum.Script.Core.Exp                  as C
+
+type Lang l 
+        = ( GXBound l ~ Name
+          , GXFrag  l ~ C.GCPrim (GExp l))
 
 
 -- Defix ----------------------------------------------------------------------
@@ -41,25 +47,25 @@ class Defix (c :: * -> *) l where
         -> Either (Error l) (c l)
 
 
-instance GXBound l ~ Name => Defix GModule l where
+instance Lang l => Defix GModule l where
  defix table a mm
   = case mm of
         Module ts       -> fmap Module $ mapM (defix table a) ts
 
 
-instance GXBound l ~ Name => Defix GTop l where
+instance Lang l => Defix GTop l where
  defix table a tt
   = case tt of
         TBind v vs x    -> liftM (TBind v vs) (defix table a x)
 
 
-instance GXBound l ~ Name => Defix GExp l where
+instance Lang l => Defix GExp l where
  defix table a xx
   = let down = defix table a
     in case xx of
         XAnnot a' x     -> liftM  (XAnnot a') (defix table a' x)
         XPrim{}         -> return xx
-        XFrag{}         -> return xx
+        XFrag pp        -> liftM   XFrag      (defixFrag table a pp)
         XVar{}          -> return xx
         XCast c x       -> liftM  (XCast c)   (down x)
         XAbs b t x      -> liftM  (XAbs  b t) (down x)
@@ -89,10 +95,25 @@ instance GXBound l ~ Name => Defix GExp l where
                 Just def -> return (fixDefExp def a)
                 Nothing  -> Left $ ErrorNoInfixDef a str
 
+-- | Defix a statement.
 defixStmt table a ss
  = case ss of
         SStmt x         -> SStmt    <$> defix table a x
         SBind b x       -> SBind b  <$> defix table a x
+
+
+-- | Defix fragment specific primitives.
+defixFrag 
+        :: Lang l
+        => FixTable l
+        -> GXAnnot l
+        -> GCPrim (GExp l)
+        -> Either (Error l) (GCPrim (GExp l))
+
+defixFrag table a pp
+ = case pp of
+        PVList x xs     -> PVList x <$> mapM (defix table a) xs
+        _               -> pure pp
 
 
 -------------------------------------------------------------------------------
@@ -102,7 +123,7 @@ defixStmt table a ss
 --   and produces (f a) + (g b) with three nodes in the XDefix list.
 --
 defixApps 
-        :: (GXBound l ~ Name)
+        :: Lang l
         => FixTable l   -- ^ Table defining fixities of infix operators.
         -> GXAnnot  l   -- ^ Annotation for constructed expressions.
         -> [GExp l]     -- ^ Sequence of expressions to defix.

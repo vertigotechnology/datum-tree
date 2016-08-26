@@ -77,6 +77,16 @@ data Context
         --   and the frame holds the evaluated function.
         | ContextAppFun  !Value !Context
 
+        -- | We're evalating a list of elements and have already handled
+        --   the current ones.
+        | ContextList    
+        { contextListEnv        :: !Env
+        , contextListType       :: !Exp
+        , contextListDone       :: ![Value]
+        , contextListRest       :: ![Exp]
+        , contextListTail       :: !Context }
+
+
 deriving instance Show Context
 
 

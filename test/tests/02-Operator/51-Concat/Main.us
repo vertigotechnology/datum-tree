@@ -1,0 +1,24 @@
+
+-- Test of concat operator.
+main
+ = do { 
+        -- Load some separate files containing stock quotes,
+        -- and concatenate them together.
+        glob    = concat
+                [ load "test/data/tsv/quotes/ANZ.tsv"
+                , load "test/data/tsv/quotes/CBA.tsv"
+                , load "test/data/tsv/quotes/NAB.tsv"
+                , load "test/data/tsv/quotes/WBC.tsv" ];
+
+        -- Append all the files together, which also checks they have the same type.
+        glob
+           -- Select only the fields that we're interested in.
+         & on /row      $ permute-fields ['symbol, 'date, 'open, 'close, 'volume]
+
+           -- Group quotes by date, and sort by share volume traded.
+         & on /row      $ group        'date
+         & on /date     $ sortby-field 'date
+         & on /date/row $ sortby-field 'volume
+         & sample 10;
+
+   };

@@ -1,6 +1,7 @@
-(# "tuples": {"grouping": Text, "name": Text, "symbol": Text})
+# {"tuples": {"grouping": Text, "name": Text, "symbol": Text}
+  }
 ::
-(#[ {}
+# [ {}
   , {"Energy"}
   , {"Energy", "ZEUS RESOURCES LIMITED", "ZEU"}
   , {"Energy", "UNIVERSAL COAL PLC", "UNV"}
@@ -99,4 +100,4 @@
   , {"Semiconductors & Semiconductor Equipment", "DYESOL LIMITED", "DYE"}
   , {"Semiconductors & Semiconductor Equipment", "BLUGLASS LIMITED", "BLG"}
   , {"Semiconductors & Semiconductor Equipment", "4DS MEMORY LIMITED", "4DS"}
-  ])
+  ]

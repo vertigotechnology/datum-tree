@@ -8,10 +8,16 @@ import Datum.Data.Tree.Exp
 
 -- | A source token.
 data Token 
-        = KRoundBra     | KRoundKet
-        | KSquareBra    | KSquareKet
-        | KBraceBra     | KBraceKet
-        | KComma        | KColon
+        = KRoundBra
+        | KRoundKet
+        | KSquareBra
+        | KSquareKet
+        | KBraceBra
+        | KBraceKet
+        | KComma
+        | KHash        
+        | KColon
+        | KDoubleColon
 
         | KLitInt       Integer
         | KLitString    String
@@ -32,7 +38,9 @@ describeToken kk
         KBraceBra       -> "'{' character"
         KBraceKet       -> "'}' character"
         KComma          -> "',' character"
+        KHash           -> "'#' character"
         KColon          -> "':' character"
+        KDoubleColon    -> "'::' symbol"
 
         KLitInt i       -> "literal integer '" ++ show i ++ "'"
         KLitString s    -> "literal string " ++ show s

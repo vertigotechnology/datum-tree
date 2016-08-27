@@ -1,6 +1,7 @@
-(# "row": {"symbol": Text, "company": Text, "industry": Text})
+# {"row": {"symbol": Text, "company": Text, "industry": Text}
+  }
 ::
-(#[ {"1AG", "ALTERRA LIMITED", "Commercial Services & Supplies"}
+# [ {"1AG", "ALTERRA LIMITED", "Commercial Services & Supplies"}
   , {"AJJ", "ASIAN AMERICAN MEDICAL GROUP LIMITED", "Health Care Equipment & Services"}
   , {"ASX", "ASX LIMITED", "Diversified Financials"}
   , {"BKT", "BLACK ROCK MINING LIMITED", "Materials"}
@@ -20,4 +21,4 @@
   , {"SOM", "SOMNOMED LIMITED", "Health Care Equipment & Services"}
   , {"TLM", "TALISMAN MINING LIMITED", "Materials"}
   , {"ZYL", "ZYL LIMITED", "Materials"}
-  ])
+  ]

@@ -1,6 +1,7 @@
-(# "row": {"symbol": Text, "name": Text, "grouping": Text})
+# {"row": {"symbol": Text, "name": Text, "grouping": Text}
+  }
 ::
-(#[ {"1PG", "1-PAGE LIMITED", "Software & Services"}
+# [ {"1PG", "1-PAGE LIMITED", "Software & Services"}
   , {"ANW", "AUS TIN MINING LTD", "Materials"}
   , {"CIN", "CARLTON INVESTMENTS LIMITED", "Diversified Financials"}
   , {"EAL", "E & A LIMITED", "Capital Goods"}
@@ -10,4 +11,4 @@
   , {"PSA", "PETSEC ENERGY LIMITED", "Energy"}
   , {"SYA", "SAYONA MINING LIMITED", "Materials"}
   , {"ZYL", "ZYL LIMITED", "Materials"}
-  ])
+  ]

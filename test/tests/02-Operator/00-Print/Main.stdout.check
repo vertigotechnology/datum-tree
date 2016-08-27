@@ -1,6 +1,7 @@
-(# "row": {"Name": Text, "Classification": Text, "Orbits": Text})
+# {"row": {"Name": Text, "Classification": Text, "Orbits": Text}
+  }
 ::
-(#[ {"Sol", "Star", "Galactic Center"}
+# [ {"Sol", "Star", "Galactic Center"}
   , {"Mercury", "Planet", "Sol"}
   , {"Venus", "Planet", "Sol"}
   , {"Earth", "Planet", "Sol"}
@@ -48,4 +49,4 @@
   , {"Styx", "Moon", "Pluto"}
   , {"Nix", "Moon", "Pluto"}
   , {"Kerberos", "Moon", "Pluto"}
-  ])
+  ]

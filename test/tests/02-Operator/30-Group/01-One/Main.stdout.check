@@ -1,8 +1,10 @@
-(# "classification"
+# {"classification"
     : {"classification": Text}
-    #   "row": {"name": Text, "orbits": Text})
+    # { "row": {"name": Text, "orbits": Text}
+      }
+  }
 ::
-(#[ {"Planet"}
+# [ {"Planet"}
     # [ {"Neptune", "Sol"}
       , {"Uranus", "Sol"}
       , {"Saturn", "Sol"}
@@ -58,4 +60,4 @@
       , {"Phobos", "Mars"}
       , {"Luna", "Earth"}
       ]
-  ])
+  ]

@@ -1,6 +1,7 @@
-(# "row": {"symbol": Text, "name": Text, "grouping": Text})
+# {"row": {"symbol": Text, "name": Text, "grouping": Text}
+  }
 ::
-(#[ {"ZEU", "ZEUS RESOURCES LIMITED", "Energy"}
+# [ {"ZEU", "ZEUS RESOURCES LIMITED", "Energy"}
   , {"UNV", "UNIVERSAL COAL PLC", "Energy"}
   , {"STX", "STRIKE ENERGY LIMITED", "Energy"}
   , {"PVD", "PURA VIDA ENERGY NL", "Energy"}
@@ -243,4 +244,4 @@
   , {"DYE", "DYESOL LIMITED", "Semiconductors & Semiconductor Equipment"}
   , {"BLG", "BLUGLASS LIMITED", "Semiconductors & Semiconductor Equipment"}
   , {"4DS", "4DS MEMORY LIMITED", "Semiconductors & Semiconductor Equipment"}
-  ])
+  ]

@@ -1,8 +1,10 @@
-(# "industry"
+# {"industry"
     : {"industry": Text}
-    #   "row": {"symbol": Text, "company": Text})
+    # { "row": {"symbol": Text, "company": Text}
+      }
+  }
 ::
-(#[ {"Automobiles & Components"}
+# [ {"Automobiles & Components"}
     # [ {"ABV", "ADVANCED BRAKING TECHNOLOGY LTD"}
       , {"ARB", "ARB CORPORATION LIMITED."}
       , {"DDT", "DATADOT TECHNOLOGY LIMITED"}
@@ -117,4 +119,4 @@
       , {"HPR", "HIGH PEAK ROYALTIES LIMITED"}
       , {"WRG", "WATER RESOURCES GROUP LIMITED"}
       ]
-  ])
+  ]

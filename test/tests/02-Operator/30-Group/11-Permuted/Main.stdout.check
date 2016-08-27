@@ -1,8 +1,10 @@
-(# "grouping"
+# {"grouping"
     : {"grouping": Text}
-    #   "row": {"symbol": Text})
+    # { "row": {"symbol": Text}
+      }
+  }
 ::
-(#[ {"Energy"}
+# [ {"Energy"}
     # [ {"ZEU"}
       , {"UNV"}
       , {"STX"}
@@ -297,4 +299,4 @@
       , {"BLG"}
       , {"4DS"}
       ]
-  ])
+  ]

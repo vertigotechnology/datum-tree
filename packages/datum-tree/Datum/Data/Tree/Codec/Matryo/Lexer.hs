@@ -51,7 +51,8 @@ scanner :: FilePath
 scanner fileName
  = I.skip Char.isSpace
  $ I.alts
-        [ fmap  stamp                   $ scanPunctuation
+        [ fmap  stamp                   $ scanSymbol
+        , fmap  stamp                   $ scanPunctuation
         , fmap (stamp' KAtom)           $ scanAtom
         , fmap (stamp' KAtomType)       $ scanAtomType
         ]
@@ -67,6 +68,30 @@ scanner fileName
           = Located fileName l (k t)
         {-# INLINE stamp' #-}
 {-# INLINE scanner #-}
+
+
+-- Symbol ---------------------------------------------------------------------
+-- | Scan a multi-character symbol.
+scanSymbol      :: Scanner (I.Location, Token)
+scanSymbol 
+ = I.munchPred (Just 2) matchSymbol2 acceptSymbol2
+ where
+        matchSymbol2 0 c
+         = case c of
+                ':'             -> True
+                _               -> False
+
+        matchSymbol2 1 c
+         = case c of
+                ':'             -> True
+                _               -> False
+
+        matchSymbol2 _ _        = False
+
+        acceptSymbol2 ss
+         = case ss of
+                "::"            -> Just KDoubleColon
+                _               -> Nothing
 
 
 -- Punctuation ----------------------------------------------------------------
@@ -85,6 +110,7 @@ scanPunctuation
                 '['             -> Just KSquareBra
                 ']'             -> Just KSquareKet
                 ':'             -> Just KColon
+                '#'             -> Just KHash
                 ','             -> Just KComma
                 _               -> Nothing
 {-# INLINE scanPunctuation #-}

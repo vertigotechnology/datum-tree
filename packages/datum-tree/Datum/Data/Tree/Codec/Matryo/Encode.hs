@@ -43,11 +43,11 @@ encodeTree cc tree
 -- | Layout a whole `Tree`.
 layoutTree :: Config -> Tree 'O -> Layout
 layoutTree cc (Tree b bt)
- =  parens (layoutBranchType cc True bt)
+ =  layoutBranchType cc True bt
  <> line
  <> text "::"
  <> line
- <> parens (layoutBranch     cc True bt b)
+ <> layoutBranch     cc True bt b
 
 
 -------------------------------------------------------------------------------
@@ -68,8 +68,10 @@ layoutBranchType cc bRoot (BT n tt bts)
                 then mempty
                 else text (show n) <> line 
                         <> text ": " <> layoutTupleType tt <> line)
-        <> indentCollect (Just '#') Nothing Nothing 4
-                (map (layoutBranchType cc False) (unboxes bts))
+        <> text "# "
+        <> indent 2
+                (indentCollect (Just '{') (Just ',') (Just '}') 2
+                        (map (layoutBranchType cc False) (unboxes bts)))
 
 
 -- | Layout a tuple type.
@@ -95,21 +97,13 @@ layoutBranch cc bFirst (BT _n _tt bts0) (B t gs0)
  |  A.length gs0 == 0
  =  layoutTuple t
 
-{-
- |  (bt : []) <- unboxes bts0
- ,  (g  : []) <- unboxes gs0
- =  layoutTuple t <> line
- <> indent 2
-        (layoutGroup cc bt g)
--}
-
- | bFirst
- = indentCollect  (Just '#') Nothing Nothing 2
+ |  bFirst
+ =  indentCollect (Just '#') (Just '#') Nothing 2
         (zipWith (layoutGroup cc) (unboxes bts0) (unboxes gs0))
 
  |  otherwise
  =  layoutTuple t <> line
- <> indentCollect (Just '#') Nothing Nothing 2
+ <> indentCollect (Just '#') (Just '#') Nothing 2
         (zipWith (layoutGroup cc) (unboxes bts0) (unboxes gs0))
 
 
@@ -200,9 +194,6 @@ indent n (Layout l1)
               in  (p', fromString (replicate (i' - p) ' ') <> b)
          else l1 (i + n) p
 
-parens :: Layout -> Layout
-parens ll
- = text "(" <> ll <> text ")"
 
 
 instance Monoid Layout where

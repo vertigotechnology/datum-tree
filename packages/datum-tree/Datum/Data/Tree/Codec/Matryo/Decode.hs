@@ -64,8 +64,8 @@ decodeTree filePath text
 
           |  otherwise
           -> case parseMatryo filePath toks of
-                Left err        -> return $ Left  (ErrorParse err)
-                Right tree      -> return $ Right tree
+                Left err   -> return $ Left  (ErrorParse err)
+                Right tree -> return $ Right tree
 
 
 -- | Run a parser on located tokens.
@@ -85,6 +85,7 @@ parseMatryo          filePath tokens
 --
 pTreeRoot :: Parser (T.Tree 'T.X)
  = do   bt      <- pBranchTypeRoot
+        _       <- pTok KDoubleColon
         b       <- pBranch True
         return  $  T.Tree b bt
  <?> "a tree"
@@ -114,7 +115,9 @@ pTree
 pBranchTypeRoot :: Parser T.BranchType
 pBranchTypeRoot
  = P.choice
- [ do   name    <- P.choice 
+ [ do   -- If there is no explicit root dimension name, 
+        -- then use the default 'root' name for it.
+        name    <- P.choice 
                 [ do    n       <- pName
                         _       <- pTok KColon
                         return n
@@ -122,18 +125,17 @@ pBranchTypeRoot
                 , do    return "root"]
 
         tt      <- P.choice
-                [ pTupleType, return mempty]
+                [       pTupleType
+                ,       return mempty]
 
         bts     <- P.choice
-                [ do    _       <- pTok KBraceBra
-                        bts'    <- P.sepBy pBranchType (pTok KComma)
-                        _       <- pTok KBraceKet
+                [ do    _    <- pTok KHash
+                        _    <- pTok KBraceBra
+                        bts' <- P.sepBy pBranchType (pTok KComma)
+                        _    <- pTok KBraceKet
                         return bts'
 
-                , do    bt      <- pBranchType
-                        return  [bt]
-
-                , return []
+                , do    return []
                 ]
 
         return  $ T.BT name tt (T.boxes bts)
@@ -156,37 +158,20 @@ pBranchType
         _       <- pTok KColon
 
         tt      <- pTupleType
+
         bts     <- P.choice
-                [ do    _       <- pTok KBraceBra
+                [  do   _       <- pTok KHash
+                        _       <- pTok KBraceBra
                         bts'    <- P.sepBy pBranchType (pTok KComma)
                         _       <- pTok KBraceKet
                         return bts'
 
-                , do    bt      <- pBranchType
-                        return [bt]
-
-                , do    return []
+                ,  do   return  []
                 ]
 
         return  $ T.BT name tt (T.boxes bts)
  <?> "a branch type"
 
-
-{-
--- | Parse a list of `BranchType`.
--- 
--- @
--- BranchTypes ::= '[' BranchType,* ']'
--- @
---
-pBranchTypes :: Parser [T.BranchType]
-pBranchTypes
- = do   _       <- pTok KSquareBra
-        bts     <- P.sepBy pBranchType (pTok KComma)
-        _       <- pTok KSquareKet
-        return  bts
- <?> "a list of branch types"
--}
 
 -- | Parse a `T.TupleType`.
 --
@@ -196,9 +181,9 @@ pBranchTypes
 --
 pTupleType :: Parser T.TupleType
 pTupleType
- = do   _       <- pTok KRoundBra
+ = do   _       <- pTok KBraceBra
         fs      <- P.sepBy pFieldType (pTok KComma)
-        _       <- pTok KRoundKet
+        _       <- pTok KBraceKet
         return  $  T.TT $ A.fromList 
                         $ [T.Box n T.:*: T.Box tt | (n, tt) <- fs]
  <?> "a tuple type"
@@ -244,19 +229,9 @@ pBranch bRoot
                         then P.choice [ pTuple, return mempty ]
                         else pTuple
 
-        groups  <- P.choice
-                [ -- Multiple sub groups.
-                  do    _    <- pTok KBraceBra
-                        gs   <- P.sepBy pGroup (pTok KComma)
-                        _    <- pTok KBraceKet
-                        return gs
-
-                  -- A single sub group.
-                , do    g   <- pGroup
-                        return [g]
-
-                , do   return []
-                ]
+        groups  <- P.many
+                $  do   _       <- pTok KHash
+                        pGroup
 
         return  $ T.B tuple (T.boxes groups)
 
@@ -298,9 +273,9 @@ pGroup
 pTuple :: Parser T.Tuple
 pTuple 
  = P.choice
- [ do   _       <- pTok KRoundBra
+ [ do   _       <- pTok KBraceBra
         fs      <- P.sepBy pAtom (pTok KComma)
-        _       <- pTok KRoundKet
+        _       <- pTok KBraceKet
         return  $  T.T (T.boxes fs)
 
  , do   a       <- pAtom

@@ -1,10 +1,13 @@
-(# "cls"
+# {"cls"
     : {"cls": Text}
-    #   "orbits"
+    # { "orbits"
         : {"orbits": Text}
-        #   "row": {"name": Text})
+        # { "row": {"name": Text}
+          }
+      }
+  }
 ::
-(#[ {"Planet"}
+# [ {"Planet"}
     # [ {"Sol"}
         # [ {"Mercury"}
           , {"Venus"}
@@ -80,4 +83,4 @@
         # [ {"Luna"}
           ]
       ]
-  ])
+  ]

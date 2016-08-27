@@ -1,8 +1,10 @@
-(# "grouping"
+# {"grouping"
     : {"grouping": Text}
-    #   "row": {"symbol": Text, "name": Text})
+    # { "row": {"symbol": Text, "name": Text}
+      }
+  }
 ::
-(#[ {"Energy"}
+# [ {"Energy"}
     # [ {"ZEU", "ZEUS RESOURCES LIMITED"}
       , {"UNV", "UNIVERSAL COAL PLC"}
       , {"STX", "STRIKE ENERGY LIMITED"}
@@ -297,4 +299,4 @@
       , {"BLG", "BLUGLASS LIMITED"}
       , {"4DS", "4DS MEMORY LIMITED"}
       ]
-  ])
+  ]

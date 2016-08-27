@@ -11,4 +11,4 @@ main
         @ group 'grouping
 
  & on /grouping/row
-        $ sample 10;
+        $ sample 10

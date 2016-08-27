@@ -4,5 +4,5 @@
 main
  = load "test/data/csv/SolarSystem.csv"
  & on /row  $ rename-fields ['name, 'classification, 'orbits]
- & on /row  $ group 'classification;
+ & on /row  $ group 'classification
 

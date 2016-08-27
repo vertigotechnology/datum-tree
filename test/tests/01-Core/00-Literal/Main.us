@@ -1,16 +1,15 @@
 
 -- Check literal parsing and printing.
-string  = "I am a string";
-nat     = 23;
-bool    = True;
-unit    = ();
+string  = "I am a string"
+nat     = 23
+bool    = True
+unit    = ()
 
 main    
- = do { print string;
-        print nat;
-        print bool; 
-        print unit;
-      };
+ = do   print string
+        print nat
+        print bool
+        print unit
 
 
 

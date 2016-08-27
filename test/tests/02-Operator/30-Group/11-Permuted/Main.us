@@ -20,6 +20,6 @@ main
         $ sample 10
 
  & on /grouping/row 
-        $ permute-fields ['symbol];
+        $ permute-fields ['symbol]
 
 

@@ -24,4 +24,4 @@ main
 
  -- Sort company groups by grouping name.
  & on /industry
-        $ sortby-field 'industry;
+        $ sortby-field 'industry

@@ -22,5 +22,5 @@ main
         $ sortby-field 'industry
 
  -- Sample at most 10 industries with 10 companies each.
- & sample 10;
+ & sample 10
 

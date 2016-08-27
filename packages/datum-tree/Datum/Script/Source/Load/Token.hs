@@ -8,7 +8,11 @@ where
 -- | A token in lambda expression syntax.
 data Token
         = KEndOfFile            -- ^ End of file marker.
-        
+        | KNewLine              -- ^ New line character.
+
+        | KOffsideClose         -- ^ Offside rule added a closing brace where there 
+                                --   was already an explicit one.
+
         | KErrorJunk   Char     -- ^ Some junk or invalid character.
         | KErrorUnterm String   -- ^ Unterminated string.
 
@@ -47,6 +51,8 @@ sayToken :: Token -> String
 sayToken tok
  = case tok of
         KEndOfFile      -> "end of file"
+        KNewLine        -> "new line"
+        KOffsideClose   -> "offside close"
         KErrorJunk   _  -> "character"
         KErrorUnterm _  -> "unterminated string"
 

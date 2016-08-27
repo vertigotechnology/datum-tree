@@ -1,4 +1,4 @@
 
 -- Check detection of atom type mismatches.
 -- The loaded file has a tuple with an atom of the wrong type.
-main = load "test/tests/02-Operator/01-Load/10-matryo/15-ErrorAtom/Companies-ErrorAtom.matryo";
+main = load "test/tests/02-Operator/01-Load/10-matryo/15-ErrorAtom/Companies-ErrorAtom.matryo"

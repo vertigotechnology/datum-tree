@@ -16,6 +16,6 @@ main
  & gather /grouping/row
 
  & on /row
-        $ permute-fields ['symbol, 'name, 'grouping];
+        $ permute-fields ['symbol, 'name, 'grouping]
         
 

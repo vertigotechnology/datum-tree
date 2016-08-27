@@ -91,7 +91,11 @@ runScript :: Config -> FilePath -> String -> IO ()
 runScript config filePath strSource
  = do   
         -- Parse the client module text and convert to the core language.
-        xCore           <- loadToCore (configDump config) filePath strSource
+
+        let dumper      
+                | configDump config     = mkDumper filePath
+                | otherwise             = \_ _ -> return ()
+        xCore   <- loadToCore dumper filePath strSource
         runExp config filePath xCore
 
 

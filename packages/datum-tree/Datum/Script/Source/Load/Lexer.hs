@@ -5,11 +5,7 @@ module Datum.Script.Source.Load.Lexer
         , locatedSourcePos
         , locatedBody)
 where
-import Datum.Data.Tree.Codec.Matryo.Lexer
-        ( Located (..)
-        , locatedSourcePos
-        , locatedBody)
-
+import Datum.Script.Source.Load.Located
 import Datum.Script.Source.Load.Token
 import qualified Text.Lexer.Inchworm.Char       as I
 import qualified Data.Char                      as Char
@@ -36,9 +32,16 @@ scanner :: FilePath
         -> I.Scanner IO I.Location [Char] (Located Token)
 
 scanner fileName
- = I.skip Char.isSpace
+ = I.skip (\c -> c == ' ' || c == '\t')
  $ I.alts
-        [ fmap (stamp' KComment)
+        [ -- Newlines are scanned to their own tokens because
+          -- the transform that manages the offside rule uses them.
+          fmap stamp                    
+           $ I.from     (\c -> case c of
+                                '\n'        -> return $ KNewLine
+                                _           -> Nothing)
+
+        , fmap (stamp' KComment)
                 $ I.scanHaskellCommentBlock
 
         , fmap (stamp' KComment)

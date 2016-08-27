@@ -1,4 +1,4 @@
 
 -- Check basic higher order functions.
-twice = λf → λx → f (f x);
-main  = twice (add# 1) 5;
+twice = λf → λx → f (f x)
+main  = twice (add# 1) 5

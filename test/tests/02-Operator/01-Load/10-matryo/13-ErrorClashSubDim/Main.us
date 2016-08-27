@@ -1,4 +1,4 @@
 
 -- Check detection of dimension name conflicts.
 -- The loaded file has a dimension with two sub dimensions of the same name.
-main = load "test/tests/02-Operator/01-Load/10-matryo/13-ErrorClashSubDim/Companies-ErrorClashSubDim.matryo";
+main = load "test/tests/02-Operator/01-Load/10-matryo/13-ErrorClashSubDim/Companies-ErrorClashSubDim.matryo"

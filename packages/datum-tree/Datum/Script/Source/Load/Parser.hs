@@ -41,7 +41,9 @@ startingSourcePos filePath
 -- | Parse an entire datum script.
 pModule  :: Parser Module
 pModule 
- = do   ts              <- fmap (map snd) $ P.many1 pTop
+ = do   _               <- pTok KBraceBra
+        ts              <- fmap (map snd) $ P.sepEndBy pTop (pTok KSemi)
+        _               <- pTok KBraceKet
         _               <- pTok KEndOfFile
         return  $ Module 
                 { moduleTops = ts }
@@ -54,7 +56,6 @@ pTop
         vsArgs          <- fmap (map snd) $ P.many pVar
         _               <- pTok (KOp "=")
         (_,  xBody)     <- pExp
-        _               <- pTok KSemi
         let vtsArgs     = [(v, Nothing) | v <- vsArgs]
         return  (sp, TBind vName vtsArgs xBody)
 
@@ -100,7 +101,7 @@ pExpAtom
  , do   -- do expression
         sp      <- pTok (KKey "do")
         _       <- pTok KBraceBra
-        ss      <- P.endBy pStmt (pTok KSemi)
+        ss      <- P.sepEndBy1 pStmt (pTok KSemi)
         _       <- pTok KBraceKet
 
         case reverse ss of

@@ -2,4 +2,4 @@
 -- Check detection of dimension arity errors.
 -- The loaded file has a branch that does not have
 -- all the required sub branches.
-main = load "test/tests/02-Operator/01-Load/10-matryo/11-ErrorArityDim/Companies-ErrorArityDim.matryo";
+main = load "test/tests/02-Operator/01-Load/10-matryo/11-ErrorArityDim/Companies-ErrorArityDim.matryo"

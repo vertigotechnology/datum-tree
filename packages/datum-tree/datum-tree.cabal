@@ -115,6 +115,7 @@ Library
 
         Datum.Script.Source.Exp
         Datum.Script.Source.Load.Lexer
+        Datum.Script.Source.Load.Offside
         Datum.Script.Source.Load.Parser
         Datum.Script.Source.Load.Token
 

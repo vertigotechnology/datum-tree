@@ -1,14 +1,14 @@
 
 -- Test of concat operator.
 main
- = do { 
+ = do
         -- Load some separate files containing stock quotes,
         -- and concatenate them together.
         glob    = concat
                 [ load "test/data/tsv/quotes/ANZ.tsv"
                 , load "test/data/tsv/quotes/CBA.tsv"
                 , load "test/data/tsv/quotes/NAB.tsv"
-                , load "test/data/tsv/quotes/WBC.tsv" ];
+                , load "test/data/tsv/quotes/WBC.tsv" ]
 
         -- Append all the files together, which also checks they have the same type.
         glob
@@ -19,6 +19,4 @@ main
          & on /row      $ group        'date
          & on /date     $ sortby-field 'date
          & on /date/row $ sortby-field 'volume
-         & sample 10;
-
-   };
+         & sample 10

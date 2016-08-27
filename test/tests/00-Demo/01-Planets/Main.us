@@ -28,7 +28,7 @@
 --
 
 -- Planet orbit data.
-objects = "test/data/csv/SolarSystem.csv";
+objects = "test/data/csv/SolarSystem.csv"
 
 main   
  = load objects
@@ -45,4 +45,4 @@ main
  -- Group objects by what they orbit, 
  -- so the result is structured as cls/orbits/name.
  & on /cls/row
-        $ group 'orbits;
+        $ group 'orbits

@@ -9,4 +9,4 @@ main
  & on /row $ rename-fields ['name, 'symbol, 'grouping]
  & on /row (group 'grouping)
  & sample 10
- & flatten;
+ & flatten

@@ -1,4 +1,5 @@
 (# "row": {"symbol": Text, "name": Text, "grouping": Text, "symbol": Text, "symbol": Text})
+::
 (#[ {"1PG", "1-PAGE LIMITED", "Software & Services", "1PG", "1PG"}
   , {"ANW", "AUS TIN MINING LTD", "Materials", "ANW", "ANW"}
   , {"CIN", "CARLTON INVESTMENTS LIMITED", "Diversified Financials", "CIN", "CIN"}

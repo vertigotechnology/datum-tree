@@ -1,6 +1,7 @@
 (# "date"
     : {"date": Text}
     #   "row": {"symbol": Text, "open": Text, "close": Text, "volume": Text})
+::
 (#[ {"2014-01-01"}
     # [ {"WBC.AX", "32.380", "32.380", "0"}
       , {"NAB.AX", "34.830", "34.830", "0"}

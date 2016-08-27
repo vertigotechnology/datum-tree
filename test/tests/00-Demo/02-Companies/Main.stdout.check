@@ -1,6 +1,7 @@
 (# "industry"
     : {"industry": Text}
     #   "row": {"symbol": Text, "company": Text})
+::
 (#[ {"Automobiles & Components"}
     # [ {"ABV", "ADVANCED BRAKING TECHNOLOGY LTD"}
       , {"ARB", "ARB CORPORATION LIMITED."}

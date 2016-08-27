@@ -45,6 +45,8 @@ layoutTree :: Config -> Tree 'O -> Layout
 layoutTree cc (Tree b bt)
  =  parens (layoutBranchType cc True bt)
  <> line
+ <> text "::"
+ <> line
  <> parens (layoutBranch     cc True bt b)
 
 

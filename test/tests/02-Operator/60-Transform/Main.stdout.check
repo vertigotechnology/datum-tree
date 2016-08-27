@@ -1,4 +1,5 @@
 (# "tuples": {"symbol": Text, "name": Text, "grouping": Text})
+::
 (#[ {}
   , {"Energy"}
   , {"ZEU", "ZEUS RESOURCES LIMITED", "Energy"}

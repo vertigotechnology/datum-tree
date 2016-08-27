@@ -22,7 +22,7 @@ step    :: (State -> IO (Either Error (Maybe State)))
 
 -- Form a thunk from a partially applied primitive.
 step _ _ p args
- | length args < arityOfOp p
+ | length args < arityOfPrimOp p
  = do   progress $ VPAP (PAF (PVOp p) args)
 
 -- Dispatch to the function that handles each primitive.

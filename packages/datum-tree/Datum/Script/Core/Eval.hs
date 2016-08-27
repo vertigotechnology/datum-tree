@@ -119,7 +119,7 @@ step   state@(State world env ctx ctl)
 
         -- Evaluate fully applied primitive applications in PAP form.
         ControlPAP (PAF (PVOp op) args)
-         | length args == arityOfOp op
+         | length args == arityOfPrimOp op
          -> do  result  <- Prim.step step state op args
                 case result of
                  Left err 

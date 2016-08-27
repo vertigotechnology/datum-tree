@@ -1,12 +1,42 @@
 {-# LANGUAGE UndecidableInstances #-}
-module Datum.Script.Core.Exp.Prim where
+module Datum.Script.Core.Exp.Prim 
+        ( GCPrim (..),  PrimOp (..)
+        , GExpStd
+        , typeOfPrim,   typeOfAtom,     typeOfPrimOp
+        , arityOfPrim,  arityOfPrimOp
+
+        -- * Prim Ops
+        , namesOfPrimOps
+        , primOpsOfNames
+
+        -- * Pattern Synonyms
+        , pattern XTList,       pattern XList
+        , pattern XTName,       pattern XName
+        , pattern XTForest,     pattern XForest
+        , pattern XTTree,       pattern XTree
+        , pattern XTTreePath,   pattern XTreePath
+        , pattern XTFilePath,   pattern XFilePath
+        , pattern XTValue
+        , pattern XTTuple
+
+        , pattern XTBool,       pattern XBool
+        , pattern XTInt,        pattern XInt
+        , pattern XTFloat,      pattern XFloat
+        , pattern XTNat,        pattern XNat
+        , pattern XTDecimal,    pattern XDecimal
+        , pattern XTText,       pattern XText
+        , pattern XTTime,       pattern XTime
+
+        , pattern XPrimOp)
+
+where
+import Datum.Script.Core.Exp.Prim.PrimOp
 import Datum.Script.Kernel.Exp.Generic
 import Data.Text                                        (Text)
 import qualified Datum.Script.Kernel.Exp.Prim           as K
 import qualified Datum.Script.Kernel.Exp.Compounds      as K
 import qualified Datum.Script.Kernel.Exp.Bind           as K
 import qualified Datum.Data.Tree.Exp                    as T
-
 
 
 ---------------------------------------------------------------------------------------------------
@@ -45,80 +75,7 @@ data GCPrim x
         | PVOp       PrimOp             -- ^ Primitive operators with the given type arguments.
 
 
--- Primitive operators.
-data PrimOp
-        = PPNeg                         -- ^ Negation.
-        | PPAdd                         -- ^ Addition.
-        | PPSub                         -- ^ Subtraction.
-        | PPMul                         -- ^ Multiplication.
-        | PPDiv                         -- ^ Division
-        | PPEq                          -- ^ Equality.
-        | PPGt                          -- ^ Greater-than.
-        | PPGe                          -- ^ Greater-than-equal.
-        | PPLt                          -- ^ Less-than.
-        | PPLe                          -- ^ Less-than-equal.
-
-        | PPAppend                      -- ^ Append two trees or forests.
-        | PPAt                          -- ^ Apply a per-tree function at the given path.
-        | PPArgument                    -- ^ Get the value of a script argument.
-        | PPConcat                      -- ^ Concatenate a list of trees or forests.
-        | PPFinal                       -- ^ Select the final n branches of each subtree.
-        | PPFlatten                     -- ^ Flatten branches.
-        | PPGather                      -- ^ Gather branches of a tree into sub trees.
-        | PPGroup                       -- ^ Group branches by given key field.
-        | PPInitial                     -- ^ Select the initial n branches of each subtree.
-        | PPLoad                        -- ^ Load  a value from the file system.
-        | PPOn                          -- ^ Apply a per-forest function at the given path. 
-        | PPPermuteFields               -- ^ Permute fields of a key.
-        | PPPrint                       -- ^ Print an object to the console.
-        | PPRenameFields                -- ^ Rename fields of key.
-        | PPSample                      -- ^ Sample n intermediate branches of each subtree.
-        | PPSortByField                 -- ^ Sort trees in a forest.
-        | PPStore                       -- ^ Store a value to the file system.
-        deriving Eq
-
--- | Table of names of primitive operators.
-namesOfPrimOps :: [(PrimOp, String)]
-namesOfPrimOps
- =      [ (PPAppend,            "append#")
-        , (PPNeg,               "neg#")
-        , (PPAdd,               "add#")
-        , (PPSub,               "sub#")
-        , (PPMul,               "mul#")
-        , (PPDiv,               "div#")
-        , (PPEq,                "eq#")
-        , (PPGt,                "gt#")
-        , (PPGe,                "ge#")
-        , (PPLt,                "lt#")
-        , (PPLe,                "le#")
-
-        , (PPAt,                "at#")
-        , (PPArgument,          "argument#")
-        , (PPConcat,            "concat#")
-        , (PPFinal,             "final#")
-        , (PPFlatten,           "flatten#")
-        , (PPGather,            "gather#")
-        , (PPGroup,             "group#")
-        , (PPInitial,           "initial#")
-        , (PPLoad,              "load#")
-        , (PPOn,                "on#")
-        , (PPPermuteFields,     "permute-fields#")
-        , (PPPrint,             "print#") 
-        , (PPRenameFields,      "rename-fields#")
-        , (PPSample,            "sample#")
-        , (PPSortByField,       "sortby-field#")
-        , (PPStore,             "store#")
-        ]
-
-
--- | Tables of primitive operators of names.
-primOpsOfNames :: [(String, PrimOp)]
-primOpsOfNames 
- = [ (name, op) | (op, name) <- namesOfPrimOps]
-
-
 deriving instance Show x => Show (GCPrim x)
-deriving instance Show PrimOp
 
 type GExpStd l n
  =      ( GXPrim l  ~ K.GPrim (GExp l)
@@ -166,7 +123,7 @@ typeOfPrim pp
         PVFilePath  _   -> XTFilePath
 
         PVAtom a        -> XFrag (PTAtom (typeOfAtom a))
-        PVOp   op       -> typeOfOp op
+        PVOp   op       -> typeOfPrimOp op
 
 
 -- | Yield the type of the given atom.
@@ -184,9 +141,8 @@ typeOfAtom aa
 
 
 -- | Yield the type of the given primop.
-typeOfOp :: GExpStd l n
-         => PrimOp -> GExp l
-typeOfOp op
+typeOfPrimOp :: GExpStd l n => PrimOp -> GExp l
+typeOfPrimOp op
  = case op of
         PPNeg           -> error "typeOfOp: finish me"
         PPAdd           -> error "typeOfOp: finish me"
@@ -221,49 +177,12 @@ typeOfOp op
                 $ \u -> u ~> K.XTS K.XTUnit
 
 
-
-
 -- | Yield the arity of a primitive.
 arityOfPrim :: GCPrim x -> Int
 arityOfPrim pp
  = case pp of
-        PVOp op         -> arityOfOp op
+        PVOp op         -> arityOfPrimOp op
         _               -> 0
-
-
--- | Yield the arity of a primitive operator.
-arityOfOp :: PrimOp -> Int
-arityOfOp op
- = case op of
-        PPNeg           -> 1
-        PPAdd           -> 2
-        PPSub           -> 2
-        PPMul           -> 2
-        PPDiv           -> 2
-
-        PPEq            -> 2
-        PPGt            -> 2
-        PPGe            -> 2
-        PPLt            -> 2
-        PPLe            -> 2
-
-        PPAppend        -> 2
-        PPAt            -> 3
-        PPArgument      -> 1
-        PPConcat        -> 1
-        PPFinal         -> 2
-        PPFlatten       -> 1
-        PPGroup         -> 2
-        PPGather        -> 2
-        PPInitial       -> 2
-        PPLoad          -> 1
-        PPOn            -> 3
-        PPPermuteFields -> 2
-        PPPrint         -> 1
-        PPRenameFields  -> 2
-        PPSortByField   -> 2
-        PPStore         -> 2
-        PPSample        -> 2
 
 
 ---------------------------------------------------------------------------------------------------
@@ -302,23 +221,10 @@ pattern XDecimal  x     = XFrag (PVAtom (T.ADecimal x))
 pattern XText     x     = XFrag (PVAtom (T.AText    x))
 pattern XTime     x     = XFrag (PVAtom (T.ATime    x))
 
-pattern XAt             = XFrag (PVOp PPAt)
-pattern XAppend         = XFrag (PVOp PPAppend)
-pattern XArgument       = XFrag (PVOp PPArgument)
-pattern XConcat         = XFrag (PVOp PPConcat)
-pattern XFinal          = XFrag (PVOp PPFinal)
-pattern XFlatten        = XFrag (PVOp PPFlatten)
-pattern XGroup          = XFrag (PVOp PPGroup)
-pattern XGather         = XFrag (PVOp PPGather)
-pattern XInitial        = XFrag (PVOp PPInitial)
-pattern XLoad           = XFrag (PVOp PPLoad)
-pattern XOn             = XFrag (PVOp PPOn)
-pattern XPermuteFields  = XFrag (PVOp PPPermuteFields)
-pattern XRenameFields   = XFrag (PVOp PPRenameFields)
-pattern XStore          = XFrag (PVOp PPStore)
-pattern XSample         = XFrag (PVOp PPSample)
+pattern XPrimOp   p     = XFrag (PVOp p)
 
 
+-- Infix constructors
 (~>)    ::  (GXPrim l ~ K.GPrim (GExp l))
         =>  GExp l -> GExp l -> GExp l
 (~>) a b  = XApp (XApp (XPrim (K.PFun 1)) a) b

@@ -22,13 +22,30 @@ data Stage
 expOfStage :: Stage -> Exp
 expOfStage ss
  = case ss of
-        SLoad    filePath       -> XLoad    @@ XText filePath
-        SStore   filePath       -> XStore   @@ XText filePath
-        SInitial n              -> XInitial @@ XNat  n
-        SFinal   n              -> XFinal   @@ XNat  n
-        SSample  n              -> XSample  @@ XNat  n
-        SGather  ns             -> XGather       @@ XList XTName (map XName ns)
-        SGroup   n              -> XGroup        @@ XName n
-        SRenameFields ns        -> XRenameFields @@ XList XTName (map XName ns)
-        SOn ns s'               -> XOn           @@ XList XTName (map XName ns) @@ expOfStage s'
+        SLoad    filePath
+         -> XPrimOp PPLoad         @@ XText filePath
+
+        SStore   filePath
+         -> XPrimOp PPStore        @@ XText filePath
+
+        SInitial n
+         -> XPrimOp PPInitial      @@ XNat  n
+
+        SFinal   n
+         -> XPrimOp PPFinal        @@ XNat  n
+
+        SSample  n
+         -> XPrimOp PPSample       @@ XNat  n
+
+        SGather  ns
+         -> XPrimOp PPGather       @@ XList XTName (map XName ns)
+
+        SGroup   n
+         -> XPrimOp PPGroup        @@ XName n
+
+        SRenameFields ns
+         -> XPrimOp PPRenameFields @@ XList XTName (map XName ns)
+
+        SOn ns s'
+         -> XPrimOp PPOn           @@ XList XTName (map XName ns) @@ expOfStage s'
 

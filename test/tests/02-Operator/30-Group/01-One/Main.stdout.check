@@ -1,67 +1,60 @@
-{  "classification"
-    : ("classification": Text)
-    {   "row": ("name": Text, "orbits": Text)
-    }
-}
-{ [ ("Planet")
-    { [ ("Neptune", "Sol")
-      , ("Uranus", "Sol")
-      , ("Saturn", "Sol")
-      , ("Jupiter", "Sol")
-      , ("Mars", "Sol")
-      , ("Earth", "Sol")
-      , ("Venus", "Sol")
-      , ("Mercury", "Sol")
+(# "classification"
+    : {"classification": Text}
+    #   "row": {"name": Text, "orbits": Text})
+(#[ {"Planet"}
+    # [ {"Neptune", "Sol"}
+      , {"Uranus", "Sol"}
+      , {"Saturn", "Sol"}
+      , {"Jupiter", "Sol"}
+      , {"Mars", "Sol"}
+      , {"Earth", "Sol"}
+      , {"Venus", "Sol"}
+      , {"Mercury", "Sol"}
       ]
-    }
-  , ("Star")
-    { [ ("Sol", "Galactic Center")
+  , {"Star"}
+    # [ {"Sol", "Galactic Center"}
       ]
-    }
-  , ("Dwarf Planet")
-    { [ ("Pluto", "Sol")
-      , ("Ceres", "Sol")
+  , {"Dwarf Planet"}
+    # [ {"Pluto", "Sol"}
+      , {"Ceres", "Sol"}
       ]
-    }
-  , ("Moon")
-    { [ ("Kerberos", "Pluto")
-      , ("Nix", "Pluto")
-      , ("Styx", "Pluto")
-      , ("Charon", "Pluto")
-      , ("Neso", "Neptune")
-      , ("Psamathe", "Neptune")
-      , ("Laomedeia", "Neptune")
-      , ("Sao", "Neptune")
-      , ("Halimede", "Neptune")
-      , ("Nereid", "Neptune")
-      , ("Triton", "Neptune")
-      , ("Proteus", "Neptune")
-      , ("Larissa", "Neptune")
-      , ("Galatea", "Neptune")
-      , ("Despina", "Neptune")
-      , ("Thalassa", "Neptune")
-      , ("Naiad", "Neptune")
-      , ("Oberon", "Uranus")
-      , ("Titania", "Uranus")
-      , ("Umbriel", "Uranus")
-      , ("Ariel", "Uranus")
-      , ("Miranda", "Uranus")
-      , ("Puck", "Uranus")
-      , ("Iapetus", "Saturn")
-      , ("Titan", "Saturn")
-      , ("Rhea", "Saturn")
-      , ("Dione", "Saturn")
-      , ("Tethys", "Saturn")
-      , ("Enceladus", "Saturn")
-      , ("Mimas", "Saturn")
-      , ("Callisto", "Jupiter")
-      , ("Ganymede", "Jupiter")
-      , ("Europa", "Jupiter")
-      , ("Io", "Jupiter")
-      , ("Deimos", "Mars")
-      , ("Phobos", "Mars")
-      , ("Luna", "Earth")
+  , {"Moon"}
+    # [ {"Kerberos", "Pluto"}
+      , {"Nix", "Pluto"}
+      , {"Styx", "Pluto"}
+      , {"Charon", "Pluto"}
+      , {"Neso", "Neptune"}
+      , {"Psamathe", "Neptune"}
+      , {"Laomedeia", "Neptune"}
+      , {"Sao", "Neptune"}
+      , {"Halimede", "Neptune"}
+      , {"Nereid", "Neptune"}
+      , {"Triton", "Neptune"}
+      , {"Proteus", "Neptune"}
+      , {"Larissa", "Neptune"}
+      , {"Galatea", "Neptune"}
+      , {"Despina", "Neptune"}
+      , {"Thalassa", "Neptune"}
+      , {"Naiad", "Neptune"}
+      , {"Oberon", "Uranus"}
+      , {"Titania", "Uranus"}
+      , {"Umbriel", "Uranus"}
+      , {"Ariel", "Uranus"}
+      , {"Miranda", "Uranus"}
+      , {"Puck", "Uranus"}
+      , {"Iapetus", "Saturn"}
+      , {"Titan", "Saturn"}
+      , {"Rhea", "Saturn"}
+      , {"Dione", "Saturn"}
+      , {"Tethys", "Saturn"}
+      , {"Enceladus", "Saturn"}
+      , {"Mimas", "Saturn"}
+      , {"Callisto", "Jupiter"}
+      , {"Ganymede", "Jupiter"}
+      , {"Europa", "Jupiter"}
+      , {"Io", "Jupiter"}
+      , {"Deimos", "Mars"}
+      , {"Phobos", "Mars"}
+      , {"Luna", "Earth"}
       ]
-    }
-  ]
-}
+  ])

@@ -1,100 +1,82 @@
-{  "classification"
-    : ("classification": Text)
-    {   "orbits"
-        : ("orbits": Text)
-        {   "row": ("name": Text)
-        }
-    }
-}
-{ [ ("Planet")
-    { [ ("Sol")
-        { [ ("Mercury")
-          , ("Venus")
-          , ("Earth")
-          , ("Mars")
-          , ("Jupiter")
-          , ("Saturn")
-          , ("Uranus")
-          , ("Neptune")
+(# "classification"
+    : {"classification": Text}
+    #   "orbits"
+        : {"orbits": Text}
+        #   "row": {"name": Text})
+(#[ {"Planet"}
+    # [ {"Sol"}
+        # [ {"Mercury"}
+          , {"Venus"}
+          , {"Earth"}
+          , {"Mars"}
+          , {"Jupiter"}
+          , {"Saturn"}
+          , {"Uranus"}
+          , {"Neptune"}
           ]
-        }
       ]
-    }
-  , ("Star")
-    { [ ("Galactic Center")
-        { [ ("Sol")
+  , {"Star"}
+    # [ {"Galactic Center"}
+        # [ {"Sol"}
           ]
-        }
       ]
-    }
-  , ("Dwarf Planet")
-    { [ ("Sol")
-        { [ ("Ceres")
-          , ("Pluto")
+  , {"Dwarf Planet"}
+    # [ {"Sol"}
+        # [ {"Ceres"}
+          , {"Pluto"}
           ]
-        }
       ]
-    }
-  , ("Moon")
-    { [ ("Pluto")
-        { [ ("Charon")
-          , ("Styx")
-          , ("Nix")
-          , ("Kerberos")
+  , {"Moon"}
+    # [ {"Pluto"}
+        # [ {"Charon"}
+          , {"Styx"}
+          , {"Nix"}
+          , {"Kerberos"}
           ]
-        }
-      , ("Mars")
-        { [ ("Phobos")
-          , ("Deimos")
+      , {"Mars"}
+        # [ {"Phobos"}
+          , {"Deimos"}
           ]
-        }
-      , ("Jupiter")
-        { [ ("Io")
-          , ("Europa")
-          , ("Ganymede")
-          , ("Callisto")
+      , {"Jupiter"}
+        # [ {"Io"}
+          , {"Europa"}
+          , {"Ganymede"}
+          , {"Callisto"}
           ]
-        }
-      , ("Uranus")
-        { [ ("Puck")
-          , ("Miranda")
-          , ("Ariel")
-          , ("Umbriel")
-          , ("Titania")
-          , ("Oberon")
+      , {"Uranus"}
+        # [ {"Puck"}
+          , {"Miranda"}
+          , {"Ariel"}
+          , {"Umbriel"}
+          , {"Titania"}
+          , {"Oberon"}
           ]
-        }
-      , ("Saturn")
-        { [ ("Mimas")
-          , ("Enceladus")
-          , ("Tethys")
-          , ("Dione")
-          , ("Rhea")
-          , ("Titan")
-          , ("Iapetus")
+      , {"Saturn"}
+        # [ {"Mimas"}
+          , {"Enceladus"}
+          , {"Tethys"}
+          , {"Dione"}
+          , {"Rhea"}
+          , {"Titan"}
+          , {"Iapetus"}
           ]
-        }
-      , ("Neptune")
-        { [ ("Naiad")
-          , ("Thalassa")
-          , ("Despina")
-          , ("Galatea")
-          , ("Larissa")
-          , ("Proteus")
-          , ("Triton")
-          , ("Nereid")
-          , ("Halimede")
-          , ("Sao")
-          , ("Laomedeia")
-          , ("Psamathe")
-          , ("Neso")
+      , {"Neptune"}
+        # [ {"Naiad"}
+          , {"Thalassa"}
+          , {"Despina"}
+          , {"Galatea"}
+          , {"Larissa"}
+          , {"Proteus"}
+          , {"Triton"}
+          , {"Nereid"}
+          , {"Halimede"}
+          , {"Sao"}
+          , {"Laomedeia"}
+          , {"Psamathe"}
+          , {"Neso"}
           ]
-        }
-      , ("Earth")
-        { [ ("Luna")
+      , {"Earth"}
+        # [ {"Luna"}
           ]
-        }
       ]
-    }
-  ]
-}
+  ])

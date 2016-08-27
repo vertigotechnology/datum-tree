@@ -1,328 +1,299 @@
-{  "grouping"
-    : ("grouping": Text)
-    {   "row": ("symbol": Text, "name": Text)
-    }
-}
-{ [ ("Energy")
-    { [ ("ZEU", "ZEUS RESOURCES LIMITED")
-      , ("UNV", "UNIVERSAL COAL PLC")
-      , ("STX", "STRIKE ENERGY LIMITED")
-      , ("PVD", "PURA VIDA ENERGY NL")
-      , ("OKU", "OKLO RESOURCES LIMITED")
-      , ("MMR", "MEC RESOURCES LIMITED")
-      , ("JKA", "JACKA RESOURCES LIMITED")
-      , ("ETE", "ENTEK ENERGY LTD")
-      , ("COK", "COCKATOO COAL LIMITED")
-      , ("TDO", "3D OIL LIMITED")
+(# "grouping"
+    : {"grouping": Text}
+    #   "row": {"symbol": Text, "name": Text})
+(#[ {"Energy"}
+    # [ {"ZEU", "ZEUS RESOURCES LIMITED"}
+      , {"UNV", "UNIVERSAL COAL PLC"}
+      , {"STX", "STRIKE ENERGY LIMITED"}
+      , {"PVD", "PURA VIDA ENERGY NL"}
+      , {"OKU", "OKLO RESOURCES LIMITED"}
+      , {"MMR", "MEC RESOURCES LIMITED"}
+      , {"JKA", "JACKA RESOURCES LIMITED"}
+      , {"ETE", "ENTEK ENERGY LTD"}
+      , {"COK", "COCKATOO COAL LIMITED"}
+      , {"TDO", "3D OIL LIMITED"}
       ]
-    }
-  , ("Diversified Financials")
-    { [ ("ZML", "ZIPMONEY LTD")
-      , ("TCN", "TECHNICHE LIMITED.")
-      , ("PKA", "PLUKKA LIMITED")
-      , ("MCH", "MURCHISON HOLDINGS LIMITED")
-      , ("KSL", "KINA SECURITIES LIMITED")
-      , ("HLS", "HILLCREST LITIGATION SERVICES LIMITED.")
-      , ("EQT", "EQT HOLDINGS LIMITED")
-      , ("CHF", "CHARTER PACIFIC CORPORATION LIMITED")
-      , ("BSN", "BISAN LIMITED")
-      , ("8IH", "8I HOLDINGS LTD")
+  , {"Diversified Financials"}
+    # [ {"ZML", "ZIPMONEY LTD"}
+      , {"TCN", "TECHNICHE LIMITED."}
+      , {"PKA", "PLUKKA LIMITED"}
+      , {"MCH", "MURCHISON HOLDINGS LIMITED"}
+      , {"KSL", "KINA SECURITIES LIMITED"}
+      , {"HLS", "HILLCREST LITIGATION SERVICES LIMITED."}
+      , {"EQT", "EQT HOLDINGS LIMITED"}
+      , {"CHF", "CHARTER PACIFIC CORPORATION LIMITED"}
+      , {"BSN", "BISAN LIMITED"}
+      , {"8IH", "8I HOLDINGS LTD"}
       ]
-    }
-  , ("Class Pend")
-    { [ ("WTC", "WISETECH GLOBAL LIMITED")
-      , ("VHT", "VOLPARA HEALTH TECHNOLOGIES LIMITED")
-      , ("TES", "TEST SECURITY")
-      , ("SDC", "SUGAR DRAGON LIMITED")
-      , ("SM8", "SHARK MITIGATION SYSTEMS LIMITED")
-      , ("OZT", "OZTRADE PUBLISHING GROUP LIMITED")
-      , ("MTO", "MOTORCYCLE HOLDINGS LIMITED")
-      , ("KMA", "KOOLSEE NEW MEDIA GROUP LIMITED")
-      , ("INM", "IRON MOUNTAIN INCORPORATED")
-      , ("ABT", "ABUNDANT PRODUCE LIMITED")
+  , {"Class Pend"}
+    # [ {"WTC", "WISETECH GLOBAL LIMITED"}
+      , {"VHT", "VOLPARA HEALTH TECHNOLOGIES LIMITED"}
+      , {"TES", "TEST SECURITY"}
+      , {"SDC", "SUGAR DRAGON LIMITED"}
+      , {"SM8", "SHARK MITIGATION SYSTEMS LIMITED"}
+      , {"OZT", "OZTRADE PUBLISHING GROUP LIMITED"}
+      , {"MTO", "MOTORCYCLE HOLDINGS LIMITED"}
+      , {"KMA", "KOOLSEE NEW MEDIA GROUP LIMITED"}
+      , {"INM", "IRON MOUNTAIN INCORPORATED"}
+      , {"ABT", "ABUNDANT PRODUCE LIMITED"}
       ]
-    }
-  , ("Utilities")
-    { [ ("WRG", "WATER RESOURCES GROUP LIMITED")
-      , ("SKI", "SPARK INFRASTRUCTURE GROUP")
-      , ("PTR", "PETRATHERM LTD")
-      , ("MYT", "MIGHTY RIVER POWER LIMITED")
-      , ("LPE", "LOCALITY PLANNING ENERGY HOLDINGS LIMITED")
-      , ("KTE", "K2 ENERGY LIMITED.")
-      , ("IFN", "INFIGEN ENERGY")
-      , ("GDY", "GEODYNAMICS LIMITED")
-      , ("GNE", "GENESIS ENERGY LIMITED")
-      , ("AGL", "AGL ENERGY LIMITED.")
+  , {"Utilities"}
+    # [ {"WRG", "WATER RESOURCES GROUP LIMITED"}
+      , {"SKI", "SPARK INFRASTRUCTURE GROUP"}
+      , {"PTR", "PETRATHERM LTD"}
+      , {"MYT", "MIGHTY RIVER POWER LIMITED"}
+      , {"LPE", "LOCALITY PLANNING ENERGY HOLDINGS LIMITED"}
+      , {"KTE", "K2 ENERGY LIMITED."}
+      , {"IFN", "INFIGEN ENERGY"}
+      , {"GDY", "GEODYNAMICS LIMITED"}
+      , {"GNE", "GENESIS ENERGY LIMITED"}
+      , {"AGL", "AGL ENERGY LIMITED."}
       ]
-    }
-  , ("Insurance")
-    { [ ("TWR", "TOWER LIMITED")
-      , ("SBK", "SUNCORP-METWAY LIMITED .")
-      , ("SUN", "SUNCORP GROUP LIMITED")
-      , ("SDF", "STEADFAST GROUP LIMITED")
-      , ("QBE", "QBE INSURANCE GROUP LIMITED")
-      , ("PSI", "PSC INSURANCE GROUP LIMITED")
-      , ("NHF", "NIB HOLDINGS LIMITED")
-      , ("MPL", "MEDIBANK PRIVATE LIMITED")
-      , ("IAG", "INSURANCE AUSTRALIA GROUP LIMITED")
-      , ("AMP", "AMP LIMITED")
+  , {"Insurance"}
+    # [ {"TWR", "TOWER LIMITED"}
+      , {"SBK", "SUNCORP-METWAY LIMITED ."}
+      , {"SUN", "SUNCORP GROUP LIMITED"}
+      , {"SDF", "STEADFAST GROUP LIMITED"}
+      , {"QBE", "QBE INSURANCE GROUP LIMITED"}
+      , {"PSI", "PSC INSURANCE GROUP LIMITED"}
+      , {"NHF", "NIB HOLDINGS LIMITED"}
+      , {"MPL", "MEDIBANK PRIVATE LIMITED"}
+      , {"IAG", "INSURANCE AUSTRALIA GROUP LIMITED"}
+      , {"AMP", "AMP LIMITED"}
       ]
-    }
-  , ("Banks")
-    { [ ("WBC", "WESTPAC BANKING CORPORATION")
-      , ("NAB", "NATIONAL AUSTRALIA BANK LIMITED")
-      , ("N1H", "N1 HOLDINGS LIMITED")
-      , ("MYS", "MYSTATE LIMITED")
-      , ("MOC", "MORTGAGE CHOICE LIMITED")
-      , ("HOM", "HOMELOANS LIMITED")
-      , ("GMY", "GOLDFIELDS MONEY LIMITED")
-      , ("GMA", "GENWORTH MORTGAGE INSURANCE AUSTRALIA LIMITED")
-      , ("ECO", "ECHOICE LIMITED")
-      , ("ANZ", "AUSTRALIA AND NEW ZEALAND BANKING GROUP LIMITED")
+  , {"Banks"}
+    # [ {"WBC", "WESTPAC BANKING CORPORATION"}
+      , {"NAB", "NATIONAL AUSTRALIA BANK LIMITED"}
+      , {"N1H", "N1 HOLDINGS LIMITED"}
+      , {"MYS", "MYSTATE LIMITED"}
+      , {"MOC", "MORTGAGE CHOICE LIMITED"}
+      , {"HOM", "HOMELOANS LIMITED"}
+      , {"GMY", "GOLDFIELDS MONEY LIMITED"}
+      , {"GMA", "GENWORTH MORTGAGE INSURANCE AUSTRALIA LIMITED"}
+      , {"ECO", "ECHOICE LIMITED"}
+      , {"ANZ", "AUSTRALIA AND NEW ZEALAND BANKING GROUP LIMITED"}
       ]
-    }
-  , ("Telecommunication Services")
-    { [ ("ZIP", "ZIPTEL LIMITED")
-      , ("TPM", "TPG TELECOM LIMITED")
-      , ("TLS", "TELSTRA CORPORATION LIMITED.")
-      , ("SDA", "SPEEDCAST INTERNATIONAL LIMITED")
-      , ("SMP", "SMARTPAY HOLDINGS LIMITED")
-      , ("QUE", "QUESTE COMMUNICATIONS LIMITED")
-      , ("MIH", "MNC MEDIA INVESTMENT LTD")
-      , ("IAB", "INABOX GROUP LIMITED")
-      , ("FRE", "FRESHTEL HOLDINGS LIMITED")
-      , ("AYS", "AMAYSIM AUSTRALIA LIMITED")
+  , {"Telecommunication Services"}
+    # [ {"ZIP", "ZIPTEL LIMITED"}
+      , {"TPM", "TPG TELECOM LIMITED"}
+      , {"TLS", "TELSTRA CORPORATION LIMITED."}
+      , {"SDA", "SPEEDCAST INTERNATIONAL LIMITED"}
+      , {"SMP", "SMARTPAY HOLDINGS LIMITED"}
+      , {"QUE", "QUESTE COMMUNICATIONS LIMITED"}
+      , {"MIH", "MNC MEDIA INVESTMENT LTD"}
+      , {"IAB", "INABOX GROUP LIMITED"}
+      , {"FRE", "FRESHTEL HOLDINGS LIMITED"}
+      , {"AYS", "AMAYSIM AUSTRALIA LIMITED"}
       ]
-    }
-  , ("Health Care Equipment & Services")
-    { [ ("VRT", "VIRTUS HEALTH LIMITED")
-      , ("SOM", "SOMNOMED LIMITED")
-      , ("RMD", "RESMED INC")
-      , ("PGC", "PARAGON CARE LIMITED")
-      , ("NAN", "NANOSONICS LIMITED")
-      , ("LHC", "LIFEHEALTHCARE GROUP LIMITED")
-      , ("IPD", "IMPEDIMED LIMITED")
-      , ("FPH", "FISHER & PAYKEL HEALTHCARE CORPORATION LIMITED")
-      , ("CGS", "COGSTATE LTD")
-      , ("ONT", "1300 SMILES LIMITED")
+  , {"Health Care Equipment & Services"}
+    # [ {"VRT", "VIRTUS HEALTH LIMITED"}
+      , {"SOM", "SOMNOMED LIMITED"}
+      , {"RMD", "RESMED INC"}
+      , {"PGC", "PARAGON CARE LIMITED"}
+      , {"NAN", "NANOSONICS LIMITED"}
+      , {"LHC", "LIFEHEALTHCARE GROUP LIMITED"}
+      , {"IPD", "IMPEDIMED LIMITED"}
+      , {"FPH", "FISHER & PAYKEL HEALTHCARE CORPORATION LIMITED"}
+      , {"CGS", "COGSTATE LTD"}
+      , {"ONT", "1300 SMILES LIMITED"}
       ]
-    }
-  , ("Capital Goods")
-    { [ ("ZGL", "ZICOM GROUP LIMITED")
-      , ("THO", "THO SERVICES LIMITED")
-      , ("SWL", "SEYMOUR WHYTE LIMITED")
-      , ("RFX", "REDFLOW LIMITED")
-      , ("ORH", "ORH LIMITED")
-      , ("MJP", "MARTIN AIRCRAFT COMPANY LIMITED")
-      , ("KNH", "KOON HOLDINGS LIMITED")
-      , ("GGH", "GLOBAL GOLD HOLDINGS LIMITED")
-      , ("EMB", "EMBELTON LIMITED")
-      , ("ADQ", "ADG GLOBAL SUPPLY LIMITED.")
+  , {"Capital Goods"}
+    # [ {"ZGL", "ZICOM GROUP LIMITED"}
+      , {"THO", "THO SERVICES LIMITED"}
+      , {"SWL", "SEYMOUR WHYTE LIMITED"}
+      , {"RFX", "REDFLOW LIMITED"}
+      , {"ORH", "ORH LIMITED"}
+      , {"MJP", "MARTIN AIRCRAFT COMPANY LIMITED"}
+      , {"KNH", "KOON HOLDINGS LIMITED"}
+      , {"GGH", "GLOBAL GOLD HOLDINGS LIMITED"}
+      , {"EMB", "EMBELTON LIMITED"}
+      , {"ADQ", "ADG GLOBAL SUPPLY LIMITED."}
       ]
-    }
-  , ("Real Estate")
-    { [ ("WFD", "WESTFIELD CORPORATION")
-      , ("SGP", "STOCKLAND")
-      , ("RCU", "REAL ESTATE CAPITAL PARTNERS USA PROPERTY TRUST")
-      , ("MPX", "MUSTERA PROPERTY GROUP LIMITED")
-      , ("LMW", "LANDMARK WHITE LIMITED")
-      , ("HPI", "HOTEL PROPERTY INVESTMENTS")
-      , ("GTY", "GATEWAY LIFESTYLE GROUP")
-      , ("DVN", "DEVINE LIMITED")
-      , ("BWP", "BWP TRUST")
-      , ("TGP", "360 CAPITAL GROUP")
+  , {"Real Estate"}
+    # [ {"WFD", "WESTFIELD CORPORATION"}
+      , {"SGP", "STOCKLAND"}
+      , {"RCU", "REAL ESTATE CAPITAL PARTNERS USA PROPERTY TRUST"}
+      , {"MPX", "MUSTERA PROPERTY GROUP LIMITED"}
+      , {"LMW", "LANDMARK WHITE LIMITED"}
+      , {"HPI", "HOTEL PROPERTY INVESTMENTS"}
+      , {"GTY", "GATEWAY LIFESTYLE GROUP"}
+      , {"DVN", "DEVINE LIMITED"}
+      , {"BWP", "BWP TRUST"}
+      , {"TGP", "360 CAPITAL GROUP"}
       ]
-    }
-  , ("Not Applic")
-    { [ ("WCT", "WESTPAC TPS TRUST")
-      , ("SVS", "SUNVEST CORPORATION LIMITED")
-      , ("REK", "SERIES 2010-1 REDS TRUST")
-      , ("PUK", "PUMA SERIES 2014-1")
-      , ("NAJ", "NATIONAL RMBS TRUST 2015-1 SERIES 2015-1")
-      , ("IKO", "ISHARES MSCI SOUTH KOREA CAPPED ETF")
-      , ("IMG", "INTERSTAR MILLENNIUM SERIES 2002-1G TRUST")
-      , ("FOB", "FOSSE MASTER ISSUER PLC")
-      , ("CCB", "CHINA CONSTRUCTION BANK CORPORATION")
-      , ("TOT", "360 CAPITAL TOTAL RETURN FUND")
+  , {"Not Applic"}
+    # [ {"WCT", "WESTPAC TPS TRUST"}
+      , {"SVS", "SUNVEST CORPORATION LIMITED"}
+      , {"REK", "SERIES 2010-1 REDS TRUST"}
+      , {"PUK", "PUMA SERIES 2014-1"}
+      , {"NAJ", "NATIONAL RMBS TRUST 2015-1 SERIES 2015-1"}
+      , {"IKO", "ISHARES MSCI SOUTH KOREA CAPPED ETF"}
+      , {"IMG", "INTERSTAR MILLENNIUM SERIES 2002-1G TRUST"}
+      , {"FOB", "FOSSE MASTER ISSUER PLC"}
+      , {"CCB", "CHINA CONSTRUCTION BANK CORPORATION"}
+      , {"TOT", "360 CAPITAL TOTAL RETURN FUND"}
       ]
-    }
-  , ("Consumer Services")
-    { [ ("VET", "VOCATION LIMITED")
-      , ("TBH", "TOPBETTA HOLDINGS LIMITED")
-      , ("SGU", "SUCCESS GLOBAL MEDIA LIMITED")
-      , ("SHJ", "SHINE CORPORATE LTD")
-      , ("NHH", "NEWHAVEN HOTELS LIMITED")
-      , ("JIN", "JUMBO INTERACTIVE LIMITED")
-      , ("IDZ", "INDOOR SKYDIVE AUSTRALIA GROUP LIMITED")
-      , ("GEM", "G8 EDUCATION LIMITED")
-      , ("DNA", "DONACO INTERNATIONAL LIMITED")
-      , ("3PL", "3P LEARNING LIMITED..")
+  , {"Consumer Services"}
+    # [ {"VET", "VOCATION LIMITED"}
+      , {"TBH", "TOPBETTA HOLDINGS LIMITED"}
+      , {"SGU", "SUCCESS GLOBAL MEDIA LIMITED"}
+      , {"SHJ", "SHINE CORPORATE LTD"}
+      , {"NHH", "NEWHAVEN HOTELS LIMITED"}
+      , {"JIN", "JUMBO INTERACTIVE LIMITED"}
+      , {"IDZ", "INDOOR SKYDIVE AUSTRALIA GROUP LIMITED"}
+      , {"GEM", "G8 EDUCATION LIMITED"}
+      , {"DNA", "DONACO INTERNATIONAL LIMITED"}
+      , {"3PL", "3P LEARNING LIMITED.."}
       ]
-    }
-  , ("Food & Staples Retailing")
-    { [ ("WOW", "WOOLWORTHS LIMITED")
-      , ("WES", "WESFARMERS LIMITED")
-      , ("MTS", "METCASH LIMITED")
-      , ("AAP", "AUSTRALIAN AGRICULTURAL PROJECTS LIMITED")
+  , {"Food & Staples Retailing"}
+    # [ {"WOW", "WOOLWORTHS LIMITED"}
+      , {"WES", "WESFARMERS LIMITED"}
+      , {"MTS", "METCASH LIMITED"}
+      , {"AAP", "AUSTRALIAN AGRICULTURAL PROJECTS LIMITED"}
       ]
-    }
-  , ("Commercial Services & Supplies")
-    { [ ("YPB", "YPB GROUP LTD")
-      , ("SIQ", "SMARTGROUP CORPORATION LTD")
-      , ("RUB", "RUBICOR GROUP LIMITED")
-      , ("PMP", "PMP LIMITED")
-      , ("NAM", "NAMOI COTTON CO-OPERATIVE LIMITED")
-      , ("IPH", "IPH LIMITED")
-      , ("GNV", "GREEN INVEST LIMITED")
-      , ("ECG", "ECARGO HOLDINGS LIMITED")
-      , ("CGR", "CML GROUP LIMITED")
-      , ("AEI", "AERIS ENVIRONMENTAL LTD")
+  , {"Commercial Services & Supplies"}
+    # [ {"YPB", "YPB GROUP LTD"}
+      , {"SIQ", "SMARTGROUP CORPORATION LTD"}
+      , {"RUB", "RUBICOR GROUP LIMITED"}
+      , {"PMP", "PMP LIMITED"}
+      , {"NAM", "NAMOI COTTON CO-OPERATIVE LIMITED"}
+      , {"IPH", "IPH LIMITED"}
+      , {"GNV", "GREEN INVEST LIMITED"}
+      , {"ECG", "ECARGO HOLDINGS LIMITED"}
+      , {"CGR", "CML GROUP LIMITED"}
+      , {"AEI", "AERIS ENVIRONMENTAL LTD"}
       ]
-    }
-  , ("Materials")
-    { [ ("ZYL", "ZYL LIMITED")
-      , ("TAM", "TANAMI GOLD NL")
-      , ("RBX", "RESOURCE BASE LIMITED")
-      , ("ORM", "ORION METALS LIMITED")
-      , ("MNC", "METMINCO LIMITED")
-      , ("KPT", "KANGAROO ISLAND PLANTATION TIMBERS LTD")
-      , ("GXN", "GLOBAL METALS EXPLORATION NL")
-      , ("DLE", "DRAGON ENERGY LIMITED")
-      , ("CNQ", "CARBINE TUNGSTEN LIMITED")
-      , ("DDD", "3D RESOURCES LIMITED")
+  , {"Materials"}
+    # [ {"ZYL", "ZYL LIMITED"}
+      , {"TAM", "TANAMI GOLD NL"}
+      , {"RBX", "RESOURCE BASE LIMITED"}
+      , {"ORM", "ORION METALS LIMITED"}
+      , {"MNC", "METMINCO LIMITED"}
+      , {"KPT", "KANGAROO ISLAND PLANTATION TIMBERS LTD"}
+      , {"GXN", "GLOBAL METALS EXPLORATION NL"}
+      , {"DLE", "DRAGON ENERGY LIMITED"}
+      , {"CNQ", "CARBINE TUNGSTEN LIMITED"}
+      , {"DDD", "3D RESOURCES LIMITED"}
       ]
-    }
-  , ("Pharmaceuticals & Biotechnology")
-    { [ ("VSC", "VITA LIFE SCIENCES LIMITED.")
-      , ("SUD", "SUDA LTD")
-      , ("RGS", "REGENEUS LTD")
-      , ("PTX", "PRESCIENT THERAPEUTICS LIMITED")
-      , ("PNO", "PHARMANET GROUP LIMITED")
-      , ("NSP", "NUSEP HOLDINGS LTD")
-      , ("MVP", "MEDICAL DEVELOPMENTS INTERNATIONAL LIMITED")
-      , ("IMU", "IMUGENE LIMITED")
-      , ("DXB", "DIMERIX LIMITED")
-      , ("ACR", "ACRUX LIMITED")
+  , {"Pharmaceuticals & Biotechnology"}
+    # [ {"VSC", "VITA LIFE SCIENCES LIMITED."}
+      , {"SUD", "SUDA LTD"}
+      , {"RGS", "REGENEUS LTD"}
+      , {"PTX", "PRESCIENT THERAPEUTICS LIMITED"}
+      , {"PNO", "PHARMANET GROUP LIMITED"}
+      , {"NSP", "NUSEP HOLDINGS LTD"}
+      , {"MVP", "MEDICAL DEVELOPMENTS INTERNATIONAL LIMITED"}
+      , {"IMU", "IMUGENE LIMITED"}
+      , {"DXB", "DIMERIX LIMITED"}
+      , {"ACR", "ACRUX LIMITED"}
       ]
-    }
-  , ("Food, Beverage & Tobacco")
-    { [ ("YOW", "YOWIE GROUP LTD")
-      , ("WCB", "WARRNAMBOOL CHEESE & BUTTER FACTORY CO.HOLD.LTD")
-      , ("A2M", "THE A2 MILK COMPANY LIMITED")
-      , ("SHV", "SELECT HARVESTS LIMITED")
-      , ("PFL", "PATTIES FOODS LTD")
-      , ("GNC", "GRAINCORP LIMITED")
-      , ("FSF", "FONTERRA SHAREHOLDERS' FUND")
-      , ("DFM", "DONGFANG MODERN AGRICULTURE HOLDING GROUP LIMITED")
-      , ("CDC", "CHINA DAIRY CORPORATION LIMITED")
-      , ("AAC", "AUSTRALIAN AGRICULTURAL COMPANY LIMITED.")
+  , {"Food, Beverage & Tobacco"}
+    # [ {"YOW", "YOWIE GROUP LTD"}
+      , {"WCB", "WARRNAMBOOL CHEESE & BUTTER FACTORY CO.HOLD.LTD"}
+      , {"A2M", "THE A2 MILK COMPANY LIMITED"}
+      , {"SHV", "SELECT HARVESTS LIMITED"}
+      , {"PFL", "PATTIES FOODS LTD"}
+      , {"GNC", "GRAINCORP LIMITED"}
+      , {"FSF", "FONTERRA SHAREHOLDERS' FUND"}
+      , {"DFM", "DONGFANG MODERN AGRICULTURE HOLDING GROUP LIMITED"}
+      , {"CDC", "CHINA DAIRY CORPORATION LIMITED"}
+      , {"AAC", "AUSTRALIAN AGRICULTURAL COMPANY LIMITED."}
       ]
-    }
-  , ("Automobiles & Components")
-    { [ ("VMT", "VMOTO LIMITED")
-      , ("SIX", "SPRINTEX LIMITED")
-      , ("SFC", "SCHAFFER CORPORATION LIMITED")
-      , ("PWH", "PWR HOLDINGS LIMITED")
-      , ("OEC", "ORBITAL CORPORATION LIMITED")
-      , ("OOK", "OOKAMI LIMITED")
-      , ("DDT", "DATADOT TECHNOLOGY LIMITED")
-      , ("ARB", "ARB CORPORATION LIMITED.")
-      , ("ABV", "ADVANCED BRAKING TECHNOLOGY LTD")
+  , {"Automobiles & Components"}
+    # [ {"VMT", "VMOTO LIMITED"}
+      , {"SIX", "SPRINTEX LIMITED"}
+      , {"SFC", "SCHAFFER CORPORATION LIMITED"}
+      , {"PWH", "PWR HOLDINGS LIMITED"}
+      , {"OEC", "ORBITAL CORPORATION LIMITED"}
+      , {"OOK", "OOKAMI LIMITED"}
+      , {"DDT", "DATADOT TECHNOLOGY LIMITED"}
+      , {"ARB", "ARB CORPORATION LIMITED."}
+      , {"ABV", "ADVANCED BRAKING TECHNOLOGY LTD"}
       ]
-    }
-  , ("Media")
-    { [ ("XTV", "XTV NETWORKS LTD")
-      , ("VIG", "VICTOR GROUP HOLDINGS LIMITED")
-      , ("SGN", "STW COMMUNICATIONS GROUP LIMITED")
-      , ("SWM", "SEVEN WEST MEDIA LIMITED")
-      , ("PRT", "PRIME MEDIA GROUP LIMITED")
-      , ("NEC", "NINE ENTERTAINMENT CO. HOLDINGS LIMITED")
-      , ("NCL", "NETCCENTRIC LIMITED")
-      , ("IVO", "INVIGOR GROUP LIMITED")
-      , ("EVT", "EVENT HOSPITALITY AND ENTERTAINMENT LTD")
-      , ("AAU", "ADCORP AUSTRALIA LIMITED")
+  , {"Media"}
+    # [ {"XTV", "XTV NETWORKS LTD"}
+      , {"VIG", "VICTOR GROUP HOLDINGS LIMITED"}
+      , {"SGN", "STW COMMUNICATIONS GROUP LIMITED"}
+      , {"SWM", "SEVEN WEST MEDIA LIMITED"}
+      , {"PRT", "PRIME MEDIA GROUP LIMITED"}
+      , {"NEC", "NINE ENTERTAINMENT CO. HOLDINGS LIMITED"}
+      , {"NCL", "NETCCENTRIC LIMITED"}
+      , {"IVO", "INVIGOR GROUP LIMITED"}
+      , {"EVT", "EVENT HOSPITALITY AND ENTERTAINMENT LTD"}
+      , {"AAU", "ADCORP AUSTRALIA LIMITED"}
       ]
-    }
-  , ("Household & Personal Products")
-    { [ ("VIT", "VITACO HOLDINGS LIMITED")
-      , ("PTL", "PENTAL LIMITED")
-      , ("HCT", "HOLISTA COLLTECH LIMITED")
-      , ("BWX", "BWX LIMITED")
-      , ("BKL", "BLACKMORES LIMITED")
-      , ("AHY", "ASALEO CARE LIMITED")
+  , {"Household & Personal Products"}
+    # [ {"VIT", "VITACO HOLDINGS LIMITED"}
+      , {"PTL", "PENTAL LIMITED"}
+      , {"HCT", "HOLISTA COLLTECH LIMITED"}
+      , {"BWX", "BWX LIMITED"}
+      , {"BKL", "BLACKMORES LIMITED"}
+      , {"AHY", "ASALEO CARE LIMITED"}
       ]
-    }
-  , ("Software & Services")
-    { [ ("XF1", "XREF LIMITED")
-      , ("CGL", "THE CITADEL GROUP LIMITED")
-      , ("RHP", "RHIPE LIMITED")
-      , ("PSY", "PANORAMA SYNERGY LTD")
-      , ("MSM", "MSM CORPORATION INTERNATIONAL LTD")
-      , ("LVT", "LIVETILES LIMITED")
-      , ("IRI", "INTEGRATED RESEARCH LIMITED")
-      , ("EOL", "ENERGY ONE LIMITED")
-      , ("CVT", "COVATA LIMITED")
-      , ("1PG", "1-PAGE LIMITED")
+  , {"Software & Services"}
+    # [ {"XF1", "XREF LIMITED"}
+      , {"CGL", "THE CITADEL GROUP LIMITED"}
+      , {"RHP", "RHIPE LIMITED"}
+      , {"PSY", "PANORAMA SYNERGY LTD"}
+      , {"MSM", "MSM CORPORATION INTERNATIONAL LTD"}
+      , {"LVT", "LIVETILES LIMITED"}
+      , {"IRI", "INTEGRATED RESEARCH LIMITED"}
+      , {"EOL", "ENERGY ONE LIMITED"}
+      , {"CVT", "COVATA LIMITED"}
+      , {"1PG", "1-PAGE LIMITED"}
       ]
-    }
-  , ("Technology Hardware & Equipment")
-    { [ ("WRR", "WORLD REACH LIMITED")
-      , ("TZL", "TZ LIMITED")
-      , ("STL", "STARGROUP LIMITED")
-      , ("SEN", "SENETAS CORPORATION LIMITED")
-      , ("QTG", "Q TECHNOLOGY GROUP LIMITED")
-      , ("NTC", "NETCOMM WIRELESS LIMITED")
-      , ("MSP", "MAXSEC GROUP LIMITED")
-      , ("KKL", "KOLLAKORN CORPORATION LIMITED")
-      , ("FFT", "FUTURE FIBRE TECHNOLOGIES LIMITED")
-      , ("AMO", "AMBERTECH LIMITED")
+  , {"Technology Hardware & Equipment"}
+    # [ {"WRR", "WORLD REACH LIMITED"}
+      , {"TZL", "TZ LIMITED"}
+      , {"STL", "STARGROUP LIMITED"}
+      , {"SEN", "SENETAS CORPORATION LIMITED"}
+      , {"QTG", "Q TECHNOLOGY GROUP LIMITED"}
+      , {"NTC", "NETCOMM WIRELESS LIMITED"}
+      , {"MSP", "MAXSEC GROUP LIMITED"}
+      , {"KKL", "KOLLAKORN CORPORATION LIMITED"}
+      , {"FFT", "FUTURE FIBRE TECHNOLOGIES LIMITED"}
+      , {"AMO", "AMBERTECH LIMITED"}
       ]
-    }
-  , ("Consumer Durables & Apparel")
-    { [ ("YHL", "YANGHAO INTERNATIONAL LIMITED")
-      , ("WAT", "WATERCO LIMITED")
-      , ("SIO", "SIMONDS GROUP LIMITED")
-      , ("SHU", "SHENHUA INTERNATIONAL LIMITED")
-      , ("1AL", "ONEALL INTERNATIONAL LIMITED")
-      , ("MCP", "MCPHERSON'S LIMITED")
-      , ("KFG", "KINGFORM HEALTH HOMETEXTILE GROUP LIMITED")
-      , ("GLE", "GLG CORP LTD")
-      , ("GAP", "GALE PACIFIC LIMITED")
-      , ("ATP", "ATLAS PEARLS AND PERFUMES LTD")
+  , {"Consumer Durables & Apparel"}
+    # [ {"YHL", "YANGHAO INTERNATIONAL LIMITED"}
+      , {"WAT", "WATERCO LIMITED"}
+      , {"SIO", "SIMONDS GROUP LIMITED"}
+      , {"SHU", "SHENHUA INTERNATIONAL LIMITED"}
+      , {"1AL", "ONEALL INTERNATIONAL LIMITED"}
+      , {"MCP", "MCPHERSON'S LIMITED"}
+      , {"KFG", "KINGFORM HEALTH HOMETEXTILE GROUP LIMITED"}
+      , {"GLE", "GLG CORP LTD"}
+      , {"GAP", "GALE PACIFIC LIMITED"}
+      , {"ATP", "ATLAS PEARLS AND PERFUMES LTD"}
       ]
-    }
-  , ("Retailing")
-    { [ ("WEB", "WEBJET LIMITED")
-      , ("TME", "TRADE ME GROUP LIMITED")
-      , ("TPW", "TEMPLE & WEBSTER GROUP LTD")
-      , ("SBB", "SUNBRIDGE GROUP LIMITED")
-      , ("RHL", "RURALCO HOLDINGS LIMITED")
-      , ("PBG", "PACIFIC BRANDS LIMITED")
-      , ("MYR", "MYER HOLDINGS LIMITED")
-      , ("JBH", "JB HI-FI LIMITED")
-      , ("E88", "ENSOGO LIMITED")
-      , ("NNW", "99 WUXIAN LIMITED")
+  , {"Retailing"}
+    # [ {"WEB", "WEBJET LIMITED"}
+      , {"TME", "TRADE ME GROUP LIMITED"}
+      , {"TPW", "TEMPLE & WEBSTER GROUP LTD"}
+      , {"SBB", "SUNBRIDGE GROUP LIMITED"}
+      , {"RHL", "RURALCO HOLDINGS LIMITED"}
+      , {"PBG", "PACIFIC BRANDS LIMITED"}
+      , {"MYR", "MYER HOLDINGS LIMITED"}
+      , {"JBH", "JB HI-FI LIMITED"}
+      , {"E88", "ENSOGO LIMITED"}
+      , {"NNW", "99 WUXIAN LIMITED"}
       ]
-    }
-  , ("Transportation")
-    { [ ("VAH", "VIRGIN AUSTRALIA HOLDINGS LIMITED")
-      , ("TTI", "TRAFFIC TECHNOLOGIES LTD.")
-      , ("RIS", "RICHFIELD INTERNATIONAL LIMITED")
-      , ("QUB", "QUBE HOLDINGS LIMITED")
-      , ("MRM", "MMA OFFSHORE LIMITED")
-      , ("MQA", "MACQUARIE ATLAS ROADS GROUP")
-      , ("KSC", "K & S CORPORATION LIMITED")
-      , ("CHR", "CHALMERS LIMITED")
-      , ("AIA", "AUCKLAND INTERNATIONAL AIRPORT LIMITED")
-      , ("AIZ", "AIR NEW ZEALAND LIMITED")
+  , {"Transportation"}
+    # [ {"VAH", "VIRGIN AUSTRALIA HOLDINGS LIMITED"}
+      , {"TTI", "TRAFFIC TECHNOLOGIES LTD."}
+      , {"RIS", "RICHFIELD INTERNATIONAL LIMITED"}
+      , {"QUB", "QUBE HOLDINGS LIMITED"}
+      , {"MRM", "MMA OFFSHORE LIMITED"}
+      , {"MQA", "MACQUARIE ATLAS ROADS GROUP"}
+      , {"KSC", "K & S CORPORATION LIMITED"}
+      , {"CHR", "CHALMERS LIMITED"}
+      , {"AIA", "AUCKLAND INTERNATIONAL AIRPORT LIMITED"}
+      , {"AIZ", "AIR NEW ZEALAND LIMITED"}
       ]
-    }
-  , ("Semiconductors & Semiconductor Equipment")
-    { [ ("SLX", "SILEX SYSTEMS LIMITED")
-      , ("DYE", "DYESOL LIMITED")
-      , ("BLG", "BLUGLASS LIMITED")
-      , ("4DS", "4DS MEMORY LIMITED")
+  , {"Semiconductors & Semiconductor Equipment"}
+    # [ {"SLX", "SILEX SYSTEMS LIMITED"}
+      , {"DYE", "DYESOL LIMITED"}
+      , {"BLG", "BLUGLASS LIMITED"}
+      , {"4DS", "4DS MEMORY LIMITED"}
       ]
-    }
-  ]
-}
+  ])

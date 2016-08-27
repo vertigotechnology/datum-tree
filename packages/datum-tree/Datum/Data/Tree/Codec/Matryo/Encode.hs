@@ -43,9 +43,9 @@ encodeTree cc tree
 -- | Layout a whole `Tree`.
 layoutTree :: Config -> Tree 'O -> Layout
 layoutTree cc (Tree b bt)
- =  layoutBranchType cc True bt
+ =  parens (layoutBranchType cc True bt)
  <> line
- <> layoutBranch     cc True bt b
+ <> parens (layoutBranch     cc True bt b)
 
 
 -------------------------------------------------------------------------------
@@ -66,17 +66,17 @@ layoutBranchType cc bRoot (BT n tt bts)
                 then mempty
                 else text (show n) <> line 
                         <> text ": " <> layoutTupleType tt <> line)
-        <> indentCollect '{' ',' '}' 4
+        <> indentCollect (Just '#') Nothing Nothing 4
                 (map (layoutBranchType cc False) (unboxes bts))
 
 
 -- | Layout a tuple type.
 layoutTupleType :: TupleType -> Layout
 layoutTupleType (TT kts)
-        =  text "("
+        =  text "{"
         <> ( mconcat $ List.intersperse (text ", ")
            $ map layoutKeyType $ A.toList kts)
-        <> text ")"
+        <> text "}"
 
 -- | Layout a key type.
 layoutKeyType :: (Box Name :*: Box AtomType) -> Layout
@@ -102,19 +102,19 @@ layoutBranch cc bFirst (BT _n _tt bts0) (B t gs0)
 -}
 
  | bFirst
- = indentCollect '{' ',' '}' 2
+ = indentCollect  (Just '#') Nothing Nothing 2
         (zipWith (layoutGroup cc) (unboxes bts0) (unboxes gs0))
 
  |  otherwise
  =  layoutTuple t <> line
- <> indentCollect '{' ',' '}' 2
+ <> indentCollect (Just '#') Nothing Nothing 2
         (zipWith (layoutGroup cc) (unboxes bts0) (unboxes gs0))
 
 
 -- | Layout a group.
 layoutGroup  :: Config -> BranchType -> Group -> Layout
 layoutGroup cc bt (G _name2 bs)
- = indentCollect '[' ',' ']'  2
+ = indentCollect (Just '[') (Just ',') (Just ']') 2
         (map (layoutBranch cc False bt) (unboxes bs))
 
 
@@ -128,10 +128,10 @@ layoutTuple  (T as)
 
  -- Print a full tuple in parens.
  | otherwise
- =  text "("
+ =  text "{"
         <> ( mconcat $ List.intersperse (text ", ") 
            $ map layoutAtom $ unboxes as)
- <> text ")"
+ <> text "}"
 
 
 -- | Layout an `Atom`.
@@ -198,6 +198,11 @@ indent n (Layout l1)
               in  (p', fromString (replicate (i' - p) ' ') <> b)
          else l1 (i + n) p
 
+parens :: Layout -> Layout
+parens ll
+ = text "(" <> ll <> text ")"
+
+
 instance Monoid Layout where
  mempty 
   =  Layout $ \_ p
@@ -211,19 +216,41 @@ instance Monoid Layout where
 
 
 -- | Layout a collection.
-indentCollect :: Char -> Char -> Char -> Int -> [Layout] -> Layout
-indentCollect cStart cSep cEnd n ls0
+indentCollect 
+        :: Maybe Char 
+        -> Maybe Char 
+        -> Maybe Char 
+        -> Int 
+        -> [Layout] 
+        -> Layout
+
+indentCollect mStart mSep mEnd n ls0
  = case ls0 of
-        []      -> text [cStart] <> text [cEnd]
+        []      -> put mStart <> put mEnd
         _       -> start ls0
 
  where  start ls
-         = text [cStart] <> first ls
+         = put mStart <> first ls
 
         first []        = end
+
+        first (l : [])
+         | Nothing      <- mEnd
+         = indent n l 
+
         first (l : ls)  = indent n l  <> line <> rest ls
 
         rest  []        = end
-        rest  (l : ls)  = text [cSep] <> indent n l <> line <> rest ls
 
-        end             = text [cEnd]
+        rest  (l : [])  
+         | Nothing      <- mEnd
+         = put mSep <> indent n l
+
+        rest  (l : ls)  = put mSep <> indent n l <> line <> rest ls
+
+        end             = put mEnd
+
+        put Nothing     = mempty
+        put (Just c)    = text [c]
+
+

@@ -1,14 +1,12 @@
-{  "row": ("symbol": Text, "name": Text)
-}
-{ [ ("1PG", "1-PAGE LIMITED")
-  , ("ANW", "AUS TIN MINING LTD")
-  , ("CIN", "CARLTON INVESTMENTS LIMITED")
-  , ("EAL", "E & A LIMITED")
-  , ("GNC", "GRAINCORP LIMITED")
-  , ("KFW", "KFW")
-  , ("MND", "MONADELPHOUS GROUP LIMITED")
-  , ("PSA", "PETSEC ENERGY LIMITED")
-  , ("SYA", "SAYONA MINING LIMITED")
-  , ("ZYL", "ZYL LIMITED")
-  ]
-}
+(# "row": {"symbol": Text, "name": Text})
+(#[ {"1PG", "1-PAGE LIMITED"}
+  , {"ANW", "AUS TIN MINING LTD"}
+  , {"CIN", "CARLTON INVESTMENTS LIMITED"}
+  , {"EAL", "E & A LIMITED"}
+  , {"GNC", "GRAINCORP LIMITED"}
+  , {"KFW", "KFW"}
+  , {"MND", "MONADELPHOUS GROUP LIMITED"}
+  , {"PSA", "PETSEC ENERGY LIMITED"}
+  , {"SYA", "SAYONA MINING LIMITED"}
+  , {"ZYL", "ZYL LIMITED"}
+  ])

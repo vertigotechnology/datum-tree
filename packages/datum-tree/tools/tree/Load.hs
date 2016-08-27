@@ -4,6 +4,7 @@ import Pervasive
 
 import Text.Show.Pretty
 import Control.Monad
+import System.FilePath
 
 import qualified Datum.Script.Source.Transform.ToCore   as Source
 import qualified Datum.Script.Source.Transform.Defix    as Source
@@ -23,8 +24,18 @@ loadToSourceModule
         -> String       -- ^ Text of script source.
         -> IO Source.Module
 
-loadToSourceModule dump filePath strSource
+loadToSourceModule bDump filePath strSource
  = do
+        -- Base name of the source file.
+        let dumpName =  takeDirectory filePath 
+                    </> takeBaseName filePath
+                    <.> "dump-"
+
+        let dump name str
+                = when bDump
+                $ writeFile (dumpName ++ name) str
+
+
         -- Tokenise source file.
         result <- Source.scanSource filePath strSource
         let toksSource
@@ -42,9 +53,7 @@ loadToSourceModule dump filePath strSource
                                 , show ss
                                 , show toks]
 
-
-        when dump
-         $ writeFile "dump-01-source-scanned.tokens"
+        dump "01-source-scanned.tokens"
          $ ppShow toksSource
 
 
@@ -54,12 +63,10 @@ loadToSourceModule dump filePath strSource
                         Left  err       -> error $ show err
                         Right src       -> src
 
-        when dump
-         $ writeFile "dump-02-source-parsed.us-ast" 
+        dump "02-source-parsed.us-ast"
          $ ppShow sourceParsed
 
-        when dump
-         $ writeFile "dump-03-source-parsed-dennot.us-ast"
+        dump "03-source-parsed-dennot.us-ast"
          $ ppShow (Source.stripXAnnotM sourceParsed)
 
 
@@ -72,12 +79,10 @@ loadToSourceModule dump filePath strSource
                    Left err     -> error $ show err
                    Right src    -> src
 
-        when dump
-         $ writeFile "dump-04-source-defixed.us-ast" 
+        dump "04-source-defixed.us-ast" 
          $ ppShow sourceDefixed
 
-        when dump
-         $ writeFile "dump-05-source-defixed-deannot.us-ast" 
+        dump "05-source-defixed-deannot.us-ast" 
          $ ppShow (Source.stripXAnnotM sourceDefixed)
 
         return sourceDefixed

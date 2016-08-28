@@ -7,33 +7,31 @@ import Data.Monoid
 import Data.Default
 import Data.Text.Lazy                                   (Text)
 import qualified Datum.Data.Tree.Codec.Matryo.Encode    as Matryo
+import qualified Data.List                              as List
 
 import Data.Text.Lazy.Builder                   
         (Builder, fromText, toLazyText, fromString)
 
-
--- | What format to use when pretty printing trees.
-data TreeFormat
-        = TreeFormatInternal
-        | TreeFormatSExp
-        | TreeFormatMatryo 
-        deriving Show
-
 data Config
         = Config
-        { configTreeFormat      :: TreeFormat }
 
 instance Default Config where
  def    = Config
-        { configTreeFormat      = TreeFormatMatryo }
 
 
 -------------------------------------------------------------------------------
 -- | Pretty print a control as lazy text.
-pprControl :: Config -> Control -> Text
+pprControl  :: Config -> Control -> Text
 pprControl c cc   = toLazyText $ buildControl c cc
 
-pprAtom    :: Atom -> Text
+
+-- | Pretty print primitive data as lazy text.
+pprPrimData :: Config -> PrimData Exp -> Text
+pprPrimData c pp  = toLazyText $ buildPrimData c pp
+
+
+-- | Pretty print an atom as lazy text.
+pprAtom     :: Atom -> Text
 pprAtom a         = toLazyText $ buildAtom def a
 
 -------------------------------------------------------------------------------
@@ -163,20 +161,20 @@ buildAtomType _c at
 buildPrimData :: Config -> PrimData Exp -> Builder
 buildPrimData c dd
  = case dd of
-        PDAtom a        -> buildAtom c a
-
         PDName n        -> fromText n
-        PDArray{}       -> error "buildPrim: array"
-        PDForest{}      -> error "buildPrim: forest"
-
-        PDTree t       
-         -> case configTreeFormat c of
-                TreeFormatInternal      -> error "buildPrim: internal"
-                TreeFormatSExp          -> error "buildPrim: sexp"
-                TreeFormatMatryo        -> Matryo.encodeTree def t
-
+        PDAtom a        -> buildAtom c a
         PDTreePath{}    -> error "buildPrim: tree path"
         PDFilePath p'   -> fromString $ show p'
+
+        PDArray _ ds
+         -> fromString "["
+         <> (mconcat 
+                $ List.intersperse (fromString ", ") 
+                $ map (buildPrimData c) ds)
+         <> fromString "]"
+
+        PDForest _f     -> error "buildPrim: forest"
+        PDTree   t      -> Matryo.encodeTree   def t
 
 
 buildAtom    :: Config -> Atom -> Builder

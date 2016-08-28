@@ -127,9 +127,7 @@ runExp config _filePath xCore
 
          -- Evaluation has produced some non-unit result, 
          -- so print it to the console.
-         _ -> do let ppConfig 
-                        = Eval.Config
-                        { Eval.configTreeFormat = Eval.TreeFormatMatryo }
+         _ -> do let ppConfig  = Eval.Config
 
                  LText.putStrLn 
                         $ Eval.pprControl ppConfig 

@@ -10,8 +10,7 @@ main
         print nat
         print bool
         print unit
-
-
+        print [1, 2, 3]
 
 
 

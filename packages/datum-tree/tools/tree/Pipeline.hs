@@ -38,14 +38,14 @@ expOfStage ss
          -> XPrimOp PPSample       @@ XNat  n
 
         SGather  ns
-         -> XPrimOp PPGather       @@ XList XTName (map XName ns)
+         -> XPrimOp PPGather       @@ XArray XTName (map XName ns)
 
         SGroup   n
          -> XPrimOp PPGroup        @@ XName n
 
         SRenameFields ns
-         -> XPrimOp PPRenameFields @@ XList XTName (map XName ns)
+         -> XPrimOp PPRenameFields @@ XArray XTName (map XName ns)
 
         SOn ns s'
-         -> XPrimOp PPOn           @@ XList XTName (map XName ns) @@ expOfStage s'
+         -> XPrimOp PPOn           @@ XArray XTName (map XName ns) @@ expOfStage s'
 

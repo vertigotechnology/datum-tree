@@ -114,7 +114,6 @@ toCoreFrag ff
         S.PKAtom        -> return $ C.PKAtom
 
         S.PTNum         -> return $ C.PTNum
-        S.PTList        -> return $ C.PTList
         S.PTArray       -> return $ C.PTArray
         S.PTRecord      -> return $ C.PTRecord
 
@@ -124,7 +123,6 @@ toCoreFrag ff
         S.PTTreePath    -> return $ C.PTTreePath
         S.PTFilePath    -> return $ C.PTFilePath
         S.PTValue       -> return $ C.PTValue
-        S.PTTuple       -> return $ C.PTTuple
         S.PTAtom t      -> return $ C.PTAtom t
 
         S.PVData d      -> C.PVData <$> toCorePrimData d
@@ -137,7 +135,7 @@ toCorePrimData dd
  = case dd of
         S.PDAtom a      -> return $ C.PDAtom a
         S.PDName t      -> return $ C.PDName t
-        S.PDList x xs   -> C.PDList <$> toCoreX x <*> mapM toCoreX xs
+        S.PDArray x xs  -> C.PDArray <$> toCoreX x <*> mapM toCoreX xs
         S.PDForest t    -> return $ C.PDForest t
         S.PDTree t      -> return $ C.PDTree   t
         S.PDTreePath ts -> return $ C.PDTreePath ts

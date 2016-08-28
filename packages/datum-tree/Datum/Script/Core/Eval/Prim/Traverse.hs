@@ -15,7 +15,7 @@ import qualified Text.Show.Pretty                       as Text
 
 -- Tree Traversal ---------------------------------------------------
 -- | Apply a per-tree function to the trees at the given path.
-step_Traverse self state PPAt [VList _ names, thunk, VTree tree0]
+step_Traverse self state PPAt [VArray _ names, thunk, VTree tree0]
   = do  let Just names' 
                 = sequence
                 $ map takeXName names
@@ -41,7 +41,7 @@ step_Traverse self state PPAt [VList _ names, thunk, VTree tree0]
 
 
 -- | Apply a per-forest function to the tree at the given path.
-step_Traverse self state PPOn [VList _ names, thunk, VTree tree0]
+step_Traverse self state PPOn [VArray _ names, thunk, VTree tree0]
   = do  let Just names' 
                 = sequence
                 $ map takeXName names

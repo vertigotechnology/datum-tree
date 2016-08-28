@@ -131,7 +131,6 @@ buildFrag c f
         PKAtom          -> fromString "Atom"
 
         -- Types
-        PTList          -> fromString "List"
         PTArray         -> fromString "Array"
         PTRecord        -> fromString "Record"
         PTName          -> fromString "Name"
@@ -141,7 +140,6 @@ buildFrag c f
         PTTreePath      -> fromString "TreePath"
         PTFilePath      -> fromString "FilePath"
         PTAtom at       -> buildAtomType c at
-        PTTuple         -> fromString "Tuple"
         PTValue         -> fromString "Value"
 
         PVData d        -> buildPrimData c d
@@ -168,7 +166,7 @@ buildPrimData c dd
         PDAtom a        -> buildAtom c a
 
         PDName n        -> fromText n
-        PDList{}        -> error "buildPrim: list"
+        PDArray{}       -> error "buildPrim: array"
         PDForest{}      -> error "buildPrim: forest"
 
         PDTree t       

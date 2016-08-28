@@ -9,13 +9,13 @@ import qualified Data.Text                      as Text
 
 
 -- Rename fields.
-step_Fields _ _ PPRenameFields  [ VList _ names, VTree tree ]
+step_Fields _ _ PPRenameFields  [ VArray _ names, VTree tree ]
  = do   let names' = [ Text.unpack n | XName n <- names]
         progress $ VTree
                  $ T.promiseTree
                  $ T.renameFields names' tree
 
-step_Fields _ _ PPRenameFields  [ VList _ names, VForest forest ]
+step_Fields _ _ PPRenameFields  [ VArray _ names, VForest forest ]
  = do   let names' = [ Text.unpack n | XName n <- names]
         progress $ VForest
                  $ T.promiseForest
@@ -23,13 +23,13 @@ step_Fields _ _ PPRenameFields  [ VList _ names, VForest forest ]
 
 
 -- Permute fields.
-step_Fields _ _ PPPermuteFields [ VList _ names, VTree tree ]
+step_Fields _ _ PPPermuteFields [ VArray _ names, VTree tree ]
  = do   let names' = [ Text.unpack n | XName n <- names]
         progress $ VTree
                  $ T.promiseTree
                  $ T.permuteFields names' tree
 
-step_Fields _ _ PPPermuteFields [ VList _ names, VForest forest ]
+step_Fields _ _ PPPermuteFields [ VArray _ names, VForest forest ]
  = do   let names' = [ Text.unpack n | XName n <- names]
         progress $ VForest
                  $ T.promiseForest

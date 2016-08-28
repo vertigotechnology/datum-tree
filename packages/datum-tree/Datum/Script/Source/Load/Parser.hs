@@ -126,7 +126,7 @@ pExpAtom
         ns      <- fmap (map snd) $ P.sepBy1 pVar (pTok KSlashForward)
         let xs   = [XFrag (PVData (PDName n)) | n <- Text.pack "root" : ns]
         let hole = XPrim (PHole (XPrim PKData))
-        return  (sp, XAnnot sp $ XFrag (PVData (PDList hole xs)))
+        return  (sp, XAnnot sp $ XFrag (PVData (PDArray hole xs)))
 
  , do   -- variables
         (sp, u) <- pVar

@@ -111,8 +111,8 @@ defixFrag
 
 defixFrag table a pp
  = case pp of
-        PVData (PDList x xs)
-                -> (PVData . PDList x) <$> mapM (defix table a) xs
+        PVData (PDArray x xs)
+                -> (PVData . PDArray x) <$> mapM (defix table a) xs
         _       -> pure pp
 
 

@@ -65,7 +65,7 @@ freeVarsX env xx
         XAnnot _ x      -> freeVarsX env x
         XPrim{}         -> Set.empty
 
-        XFrag (PVData (PDList x xs))
+        XFrag (PVData (PDArray x xs))
          -> Set.unions (freeVarsX env x : map (freeVarsX env) xs)
 
         XFrag{}         

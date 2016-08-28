@@ -20,7 +20,7 @@ step_Union _ _ PPAppend [VForest f1, VForest f2]
         Just f' -> progress $ VForest f'
 
 
-step_Union _ _ PPConcat [VList _ vs]
+step_Union _ _ PPConcat [VArray _ vs]
  | Just trees   <- sequence
                 $  map (\v -> case v of
                                 XTree t -> Just t
@@ -30,7 +30,7 @@ step_Union _ _ PPConcat [VList _ vs]
          Just t' -> progress $ VTree t'
 
 
-step_Union _ _ PPConcat [VList _ vs]
+step_Union _ _ PPConcat [VArray _ vs]
  | Just forests <- sequence
                 $  map (\v -> case v of
                                 XForest f -> Just f

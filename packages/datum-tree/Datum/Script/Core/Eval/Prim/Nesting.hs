@@ -9,7 +9,7 @@ import qualified Data.Text                      as Text
 
 
 -- Gather subtrees.
-step_Nesting _ _ PPGather    [VList _ names, VTree tree]
+step_Nesting _ _ PPGather  [VArray _ names, VTree tree]
  = do   let names' = [ Text.unpack n | XName n <- names]
         progress $ VTree $ T.gatherTree names' tree
 

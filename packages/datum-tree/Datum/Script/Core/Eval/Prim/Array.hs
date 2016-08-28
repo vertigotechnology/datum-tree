@@ -6,12 +6,12 @@ import Datum.Script.Core.Eval.Prim.Base
 
 
 step_Array _ _ PPArrayEmpty []
- =      progress $ VVPAF (PVData (PDList XTUnit []))
+ =      progress $ VVPAF (PVData (PDArray XTUnit []))
 
 step_Array _ _ 
          PPArrayExtend 
-        [VVPAF p,  VVPAF (PVData (PDList xt xs))]
- =      progress $ VVPAF (PVData (PDList xt (XFrag p : xs)))
+        [VVPAF p,  VVPAF (PVData (PDArray xt xs))]
+ =      progress $ VVPAF (PVData (PDArray xt (XFrag p : xs)))
 
 step_Array _ _ _ _
  = crash

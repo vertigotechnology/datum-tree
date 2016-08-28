@@ -119,7 +119,7 @@ arityOfPrimOp op
         PPArrayExtend   -> 2
 
         PPRecordEmpty   -> 0
-        PPRecordExtend  -> 2
+        PPRecordExtend  -> 3
 
         PPAppend        -> 2
         PPAt            -> 3

@@ -4,13 +4,19 @@ string  = "I am a string"
 nat     = 23
 bool    = True
 unit    = ()
+array   = [1, 2, 3]
+
+record
+ =      { name          = "Armadillo"
+        , order         = "Cingulata"
+        , offspring     = "Monozygotic"
+        , genera        = 9
+        , species       = 21 }
 
 main    
  = do   print string
         print nat
         print bool
         print unit
-        print [1, 2, 3]
-
-
-
+        print array
+        print record

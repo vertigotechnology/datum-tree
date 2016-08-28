@@ -23,6 +23,7 @@ module Datum.Script.Source.Exp
         , Prim, Frag
         , C.GCPrim      (..)
         , K.GPrim       (..)
+        , C.PrimField   (..)
 
         , T.AtomType    (..)
         , T.Atom        (..)

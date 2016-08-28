@@ -1,8 +1,7 @@
 
 -- Test of concat operator.
 main
- = do
-        -- Load some separate files containing stock quotes,
+ = do   -- Load some separate files containing stock quotes,
         -- and concatenate them together.
         glob    = concat
                 [ load "test/data/tsv/quotes/ANZ.tsv"

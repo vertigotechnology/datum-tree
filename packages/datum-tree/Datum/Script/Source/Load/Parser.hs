@@ -85,21 +85,23 @@ pExpApp
 pExpAtom :: Parser (SourcePos, Exp)
 pExpAtom 
  = P.choice
- [ do   -- parenthesised expression
-        _       <- pTok KRoundBra
+ [      -- parenthesised expression
+   do   _       <- pTok KRoundBra
         spx     <- pExp
         _       <- pTok KRoundKet
         return  spx
 
- , do   -- lambda abstraction
-        sp      <- pTok KLam
+
+        -- lambda abstraction
+ , do   sp      <- pTok KLam
         (_,  n) <- pVar
         _       <- pTok KRightArrow
         (_,  x) <- pExp
         return  (sp, XAnnot sp $ XAbs n Nothing x)
 
- , do   -- do expression
-        sp      <- pTok (KKey "do")
+
+        -- do expression
+ , do   sp      <- pTok (KKey "do")
         _       <- pTok KBraceBra
         ss      <- P.sepEndBy1 pStmt (pTok KSemi)
         _       <- pTok KBraceKet
@@ -110,46 +112,73 @@ pExpAtom
 
          _ -> fail "malformed do expression"
 
- , do   -- array
-        sp       <- pTok KSquareBra
-        xs       <- fmap (map snd) $ P.sepBy1 pExp (pTok KComma)
+        -- record        
+ , do   sp      <- pTok KBraceBra
 
-        let xList =  foldr (\x1 xRest -> XApp (XApp (XFrag (PVOp PPArrayExtend)) x1) xRest)
-                           (XFrag (PVOp PPArrayEmpty))
-                           xs
+        fs      <- flip P.sepBy1 (pTok KComma)
+                $  do   n       <- fmap snd $ pVar
+                        _       <- pTok (KOp "=")
+                        x       <- fmap snd $ pExp 
+                        return (XFrag (PVData (PDName n)), x)
+
+        let xRecord
+                = foldr (\(n1, x1) xRest 
+                           -> XApp (XApp (XApp (XFrag (PVOp PPRecordExtend)) n1) x1) xRest)
+                        (XFrag (PVOp PPRecordEmpty))
+                        fs
+        _       <- pTok KBraceKet
+        return  (sp, xRecord)
+
+
+        -- array
+ , do   sp      <- pTok KSquareBra
+        xs      <- fmap (map snd) $ P.sepBy1 pExp (pTok KComma)
+
+        let xList 
+                = foldr (\x1 xRest 
+                           -> XApp (XApp (XFrag (PVOp PPArrayExtend)) x1) xRest)
+                        (XFrag (PVOp PPArrayEmpty))
+                        xs
 
         _        <- pTok KSquareKet
         return  (sp, xList)
 
- , do   -- branch path sugar
-        sp      <- pTok KSlashForward
+
+        -- branch path sugar
+ , do   sp      <- pTok KSlashForward
         ns      <- fmap (map snd) $ P.sepBy1 pVar (pTok KSlashForward)
         let xs   = [PDName n | n <- Text.pack "root" : ns]
         let hole = XPrim (PHole (XPrim PKData))
         return  (sp, XAnnot sp $ XFrag (PVData (PDArray hole xs)))
 
- , do   -- variables
-        (sp, u) <- pVar
+
+        -- variables
+ , do   (sp, u) <- pVar
         return  (sp, XAnnot sp $ XVar u) 
 
- , do   -- infix operators.
-        (sp, u) <- pOp
+
+        -- infix operators.
+ , do   (sp, u) <- pOp
         return  (sp, XAnnot sp $ XInfixOp u) 
 
- , do   -- symbols
-        (sp, s) <- pSymbol
+
+        -- symbols
+ , do   (sp, s) <- pSymbol
         return  (sp, XAnnot sp $ XFrag (PVData (PDName (Text.pack s))))
 
- , do   -- literal text
-        (sp, str) <- pLitString
+
+        -- literal text
+ , do   (sp, str) <- pLitString
         return  (sp, XAnnot sp $ XFrag (PVData (PDAtom (T.AText str))))
 
- , do   -- literal integer
-        (sp, n)   <- pLitInt
+
+        -- literal integer
+ , do   (sp, n)   <- pLitInt
         return  (sp, XAnnot sp $ XFrag (PVData (PDAtom (T.AInt n))))
 
- , do   -- literal unit
-        sp      <- pTok KUnit
+
+        -- literal unit
+ , do   sp      <- pTok KUnit
         return  (sp, XAnnot sp $ XPrim PVUnit)
  ]
  <?> "an atomic expression"

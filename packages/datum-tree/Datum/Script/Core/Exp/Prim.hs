@@ -1,8 +1,9 @@
 {-# LANGUAGE UndecidableInstances #-}
 module Datum.Script.Core.Exp.Prim 
-        ( GCPrim   (..)
-        , PrimOp   (..)
-        , PrimData (..)
+        ( GCPrim    (..)
+        , PrimOp    (..)
+        , PrimData  (..)
+        , PrimField (..)
         , GExpStd
         , typeOfPrim,   typeOfAtom,     typeOfPrimOp
         , arityOfPrim,  arityOfPrimOp
@@ -123,6 +124,7 @@ typeOfPrimData dd
         PDAtom a        -> XFrag (PTAtom (typeOfAtom a))
         PDTreePath{}    -> XTTreePath
         PDFilePath{}    -> XTFilePath
+        PDRecord _      -> XTRecord
         PDArray t _     -> XTArray t
         PDTree{}        -> XTTree
         PDForest{}      -> XTForest

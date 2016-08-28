@@ -34,8 +34,8 @@ pprPrimData c pp  = toLazyText $ buildPrimData c pp
 pprAtom     :: Atom -> Text
 pprAtom a         = toLazyText $ buildAtom def a
 
+
 -------------------------------------------------------------------------------
--- | Pretty print the machine control as a bytestring.
 buildControl :: Config -> Control -> Builder
 buildControl c cc
  = case cc of
@@ -166,6 +166,13 @@ buildPrimData c dd
         PDTreePath{}    -> error "buildPrim: tree path"
         PDFilePath p'   -> fromString $ show p'
 
+        PDRecord fs
+         -> fromString "{"
+         <> (mconcat
+                $ List.intersperse (fromString ", ")
+                $ map (buildPrimField c) fs)
+         <> fromString "}"
+
         PDArray _ ds
          -> fromString "["
          <> (mconcat 
@@ -175,6 +182,13 @@ buildPrimData c dd
 
         PDForest _f     -> error "buildPrim: forest"
         PDTree   t      -> Matryo.encodeTree   def t
+
+
+buildPrimField :: Config -> PrimField Exp -> Builder
+buildPrimField c (PFField n _t v)
+        =  fromText n 
+        <> fromString " = "
+        <> buildPrimData c v
 
 
 buildAtom    :: Config -> Atom -> Builder
@@ -197,3 +211,4 @@ buildPrimOp _ op
         -- if it doesn't then add the name for your new primop.
         Nothing         -> error "datum.buildPrimOp: 'namesOfPrimOps table' is inexhaustive"
         Just name       -> fromString name
+

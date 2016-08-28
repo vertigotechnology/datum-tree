@@ -135,11 +135,23 @@ toCorePrimData dd
  = case dd of
         S.PDAtom a      -> return $ C.PDAtom a
         S.PDName t      -> return $ C.PDName t
-        S.PDArray x xs  -> C.PDArray <$> toCoreX x <*> mapM toCorePrimData xs
-        S.PDForest t    -> return $ C.PDForest t
-        S.PDTree t      -> return $ C.PDTree   t
         S.PDTreePath ts -> return $ C.PDTreePath ts
         S.PDFilePath f  -> return $ C.PDFilePath f
+        S.PDRecord fs   -> C.PDRecord <$> mapM toCorePrimField fs
+        S.PDArray  x xs -> C.PDArray  <$> toCoreX x <*> mapM toCorePrimData xs
+        S.PDTree t      -> return $ C.PDTree   t
+        S.PDForest t    -> return $ C.PDForest t
+
+
+-- | Convert a primitive record field to core.
+toCorePrimField :: S.PrimField S.Exp -> Either Error (C.PrimField C.Exp)
+toCorePrimField ff
+ = case ff of
+        S.PFField n (Just t) d 
+         -> C.PFField n <$> (fmap Just $ toCoreX t) <*> toCorePrimData d
+
+        S.PFField n Nothing d 
+         -> C.PFField n <$> (pure Nothing)          <*> toCorePrimData d
 
 
 -- | Convert a source bound to core, 

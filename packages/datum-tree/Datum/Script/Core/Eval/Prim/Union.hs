@@ -25,8 +25,7 @@ step_Union _ _ PPConcat [VList _ vs]
                 $  map (\v -> case v of
                                 XTree t -> Just t
                                 _       -> Nothing)  vs
- = do
-        case concatTrees trees of
+ = do   case concatTrees trees of
          Nothing -> crash
          Just t' -> progress $ VTree t'
 

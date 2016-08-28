@@ -39,7 +39,7 @@
 
                 <dict>  <key>name</key> <string>constant.language.primop.matryoshka.core</string>
                         <key>match</key>
-                        <string>\b[a-z][a-zA-Z0-9']*\#</string>
+                        <string>\b[a-z][a-zA-Z0-9\-']*\#</string>
                 </dict>
 
                 <dict>  <key>name</key> <string>constant.numeric.unboxed.matryoshka.core</string>

@@ -110,11 +110,16 @@ pExpAtom
 
          _ -> fail "malformed do expression"
 
- , do   -- list
-        sp      <- pTok KSquareBra
-        xs      <- fmap (map snd) $ P.sepBy1 pExp (pTok KComma)
-        _       <- pTok KSquareKet
-        return  (sp, XAnnot sp $ XFrag (PVData (PDList (XPrim (PHole (XPrim PKData))) xs)))
+ , do   -- array
+        sp       <- pTok KSquareBra
+        xs       <- fmap (map snd) $ P.sepBy1 pExp (pTok KComma)
+
+        let xList =  foldr (\x1 xRest -> XApp (XApp (XFrag (PVOp PPArrayExtend)) x1) xRest)
+                           (XFrag (PVOp PPArrayEmpty))
+                           xs
+
+        _        <- pTok KSquareKet
+        return  (sp, xList)
 
  , do   -- branch path sugar
         sp      <- pTok KSlashForward

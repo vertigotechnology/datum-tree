@@ -5,298 +5,298 @@
   }
 ::
 # [ {"Energy"}
-    # [ {"ZEU"}
-      , {"UNV"}
-      , {"STX"}
-      , {"PVD"}
-      , {"OKU"}
-      , {"MMR"}
-      , {"JKA"}
-      , {"ETE"}
-      , {"COK"}
-      , {"TDO"}
+    # [ {"TDO"}
+      , {"AWE"}
+      , {"CEL"}
+      , {"EMX"}
+      , {"ICZ"}
+      , {"MEY"}
+      , {"ODY"}
+      , {"PGS"}
+      , {"SPB"}
+      , {"ZEU"}
       ]
   , {"Diversified Financials"}
-    # [ {"ZML"}
-      , {"TCN"}
-      , {"PKA"}
-      , {"MCH"}
-      , {"KSL"}
-      , {"HLS"}
-      , {"EQT"}
-      , {"CHF"}
-      , {"BSN"}
-      , {"8IH"}
+    # [ {"8IH"}
+      , {"AIB"}
+      , {"BKI"}
+      , {"CIW"}
+      , {"GOL"}
+      , {"HUB"}
+      , {"LSX"}
+      , {"NSX"}
+      , {"PFG"}
+      , {"ZML"}
       ]
   , {"Class Pend"}
-    # [ {"WTC"}
-      , {"VHT"}
-      , {"TES"}
-      , {"SDC"}
-      , {"SM8"}
-      , {"OZT"}
-      , {"MTO"}
-      , {"KMA"}
+    # [ {"ABT"}
+      , {"APT"}
+      , {"BCG"}
       , {"INM"}
-      , {"ABT"}
+      , {"KMA"}
+      , {"MTO"}
+      , {"OZT"}
+      , {"SM8"}
+      , {"SDC"}
+      , {"WTC"}
       ]
   , {"Utilities"}
-    # [ {"WRG"}
-      , {"SKI"}
-      , {"PTR"}
-      , {"MYT"}
-      , {"LPE"}
-      , {"KTE"}
-      , {"IFN"}
-      , {"GDY"}
+    # [ {"AGL"}
+      , {"AST"}
+      , {"CEN"}
+      , {"ENB"}
+      , {"ERJ"}
+      , {"EPW"}
       , {"GNE"}
-      , {"AGL"}
+      , {"GDY"}
+      , {"IFN"}
+      , {"WRG"}
       ]
   , {"Insurance"}
-    # [ {"TWR"}
-      , {"SBK"}
-      , {"SUN"}
-      , {"SDF"}
-      , {"QBE"}
-      , {"PSI"}
-      , {"NHF"}
-      , {"MPL"}
+    # [ {"AMP"}
+      , {"AUB"}
+      , {"ACK"}
+      , {"CBL"}
+      , {"CVW"}
+      , {"CVO"}
+      , {"ENA"}
       , {"IAG"}
-      , {"AMP"}
+      , {"MPL"}
+      , {"TWR"}
       ]
   , {"Banks"}
-    # [ {"WBC"}
-      , {"NAB"}
-      , {"N1H"}
-      , {"MYS"}
-      , {"MOC"}
-      , {"HOM"}
-      , {"GMY"}
-      , {"GMA"}
+    # [ {"ANZ"}
+      , {"AFG"}
+      , {"ABA"}
+      , {"BOQ"}
+      , {"BEN"}
+      , {"CBA"}
+      , {"CYB"}
       , {"ECO"}
-      , {"ANZ"}
+      , {"GMA"}
+      , {"WBC"}
       ]
   , {"Telecommunication Services"}
-    # [ {"ZIP"}
-      , {"TPM"}
-      , {"TLS"}
-      , {"SDA"}
-      , {"SMP"}
-      , {"QUE"}
-      , {"MIH"}
-      , {"IAB"}
+    # [ {"AYS"}
+      , {"BRO"}
+      , {"ENC"}
       , {"FRE"}
-      , {"AYS"}
+      , {"IAB"}
+      , {"MIH"}
+      , {"QUE"}
+      , {"SMP"}
+      , {"SDA"}
+      , {"ZIP"}
       ]
   , {"Health Care Equipment & Services"}
-    # [ {"VRT"}
-      , {"SOM"}
-      , {"RMD"}
-      , {"PGC"}
-      , {"NAN"}
-      , {"LHC"}
-      , {"IPD"}
-      , {"FPH"}
-      , {"CGS"}
-      , {"ONT"}
+    # [ {"ONT"}
+      , {"AMT"}
+      , {"BRC"}
+      , {"EBO"}
+      , {"GXL"}
+      , {"JHC"}
+      , {"MDV"}
+      , {"OIL"}
+      , {"PHG"}
+      , {"VRT"}
       ]
   , {"Capital Goods"}
-    # [ {"ZGL"}
-      , {"THO"}
-      , {"SWL"}
-      , {"RFX"}
-      , {"ORH"}
-      , {"MJP"}
-      , {"KNH"}
-      , {"GGH"}
-      , {"EMB"}
-      , {"ADQ"}
+    # [ {"ADQ"}
+      , {"BLY"}
+      , {"CYG"}
+      , {"EGY"}
+      , {"GNG"}
+      , {"KTL"}
+      , {"MXI"}
+      , {"PPK"}
+      , {"RDG"}
+      , {"ZGL"}
       ]
   , {"Real Estate"}
-    # [ {"WFD"}
-      , {"SGP"}
-      , {"RCU"}
-      , {"MPX"}
-      , {"LMW"}
-      , {"HPI"}
-      , {"GTY"}
-      , {"DVN"}
-      , {"BWP"}
-      , {"TGP"}
+    # [ {"TGP"}
+      , {"AJD"}
+      , {"BWR"}
+      , {"CMW"}
+      , {"GJT"}
+      , {"GMF"}
+      , {"KLO"}
+      , {"MGR"}
+      , {"PHI"}
+      , {"WFD"}
       ]
   , {"Not Applic"}
-    # [ {"WCT"}
-      , {"SVS"}
-      , {"REK"}
-      , {"PUK"}
-      , {"NAJ"}
-      , {"IKO"}
-      , {"IMG"}
-      , {"FOB"}
+    # [ {"TOT"}
+      , {"AYF"}
       , {"CCB"}
-      , {"TOT"}
+      , {"FOB"}
+      , {"IMG"}
+      , {"IKO"}
+      , {"NAJ"}
+      , {"PUK"}
+      , {"REK"}
+      , {"WCT"}
       ]
   , {"Consumer Services"}
-    # [ {"VET"}
-      , {"TBH"}
-      , {"SGU"}
-      , {"SHJ"}
-      , {"NHH"}
-      , {"JIN"}
-      , {"IDZ"}
-      , {"GEM"}
-      , {"DNA"}
-      , {"3PL"}
+    # [ {"3PL"}
+      , {"AAD"}
+      , {"CWN"}
+      , {"EBG"}
+      , {"IB8"}
+      , {"IQE"}
+      , {"LFC"}
+      , {"RCT"}
+      , {"SKC"}
+      , {"VET"}
       ]
   , {"Food & Staples Retailing"}
-    # [ {"WOW"}
-      , {"WES"}
+    # [ {"AAP"}
       , {"MTS"}
-      , {"AAP"}
+      , {"WES"}
+      , {"WOW"}
       ]
   , {"Commercial Services & Supplies"}
-    # [ {"YPB"}
-      , {"SIQ"}
-      , {"RUB"}
-      , {"PMP"}
-      , {"NAM"}
-      , {"IPH"}
-      , {"GNV"}
-      , {"ECG"}
-      , {"CGR"}
-      , {"AEI"}
+    # [ {"AEI"}
+      , {"AWN"}
+      , {"CAB"}
+      , {"CXZ"}
+      , {"EAX"}
+      , {"HJB"}
+      , {"MMS"}
+      , {"OPG"}
+      , {"PSZ"}
+      , {"YPB"}
       ]
   , {"Materials"}
-    # [ {"ZYL"}
-      , {"TAM"}
-      , {"RBX"}
-      , {"ORM"}
-      , {"MNC"}
-      , {"KPT"}
-      , {"GXN"}
-      , {"DLE"}
-      , {"CNQ"}
-      , {"DDD"}
+    # [ {"DDD"}
+      , {"AOU"}
+      , {"CFE"}
+      , {"DMI"}
+      , {"GPR"}
+      , {"JHX"}
+      , {"MLM"}
+      , {"OGH"}
+      , {"RDS"}
+      , {"ZYL"}
       ]
   , {"Pharmaceuticals & Biotechnology"}
-    # [ {"VSC"}
-      , {"SUD"}
-      , {"RGS"}
-      , {"PTX"}
-      , {"PNO"}
-      , {"NSP"}
-      , {"MVP"}
-      , {"IMU"}
+    # [ {"ACR"}
+      , {"ANP"}
+      , {"BNE"}
       , {"DXB"}
-      , {"ACR"}
+      , {"IMU"}
+      , {"MVP"}
+      , {"NSP"}
+      , {"PNO"}
+      , {"PTX"}
+      , {"VSC"}
       ]
   , {"Food, Beverage & Tobacco"}
-    # [ {"YOW"}
-      , {"WCB"}
-      , {"A2M"}
-      , {"SHV"}
-      , {"PFL"}
-      , {"GNC"}
-      , {"FSF"}
-      , {"DFM"}
-      , {"CDC"}
-      , {"AAC"}
+    # [ {"AAC"}
+      , {"AWY"}
+      , {"BUG"}
+      , {"CSS"}
+      , {"ELD"}
+      , {"FLR"}
+      , {"HUO"}
+      , {"RGP"}
+      , {"SOI"}
+      , {"YOW"}
       ]
   , {"Automobiles & Components"}
-    # [ {"VMT"}
-      , {"SIX"}
-      , {"SFC"}
-      , {"PWH"}
-      , {"OEC"}
-      , {"OOK"}
-      , {"DDT"}
+    # [ {"ABV"}
       , {"ARB"}
-      , {"ABV"}
+      , {"DDT"}
+      , {"OOK"}
+      , {"OEC"}
+      , {"PWH"}
+      , {"SFC"}
+      , {"SIX"}
+      , {"VMT"}
       ]
   , {"Media"}
-    # [ {"XTV"}
-      , {"VIG"}
-      , {"SGN"}
-      , {"SWM"}
-      , {"PRT"}
-      , {"NEC"}
-      , {"NCL"}
-      , {"IVO"}
-      , {"EVT"}
-      , {"AAU"}
+    # [ {"AAU"}
+      , {"DIG"}
+      , {"BBL"}
+      , {"EGG"}
+      , {"ICQ"}
+      , {"MUI"}
+      , {"NWZ"}
+      , {"PNW"}
+      , {"REA"}
+      , {"XTV"}
       ]
   , {"Household & Personal Products"}
-    # [ {"VIT"}
-      , {"PTL"}
-      , {"HCT"}
-      , {"BWX"}
+    # [ {"AHY"}
       , {"BKL"}
-      , {"AHY"}
+      , {"BWX"}
+      , {"HCT"}
+      , {"PTL"}
+      , {"VIT"}
       ]
   , {"Software & Services"}
-    # [ {"XF1"}
-      , {"CGL"}
-      , {"RHP"}
-      , {"PSY"}
-      , {"MSM"}
-      , {"LVT"}
-      , {"IRI"}
-      , {"EOL"}
-      , {"CVT"}
-      , {"1PG"}
+    # [ {"1PG"}
+      , {"AYG"}
+      , {"COM"}
+      , {"DUB"}
+      , {"HSN"}
+      , {"KNO"}
+      , {"MKB"}
+      , {"OTH"}
+      , {"RFN"}
+      , {"XF1"}
       ]
   , {"Technology Hardware & Equipment"}
-    # [ {"WRR"}
-      , {"TZL"}
-      , {"STL"}
-      , {"SEN"}
-      , {"QTG"}
-      , {"NTC"}
-      , {"MSP"}
-      , {"KKL"}
-      , {"FFT"}
-      , {"AMO"}
+    # [ {"AMO"}
+      , {"CAT"}
+      , {"CDA"}
+      , {"DTI"}
+      , {"HIL"}
+      , {"LGD"}
+      , {"MBO"}
+      , {"NUH"}
+      , {"RDF"}
+      , {"WRR"}
       ]
   , {"Consumer Durables & Apparel"}
-    # [ {"YHL"}
-      , {"WAT"}
-      , {"SIO"}
-      , {"SHU"}
-      , {"1AL"}
-      , {"MCP"}
-      , {"KFG"}
-      , {"GLE"}
-      , {"GAP"}
-      , {"ATP"}
+    # [ {"ATP"}
+      , {"BBG"}
+      , {"FAN"}
+      , {"GUD"}
+      , {"GZL"}
+      , {"GLB"}
+      , {"KRS"}
+      , {"MHI"}
+      , {"QTM"}
+      , {"YHL"}
       ]
   , {"Retailing"}
-    # [ {"WEB"}
-      , {"TME"}
-      , {"TPW"}
-      , {"SBB"}
-      , {"RHL"}
-      , {"PBG"}
-      , {"MYR"}
-      , {"JBH"}
+    # [ {"NNW"}
+      , {"APE"}
+      , {"BLX"}
+      , {"BPG"}
       , {"E88"}
-      , {"NNW"}
+      , {"JBH"}
+      , {"MYR"}
+      , {"PBG"}
+      , {"RHL"}
+      , {"WEB"}
       ]
   , {"Transportation"}
-    # [ {"VAH"}
-      , {"TTI"}
-      , {"RIS"}
-      , {"QUB"}
-      , {"MRM"}
-      , {"MQA"}
-      , {"KSC"}
-      , {"CHR"}
-      , {"AIA"}
-      , {"AIZ"}
+    # [ {"AIZ"}
+      , {"AIO"}
+      , {"AZJ"}
+      , {"CLX"}
+      , {"LAU"}
+      , {"MCS"}
+      , {"QAN"}
+      , {"REX"}
+      , {"SYD"}
+      , {"VAH"}
       ]
   , {"Semiconductors & Semiconductor Equipment"}
-    # [ {"SLX"}
-      , {"DYE"}
+    # [ {"4DS"}
       , {"BLG"}
-      , {"4DS"}
+      , {"DYE"}
+      , {"SLX"}
       ]
   ]

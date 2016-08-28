@@ -5,11 +5,10 @@ main
         -- Load some separate files containing stock quotes,
         -- and concatenate them together.
         glob    = concat
-                (array-extend# (load "test/data/tsv/quotes/ANZ.tsv")
-                (array-extend# (load "test/data/tsv/quotes/CBA.tsv")
-                (array-extend# (load "test/data/tsv/quotes/NAB.tsv")
-                (array-extend# (load "test/data/tsv/quotes/WBC.tsv")
-                 array-empty#))))
+                [ sample 5 $ load "test/data/tsv/quotes/ANZ.tsv"
+                , sample 5 $ load "test/data/tsv/quotes/CBA.tsv"
+                , sample 5 $ load "test/data/tsv/quotes/NAB.tsv"
+                , sample 5 $ load "test/data/tsv/quotes/WBC.tsv" ]
 
         -- Append all the files together, which also checks they have the same type.
         glob

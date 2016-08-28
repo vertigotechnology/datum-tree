@@ -11,7 +11,7 @@ step_Array _ _ PPArrayEmpty []
 step_Array _ _ 
          PPArrayExtend 
         [VVPAF p,  VVPAF (PVData (PDList xt xs))]
- =      progress $ VVPAF (PVData (PDList xt (xs ++ [XFrag p])))
+ =      progress $ VVPAF (PVData (PDList xt (XFrag p : xs)))
 
 step_Array _ _ _ _
  = crash

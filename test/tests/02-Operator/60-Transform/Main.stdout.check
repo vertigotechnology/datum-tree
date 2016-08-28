@@ -3,372 +3,372 @@
 ::
 # [ {}
   , {"Energy"}
-  , {"ZEU", "ZEUS RESOURCES LIMITED", "Energy"}
-  , {"WHN", "WHL ENERGY LIMITED", "Energy"}
-  , {"UEQ", "URANIUM EQUITIES LIMITED", "Energy"}
-  , {"TPS", "THREAT PROTECT AUSTRALIA LIMITED", "Energy"}
-  , {"SUR", "SUN RESOURCES NL", "Energy"}
-  , {"STO", "SANTOS LIMITED", "Energy"}
-  , {"RLE", "REAL ENERGY CORPORATION LIMITED", "Energy"}
-  , {"PEC", "PERPETUAL RESOURCES LIMITED", "Energy"}
-  , {"OEL", "OTTO ENERGY LIMITED", "Energy"}
-  , {"NGY", "NUENERGY GAS LIMITED", "Energy"}
-  , {"MPO", "MOLOPO ENERGY LIMITED", "Energy"}
-  , {"MBC", "MALABAR COAL LIMITED", "Energy"}
-  , {"KEY", "KEY PETROLEUM LIMITED", "Energy"}
-  , {"IOG", "INCREMENTAL OIL AND GAS LIMITED", "Energy"}
-  , {"GLL", "GALILEE ENERGY LIMITED", "Energy"}
-  , {"EMX", "ENERGIA MINERALS LIMITED", "Energy"}
-  , {"CQC", "CUESTA COAL LIMITED", "Energy"}
-  , {"CTR", "CITATION RESOURCES LTD", "Energy"}
-  , {"BRK", "BROOKSIDE ENERGY LIMITED", "Energy"}
   , {"TDO", "3D OIL LIMITED", "Energy"}
+  , {"AGE", "ALLIGATOR ENERGY LIMITED", "Energy"}
+  , {"ARW", "AUSTRALIAN RENEWABLE FUELS LIMITED", "Energy"}
+  , {"BLZ", "BLAZE INTERNATIONAL LIMITED", "Energy"}
+  , {"CXU", "CAULDRON ENERGY LIMITED", "Energy"}
+  , {"CCJ", "COUNTY INTERNATIONAL LIMITED", "Energy"}
+  , {"EMR", "EMERALD RESOURCES NL", "Energy"}
+  , {"FAR", "FAR LIMITED", "Energy"}
+  , {"HZN", "HORIZON OIL LIMITED", "Energy"}
+  , {"KLR", "KAILI RESOURCES LIMITED", "Energy"}
+  , {"LGO", "LONGREACH OIL LIMITED", "Energy"}
+  , {"MEL", "METGASCO LIMITED", "Energy"}
+  , {"NZO", "NEW ZEALAND OIL & GAS LIMITED", "Energy"}
+  , {"OGY", "ORCA ENERGY LIMITED", "Energy"}
+  , {"PKO", "PEAKO LIMITED", "Energy"}
+  , {"PVD", "PURA VIDA ENERGY NL", "Energy"}
+  , {"SGC", "SACGASCO LIMITED", "Energy"}
+  , {"SXA", "STRATA-X ENERGY LIMITED", "Energy"}
+  , {"TEX", "TARGET ENERGY LIMITED", "Energy"}
+  , {"ZEU", "ZEUS RESOURCES LIMITED", "Energy"}
   , {"Diversified Financials"}
-  , {"ZML", "ZIPMONEY LTD", "Diversified Financials"}
-  , {"WAX", "WAM RESEARCH LIMITED", "Diversified Financials"}
-  , {"TGG", "TEMPLETON GLOBAL GROWTH FUND LIMITED", "Diversified Financials"}
-  , {"SFL", "SPRING FG LIMITED", "Diversified Financials"}
-  , {"PHA", "PUBLIC HOLDINGS (AUSTRALIA) LIMITED", "Diversified Financials"}
-  , {"PPT", "PERPETUAL LIMITED", "Diversified Financials"}
-  , {"OCP", "OCEANIA CAPITAL PARTNERS LIMITED", "Diversified Financials"}
-  , {"MLT", "MILTON CORPORATION LIMITED", "Diversified Financials"}
-  , {"MFG", "MAGELLAN FINANCIAL GROUP LIMITED", "Diversified Financials"}
-  , {"KAM", "K2 ASSET MANAGEMENT HOLDINGS LTD", "Diversified Financials"}
-  , {"IPC", "IMPERIAL PACIFIC LIMITED", "Diversified Financials"}
-  , {"HFA", "HFA HOLDINGS LIMITED", "Diversified Financials"}
-  , {"FXL", "FLEXIGROUP LIMITED", "Diversified Financials"}
-  , {"EQT", "EQT HOLDINGS LIMITED", "Diversified Financials"}
-  , {"DVA", "DIVERSA LIMITED", "Diversified Financials"}
-  , {"CIW", "CLIME INVESTMENT MANAGEMENT LTD", "Diversified Financials"}
-  , {"CAF", "CENTREPOINT ALLIANCE LIMITED", "Diversified Financials"}
-  , {"BWF", "BLACKWALL PROPERTY FUNDS LIMITED", "Diversified Financials"}
-  , {"BFG", "BELL FINANCIAL GROUP LIMITED", "Diversified Financials"}
   , {"8IH", "8I HOLDINGS LTD", "Diversified Financials"}
+  , {"AGF", "AMP CAPITAL CHINA GROWTH FUND", "Diversified Financials"}
+  , {"ASX", "ASX LIMITED", "Diversified Financials"}
+  , {"ARC", "AUSTRALIAN RURAL CAPITAL LIMITED", "Diversified Financials"}
+  , {"BTC", "BIOTECH CAPITAL LIMITED", "Diversified Financials"}
+  , {"BGR", "BRONSON GROUP LIMITED", "Diversified Financials"}
+  , {"CGF", "CHALLENGER LIMITED", "Diversified Financials"}
+  , {"CVC", "CVC LIMITED", "Diversified Financials"}
+  , {"EAS", "EASTON INVESTMENTS LIMITED", "Diversified Financials"}
+  , {"FFG", "FATFISH INTERNET GROUP LTD", "Diversified Financials"}
+  , {"GOW", "GOWING BROS LIMITED", "Diversified Financials"}
+  , {"HHV", "HUNTER HALL GLOBAL VALUE LIMITED", "Diversified Financials"}
+  , {"IQ3", "IQ3CORP LIMITED", "Diversified Financials"}
+  , {"LSX", "LION SELECTION GROUP LIMITED.", "Diversified Financials"}
+  , {"MGP", "MANAGED ACCOUNTS HOLDINGS LIMITED", "Diversified Financials"}
+  , {"MCH", "MURCHISON HOLDINGS LIMITED", "Diversified Financials"}
+  , {"OFX", "OZFOREX GROUP LIMITED", "Diversified Financials"}
+  , {"PMC", "PLATINUM CAPITAL LIMITED", "Diversified Financials"}
+  , {"RAF", "RAFFLES CAPITAL LIMITED", "Diversified Financials"}
+  , {"ZML", "ZIPMONEY LTD", "Diversified Financials"}
   , {"Class Pend"}
-  , {"WTC", "WISETECH GLOBAL LIMITED", "Class Pend"}
-  , {"WQW", "WINHA COMMERCE AND TRADE INTERNATIONAL LTD", "Class Pend"}
-  , {"VHT", "VOLPARA HEALTH TECHNOLOGIES LIMITED", "Class Pend"}
-  , {"TRC", "TRAC GROUP HOLDINGS LIMITED", "Class Pend"}
-  , {"TES", "TEST SECURITY", "Class Pend"}
-  , {"TGH", "TEGEL GROUP HOLDINGS LIMITED", "Class Pend"}
-  , {"SDC", "SUGAR DRAGON LIMITED", "Class Pend"}
-  , {"SKN", "SKIN ELEMENTS LIMITED", "Class Pend"}
-  , {"SM8", "SHARK MITIGATION SYSTEMS LIMITED", "Class Pend"}
-  , {"RRR", "RIVER ROCK ENERGY LIMITED", "Class Pend"}
-  , {"OZT", "OZTRADE PUBLISHING GROUP LIMITED", "Class Pend"}
-  , {"NBI", "NB MONTHLY INCOME TRUST", "Class Pend"}
-  , {"MTO", "MOTORCYCLE HOLDINGS LIMITED", "Class Pend"}
-  , {"MA1", "MONASH ABSOLUTE INVESTMENT COMPANY LIMITED", "Class Pend"}
-  , {"KMA", "KOOLSEE NEW MEDIA GROUP LIMITED", "Class Pend"}
-  , {"KGG", "KING OF GOLD GROUP CO LTD", "Class Pend"}
-  , {"INM", "IRON MOUNTAIN INCORPORATED", "Class Pend"}
-  , {"GEE", "GOLDEN EAGLE MINING LTD", "Class Pend"}
-  , {"BCG", "BITCOIN GROUP LIMITED", "Class Pend"}
   , {"ABT", "ABUNDANT PRODUCE LIMITED", "Class Pend"}
+  , {"AFY", "AFTERPAY HOLDINGS LIMITED", "Class Pend"}
+  , {"APT", "ALPHATISE LIMITED", "Class Pend"}
+  , {"AD1", "APPLYDIRECT LIMITED", "Class Pend"}
+  , {"BCG", "BITCOIN GROUP LIMITED", "Class Pend"}
+  , {"GEE", "GOLDEN EAGLE MINING LTD", "Class Pend"}
+  , {"INM", "IRON MOUNTAIN INCORPORATED", "Class Pend"}
+  , {"KGG", "KING OF GOLD GROUP CO LTD", "Class Pend"}
+  , {"KMA", "KOOLSEE NEW MEDIA GROUP LIMITED", "Class Pend"}
+  , {"MA1", "MONASH ABSOLUTE INVESTMENT COMPANY LIMITED", "Class Pend"}
+  , {"MTO", "MOTORCYCLE HOLDINGS LIMITED", "Class Pend"}
+  , {"NBI", "NB MONTHLY INCOME TRUST", "Class Pend"}
+  , {"OZT", "OZTRADE PUBLISHING GROUP LIMITED", "Class Pend"}
+  , {"RRR", "RIVER ROCK ENERGY LIMITED", "Class Pend"}
+  , {"SM8", "SHARK MITIGATION SYSTEMS LIMITED", "Class Pend"}
+  , {"SKN", "SKIN ELEMENTS LIMITED", "Class Pend"}
+  , {"SDC", "SUGAR DRAGON LIMITED", "Class Pend"}
+  , {"TGH", "TEGEL GROUP HOLDINGS LIMITED", "Class Pend"}
+  , {"TES", "TEST SECURITY", "Class Pend"}
+  , {"WTC", "WISETECH GLOBAL LIMITED", "Class Pend"}
   , {"Utilities"}
-  , {"WRG", "WATER RESOURCES GROUP LIMITED", "Utilities"}
-  , {"TML", "TIMAH RESOURCES LIMITED", "Utilities"}
-  , {"SKI", "SPARK INFRASTRUCTURE GROUP", "Utilities"}
-  , {"AEJ", "REDBANK ENERGY LIMITED", "Utilities"}
-  , {"PTR", "PETRATHERM LTD", "Utilities"}
-  , {"PEA", "PACIFIC ENERGY LIMITED", "Utilities"}
-  , {"MYT", "MIGHTY RIVER POWER LIMITED", "Utilities"}
-  , {"MEZ", "MERIDIAN ENERGY LIMITED", "Utilities"}
-  , {"LPE", "LOCALITY PLANNING ENERGY HOLDINGS LIMITED", "Utilities"}
-  , {"KPO", "KALINA POWER LIMITED", "Utilities"}
-  , {"KTE", "K2 ENERGY LIMITED.", "Utilities"}
-  , {"IFT", "INFRATIL LIMITED.", "Utilities"}
-  , {"IFN", "INFIGEN ENERGY", "Utilities"}
-  , {"HPR", "HIGH PEAK ROYALTIES LIMITED", "Utilities"}
-  , {"GDY", "GEODYNAMICS LIMITED", "Utilities"}
-  , {"GNX", "GENEX POWER LIMITED", "Utilities"}
-  , {"GNE", "GENESIS ENERGY LIMITED", "Utilities"}
-  , {"EPX", "ETHANE PIPELINE INCOME FUND", "Utilities"}
-  , {"EPW", "ERM POWER LIMITED", "Utilities"}
   , {"AGL", "AGL ENERGY LIMITED.", "Utilities"}
+  , {"APA", "APA GROUP", "Utilities"}
+  , {"AST", "AUSNET SERVICES LIMITED", "Utilities"}
+  , {"CWE", "CARNEGIE WAVE ENERGY LIMITED", "Utilities"}
+  , {"CEN", "CONTACT ENERGY LIMITED", "Utilities"}
+  , {"DUE", "DUET GROUP", "Utilities"}
+  , {"ENB", "ENEABBA GAS LIMITED", "Utilities"}
+  , {"EWC", "ENERGY WORLD CORPORATION LTD", "Utilities"}
+  , {"ERJ", "ENERJI LTD", "Utilities"}
+  , {"EVM", "ENVIROMISSION LIMITED", "Utilities"}
+  , {"EPW", "ERM POWER LIMITED", "Utilities"}
+  , {"EPX", "ETHANE PIPELINE INCOME FUND", "Utilities"}
+  , {"GNE", "GENESIS ENERGY LIMITED", "Utilities"}
+  , {"GNX", "GENEX POWER LIMITED", "Utilities"}
+  , {"GDY", "GEODYNAMICS LIMITED", "Utilities"}
+  , {"HPR", "HIGH PEAK ROYALTIES LIMITED", "Utilities"}
+  , {"IFN", "INFIGEN ENERGY", "Utilities"}
+  , {"IFT", "INFRATIL LIMITED.", "Utilities"}
+  , {"KTE", "K2 ENERGY LIMITED.", "Utilities"}
+  , {"WRG", "WATER RESOURCES GROUP LIMITED", "Utilities"}
   , {"Insurance"}
-  , {"TWR", "TOWER LIMITED", "Insurance"}
-  , {"SBK", "SUNCORP-METWAY LIMITED .", "Insurance"}
-  , {"SUN", "SUNCORP GROUP LIMITED", "Insurance"}
-  , {"SDF", "STEADFAST GROUP LIMITED", "Insurance"}
-  , {"QBE", "QBE INSURANCE GROUP LIMITED", "Insurance"}
-  , {"PSI", "PSC INSURANCE GROUP LIMITED", "Insurance"}
-  , {"NHF", "NIB HOLDINGS LIMITED", "Insurance"}
-  , {"MPL", "MEDIBANK PRIVATE LIMITED", "Insurance"}
-  , {"IAG", "INSURANCE AUSTRALIA GROUP LIMITED", "Insurance"}
-  , {"ENA", "ENSURANCE LTD", "Insurance"}
-  , {"CVO", "COVER-MORE GROUP LIMITED", "Insurance"}
-  , {"CVW", "CLEARVIEW WEALTH LIMITED", "Insurance"}
-  , {"CBL", "CBL CORPORATION LIMITED", "Insurance"}
-  , {"ACK", "AUSTOCK GROUP LIMITED", "Insurance"}
-  , {"AUB", "AUB GROUP LIMITED", "Insurance"}
   , {"AMP", "AMP LIMITED", "Insurance"}
+  , {"AUB", "AUB GROUP LIMITED", "Insurance"}
+  , {"ACK", "AUSTOCK GROUP LIMITED", "Insurance"}
+  , {"CBL", "CBL CORPORATION LIMITED", "Insurance"}
+  , {"CVW", "CLEARVIEW WEALTH LIMITED", "Insurance"}
+  , {"CVO", "COVER-MORE GROUP LIMITED", "Insurance"}
+  , {"ENA", "ENSURANCE LTD", "Insurance"}
+  , {"IAG", "INSURANCE AUSTRALIA GROUP LIMITED", "Insurance"}
+  , {"MPL", "MEDIBANK PRIVATE LIMITED", "Insurance"}
+  , {"NHF", "NIB HOLDINGS LIMITED", "Insurance"}
+  , {"PSI", "PSC INSURANCE GROUP LIMITED", "Insurance"}
+  , {"QBE", "QBE INSURANCE GROUP LIMITED", "Insurance"}
+  , {"SDF", "STEADFAST GROUP LIMITED", "Insurance"}
+  , {"SUN", "SUNCORP GROUP LIMITED", "Insurance"}
+  , {"SBK", "SUNCORP-METWAY LIMITED .", "Insurance"}
+  , {"TWR", "TOWER LIMITED", "Insurance"}
   , {"Banks"}
-  , {"WBC", "WESTPAC BANKING CORPORATION", "Banks"}
-  , {"NAB", "NATIONAL AUSTRALIA BANK LIMITED", "Banks"}
-  , {"N1H", "N1 HOLDINGS LIMITED", "Banks"}
-  , {"MYS", "MYSTATE LIMITED", "Banks"}
-  , {"MOC", "MORTGAGE CHOICE LIMITED", "Banks"}
-  , {"HOM", "HOMELOANS LIMITED", "Banks"}
-  , {"GMY", "GOLDFIELDS MONEY LIMITED", "Banks"}
-  , {"GMA", "GENWORTH MORTGAGE INSURANCE AUSTRALIA LIMITED", "Banks"}
-  , {"ECO", "ECHOICE LIMITED", "Banks"}
-  , {"CYB", "CYBG PLC", "Banks"}
-  , {"CBA", "COMMONWEALTH BANK OF AUSTRALIA.", "Banks"}
-  , {"BEN", "BENDIGO AND ADELAIDE BANK LIMITED", "Banks"}
-  , {"BOQ", "BANK OF QUEENSLAND LIMITED.", "Banks"}
-  , {"ABA", "AUSWIDE BANK LTD", "Banks"}
-  , {"AFG", "AUSTRALIAN FINANCE GROUP LTD", "Banks"}
   , {"ANZ", "AUSTRALIA AND NEW ZEALAND BANKING GROUP LIMITED", "Banks"}
+  , {"AFG", "AUSTRALIAN FINANCE GROUP LTD", "Banks"}
+  , {"ABA", "AUSWIDE BANK LTD", "Banks"}
+  , {"BOQ", "BANK OF QUEENSLAND LIMITED.", "Banks"}
+  , {"BEN", "BENDIGO AND ADELAIDE BANK LIMITED", "Banks"}
+  , {"CBA", "COMMONWEALTH BANK OF AUSTRALIA.", "Banks"}
+  , {"CYB", "CYBG PLC", "Banks"}
+  , {"ECO", "ECHOICE LIMITED", "Banks"}
+  , {"GMA", "GENWORTH MORTGAGE INSURANCE AUSTRALIA LIMITED", "Banks"}
+  , {"GMY", "GOLDFIELDS MONEY LIMITED", "Banks"}
+  , {"HOM", "HOMELOANS LIMITED", "Banks"}
+  , {"MOC", "MORTGAGE CHOICE LIMITED", "Banks"}
+  , {"MYS", "MYSTATE LIMITED", "Banks"}
+  , {"N1H", "N1 HOLDINGS LIMITED", "Banks"}
+  , {"NAB", "NATIONAL AUSTRALIA BANK LIMITED", "Banks"}
+  , {"WBC", "WESTPAC BANKING CORPORATION", "Banks"}
   , {"Telecommunication Services"}
-  , {"ZIP", "ZIPTEL LIMITED", "Telecommunication Services"}
-  , {"VOC", "VOCUS COMMUNICATIONS LIMITED", "Telecommunication Services"}
-  , {"TPM", "TPG TELECOM LIMITED", "Telecommunication Services"}
-  , {"TPC", "TPC CONSOLIDATED LIMITED", "Telecommunication Services"}
-  , {"TLS", "TELSTRA CORPORATION LIMITED.", "Telecommunication Services"}
-  , {"SLC", "SUPERLOOP LIMITED", "Telecommunication Services"}
-  , {"SDA", "SPEEDCAST INTERNATIONAL LIMITED", "Telecommunication Services"}
-  , {"SPK", "SPARK NEW ZEALAND LIMITED", "Telecommunication Services"}
-  , {"SMP", "SMARTPAY HOLDINGS LIMITED", "Telecommunication Services"}
-  , {"REF", "REVERSE CORP LIMITED", "Telecommunication Services"}
-  , {"QUE", "QUESTE COMMUNICATIONS LIMITED", "Telecommunication Services"}
-  , {"MNF", "MNF GROUP LIMITED", "Telecommunication Services"}
-  , {"MIH", "MNC MEDIA INVESTMENT LTD", "Telecommunication Services"}
-  , {"MAQ", "MACQUARIE TELECOM GROUP LIMITED", "Telecommunication Services"}
-  , {"IAB", "INABOX GROUP LIMITED", "Telecommunication Services"}
-  , {"HTA", "HUTCHISON TELECOMMUNICATIONS (AUSTRALIA) LIMITED", "Telecommunication Services"}
-  , {"FRE", "FRESHTEL HOLDINGS LIMITED", "Telecommunication Services"}
-  , {"FRX", "FLEXIROAM LIMITED", "Telecommunication Services"}
-  , {"ENC", "ENICE HOLDING COMPANY LIMITED", "Telecommunication Services"}
   , {"AYS", "AMAYSIM AUSTRALIA LIMITED", "Telecommunication Services"}
+  , {"BGL", "BIGAIR GROUP LIMITED", "Telecommunication Services"}
+  , {"BRO", "BROAD INVESTMENTS LIMITED", "Telecommunication Services"}
+  , {"CNU", "CHORUS LIMITED", "Telecommunication Services"}
+  , {"ENC", "ENICE HOLDING COMPANY LIMITED", "Telecommunication Services"}
+  , {"FRX", "FLEXIROAM LIMITED", "Telecommunication Services"}
+  , {"FRE", "FRESHTEL HOLDINGS LIMITED", "Telecommunication Services"}
+  , {"HTA", "HUTCHISON TELECOMMUNICATIONS (AUSTRALIA) LIMITED", "Telecommunication Services"}
+  , {"IAB", "INABOX GROUP LIMITED", "Telecommunication Services"}
+  , {"MAQ", "MACQUARIE TELECOM GROUP LIMITED", "Telecommunication Services"}
+  , {"MIH", "MNC MEDIA INVESTMENT LTD", "Telecommunication Services"}
+  , {"MNF", "MNF GROUP LIMITED", "Telecommunication Services"}
+  , {"QUE", "QUESTE COMMUNICATIONS LIMITED", "Telecommunication Services"}
+  , {"REF", "REVERSE CORP LIMITED", "Telecommunication Services"}
+  , {"SMP", "SMARTPAY HOLDINGS LIMITED", "Telecommunication Services"}
+  , {"SPK", "SPARK NEW ZEALAND LIMITED", "Telecommunication Services"}
+  , {"SDA", "SPEEDCAST INTERNATIONAL LIMITED", "Telecommunication Services"}
+  , {"SLC", "SUPERLOOP LIMITED", "Telecommunication Services"}
+  , {"TLS", "TELSTRA CORPORATION LIMITED.", "Telecommunication Services"}
+  , {"ZIP", "ZIPTEL LIMITED", "Telecommunication Services"}
   , {"Health Care Equipment & Services"}
-  , {"VRT", "VIRTUS HEALTH LIMITED", "Health Care Equipment & Services"}
-  , {"UNS", "UNILIFE CORPORATION", "Health Care Equipment & Services"}
-  , {"SHL", "SONIC HEALTHCARE LIMITED", "Health Care Equipment & Services"}
-  , {"SIP", "SIGMA PHARMACEUTICALS LIMITED", "Health Care Equipment & Services"}
-  , {"RSH", "RESPIRI LIMITED", "Health Care Equipment & Services"}
-  , {"RAP", "RESAPP HEALTH LIMITED", "Health Care Equipment & Services"}
-  , {"PHG", "PULSE HEALTH LIMITED", "Health Care Equipment & Services"}
-  , {"PGC", "PARAGON CARE LIMITED", "Health Care Equipment & Services"}
-  , {"OHE", "ORION HEALTH GROUP LIMITED", "Health Care Equipment & Services"}
-  , {"NVL", "NATIONAL VETERINARY CARE LTD", "Health Care Equipment & Services"}
-  , {"MEQ", "METLIFECARE LIMITED", "Health Care Equipment & Services"}
-  , {"MGZ", "MEDIGARD LIMITED", "Health Care Equipment & Services"}
-  , {"LBT", "LBT INNOVATIONS LIMITED", "Health Care Equipment & Services"}
-  , {"JHC", "JAPARA HEALTHCARE LIMITED", "Health Care Equipment & Services"}
-  , {"IPD", "IMPEDIMED LIMITED", "Health Care Equipment & Services"}
-  , {"HSO", "HEALTHSCOPE LIMITED.", "Health Care Equipment & Services"}
-  , {"GID", "GI DYNAMICS, INC", "Health Care Equipment & Services"}
-  , {"EHE", "ESTIA HEALTH LIMITED", "Health Care Equipment & Services"}
-  , {"CYC", "CYCLOPHARM LIMITED", "Health Care Equipment & Services"}
   , {"ONT", "1300 SMILES LIMITED", "Health Care Equipment & Services"}
+  , {"ADR", "ADHERIUM LIMITED", "Health Care Equipment & Services"}
+  , {"ALC", "ALCIDION GROUP LIMITED", "Health Care Equipment & Services"}
+  , {"ANN", "ANSELL LIMITED", "Health Care Equipment & Services"}
+  , {"API", "AUSTRALIAN PHARMACEUTICAL INDUSTRIES LIMITED", "Health Care Equipment & Services"}
+  , {"CAJ", "CAPITOL HEALTH LIMITED", "Health Care Equipment & Services"}
+  , {"CGS", "COGSTATE LTD", "Health Care Equipment & Services"}
+  , {"EBO", "EBOS GROUP LIMITED", "Health Care Equipment & Services"}
+  , {"FFC", "FARMAFORCE LIMITED", "Health Care Equipment & Services"}
+  , {"GLH", "GLOBAL HEALTH LIMITED", "Health Care Equipment & Services"}
+  , {"ICS", "ICSGLOBAL LIMITED", "Health Care Equipment & Services"}
+  , {"IDX", "INTEGRAL DIAGNOSTICS LIMITED", "Health Care Equipment & Services"}
+  , {"JHL", "JAYEX HEALTHCARE LIMITED", "Health Care Equipment & Services"}
+  , {"LHC", "LIFEHEALTHCARE GROUP LIMITED", "Health Care Equipment & Services"}
+  , {"MDV", "MEDIVAC LIMITED", "Health Care Equipment & Services"}
+  , {"MX1", "MICRO-X LIMITED", "Health Care Equipment & Services"}
+  , {"ONE", "ONEVIEW HEALTHCARE PLC", "Health Care Equipment & Services"}
+  , {"OSP", "OSPREY MEDICAL INC", "Health Care Equipment & Services"}
+  , {"PRY", "PRIMARY HEALTH CARE LIMITED", "Health Care Equipment & Services"}
+  , {"VRT", "VIRTUS HEALTH LIMITED", "Health Care Equipment & Services"}
   , {"Capital Goods"}
-  , {"ZGL", "ZICOM GROUP LIMITED", "Capital Goods"}
-  , {"WTP", "WATPAC LIMITED", "Capital Goods"}
-  , {"UGL", "UGL LIMITED", "Capital Goods"}
-  , {"SKS", "STOKES LIMITED", "Capital Goods"}
-  , {"SXE", "SOUTHERN CROSS ELECTRICAL ENGINEERING LTD", "Capital Goods"}
-  , {"SSM", "SERVICE STREAM LIMITED", "Capital Goods"}
-  , {"RIG", "RONGTAI INTERNATIONAL GROUP HOLDINGS LIMITED", "Capital Goods"}
-  , {"R3D", "REDCHIP INTERNATIONAL LIMITED", "Capital Goods"}
-  , {"PTB", "PTB GROUP LIMITED", "Capital Goods"}
-  , {"ORH", "ORH LIMITED", "Capital Goods"}
-  , {"MSI", "MULTISTACK INTERNATIONAL LIMITED", "Capital Goods"}
-  , {"MYE", "MASTERMYNE GROUP LIMITED", "Capital Goods"}
-  , {"MLD", "MACA LIMITED", "Capital Goods"}
-  , {"KTL", "KTL TECHNOLOGIES LIMITED", "Capital Goods"}
-  , {"JCI", "JC INTERNATIONAL GROUP LIMITED", "Capital Goods"}
-  , {"GER", "GREENEARTH ENERGY LIMITED", "Capital Goods"}
-  , {"GCS", "GLOBAL CONSTRUCTION SERVICES LIMITED", "Capital Goods"}
-  , {"EGL", "ENVIRONMENTAL GROUP LIMITED (THE)", "Capital Goods"}
-  , {"EMB", "EMBELTON LIMITED", "Capital Goods"}
   , {"ADQ", "ADG GLOBAL SUPPLY LIMITED.", "Capital Goods"}
+  , {"ASL", "AUSDRILL LIMITED", "Capital Goods"}
+  , {"BMH", "BAUMART HOLDINGS LIMITED", "Capital Goods"}
+  , {"BYL", "BRIERTY LIMITED", "Capital Goods"}
+  , {"CIM", "CIMIC GROUP LIMITED", "Capital Goods"}
+  , {"DSB", "DELTA SBD LIMITED", "Capital Goods"}
+  , {"EOS", "ELECTRO OPTIC SYSTEMS HOLDINGS LIMITED", "Capital Goods"}
+  , {"EGN", "ENGENCO LIMITED", "Capital Goods"}
+  , {"FGI", "FLAT GLASS INDUSTRIES LIMITED", "Capital Goods"}
+  , {"GNG", "GR ENGINEERING SERVICES LIMITED", "Capital Goods"}
+  , {"HDX", "HUGHES DRILLING LIMITED", "Capital Goods"}
+  , {"KOV", "KORVEST LTD", "Capital Goods"}
+  , {"LYL", "LYCOPODIUM LIMITED", "Capital Goods"}
+  , {"MJP", "MARTIN AIRCRAFT COMPANY LIMITED", "Capital Goods"}
+  , {"MND", "MONADELPHOUS GROUP LIMITED", "Capital Goods"}
+  , {"OTR", "ONTERRAN LIMITED", "Capital Goods"}
+  , {"POW", "PROTEAN WAVE ENERGY LTD", "Capital Goods"}
+  , {"RFT", "RECTIFIER TECHNOLOGIES LTD", "Capital Goods"}
+  , {"RDG", "RESOURCE DEVELOPMENT GROUP LIMITED", "Capital Goods"}
+  , {"ZGL", "ZICOM GROUP LIMITED", "Capital Goods"}
   , {"Real Estate"}
-  , {"WFD", "WESTFIELD CORPORATION", "Real Estate"}
-  , {"UPG", "UNITY PACIFIC GROUP", "Real Estate"}
-  , {"SGP", "STOCKLAND", "Real Estate"}
-  , {"SCW", "SCENTRE GROUP TRUST 1", "Real Estate"}
-  , {"RCU", "REAL ESTATE CAPITAL PARTNERS USA PROPERTY TRUST", "Real Estate"}
-  , {"PBD", "PBD DEVELOPMENTS LIMITED", "Real Estate"}
-  , {"MPX", "MUSTERA PROPERTY GROUP LIMITED", "Real Estate"}
-  , {"LHB", "LIONHUB GROUP LIMITED", "Real Estate"}
-  , {"LMW", "LANDMARK WHITE LIMITED", "Real Estate"}
-  , {"IEQ", "INTERNATIONAL EQUITIES CORPORATION LIMITED.", "Real Estate"}
-  , {"HPI", "HOTEL PROPERTY INVESTMENTS", "Real Estate"}
-  , {"GPS", "GPS ALLIANCE HOLDINGS LIMITED", "Real Estate"}
-  , {"GTY", "GATEWAY LIFESTYLE GROUP", "Real Estate"}
-  , {"FET", "FOLKESTONE EDUCATION TRUST", "Real Estate"}
-  , {"DVN", "DEVINE LIMITED", "Real Estate"}
-  , {"CHC", "CHARTER HALL GROUP", "Real Estate"}
-  , {"BWP", "BWP TRUST", "Real Estate"}
-  , {"AVJ", "AVJENNINGS LIMITED", "Real Estate"}
-  , {"AJA", "ASTRO JAPAN PROPERTY GROUP", "Real Estate"}
   , {"TGP", "360 CAPITAL GROUP", "Real Estate"}
+  , {"AGJ", "AGRICULTURAL LAND TRUST", "Real Estate"}
+  , {"AJD", "ASIA PACIFIC DATA CENTRE GROUP", "Real Estate"}
+  , {"AVN", "AVENTUS RETAIL PROPERTY FUND", "Real Estate"}
+  , {"BWR", "BLACKWALL PROPERTY TRUST", "Real Estate"}
+  , {"CWP", "CEDAR WOODS PROPERTIES LIMITED", "Real Estate"}
+  , {"CMW", "CROMWELL PROPERTY GROUP", "Real Estate"}
+  , {"EGH", "EUREKA GROUP HOLDINGS LIMITED", "Real Estate"}
+  , {"GJT", "GALILEO JAPAN TRUST", "Real Estate"}
+  , {"GHC", "GENERATION HEALTHCARE REIT", "Real Estate"}
+  , {"GMF", "GPT METRO OFFICE FUND", "Real Estate"}
+  , {"IDR", "INDUSTRIA REIT", "Real Estate"}
+  , {"KLO", "KINGSLAND GLOBAL LTD", "Real Estate"}
+  , {"LLC", "LENDLEASE GROUP", "Real Estate"}
+  , {"MGR", "MIRVAC GROUP", "Real Estate"}
+  , {"PFM", "PACIFIC MINING LIMITED", "Real Estate"}
+  , {"PHI", "PHILEO AUSTRALIA LIMITED", "Real Estate"}
+  , {"RFF", "RURAL FUNDS GROUP", "Real Estate"}
+  , {"SCP", "SHOPPING CENTRES AUSTRALASIA PROPERTY GROUP", "Real Estate"}
+  , {"WFD", "WESTFIELD CORPORATION", "Real Estate"}
   , {"Not Applic"}
-  , {"WCT", "WESTPAC TPS TRUST", "Not Applic"}
-  , {"XVG", "TREASURY CORPORATION OF VICTORIA", "Not Applic"}
-  , {"TOP", "THORNEY OPPORTUNITIES LTD", "Not Applic"}
-  , {"WEK", "SERIES 2014-2 WST TRUST", "Not Applic"}
-  , {"WSH", "SERIES 2011-1 WST TRUST", "Not Applic"}
-  , {"RYD", "RYDER CAPITAL LIMITED", "Not Applic"}
-  , {"PUU", "PUMA SERIES 2015-1", "Not Applic"}
-  , {"PON", "PROVINCE OF ONTARIO", "Not Applic"}
-  , {"NIB", "NORDIC INVESTMENT BANK", "Not Applic"}
-  , {"MAX", "MILLINIUM'S ALTERNATIVES FUND.", "Not Applic"}
-  , {"KOP", "KOREA SOUTH-EAST POWER CO LTD", "Not Applic"}
-  , {"IVE", "ISHARES MSCI EAFE ETF", "Not Applic"}
-  , {"INN", "INTERSTAR MILLENNIUM SERIES 2006-3L TRUST", "Not Applic"}
-  , {"ILA", "ILLAWARRA SERIES 2006-1 RMBS TRUST", "Not Applic"}
-  , {"HHY", "HASTINGS HIGH YIELD FUND", "Not Applic"}
-  , {"FGF", "FIRST GROWTH FUNDS LIMITED", "Not Applic"}
-  , {"CTU", "CRUSADE GLOBAL TRUST NO. 2 OF 2006", "Not Applic"}
-  , {"CHJ", "CHALLENGER MILLENNIUM SERIES 2007-1E TRUST", "Not Applic"}
-  , {"AYU", "AUSTRALIAN UNITY LIMITED", "Not Applic"}
   , {"TOT", "360 CAPITAL TOTAL RETURN FUND", "Not Applic"}
+  , {"AQH", "APT PIPELINES LIMITED.", "Not Applic"}
+  , {"XCL", "AUSTRALIAN COMMONWEALTH GOVERNMENT LOANS", "Not Applic"}
+  , {"AYU", "AUSTRALIAN UNITY LIMITED", "Not Applic"}
+  , {"CHJ", "CHALLENGER MILLENNIUM SERIES 2007-1E TRUST", "Not Applic"}
+  , {"CTU", "CRUSADE GLOBAL TRUST NO. 2 OF 2006", "Not Applic"}
+  , {"FGF", "FIRST GROWTH FUNDS LIMITED", "Not Applic"}
+  , {"HHY", "HASTINGS HIGH YIELD FUND", "Not Applic"}
+  , {"ILA", "ILLAWARRA SERIES 2006-1 RMBS TRUST", "Not Applic"}
+  , {"INN", "INTERSTAR MILLENNIUM SERIES 2006-3L TRUST", "Not Applic"}
+  , {"IVE", "ISHARES MSCI EAFE ETF", "Not Applic"}
+  , {"KOP", "KOREA SOUTH-EAST POWER CO LTD", "Not Applic"}
+  , {"MAX", "MILLINIUM'S ALTERNATIVES FUND.", "Not Applic"}
+  , {"NIB", "NORDIC INVESTMENT BANK", "Not Applic"}
+  , {"PON", "PROVINCE OF ONTARIO", "Not Applic"}
+  , {"PUU", "PUMA SERIES 2015-1", "Not Applic"}
+  , {"RYD", "RYDER CAPITAL LIMITED", "Not Applic"}
+  , {"WSH", "SERIES 2011-1 WST TRUST", "Not Applic"}
+  , {"WEK", "SERIES 2014-2 WST TRUST", "Not Applic"}
+  , {"WCT", "WESTPAC TPS TRUST", "Not Applic"}
   , {"Consumer Services"}
-  , {"VET", "VOCATION LIMITED", "Consumer Services"}
-  , {"TAU", "TRUSTEES AUSTRALIA LIMITED", "Consumer Services"}
-  , {"TFG", "TOTAL FACE GROUP LIMITED", "Consumer Services"}
-  , {"TNK", "THINK CHILDCARE LIMITED", "Consumer Services"}
-  , {"TTS", "TATTS GROUP LIMITED", "Consumer Services"}
-  , {"SGU", "SUCCESS GLOBAL MEDIA LIMITED", "Consumer Services"}
-  , {"SKB", "SKYDIVE THE BEACH GROUP LIMITED", "Consumer Services"}
-  , {"SIT", "SITE GROUP INTERNATIONAL LIMITED", "Consumer Services"}
-  , {"SLK", "SEALINK TRAVEL GROUP LIMITED", "Consumer Services"}
-  , {"RCT", "REEF CASINO TRUST", "Consumer Services"}
-  , {"NHH", "NEWHAVEN HOTELS LIMITED", "Consumer Services"}
-  , {"MTR", "MANTRA GROUP LIMITED", "Consumer Services"}
-  , {"KME", "KIP MCGRATH EDUCATION CENTRES LIMITED", "Consumer Services"}
-  , {"ISU", "ISELECT LIMITED.", "Consumer Services"}
-  , {"IQE", "INTUERI EDUCATION GROUP LIMITED", "Consumer Services"}
-  , {"IDZ", "INDOOR SKYDIVE AUSTRALIA GROUP LIMITED", "Consumer Services"}
-  , {"ICT", "ICOLLEGE LIMITED", "Consumer Services"}
-  , {"HLO", "HELLOWORLD LIMITED", "Consumer Services"}
-  , {"FLT", "FLIGHT CENTRE TRAVEL GROUP LIMITED", "Consumer Services"}
   , {"3PL", "3P LEARNING LIMITED..", "Consumer Services"}
+  , {"AGI", "AINSWORTH GAME TECHNOLOGY LIMITED", "Consumer Services"}
+  , {"AQS", "AQUIS ENTERTAINMENT LIMITED", "Consumer Services"}
+  , {"ALL", "ARISTOCRAT LEISURE LIMITED", "Consumer Services"}
+  , {"CKF", "COLLINS FOODS LIMITED", "Consumer Services"}
+  , {"CWN", "CROWN RESORTS LIMITED", "Consumer Services"}
+  , {"DMP", "DOMINO'S PIZZA ENTERPRISES LIMITED", "Consumer Services"}
+  , {"ENN", "ELANOR INVESTORS GROUP", "Consumer Services"}
+  , {"EVO", "EVOLVE EDUCATION GROUP LIMITED", "Consumer Services"}
+  , {"GEM", "G8 EDUCATION LIMITED", "Consumer Services"}
+  , {"IB8", "IBOSSES CORPORATION LIMITED", "Consumer Services"}
+  , {"IEL", "IDP EDUCATION LIMITED", "Consumer Services"}
+  , {"ITQ", "INTECQ LIMITED", "Consumer Services"}
+  , {"IVC", "INVOCARE LIMITED", "Consumer Services"}
+  , {"JIN", "JUMBO INTERACTIVE LIMITED", "Consumer Services"}
+  , {"LFC", "LIFE CORPORATION LTD", "Consumer Services"}
+  , {"NVT", "NAVITAS LIMITED", "Consumer Services"}
+  , {"RDH", "REDHILL EDUCATION LIMITED", "Consumer Services"}
+  , {"RFG", "RETAIL FOOD GROUP LIMITED", "Consumer Services"}
+  , {"VET", "VOCATION LIMITED", "Consumer Services"}
   , {"Food & Staples Retailing"}
-  , {"WOW", "WOOLWORTHS LIMITED", "Food & Staples Retailing"}
-  , {"WES", "WESFARMERS LIMITED", "Food & Staples Retailing"}
-  , {"MTS", "METCASH LIMITED", "Food & Staples Retailing"}
   , {"AAP", "AUSTRALIAN AGRICULTURAL PROJECTS LIMITED", "Food & Staples Retailing"}
+  , {"MTS", "METCASH LIMITED", "Food & Staples Retailing"}
+  , {"WES", "WESFARMERS LIMITED", "Food & Staples Retailing"}
+  , {"WOW", "WOOLWORTHS LIMITED", "Food & Staples Retailing"}
   , {"Commercial Services & Supplies"}
-  , {"YPB", "YPB GROUP LTD", "Commercial Services & Supplies"}
-  , {"TOX", "TOX FREE SOLUTIONS LIMITED", "Commercial Services & Supplies"}
-  , {"SIQ", "SMARTGROUP CORPORATION LTD", "Commercial Services & Supplies"}
-  , {"SEK", "SEEK LIMITED", "Commercial Services & Supplies"}
-  , {"RUB", "RUBICOR GROUP LIMITED", "Commercial Services & Supplies"}
-  , {"REC", "RECALL HOLDINGS LIMITED", "Commercial Services & Supplies"}
-  , {"PMP", "PMP LIMITED", "Commercial Services & Supplies"}
-  , {"OTC", "OTOC LIMITED", "Commercial Services & Supplies"}
-  , {"NAM", "NAMOI COTTON CO-OPERATIVE LIMITED", "Commercial Services & Supplies"}
-  , {"MSG", "MCS SERVICES LIMITED", "Commercial Services & Supplies"}
-  , {"IPH", "IPH LIMITED", "Commercial Services & Supplies"}
-  , {"HRL", "HRL HOLDINGS LTD", "Commercial Services & Supplies"}
-  , {"GNV", "GREEN INVEST LIMITED", "Commercial Services & Supplies"}
-  , {"ESI", "ENVIRONMENTAL CLEAN TECHNOLOGIES LIMITED", "Commercial Services & Supplies"}
-  , {"ECG", "ECARGO HOLDINGS LIMITED", "Commercial Services & Supplies"}
-  , {"CUP", "COUNTPLUS LIMITED", "Commercial Services & Supplies"}
-  , {"CGR", "CML GROUP LIMITED", "Commercial Services & Supplies"}
-  , {"CND", "CLARIUS GROUP LIMITED", "Commercial Services & Supplies"}
-  , {"BRS", "BROADSPECTRUM LIMITED", "Commercial Services & Supplies"}
   , {"AEI", "AERIS ENVIRONMENTAL LTD", "Commercial Services & Supplies"}
+  , {"AMB", "AMBITION GROUP LIMITED", "Commercial Services & Supplies"}
+  , {"AWN", "AROWANA INTERNATIONAL LIMITED", "Commercial Services & Supplies"}
+  , {"BXB", "BRAMBLES LIMITED", "Commercial Services & Supplies"}
+  , {"CAB", "CABCHARGE AUSTRALIA LIMITED", "Commercial Services & Supplies"}
+  , {"CWY", "CLEANAWAY WASTE MANAGEMENT LIMITED", "Commercial Services & Supplies"}
+  , {"CXZ", "CONNEXION MEDIA LIMITED", "Commercial Services & Supplies"}
+  , {"DOW", "DOWNER EDI LIMITED", "Commercial Services & Supplies"}
+  , {"EAX", "ENERGY ACTION LIMITED", "Commercial Services & Supplies"}
+  , {"FCG", "FRONTIER CAPITAL GROUP LIMITED", "Commercial Services & Supplies"}
+  , {"HJB", "HJB CORPORATION LIMITED", "Commercial Services & Supplies"}
+  , {"IVT", "INVENTIS LIMITED", "Commercial Services & Supplies"}
+  , {"MMS", "MCMILLAN SHAKESPEARE LIMITED", "Commercial Services & Supplies"}
+  , {"MIN", "MINERAL RESOURCES LIMITED", "Commercial Services & Supplies"}
+  , {"OPG", "OPUS GROUP LIMITED", "Commercial Services & Supplies"}
+  , {"PHK", "PHOSLOCK WATER SOLUTIONS LIMITED", "Commercial Services & Supplies"}
+  , {"PSZ", "PS&C LIMITED", "Commercial Services & Supplies"}
+  , {"RWH", "ROYAL WOLF HOLDINGS LIMITED", "Commercial Services & Supplies"}
+  , {"SLM", "SALMAT LIMITED", "Commercial Services & Supplies"}
+  , {"YPB", "YPB GROUP LTD", "Commercial Services & Supplies"}
   , {"Materials"}
-  , {"ZYL", "ZYL LIMITED", "Materials"}
-  , {"VRX", "VENTNOR RESOURCES LTD", "Materials"}
-  , {"TRL", "TANGA RESOURCES LIMITED", "Materials"}
-  , {"SRI", "SIPA RESOURCES LIMITED", "Materials"}
-  , {"RWD", "REWARD MINERALS LTD", "Materials"}
-  , {"PWW", "POWER RESOURCES LIMITED", "Materials"}
-  , {"ORA", "ORORA LIMITED", "Materials"}
-  , {"NXR", "NEMEX RESOURCES LIMITED", "Materials"}
-  , {"MHM", "MHM METALS LIMITED", "Materials"}
-  , {"LSR", "LODESTAR MINERALS LIMITED", "Materials"}
-  , {"KGL", "KGL RESOURCES LIMITED", "Materials"}
-  , {"HOR", "HORSESHOE METALS LIMITED", "Materials"}
-  , {"GED", "GOLDEN DEEPS LIMITED.", "Materials"}
-  , {"FND", "FINDERS RESOURCES LIMITED", "Materials"}
-  , {"DMA", "DYNASTY RESOURCES LIMITED", "Materials"}
-  , {"CVE", "COVE RESOURCES LIMITED", "Materials"}
-  , {"CAZ", "CAZALY RESOURCES LIMITED", "Materials"}
-  , {"BBR", "BORA BORA RESOURCES LIMITED", "Materials"}
-  , {"AVL", "AUSTRALIAN VANADIUM LIMITED", "Materials"}
   , {"DDD", "3D RESOURCES LIMITED", "Materials"}
+  , {"ASN", "ANSON RESOURCES LIMITED", "Materials"}
+  , {"AMI", "AURELIA METALS LIMITED", "Materials"}
+  , {"BDR", "BEADELL RESOURCES LIMITED", "Materials"}
+  , {"CAE", "CANNINDAH RESOURCES LIMITED", "Materials"}
+  , {"CHK", "COHIBA MINERALS LIMITED", "Materials"}
+  , {"DTM", "DART MINING NL", "Materials"}
+  , {"EQE", "EQUUS MINING LIMITED", "Materials"}
+  , {"GBZ", "GBM RESOURCES LIMITED", "Materials"}
+  , {"HAO", "HAOMA MINING NL", "Materials"}
+  , {"IOT", "IOT GROUP LIMITED", "Materials"}
+  , {"LRS", "LATIN RESOURCES LIMITED", "Materials"}
+  , {"MML", "MEDUSA MINING LIMITED", "Materials"}
+  , {"MOL", "MOLY MINES LIMITED", "Materials"}
+  , {"NSL", "NSL CONSOLIDATED LIMITED", "Materials"}
+  , {"PEX", "PEEL MINING LIMITED", "Materials"}
+  , {"RRP", "REALM RESOURCES LIMITED", "Materials"}
+  , {"SMI", "SANTANA MINERALS LIMITED", "Materials"}
+  , {"SRZ", "STELLAR RESOURCES LIMITED", "Materials"}
+  , {"ZYL", "ZYL LIMITED", "Materials"}
   , {"Pharmaceuticals & Biotechnology"}
-  , {"VSC", "VITA LIFE SCIENCES LIMITED.", "Pharmaceuticals & Biotechnology"}
-  , {"TDX", "TYRIAN DIAGNOSTICS LIMITED", "Pharmaceuticals & Biotechnology"}
-  , {"TDL", "TBG DIAGNOSTICS LIMITED", "Pharmaceuticals & Biotechnology"}
-  , {"SPL", "STARPHARMA HOLDINGS LIMITED", "Pharmaceuticals & Biotechnology"}
-  , {"RNO", "RHINOMED LIMITED", "Pharmaceuticals & Biotechnology"}
-  , {"RCE", "RECCE LIMITED", "Pharmaceuticals & Biotechnology"}
-  , {"PIQ", "PROTEOMICS INTERNATIONAL LABORATORIES LTD", "Pharmaceuticals & Biotechnology"}
-  , {"PTX", "PRESCIENT THERAPEUTICS LIMITED", "Pharmaceuticals & Biotechnology"}
-  , {"PYC", "PHYLOGICA LIMITED", "Pharmaceuticals & Biotechnology"}
-  , {"PAA", "PHARMAUST LIMITED", "Pharmaceuticals & Biotechnology"}
-  , {"PAR", "PARADIGM BIOPHARMACEUTICALS LIMITED..", "Pharmaceuticals & Biotechnology"}
-  , {"OSL", "ONCOSIL MEDICAL LTD", "Pharmaceuticals & Biotechnology"}
-  , {"NRT", "NOVOGEN LIMITED", "Pharmaceuticals & Biotechnology"}
-  , {"MMJ", "MMJ PHYTOTECH LIMITED", "Pharmaceuticals & Biotechnology"}
-  , {"MVP", "MEDICAL DEVELOPMENTS INTERNATIONAL LIMITED", "Pharmaceuticals & Biotechnology"}
-  , {"LCT", "LIVING CELL TECHNOLOGIES LIMITED", "Pharmaceuticals & Biotechnology"}
-  , {"IIL", "INNATE IMMUNOTHERAPEUTICS LIMITED", "Pharmaceuticals & Biotechnology"}
-  , {"IDT", "IDT AUSTRALIA LIMITED", "Pharmaceuticals & Biotechnology"}
-  , {"GBI", "GENERA BIOSYSTEMS LIMITED", "Pharmaceuticals & Biotechnology"}
   , {"ACR", "ACRUX LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"AGX", "AGENIX LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"ADO", "ANTEO DIAGNOSTICS LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"AVH", "AVITA MEDICAL LTD", "Pharmaceuticals & Biotechnology"}
+  , {"BIT", "BIOTRON LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"BPH", "BPH ENERGY LTD", "Pharmaceuticals & Biotechnology"}
+  , {"CTE", "CRYOSITE LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"DXB", "DIMERIX LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"GSS", "GENETIC SIGNATURES LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"IMC", "IMMURON LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"IVX", "INVION LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"MYX", "MAYNE PHARMA GROUP LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"MDC", "MEDLAB CLINICAL LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"MVF", "MONASH IVF GROUP LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"NSP", "NUSEP HOLDINGS LTD", "Pharmaceuticals & Biotechnology"}
+  , {"OPT", "OPTHEA LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"PAB", "PATRYS LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"PXS", "PHARMAXIS LTD", "Pharmaceuticals & Biotechnology"}
+  , {"PNV", "POLYNOVO LIMITED", "Pharmaceuticals & Biotechnology"}
+  , {"VSC", "VITA LIFE SCIENCES LIMITED.", "Pharmaceuticals & Biotechnology"}
   , {"Food, Beverage & Tobacco"}
-  , {"YOW", "YOWIE GROUP LTD", "Food, Beverage & Tobacco"}
-  , {"WLD", "WELLARD LIMITED", "Food, Beverage & Tobacco"}
-  , {"WCB", "WARRNAMBOOL CHEESE & BUTTER FACTORY CO.HOLD.LTD", "Food, Beverage & Tobacco"}
-  , {"TWE", "TREASURY WINE ESTATES LIMITED", "Food, Beverage & Tobacco"}
-  , {"A2M", "THE A2 MILK COMPANY LIMITED", "Food, Beverage & Tobacco"}
-  , {"SBI", "STERLING PLANTATIONS LIMITED", "Food, Beverage & Tobacco"}
-  , {"SHV", "SELECT HARVESTS LIMITED", "Food, Beverage & Tobacco"}
-  , {"RIC", "RIDLEY CORPORATION LIMITED", "Food, Beverage & Tobacco"}
-  , {"PFL", "PATTIES FOODS LTD", "Food, Beverage & Tobacco"}
-  , {"MGC", "MG UNIT TRUST", "Food, Beverage & Tobacco"}
-  , {"GNC", "GRAINCORP LIMITED", "Food, Beverage & Tobacco"}
-  , {"FNP", "FREEDOM FOODS GROUP LIMITED", "Food, Beverage & Tobacco"}
-  , {"FSF", "FONTERRA SHAREHOLDERS' FUND", "Food, Beverage & Tobacco"}
-  , {"FRM", "FARM PRIDE FOODS LIMITED", "Food, Beverage & Tobacco"}
-  , {"DFM", "DONGFANG MODERN AGRICULTURE HOLDING GROUP LIMITED", "Food, Beverage & Tobacco"}
-  , {"CCL", "COCA-COLA AMATIL LIMITED", "Food, Beverage & Tobacco"}
-  , {"CDC", "CHINA DAIRY CORPORATION LIMITED", "Food, Beverage & Tobacco"}
-  , {"CZZ", "CAPILANO HONEY LIMITED", "Food, Beverage & Tobacco"}
-  , {"BNV", "BRAND NEW VINTAGE LIMITED", "Food, Beverage & Tobacco"}
   , {"AAC", "AUSTRALIAN AGRICULTURAL COMPANY LIMITED.", "Food, Beverage & Tobacco"}
+  , {"AYB", "AUSTRALIAN NATURAL PROTEINS LIMITED", "Food, Beverage & Tobacco"}
+  , {"AWY", "AUSTRALIAN WHISKY HOLDINGS LIMITED", "Food, Beverage & Tobacco"}
+  , {"BAL", "BELLAMY'S AUSTRALIA LIMITED", "Food, Beverage & Tobacco"}
+  , {"BUG", "BUDERIM GROUP LIMITED", "Food, Beverage & Tobacco"}
+  , {"CVS", "CERVANTES CORPORATION LIMITED", "Food, Beverage & Tobacco"}
+  , {"CSS", "CLEAN SEAS TUNA LIMITED", "Food, Beverage & Tobacco"}
+  , {"CGC", "COSTA GROUP HOLDINGS LIMITED", "Food, Beverage & Tobacco"}
+  , {"ELD", "ELDERS LIMITED", "Food, Beverage & Tobacco"}
+  , {"FFI", "FFI HOLDINGS LIMITED", "Food, Beverage & Tobacco"}
+  , {"FLR", "FRANKLAND RIVER OLIVE COMPANY LIMITED", "Food, Beverage & Tobacco"}
+  , {"GRB", "GAGE ROADS BREWING CO LIMITED", "Food, Beverage & Tobacco"}
+  , {"HUO", "HUON AQUACULTURE GROUP LIMITED", "Food, Beverage & Tobacco"}
+  , {"OZB", "OZ BREWING LIMITED", "Food, Beverage & Tobacco"}
+  , {"RGP", "REFRESH GROUP LIMITED", "Food, Beverage & Tobacco"}
+  , {"SFG", "SEAFARMS GROUP LIMITED", "Food, Beverage & Tobacco"}
+  , {"SOI", "SOIL SUB TECHNOLOGIES LIMITED", "Food, Beverage & Tobacco"}
+  , {"TGR", "TASSAL GROUP LIMITED", "Food, Beverage & Tobacco"}
+  , {"FOD", "THE FOOD REVOLUTION GROUP LIMITED", "Food, Beverage & Tobacco"}
+  , {"YOW", "YOWIE GROUP LTD", "Food, Beverage & Tobacco"}
   , {"Automobiles & Components"}
-  , {"VMT", "VMOTO LIMITED", "Automobiles & Components"}
-  , {"SIX", "SPRINTEX LIMITED", "Automobiles & Components"}
-  , {"SFC", "SCHAFFER CORPORATION LIMITED", "Automobiles & Components"}
-  , {"PWH", "PWR HOLDINGS LIMITED", "Automobiles & Components"}
-  , {"OEC", "ORBITAL CORPORATION LIMITED", "Automobiles & Components"}
-  , {"OOK", "OOKAMI LIMITED", "Automobiles & Components"}
-  , {"DDT", "DATADOT TECHNOLOGY LIMITED", "Automobiles & Components"}
-  , {"ARB", "ARB CORPORATION LIMITED.", "Automobiles & Components"}
   , {"ABV", "ADVANCED BRAKING TECHNOLOGY LTD", "Automobiles & Components"}
+  , {"ARB", "ARB CORPORATION LIMITED.", "Automobiles & Components"}
+  , {"DDT", "DATADOT TECHNOLOGY LIMITED", "Automobiles & Components"}
+  , {"OOK", "OOKAMI LIMITED", "Automobiles & Components"}
+  , {"OEC", "ORBITAL CORPORATION LIMITED", "Automobiles & Components"}
+  , {"PWH", "PWR HOLDINGS LIMITED", "Automobiles & Components"}
+  , {"SFC", "SCHAFFER CORPORATION LIMITED", "Automobiles & Components"}
+  , {"SIX", "SPRINTEX LIMITED", "Automobiles & Components"}
+  , {"VMT", "VMOTO LIMITED", "Automobiles & Components"}
   , {"Media"}
-  , {"XTV", "XTV NETWORKS LTD", "Media"}
-  , {"XTD", "XTD LTD", "Media"}
-  , {"VRL", "VILLAGE ROADSHOW LIMITED", "Media"}
-  , {"VIG", "VICTOR GROUP HOLDINGS LIMITED", "Media"}
-  , {"TEN", "TEN NETWORK HOLDINGS LIMITED", "Media"}
-  , {"TMP", "TECH MPIRE LIMITED", "Media"}
-  , {"SGN", "STW COMMUNICATIONS GROUP LIMITED", "Media"}
-  , {"SXL", "SOUTHERN CROSS MEDIA GROUP LIMITED", "Media"}
-  , {"SKT", "SKY NETWORK TELEVISION LIMITED.", "Media"}
-  , {"SWM", "SEVEN WEST MEDIA LIMITED", "Media"}
-  , {"REA", "REA GROUP LTD", "Media"}
-  , {"QMS", "QMS MEDIA LIMITED", "Media"}
-  , {"PRT", "PRIME MEDIA GROUP LIMITED", "Media"}
-  , {"PNW", "PACIFIC STAR NETWORK LIMITED", "Media"}
-  , {"OML", "OOH!MEDIA LIMITED", "Media"}
-  , {"NEC", "NINE ENTERTAINMENT CO. HOLDINGS LIMITED", "Media"}
-  , {"NWZ", "NEWZULU LIMITED", "Media"}
-  , {"NWS", "NEWS CORPORATION..", "Media"}
-  , {"NCL", "NETCCENTRIC LIMITED", "Media"}
   , {"AAU", "ADCORP AUSTRALIA LIMITED", "Media"}
+  , {"APN", "APN NEWS & MEDIA LIMITED", "Media"}
+  , {"APO", "APN OUTDOOR GROUP LIMITED", "Media"}
+  , {"DIG", "ASIA PACIFIC DIGITAL LIMITED", "Media"}
+  , {"ASP", "ASPERMONT LIMITED.", "Media"}
+  , {"BYI", "BEYOND INTERNATIONAL LIMITED", "Media"}
+  , {"BBL", "BRISBANE BRONCOS LIMITED", "Media"}
+  , {"CIK", "CHINA INTEGRATED MEDIA CORPORATION LIMITED", "Media"}
+  , {"CM8", "CROWD MOBILE LIMITED", "Media"}
+  , {"EGG", "ENERO GROUP LIMITED", "Media"}
+  , {"EVT", "EVENT HOSPITALITY AND ENTERTAINMENT LTD", "Media"}
+  , {"FXJ", "FAIRFAX MEDIA LIMITED", "Media"}
+  , {"ICQ", "ICAR ASIA LIMITED", "Media"}
+  , {"IVO", "INVIGOR GROUP LIMITED", "Media"}
+  , {"MRN", "MACQUARIE MEDIA LIMITED", "Media"}
+  , {"MUI", "MUI CORPORATION LIMITED", "Media"}
+  , {"NCL", "NETCCENTRIC LIMITED", "Media"}
+  , {"NWS", "NEWS CORPORATION..", "Media"}
+  , {"NWZ", "NEWZULU LIMITED", "Media"}
+  , {"XTV", "XTV NETWORKS LTD", "Media"}
   , {"Semiconductors & Semiconductor Equipment"}
-  , {"SLX", "SILEX SYSTEMS LIMITED", "Semiconductors & Semiconductor Equipment"}
-  , {"DYE", "DYESOL LIMITED", "Semiconductors & Semiconductor Equipment"}
-  , {"BLG", "BLUGLASS LIMITED", "Semiconductors & Semiconductor Equipment"}
   , {"4DS", "4DS MEMORY LIMITED", "Semiconductors & Semiconductor Equipment"}
+  , {"BLG", "BLUGLASS LIMITED", "Semiconductors & Semiconductor Equipment"}
+  , {"DYE", "DYESOL LIMITED", "Semiconductors & Semiconductor Equipment"}
+  , {"SLX", "SILEX SYSTEMS LIMITED", "Semiconductors & Semiconductor Equipment"}
   ]

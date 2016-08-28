@@ -38,8 +38,7 @@ step_LoadStore _ _ PPLoad      [VText filePath]
 
         -- Load a Matryo file as a tree.
         ".matryo"
-         -> do
-                -- Read file and parse the tree.
+         -> do  -- Read file and parse the tree.
                 bs        <- BS.readFile filePath
                 let result = Matryo.decodeTree filePath $ Text.decodeUtf8 bs
 

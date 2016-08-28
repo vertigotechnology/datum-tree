@@ -35,7 +35,7 @@ groupForest name f@(Forest (G onGroup bs) (BT nBranch tt ts))
         -- Build branches for each of the resulting groups.
         bs'     = [ B (T (A.singleton (Box a)))
                       (A.singleton    (Box (G None (boxes $ S.toList sbs))))
-                  | (a, sbs) <- H.toList $ L.foldl' insert H.empty $ unboxes bs ]
+                  | (a, sbs) <- H.toList $ L.foldl' insert H.empty $ reverse $ unboxes bs ]
 
         -- Update the branch type to reflect that we've removed
         -- the grouping field from the tuples.
@@ -44,7 +44,7 @@ groupForest name f@(Forest (G onGroup bs) (BT nBranch tt ts))
 
    in   Forest  (G  onGroup (boxes bs'))
                 (BT name (TT (A.singleton (Box name :*: Box tyField)))
-                            (A.singleton (Box bt')))
+                             (A.singleton (Box bt')))
 
 
  -- If the named field does not exist then return the original forest.

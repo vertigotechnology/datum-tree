@@ -115,6 +115,8 @@ toCoreFrag ff
 
         S.PTNum         -> return $ C.PTNum
         S.PTList        -> return $ C.PTList
+        S.PTArray       -> return $ C.PTArray
+        S.PTRecord      -> return $ C.PTRecord
 
         S.PTName        -> return $ C.PTName
         S.PTForest      -> return $ C.PTForest

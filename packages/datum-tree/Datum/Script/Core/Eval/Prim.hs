@@ -2,12 +2,14 @@
 module Datum.Script.Core.Eval.Prim
         ( step, Error(..) )
 where
+import Datum.Script.Core.Eval.Prim.Array
 import Datum.Script.Core.Eval.Prim.Base
 import Datum.Script.Core.Eval.Prim.Console
 import Datum.Script.Core.Eval.Prim.Fields
 import Datum.Script.Core.Eval.Prim.LoadStore
 import Datum.Script.Core.Eval.Prim.Nesting
 import Datum.Script.Core.Eval.Prim.Numeric
+import Datum.Script.Core.Eval.Prim.Record
 import Datum.Script.Core.Eval.Prim.Sample
 import Datum.Script.Core.Eval.Prim.Sort
 import Datum.Script.Core.Eval.Prim.Traverse
@@ -39,6 +41,14 @@ step self state pp vs
         PPGe            -> step_Numeric   self state pp vs
         PPLt            -> step_Numeric   self state pp vs
         PPLe            -> step_Numeric   self state pp vs
+
+        -- List
+        PPArrayEmpty    -> step_Array     self state pp vs
+        PPArrayExtend   -> step_Array     self state pp vs
+
+        -- Record
+        PPRecordEmpty   -> step_Record    self state pp vs
+        PPRecordExtend  -> step_Record    self state pp vs
 
         -- Fields
         PPRenameFields  -> step_Fields    self state pp vs

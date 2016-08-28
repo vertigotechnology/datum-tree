@@ -154,13 +154,14 @@ eval config state
 
 
 errorEval :: Eval.State -> Eval.Error -> IO a
-errorEval _state err
+errorEval state err
  = case err of
         Eval.Error str       
          -> error str
 
         Eval.ErrorCore errCore
          -> error $ "Core error " ++ show errCore
+                ++ ppShow state
 
         Eval.ErrorPrim errPrim
          -> do  System.hPutStr System.stderr

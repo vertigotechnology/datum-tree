@@ -9,6 +9,7 @@ where
 
 -- Primitive operators.
 data PrimOp
+        -- Arithmetic operators.
         = PPNeg                 -- ^ Negation.
         | PPAdd                 -- ^ Addition.
         | PPSub                 -- ^ Subtraction.
@@ -20,6 +21,15 @@ data PrimOp
         | PPLt                  -- ^ Less-than.
         | PPLe                  -- ^ Less-than-equal.
 
+        -- Array operators.
+        | PPArrayEmpty          -- ^ Construct an empty array.
+        | PPArrayExtend         -- ^ Construct a new array with an extra element.
+
+        -- Record operators.
+        | PPRecordEmpty         -- ^ Construct an empty record.
+        | PPRecordExtend        -- ^ Extend a record with a field of the given name.
+
+        -- Tree operators.
         | PPAppend              -- ^ Append two trees or forests.
         | PPAt                  -- ^ Apply a per-tree function at the given path.
         | PPArgument            -- ^ Get the value of a script argument.
@@ -43,7 +53,8 @@ data PrimOp
 -- | Table of names of primitive operators.
 namesOfPrimOps :: [(PrimOp, String)]
 namesOfPrimOps
- =      [ (PPAppend,            "append#")
+ =      -- Arithmetic operators.
+        [ (PPAppend,            "append#")
         , (PPNeg,               "neg#")
         , (PPAdd,               "add#")
         , (PPSub,               "sub#")
@@ -55,6 +66,15 @@ namesOfPrimOps
         , (PPLt,                "lt#")
         , (PPLe,                "le#")
 
+        -- Array operators.
+        , (PPArrayEmpty,        "array-empty#")
+        , (PPArrayExtend,       "array-extend#")
+
+        -- Record operators.
+        , (PPRecordEmpty,       "record-empty#")
+        , (PPRecordExtend,      "record-extend#")
+
+        -- Tree operators.
         , (PPAt,                "at#")
         , (PPArgument,          "argument#")
         , (PPConcat,            "concat#")
@@ -89,12 +109,17 @@ arityOfPrimOp op
         PPSub           -> 2
         PPMul           -> 2
         PPDiv           -> 2
-
         PPEq            -> 2
         PPGt            -> 2
         PPGe            -> 2
         PPLt            -> 2
         PPLe            -> 2
+
+        PPArrayEmpty    -> 0
+        PPArrayExtend   -> 2
+
+        PPRecordEmpty   -> 0
+        PPRecordExtend  -> 2
 
         PPAppend        -> 2
         PPAt            -> 3

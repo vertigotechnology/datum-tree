@@ -38,22 +38,6 @@ step   state@(State world env ctx ctl)
         ControlExp (XPrim p)
          ->     step $ State world env ctx $ ControlPAP (PAP p [])
 
-        -- Begin evaluating a list.
-        --  TODO: we need to separate the list literal from list creation,
-        --  otherwise we'll keep evaluating the literal. Maybe just 
-        --  add a boolean flag saying whether it's done or not.
-        ControlExp (XFrag p@(PVData (PDList _ [])))
-         ->     step $ State world env ctx $ ControlPAP (PAF p [])
-
-        ControlExp (XFrag (PVData (PDList xt (x1 : xs))))
-         -> let ctx'    = ContextList
-                        { contextListEnv        = env
-                        , contextListType       = xt
-                        , contextListDone       = []
-                        , contextListRest       = xs 
-                        , contextListTail       = ctx }
-
-            in  step $ State world env ctx' $ ControlExp x1
 
         -- Other fragment specific prims are fully evaluated.
         ControlExp (XFrag p)
@@ -178,25 +162,6 @@ step   state@(State world env ctx ctl)
 
                          Right (VPAP pap)
                           -> progress $ State world Env.empty ctx' $ ControlPAP pap
-
-
-                -- Finished evaluating a list.
-                ContextList env' xt vsDone [] ctx'
-                 |  ControlPAP pap    <- ctl
-                 ,  Just xsDone'      <- sequence $ map takeExpOfValue (VPAP pap : vsDone)
-                 -> progress $ State world env' ctx' 
-                             $ ControlPAP (PAF (PVData (PDList xt (reverse xsDone'))) [])
-
-                ContextList env' xt vsDone (x : xRest) ctx'
-                 |  ControlPAP pap   <- ctl
-                 -> let ctx''   = ContextList
-                                { contextListEnv  = env'
-                                , contextListType = xt
-                                , contextListDone = VPAP pap : vsDone
-                                , contextListRest = xRest
-                                , contextListTail = ctx' }
-                    in  progress $ State world env' ctx''
-                                 $ ControlExp x
 
 
                 -- The context is not empty but we can't make progress.

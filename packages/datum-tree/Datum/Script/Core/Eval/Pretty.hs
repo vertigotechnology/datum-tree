@@ -132,6 +132,8 @@ buildFrag c f
 
         -- Types
         PTList          -> fromString "List"
+        PTArray         -> fromString "Array"
+        PTRecord        -> fromString "Record"
         PTName          -> fromString "Name"
         PTNum           -> fromString "Num"
         PTForest        -> fromString "Forest"

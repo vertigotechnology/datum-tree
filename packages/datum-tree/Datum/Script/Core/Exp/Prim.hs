@@ -49,6 +49,8 @@ data GCPrim x
 
         -- Types  (level 1)
         | PTList                        -- ^ List type constructor.
+        | PTArray                       -- ^ Array type constructor.
+        | PTRecord                      -- ^ Record type constructor.
 
         | PTName                        -- ^ Name type.
         | PTNum                         -- ^ Supertype of number types.
@@ -92,6 +94,8 @@ typeOfPrim pp
         -- Types of Types
         PTNum           -> K.XType 1
         PTList          -> K.XType 1 ~~> K.XType 1
+        PTArray         -> K.XType 1 ~~> K.XType 1
+        PTRecord        -> K.XType 1
 
         PTName          -> K.XType 1
 
@@ -152,6 +156,12 @@ typeOfPrimOp op
         PPLt            -> error "typeOfOp: finish me"
         PPLe            -> error "typeOfOp: finish me"
 
+        PPArrayEmpty    -> XTArray XTValue
+        PPArrayExtend   -> XTArray XTValue ~> XTValue ~> XTArray XTValue
+
+        PPRecordEmpty   -> XTRecord
+        PPRecordExtend  -> XTRecord      ~> XTName ~> XTValue ~> XTRecord
+
         PPAppend        -> XTForest      ~> XTForest  ~> XTForest
         PPAt            -> XTList XTName ~> (XTTree   ~> XTTree)   ~> XTTree ~> XTTree
         PPArgument      -> XTText        ~> K.XTS XTText
@@ -184,7 +194,9 @@ arityOfPrim pp
 
 ---------------------------------------------------------------------------------------------------
 -- Types
-pattern XTList a        = XApp (XFrag PTList) a
+pattern XTList  a       = XApp (XFrag PTList)  a
+pattern XTArray a       = XApp (XFrag PTArray) a
+pattern XTRecord        = XFrag PTRecord
 
 pattern XTName          = XFrag PTName
 pattern XTForest        = XFrag PTForest

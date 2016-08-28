@@ -142,7 +142,6 @@ buildFrag c f
         PTTuple         -> fromString "Tuple"
         PTValue         -> fromString "Value"
 
-        PVAtom a        -> buildAtom     c a
         PVData d        -> buildPrimData c d
         PVOp op         -> buildPrimOp   c op
 
@@ -160,22 +159,12 @@ buildAtomType _c at
         ATTime          -> fromString "Time"
 
 
-buildAtom    :: Config -> Atom -> Builder
-buildAtom _c aa
- = case aa of
-        AUnit           -> fromString "()"
-        ABool  b        -> fromString (show b)
-        AInt   i        -> fromString (show i)
-        AFloat f        -> fromString (show f)
-        ANat   i        -> fromString (show i)
-        ADecimal f      -> fromString (show f)
-        AText  s        -> fromString (show s)
-        ATime  t        -> fromString (show t)
-
 
 buildPrimData :: Config -> PrimData Exp -> Builder
 buildPrimData c dd
  = case dd of
+        PDAtom a        -> buildAtom c a
+
         PDName n        -> fromText n
         PDList{}        -> error "buildPrim: list"
         PDForest{}      -> error "buildPrim: forest"
@@ -189,6 +178,18 @@ buildPrimData c dd
         PDTreePath{}    -> error "buildPrim: tree path"
         PDFilePath p'   -> fromString $ show p'
 
+
+buildAtom    :: Config -> Atom -> Builder
+buildAtom _c aa
+ = case aa of
+        AUnit           -> fromString "()"
+        ABool  b        -> fromString (show b)
+        AInt   i        -> fromString (show i)
+        AFloat f        -> fromString (show f)
+        ANat   i        -> fromString (show i)
+        ADecimal f      -> fromString (show f)
+        AText  s        -> fromString (show s)
+        ATime  t        -> fromString (show t)
 
 
 buildPrimOp   :: Config -> PrimOp -> Builder

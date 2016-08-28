@@ -11,11 +11,10 @@ import qualified Datum.Data.Tree.Exp    as T
 data PrimData x
         = PDName     !Text              -- ^ Field or branch name.
         | PDList     !x ![x]            -- ^ List of elements of the given type.
-
-        | PDForest   !(T.Forest 'T.O)   -- ^ Checked datum forest.
+        | PDAtom     !T.Atom            -- ^ Atomic value.
         | PDTree     !(T.Tree   'T.O)   -- ^ Checked datum tree.
+        | PDForest   !(T.Forest 'T.O)   -- ^ Checked datum forest.
         | PDTreePath ![Text]            -- ^ Datum tree path.
-
         | PDFilePath !FilePath          -- ^ File path.
         deriving (Show)
 

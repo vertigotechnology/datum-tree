@@ -12,7 +12,7 @@ step_Console _ _ PPPrint [VTree tree]
  = do   LText.hPutStr System.stdout (Matryo.prettyTree tree)
         progress $ VUnit
 
-step_Console _ _ PPPrint [VVPAF (PVAtom a)]
+step_Console _ _ PPPrint [VVPAF (PVData (PDAtom a))]
  = do   LText.hPutStr System.stdout $ pprAtom a
         putStr "\n"
         progress $ VUnit

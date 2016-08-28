@@ -126,7 +126,6 @@ toCoreFrag ff
         S.PTAtom t      -> return $ C.PTAtom t
 
         S.PVData d      -> C.PVData <$> toCorePrimData d
-        S.PVAtom a      -> return $ C.PVAtom a
         S.PVOp   p      -> return $ C.PVOp   p
 
 
@@ -134,6 +133,7 @@ toCoreFrag ff
 toCorePrimData :: S.PrimData S.Exp -> Either Error (C.PrimData C.Exp)
 toCorePrimData dd
  = case dd of
+        S.PDAtom a      -> return $ C.PDAtom a
         S.PDName t      -> return $ C.PDName t
         S.PDList x xs   -> C.PDList <$> toCoreX x <*> mapM toCoreX xs
         S.PDForest t    -> return $ C.PDForest t

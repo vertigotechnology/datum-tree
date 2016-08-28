@@ -64,7 +64,6 @@ data GCPrim x
         | PTAtom     !T.AtomType        -- ^ Atom types.
  
         -- Values (level 0)
-        | PVAtom     !T.Atom            -- ^ Atomic Values.
         | PVData     !(PrimData x)      -- ^ Primitive structured data.
         | PVOp       !PrimOp            -- ^ Primitive operators with the given type arguments.
 
@@ -107,7 +106,6 @@ typeOfPrim pp
         PTAtom _        -> K.XType 1
 
         -- Types of Values
-        PVAtom a        -> XFrag (PTAtom (typeOfAtom a))
         PVData d        -> typeOfPrimData d
         PVOp   op       -> typeOfPrimOp   op
 
@@ -130,6 +128,7 @@ typeOfAtom aa
 typeOfPrimData :: GExpStd l n => PrimData (GExp l) -> GExp l
 typeOfPrimData dd
  = case dd of
+        PDAtom a        -> XFrag (PTAtom (typeOfAtom a))
         PDName{}        -> XTName
         PDList t _      -> XTList t
         PDForest{}      -> XTForest
@@ -211,13 +210,13 @@ pattern XTree     t     = XFrag (PVData (PDTree     t))
 pattern XTreePath ts    = XFrag (PVData (PDTreePath ts))
 pattern XFilePath fp    = XFrag (PVData (PDFilePath fp))
 
-pattern XBool     x     = XFrag (PVAtom (T.ABool    x))
-pattern XInt      x     = XFrag (PVAtom (T.AInt     x))
-pattern XFloat    x     = XFrag (PVAtom (T.AFloat   x))
-pattern XNat      x     = XFrag (PVAtom (T.ANat     x))
-pattern XDecimal  x     = XFrag (PVAtom (T.ADecimal x))
-pattern XText     x     = XFrag (PVAtom (T.AText    x))
-pattern XTime     x     = XFrag (PVAtom (T.ATime    x))
+pattern XBool     x     = XFrag (PVData (PDAtom (T.ABool    x)))
+pattern XInt      x     = XFrag (PVData (PDAtom (T.AInt     x)))
+pattern XFloat    x     = XFrag (PVData (PDAtom (T.AFloat   x)))
+pattern XNat      x     = XFrag (PVData (PDAtom (T.ANat     x)))
+pattern XDecimal  x     = XFrag (PVData (PDAtom (T.ADecimal x)))
+pattern XText     x     = XFrag (PVData (PDAtom (T.AText    x)))
+pattern XTime     x     = XFrag (PVData (PDAtom (T.ATime    x)))
 
 pattern XPrimOp   p     = XFrag (PVOp p)
 

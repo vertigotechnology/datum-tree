@@ -137,11 +137,11 @@ pExpAtom
 
  , do   -- literal text
         (sp, str) <- pLitString
-        return  (sp, XAnnot sp $ XFrag (PVAtom (T.AText str)))
+        return  (sp, XAnnot sp $ XFrag (PVData (PDAtom (T.AText str))))
 
  , do   -- literal integer
         (sp, n)   <- pLitInt
-        return  (sp, XAnnot sp $ XFrag (PVAtom (T.AInt n)))
+        return  (sp, XAnnot sp $ XFrag (PVData (PDAtom (T.AInt n))))
 
  , do   -- literal unit
         sp      <- pTok KUnit

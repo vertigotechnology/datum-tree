@@ -18,7 +18,7 @@ import qualified Text.Show.Pretty                       as Text
 step_Traverse self state PPAt [VArray _ names, thunk, VTree tree0]
   = do  let Just names' 
                 = sequence
-                $ map takeXName names
+                $ map takePDName names
 
         -- A dream within a dream.
         --   This function calls our interpreter to apply the thunk.
@@ -44,7 +44,7 @@ step_Traverse self state PPAt [VArray _ names, thunk, VTree tree0]
 step_Traverse self state PPOn [VArray _ names, thunk, VTree tree0]
   = do  let Just names' 
                 = sequence
-                $ map takeXName names
+                $ map takePDName names
 
         -- A dream within a dream.
         --   This function calls our interpreter to apply the thunk.

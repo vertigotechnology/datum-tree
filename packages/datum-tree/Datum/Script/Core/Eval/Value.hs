@@ -64,12 +64,7 @@ freeVarsX env xx
  = case xx of
         XAnnot _ x      -> freeVarsX env x
         XPrim{}         -> Set.empty
-
-        XFrag (PVData (PDArray x xs))
-         -> Set.unions (freeVarsX env x : map (freeVarsX env) xs)
-
-        XFrag{}         
-         -> Set.empty
+        XFrag{}         -> Set.empty
 
         XVar (UIx _)    -> Set.empty
         XVar (UName n)

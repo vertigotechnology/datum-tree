@@ -64,7 +64,7 @@ instance Lang l => Defix GExp l where
     in case xx of
         XAnnot a' x     -> liftM  (XAnnot a') (defix table a' x)
         XPrim{}         -> return xx
-        XFrag pp        -> liftM   XFrag      (defixFrag table a pp)
+        XFrag{}         -> return xx
         XVar{}          -> return xx
         XCast c x       -> liftM  (XCast c)   (down x)
         XAbs b t x      -> liftM  (XAbs  b t) (down x)
@@ -99,21 +99,6 @@ defixStmt table a ss
  = case ss of
         SStmt x         -> SStmt    <$> defix table a x
         SBind b x       -> SBind b  <$> defix table a x
-
-
--- | Defix fragment specific primitives.
-defixFrag 
-        :: Lang l
-        => FixTable l
-        -> GXAnnot l
-        -> GCPrim (GExp l)
-        -> Either (Error l) (GCPrim (GExp l))
-
-defixFrag table a pp
- = case pp of
-        PVData (PDArray x xs)
-                -> (PVData . PDArray x) <$> mapM (defix table a) xs
-        _       -> pure pp
 
 
 -------------------------------------------------------------------------------

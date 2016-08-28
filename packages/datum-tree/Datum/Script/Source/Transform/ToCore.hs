@@ -135,7 +135,7 @@ toCorePrimData dd
  = case dd of
         S.PDAtom a      -> return $ C.PDAtom a
         S.PDName t      -> return $ C.PDName t
-        S.PDArray x xs  -> C.PDArray <$> toCoreX x <*> mapM toCoreX xs
+        S.PDArray x xs  -> C.PDArray <$> toCoreX x <*> mapM toCorePrimData xs
         S.PDForest t    -> return $ C.PDForest t
         S.PDTree t      -> return $ C.PDTree   t
         S.PDTreePath ts -> return $ C.PDTreePath ts

@@ -7,7 +7,7 @@ module Datum.Script.Core.Eval.Prim.Base
         , module Datum.Script.Core.Exp
         , type Text
         , progress, failure, crash, stuck
-        , takeXName
+        , takeXName, takePDName
         , takeVNat)
 where
 import Datum.Script.Core.Eval.Env
@@ -48,6 +48,14 @@ takeXName xx
         XAnnot _ x      -> takeXName x
         XName n         -> Just (Text.unpack n)
         _               -> Nothing
+
+
+-- | Take a name from some prim data.
+takePDName :: PrimData x -> Maybe T.Name
+takePDName pd
+ = case pd of
+        PDName n        -> Just (Text.unpack n)
+        _               -> Nothing 
 
 
 -- | Take a natural number from a value, if there is one.

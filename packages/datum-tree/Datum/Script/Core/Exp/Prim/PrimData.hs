@@ -13,7 +13,7 @@ data PrimData x
         | PDAtom     !T.Atom            -- ^ Atomic value.
         | PDTreePath ![Text]            -- ^ Datum tree path.
         | PDFilePath !FilePath          -- ^ File path.
-        | PDArray    !x ![x]            -- ^ Arry of elements of the given type.
+        | PDArray    !x ![PrimData x]   -- ^ Array of elements of the given type.
         | PDTree     !(T.Tree   'T.O)   -- ^ Checked datum tree.
         | PDForest   !(T.Forest 'T.O)   -- ^ Checked datum forest.
         deriving (Show)

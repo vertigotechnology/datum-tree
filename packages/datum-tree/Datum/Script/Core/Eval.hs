@@ -42,10 +42,10 @@ step   state@(State world env ctx ctl)
         --  TODO: we need to separate the list literal from list creation,
         --  otherwise we'll keep evaluating the literal. Maybe just 
         --  add a boolean flag saying whether it's done or not.
-        ControlExp (XFrag p@(PVList _ []))
+        ControlExp (XFrag p@(PVData (PDList _ [])))
          ->     step $ State world env ctx $ ControlPAP (PAF p [])
 
-        ControlExp (XFrag (PVList xt (x1 : xs)))
+        ControlExp (XFrag (PVData (PDList xt (x1 : xs))))
          -> let ctx'    = ContextList
                         { contextListEnv        = env
                         , contextListType       = xt
@@ -185,7 +185,7 @@ step   state@(State world env ctx ctl)
                  |  ControlPAP pap    <- ctl
                  ,  Just xsDone'      <- sequence $ map takeExpOfValue (VPAP pap : vsDone)
                  -> progress $ State world env' ctx' 
-                             $ ControlPAP (PAF (PVList xt (reverse xsDone')) [])
+                             $ ControlPAP (PAF (PVData (PDList xt (reverse xsDone'))) [])
 
                 ContextList env' xt vsDone (x : xRest) ctx'
                  |  ControlPAP pap   <- ctl

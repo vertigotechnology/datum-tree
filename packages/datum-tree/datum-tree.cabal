@@ -163,6 +163,7 @@ Library
         Datum.Script.Core.Eval.Prim.World
 
         Datum.Script.Core.Exp.Prim.PrimOp
+        Datum.Script.Core.Exp.Prim.PrimData
         
         Datum.Script.Kernel.Exp.Bind
         Datum.Script.Kernel.Exp.Cast

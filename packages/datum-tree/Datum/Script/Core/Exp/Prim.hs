@@ -1,6 +1,8 @@
 {-# LANGUAGE UndecidableInstances #-}
 module Datum.Script.Core.Exp.Prim 
-        ( GCPrim (..),  PrimOp (..)
+        ( GCPrim   (..)
+        , PrimOp   (..)
+        , PrimData (..)
         , GExpStd
         , typeOfPrim,   typeOfAtom,     typeOfPrimOp
         , arityOfPrim,  arityOfPrimOp
@@ -31,8 +33,8 @@ module Datum.Script.Core.Exp.Prim
 
 where
 import Datum.Script.Core.Exp.Prim.PrimOp
+import Datum.Script.Core.Exp.Prim.PrimData
 import Datum.Script.Kernel.Exp.Generic
-import Data.Text                                        (Text)
 import qualified Datum.Script.Kernel.Exp.Prim           as K
 import qualified Datum.Script.Kernel.Exp.Compounds      as K
 import qualified Datum.Script.Kernel.Exp.Bind           as K
@@ -59,20 +61,12 @@ data GCPrim x
         | PTFilePath                    -- ^ File path type.
 
         | PTValue                       -- ^ Super type of values.
-        | PTAtom     T.AtomType         -- ^ Atom types.
+        | PTAtom     !T.AtomType        -- ^ Atom types.
  
         -- Values (level 0)
-        | PVName     Text               -- ^ Field or branch name.
-        | PVList     x [x]              -- ^ List of elements of the given type.
-
-        | PVForest   (T.Forest 'T.O)    -- ^ Checked datum forest.
-        | PVTree     (T.Tree   'T.O)    -- ^ Checked datum tree.
-        | PVTreePath [Text]             -- ^ Datum tree path.
-
-        | PVFilePath FilePath           -- ^ File path.
-
-        | PVAtom     T.Atom             -- ^ Atomic Values.
-        | PVOp       PrimOp             -- ^ Primitive operators with the given type arguments.
+        | PVAtom     !T.Atom            -- ^ Atomic Values.
+        | PVData     !(PrimData x)      -- ^ Primitive structured data.
+        | PVOp       !PrimOp            -- ^ Primitive operators with the given type arguments.
 
 
 deriving instance Show x => Show (GCPrim x)
@@ -113,17 +107,9 @@ typeOfPrim pp
         PTAtom _        -> K.XType 1
 
         -- Types of Values
-        PVName _        -> XTName
-        PVList t _      -> XTList t
-
-        PVForest _      -> XTForest
-        PVTree   _      -> XTTree
-        PVTreePath  _   -> XTTreePath
-
-        PVFilePath  _   -> XTFilePath
-
         PVAtom a        -> XFrag (PTAtom (typeOfAtom a))
-        PVOp   op       -> typeOfPrimOp op
+        PVData d        -> typeOfPrimData d
+        PVOp   op       -> typeOfPrimOp   op
 
 
 -- | Yield the type of the given atom.
@@ -140,8 +126,20 @@ typeOfAtom aa
         T.ATime{}       -> T.ATTime
 
 
+-- | Yield the type of the given data value.
+typeOfPrimData :: GExpStd l n => PrimData (GExp l) -> GExp l
+typeOfPrimData dd
+ = case dd of
+        PDName{}        -> XTName
+        PDList t _      -> XTList t
+        PDForest{}      -> XTForest
+        PDTree{}        -> XTTree
+        PDTreePath{}    -> XTTreePath
+        PDFilePath{}    -> XTFilePath
+
+
 -- | Yield the type of the given primop.
-typeOfPrimOp :: GExpStd l n => PrimOp -> GExp l
+typeOfPrimOp   :: GExpStd l n => PrimOp -> GExp l
 typeOfPrimOp op
  = case op of
         PPNeg           -> error "typeOfOp: finish me"
@@ -206,12 +204,12 @@ pattern XTText          = XFrag (PTAtom T.ATText)
 pattern XTTime          = XFrag (PTAtom T.ATTime)
 
 -- Values
-pattern XName     n     = XFrag (PVName     n)
-pattern XList     t xs  = XFrag (PVList     t xs)
-pattern XForest   f     = XFrag (PVForest   f)
-pattern XTree     t     = XFrag (PVTree     t)
-pattern XTreePath ts    = XFrag (PVTreePath ts)
-pattern XFilePath fp    = XFrag (PVFilePath fp)
+pattern XName     n     = XFrag (PVData (PDName     n))
+pattern XList     t xs  = XFrag (PVData (PDList     t xs))
+pattern XForest   f     = XFrag (PVData (PDForest   f))
+pattern XTree     t     = XFrag (PVData (PDTree     t))
+pattern XTreePath ts    = XFrag (PVData (PDTreePath ts))
+pattern XFilePath fp    = XFrag (PVData (PDFilePath fp))
 
 pattern XBool     x     = XFrag (PVAtom (T.ABool    x))
 pattern XInt      x     = XFrag (PVAtom (T.AInt     x))

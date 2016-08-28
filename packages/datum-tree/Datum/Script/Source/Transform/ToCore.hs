@@ -123,18 +123,23 @@ toCoreFrag ff
         S.PTFilePath    -> return $ C.PTFilePath
         S.PTValue       -> return $ C.PTValue
         S.PTTuple       -> return $ C.PTTuple
-
         S.PTAtom t      -> return $ C.PTAtom t
 
-        S.PVName t      -> return $ C.PVName t
-        S.PVList x xs   -> C.PVList <$> toCoreX x <*> mapM toCoreX xs
-        S.PVForest t    -> return $ C.PVForest t
-        S.PVTree t      -> return $ C.PVTree   t
-        S.PVTreePath ts -> return $ C.PVTreePath ts
-        S.PVFilePath f  -> return $ C.PVFilePath f
-
+        S.PVData d      -> C.PVData <$> toCorePrimData d
         S.PVAtom a      -> return $ C.PVAtom a
         S.PVOp   p      -> return $ C.PVOp   p
+
+
+-- | Convert primitive data from source to core.
+toCorePrimData :: S.PrimData S.Exp -> Either Error (C.PrimData C.Exp)
+toCorePrimData dd
+ = case dd of
+        S.PDName t      -> return $ C.PDName t
+        S.PDList x xs   -> C.PDList <$> toCoreX x <*> mapM toCoreX xs
+        S.PDForest t    -> return $ C.PDForest t
+        S.PDTree t      -> return $ C.PDTree   t
+        S.PDTreePath ts -> return $ C.PDTreePath ts
+        S.PDFilePath f  -> return $ C.PDFilePath f
 
 
 -- | Convert a source bound to core, 

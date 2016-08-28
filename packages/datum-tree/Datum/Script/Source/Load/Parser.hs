@@ -114,14 +114,14 @@ pExpAtom
         sp      <- pTok KSquareBra
         xs      <- fmap (map snd) $ P.sepBy1 pExp (pTok KComma)
         _       <- pTok KSquareKet
-        return  (sp, XAnnot sp $ XFrag (PVList (XPrim (PHole (XPrim PKData))) xs))
+        return  (sp, XAnnot sp $ XFrag (PVData (PDList (XPrim (PHole (XPrim PKData))) xs)))
 
  , do   -- branch path sugar
         sp      <- pTok KSlashForward
         ns      <- fmap (map snd) $ P.sepBy1 pVar (pTok KSlashForward)
-        let xs   = [XFrag (PVName n) | n <- Text.pack "root" : ns]
+        let xs   = [XFrag (PVData (PDName n)) | n <- Text.pack "root" : ns]
         let hole = XPrim (PHole (XPrim PKData))
-        return  (sp, XAnnot sp $ XFrag (PVList hole xs))
+        return  (sp, XAnnot sp $ XFrag (PVData (PDList hole xs)))
 
  , do   -- variables
         (sp, u) <- pVar
@@ -133,7 +133,7 @@ pExpAtom
 
  , do   -- symbols
         (sp, s) <- pSymbol
-        return  (sp, XAnnot sp $ XFrag (PVName (Text.pack s)))
+        return  (sp, XAnnot sp $ XFrag (PVData (PDName (Text.pack s))))
 
  , do   -- literal text
         (sp, str) <- pLitString

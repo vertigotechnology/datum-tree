@@ -94,12 +94,12 @@ deriving instance Show Context
 pattern VVPAP p         = VPAP (PAP p [])
 pattern VVPAF p         = VPAP (PAF p [])
 
-pattern VName n         = VVPAF (PVName     n)
-pattern VList t xs      = VVPAF (PVList     t xs)
-pattern VForest f       = VVPAF (PVForest   f)
-pattern VTree t         = VVPAF (PVTree     t)
-pattern VTreePath ts    = VVPAF (PVTreePath ts)
-pattern VFilePath fp    = VVPAF (PVFilePath fp)
+pattern VName n         = VVPAF (PVData (PDName     n))
+pattern VList t xs      = VVPAF (PVData (PDList     t xs))
+pattern VForest f       = VVPAF (PVData (PDForest   f))
+pattern VTree t         = VVPAF (PVData (PDTree     t))
+pattern VTreePath ts    = VVPAF (PVData (PDTreePath ts))
+pattern VFilePath fp    = VVPAF (PVData (PDFilePath fp))
 
 pattern VUnit           = VVPAF (PVAtom  AUnit)
 pattern VBool    x      = VVPAF (PVAtom (ABool    x))

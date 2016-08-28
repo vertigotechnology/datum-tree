@@ -24,7 +24,6 @@ module Datum.Script.Source.Transform.Defix
         , Error         (..)
         , Defix         (..))
 where
-
 import Datum.Script.Source.Transform.Defix.FixTable
 import Datum.Script.Source.Transform.Defix.Error
 import Datum.Script.Source.Exp
@@ -112,8 +111,9 @@ defixFrag
 
 defixFrag table a pp
  = case pp of
-        PVList x xs     -> PVList x <$> mapM (defix table a) xs
-        _               -> pure pp
+        PVData (PDList x xs)
+                -> (PVData . PDList x) <$> mapM (defix table a) xs
+        _       -> pure pp
 
 
 -------------------------------------------------------------------------------

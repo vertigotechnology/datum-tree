@@ -81,7 +81,7 @@ liftForestTransformIO
 
 liftForestTransformIO sstep thunk state0 _path0 forest0
  = orivour
- $ case curryThunkPrim thunk (PVForest forest0) of
+ $ case curryThunkPrim thunk (PVData (PDForest forest0)) of
         VClo (Clo x1 env)
          -> state0 { stateEnv      = env
                    , stateControl  = ControlExp x1 }
@@ -98,7 +98,7 @@ liftForestTransformIO sstep thunk state0 _path0 forest0
                  Right (Just state') -> orivour state'
                  Right Nothing
                   -> case stateControl state of
-                        ControlPAP (PAF (PVForest t) [])
+                        ControlPAP (PAF (PVData (PDForest t)) [])
                               -> return t
                         focus -> error $ "datum-tree: wrong type in internal forest evaluation "
                               ++ Text.ppShow focus
@@ -116,7 +116,7 @@ liftTreeTransformIO
 
 liftTreeTransformIO sstep thunk state0 _path0 tree0
  = orivour
- $ case curryThunkPrim thunk (PVTree tree0) of
+ $ case curryThunkPrim thunk (PVData (PDTree tree0)) of
         VClo (Clo x1 env)
          -> state0 { stateEnv     = env
                    , stateControl = ControlExp x1 }
@@ -133,7 +133,7 @@ liftTreeTransformIO sstep thunk state0 _path0 tree0
                  Right (Just state') -> orivour state'
                  Right Nothing
                   -> case stateControl state of
-                        ControlPAP (PAF (PVTree t) [])
+                        ControlPAP (PAF (PVData (PDTree t)) [])
                               -> return t
                         focus -> error $ "datum-tree: unexpected type in internal tree evaluation "
                               ++ Text.ppShow focus

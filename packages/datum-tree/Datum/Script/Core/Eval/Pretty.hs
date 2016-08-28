@@ -142,21 +142,9 @@ buildFrag c f
         PTTuple         -> fromString "Tuple"
         PTValue         -> fromString "Value"
 
-        -- Values
-        PVName n        -> fromText n
-        PVList{}        -> error "buildPrim: list"
-        PVForest{}      -> error "buildPrim: forest"
-
-        PVTree t       
-         -> case configTreeFormat c of
-                TreeFormatInternal      -> error "buildPrim: internal"
-                TreeFormatSExp          -> error "buildPrim: sexp"
-                TreeFormatMatryo        -> Matryo.encodeTree def t
-
-        PVTreePath{}    -> error "buildPrim: tree path"
-        PVFilePath p'   -> fromString $ show p'
-        PVAtom a        -> buildAtom   c a
-        PVOp op         -> buildPrimOp c op
+        PVAtom a        -> buildAtom     c a
+        PVData d        -> buildPrimData c d
+        PVOp op         -> buildPrimOp   c op
 
 
 buildAtomType :: Config -> AtomType -> Builder
@@ -185,7 +173,25 @@ buildAtom _c aa
         ATime  t        -> fromString (show t)
 
 
-buildPrimOp  :: Config -> PrimOp -> Builder
+buildPrimData :: Config -> PrimData Exp -> Builder
+buildPrimData c dd
+ = case dd of
+        PDName n        -> fromText n
+        PDList{}        -> error "buildPrim: list"
+        PDForest{}      -> error "buildPrim: forest"
+
+        PDTree t       
+         -> case configTreeFormat c of
+                TreeFormatInternal      -> error "buildPrim: internal"
+                TreeFormatSExp          -> error "buildPrim: sexp"
+                TreeFormatMatryo        -> Matryo.encodeTree def t
+
+        PDTreePath{}    -> error "buildPrim: tree path"
+        PDFilePath p'   -> fromString $ show p'
+
+
+
+buildPrimOp   :: Config -> PrimOp -> Builder
 buildPrimOp _ op 
  = case Prelude.lookup op namesOfPrimOps of
         -- The primops table should have all the names,

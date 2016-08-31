@@ -90,6 +90,7 @@ scanPunctuation
                 '{'     -> Just KBraceBra
                 '}'     -> Just KBraceKet
                 '.'     -> Just KDot
+                ':'     -> Just KColon
                 ','     -> Just KComma
                 ';'     -> Just KSemi
                 '/'     -> Just KSlashForward

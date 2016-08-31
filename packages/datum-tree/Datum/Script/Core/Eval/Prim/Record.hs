@@ -10,7 +10,8 @@ step_Record _ _ PPRecordEmpty []
 
 step_Record _ _ 
         PPRecordExtend
-        [ VVPAF (PVData (PDName n))
+        [ VVPAF (PTType pt)
+        , VVPAF (PVData (PDName n))
         , VVPAF pv
         , VVPAF (PVData (PDRecord fs)) ]
 
@@ -19,7 +20,7 @@ step_Record _ _
                  PTType t       -> Just $ PDType (XFrag (PTType t))
                  _              -> Nothing
   = do
-        let f'      = PFField n Nothing pd
+        let f'      = PFField n (Just (XFrag (PTType pt))) pd
         progress $ VVPAF (PVData (PDRecord (f' : fs)))
 
 step_Record _ _ _ _

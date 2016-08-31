@@ -117,15 +117,31 @@ pExpAtom
 
         fs      <- flip P.sepBy1 (pTok KComma)
                 $  do   n       <- fmap snd $ pVar
+
+                        -- type annotation on field
+                        mt      <- P.choice
+                                [ do    _       <- pTok KColon
+                                        (_, t)  <- pExpAtom
+                                        return $ Just t
+
+                                , do    return Nothing ]
+
                         _       <- pTok (KOp "=")
                         x       <- fmap snd $ pExp 
-                        return (XFrag (PVData (PDName n)), x)
+                        return (n, mt, x)
 
         let xRecord
-                = foldr (\(n1, x1) xRest 
-                           -> XApp (XApp (XApp (XFrag (PVOp PPRecordExtend)) n1) x1) xRest)
+                = foldr (\(n1, mt, x1) xRest 
+                           -> let xn = XFrag (PVData (PDName n1))
+                                  xt = case mt of 
+                                        Just t  -> t
+                                        Nothing -> XFrag (PTType (PTAtom T.ATText))
+                              in  makeXApps 
+                                    (XFrag (PVOp PPRecordExtend))
+                                    [ xt, xn, x1, xRest])
                         (XFrag (PVOp PPRecordEmpty))
                         fs
+
         _       <- pTok KBraceKet
         return  (sp, xRecord)
 

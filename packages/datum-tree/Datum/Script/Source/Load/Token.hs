@@ -33,6 +33,7 @@ data Token
         | KDot                  -- ^ Dot character.
         | KComma                -- ^ Comma charater.
         | KSemi                 -- ^ Semicolon.
+        | KColon                -- ^ Colon.
         | KSlashForward         -- ^ Forward slash.
         | KUnit                 -- ^ The unit value '()'
 
@@ -73,6 +74,7 @@ sayToken tok
         KDot            -> "dot"
         KComma          -> "comma"
         KSemi           -> "semicolon"
+        KColon          -> "colon"
         KSlashForward   -> "forward slash"
         KUnit           -> "unit value"
 

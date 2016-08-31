@@ -135,12 +135,12 @@ decodeXSV cDelim hasHeader bs
 ---------------------------------------------------------------------------------------------------
 -- | Decode an XSV file from a lazy `ByteString` and read the fields
 --   using the given names and formats.
-readXSV :: Char                         -- ^ Character that separates the column.s
-        -> [(Text, F.Format)]         -- ^ Names and formats of desired columns.
-        -> BS8.ByteString               -- ^ Bytestring data to read.
+readXSV :: Char                                 -- ^ Character that separates the column.s
+        -> [(Text, (AtomType, F.Format))]       -- ^ Names and formats of desired columns.
+        -> BS8.ByteString                       -- ^ Bytestring data to read.
         -> Either String (Tree 'O)
 
-readXSV cDelim nsFormat bs
+readXSV cDelim ntsFormat bs
  = do
         let w8Delim 
              = fromIntegral $ Char.ord cDelim
@@ -164,7 +164,7 @@ readXSV cDelim nsFormat bs
                        in  return (lsName, V.tail vvb)
 
         -- Make a branch for a single row of the file.
-        let makeField (vsFields :: V.Vector BS.ByteString) (name, fmt) 
+        let makeField (vsFields :: V.Vector BS.ByteString) (name, (_type, fmt))
                 | Just ix       <- lookup name (zip (V.toList vsName) [0..])
                 , bsField       <- V.toList vsFields !! ix
                 , Just a        <- F.readAtomOfFormat fmt (decodeUtf8 bsField)
@@ -174,9 +174,11 @@ readXSV cDelim nsFormat bs
                 = error $ "makeField " ++ show (vsFields, vsName, (name, fmt))
 
         let makeRow (vsFields :: V.Vector BS.ByteString)
-                = let   lsAtom     = map (makeField vsFields) nsFormat
+                = let   lsAtom  = map (makeField vsFields) ntsFormat
 
                   in    B (T $ boxes lsAtom) A.empty
+
+        let tsField = map (fst . snd) ntsFormat
 
         return
          $ Tree (branch tuple 
@@ -187,9 +189,10 @@ readXSV cDelim nsFormat bs
                         (ttuple)
                         (tbranch "row" 
                                 (TT $ A.fromList 
-                                    $ map (flip telement ttext) 
-                                    $ map (Text.unpack)
-                                    $ V.toList vsName)))
+                                    $ zipWith telement
+                                        (map Text.unpack $ V.toList vsName)
+                                        tsField)))
+
 
 
 

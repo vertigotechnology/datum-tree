@@ -70,7 +70,17 @@ step_LoadStore _ _ PPRead      [VRecord fields, VText filePath]
  = case FilePath.takeExtension filePath of
         ".tsv"
          -> do  bs              <- BS8.readFile filePath
-                let names        = map pffieldName fields
+
+                let names
+                        = map pffieldName fields
+
+                let Just types  
+                        = sequence
+                        $ map (\xt -> case xt of
+                                Just (XFrag (PTType (PTAtom at))) -> Just at
+                                _                                 -> Nothing)
+                        $ map pffieldType fields
+
 
                 let Just formats 
                         = sequence 
@@ -79,7 +89,8 @@ step_LoadStore _ _ PPRead      [VRecord fields, VText filePath]
                                 _               -> Nothing)
                         $ map pffieldValue fields
 
-                let Right t =  Tree.readXSV '\t' (zip names formats) bs
+                let ntsField = zip names (zip types formats)
+                let Right t  =  Tree.readXSV '\t' ntsField bs
                 progress $ VTree t
 
 

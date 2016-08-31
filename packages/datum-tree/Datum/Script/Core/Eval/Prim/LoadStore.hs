@@ -67,34 +67,40 @@ step_LoadStore _ _ PPLoad      [VText filePath]
 
 -- Read from the file system.
 step_LoadStore _ _ PPRead      [VRecord fields, VText filePath]
- = case FilePath.takeExtension filePath of
-        ".tsv"
-         -> do  bs              <- BS8.readFile filePath
+ | Just cSep
+        <- case FilePath.takeExtension filePath of
+                ".tsv"  -> Just '\t'
+                ".csv"  -> Just ','
+                ".psv"  -> Just '|'
+                _       -> Nothing
 
-                let names
-                        = map pffieldName fields
+ = do   
+        bs              <- BS8.readFile filePath
 
-                let Just types  
-                        = sequence
-                        $ map (\xt -> case xt of
-                                Just (XFrag (PTType (PTAtom at))) -> Just at
-                                _                                 -> Nothing)
-                        $ map pffieldType fields
+        let names
+                = map pffieldName fields
 
-
-                let Just formats 
-                        = sequence 
-                        $ map (\pd -> case pd of
-                                PDName n        -> Format.readFormat (Text.unpack n)
-                                _               -> Nothing)
-                        $ map pffieldValue fields
-
-                let ntsField = zip names (zip types formats)
-                let Right t  =  Tree.readXSV '\t' ntsField bs
-                progress $ VTree t
+        let Just types  
+                = sequence
+                $ map (\xt -> case xt of
+                        Just (XFrag (PTType (PTAtom at))) -> Just at
+                        _                                 -> Nothing)
+                $ map pffieldType fields
 
 
-        _ ->    failure $ ErrorPrim $ ErrorStoreUnknownFileFormat filePath
+        let Just formats 
+                = sequence 
+                $ map (\pd -> case pd of
+                        PDName n        -> Format.readFormat (Text.unpack n)
+                        _               -> Nothing)
+                $ map pffieldValue fields
+
+        let ntsField = zip names (zip types formats)
+        let Right t  =  Tree.readXSV cSep ntsField bs
+        progress $ VTree t
+
+ | otherwise
+ = failure $ ErrorPrim $ ErrorStoreUnknownFileFormat filePath
 
 
 

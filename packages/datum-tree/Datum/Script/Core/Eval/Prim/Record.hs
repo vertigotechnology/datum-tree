@@ -11,10 +11,15 @@ step_Record _ _ PPRecordEmpty []
 step_Record _ _ 
         PPRecordExtend
         [ VVPAF (PVData (PDName n))
-        , VVPAF (PVData d)
+        , VVPAF pv
         , VVPAF (PVData (PDRecord fs)) ]
- = do
-        let f'      = PFField n Nothing d
+
+ | Just pd   <- case pv of
+                 PVData d       -> Just d
+                 PTType t       -> Just $ PDType (XFrag (PTType t))
+                 _              -> Nothing
+  = do
+        let f'      = PFField n Nothing pd
         progress $ VVPAF (PVData (PDRecord (f' : fs)))
 
 step_Record _ _ _ _

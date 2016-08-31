@@ -274,6 +274,8 @@ ppAtomType at
         ATDecimal       -> text "tdecimal"
         ATText          -> text "ttext"
         ATTime          -> text "ttime"
+        ATDate          -> text "tdate"
+
 
 ppAtom :: Atom -> Doc
 ppAtom a = ppAtomWithFormat ColumnUnknown a
@@ -314,6 +316,9 @@ ppAtomWithFormat f aa
         ATime str
          -> sexp "time"    (text $ show str)
 
+        ADate yy mm dd
+         -> sexp "date"    ((text $ show yy) <+> (text $ show mm) <+> (text $ show dd))
+
 
 -- | Get the default format for an atom.
 formatForAtom :: Atom -> ColumnFormat
@@ -328,6 +333,7 @@ formatForAtom a
         ADecimal _      -> ColumnNumeric ml
         AText    _      -> ColumnText    ml
         ATime    _      -> ColumnNumeric ml
+        ADate{}         -> ColumnNumeric ml
 
 
 -- | Pretty print an element.

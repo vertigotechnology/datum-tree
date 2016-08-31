@@ -112,12 +112,19 @@ toCoreFrag :: S.Frag -> Either Error C.Frag
 toCoreFrag ff
  = case ff of
         S.PKAtom        -> return $ C.PKAtom
+        S.PTType pt     -> C.PTType <$> toCorePrimType pt
+        S.PVData d      -> C.PVData <$> toCorePrimData d
+        S.PVOp   p      -> return $ C.PVOp   p
 
+
+-- | Convert a primitive type from source to core.
+toCorePrimType :: S.PrimType -> Either Error C.PrimType
+toCorePrimType pt
+ = case pt of
         S.PTNum         -> return $ C.PTNum
+        S.PTName        -> return $ C.PTName
         S.PTArray       -> return $ C.PTArray
         S.PTRecord      -> return $ C.PTRecord
-
-        S.PTName        -> return $ C.PTName
         S.PTForest      -> return $ C.PTForest
         S.PTTree        -> return $ C.PTTree
         S.PTTreePath    -> return $ C.PTTreePath
@@ -125,14 +132,12 @@ toCoreFrag ff
         S.PTValue       -> return $ C.PTValue
         S.PTAtom t      -> return $ C.PTAtom t
 
-        S.PVData d      -> C.PVData <$> toCorePrimData d
-        S.PVOp   p      -> return $ C.PVOp   p
-
 
 -- | Convert primitive data from source to core.
 toCorePrimData :: S.PrimData S.Exp -> Either Error (C.PrimData C.Exp)
 toCorePrimData dd
  = case dd of
+        S.PDType t      -> C.PDType  <$> toCoreX t
         S.PDAtom a      -> return $ C.PDAtom a
         S.PDName t      -> return $ C.PDName t
         S.PDTreePath ts -> return $ C.PDTreePath ts
@@ -165,6 +170,10 @@ toCoreBoundX tt
  -- Detect names of primops.
  | Just p       <- lookup (Text.unpack tt) C.primOpsOfNames
  = return $ C.XFrag (C.PVOp p)
+
+ -- Detect names of primitive types.
+ | Just p       <- lookup (Text.unpack tt) C.primTypesOfNames
+ = return $ C.XFrag (C.PTType p)
 
  -- Detect boolean constructor names.
  | Just x       <- case Text.unpack tt of

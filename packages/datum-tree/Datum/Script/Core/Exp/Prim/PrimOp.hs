@@ -29,7 +29,15 @@ data PrimOp
         | PPRecordEmpty         -- ^ Construct an empty record.
         | PPRecordExtend        -- ^ Extend a record with a field of the given name.
 
-        -- Tree operators.
+        -- File system operators.
+        | PPLoad                -- ^ Load  a value from the file system.
+        | PPStore               -- ^ Store a value to the file system.
+        | PPRead                -- ^ Read  a value from the file system with a specified format.
+
+        -- Console operators.
+        | PPPrint               -- ^ Print an object to the console.
+
+        -- Pure tree operators.
         | PPAppend              -- ^ Append two trees or forests.
         | PPAt                  -- ^ Apply a per-tree function at the given path.
         | PPArgument            -- ^ Get the value of a script argument.
@@ -39,14 +47,11 @@ data PrimOp
         | PPGather              -- ^ Gather branches of a tree into sub trees.
         | PPGroup               -- ^ Group branches by given key field.
         | PPInitial             -- ^ Select the initial n branches of each subtree.
-        | PPLoad                -- ^ Load  a value from the file system.
         | PPOn                  -- ^ Apply a per-forest function at the given path. 
         | PPPermuteFields       -- ^ Permute fields of a key.
-        | PPPrint               -- ^ Print an object to the console.
         | PPRenameFields        -- ^ Rename fields of key.
         | PPSample              -- ^ Sample n intermediate branches of each subtree.
         | PPSortByField         -- ^ Sort trees in a forest.
-        | PPStore               -- ^ Store a value to the file system.
         deriving (Eq, Show)
 
 
@@ -74,7 +79,15 @@ namesOfPrimOps
         , (PPRecordEmpty,       "record-empty#")
         , (PPRecordExtend,      "record-extend#")
 
-        -- Tree operators.
+        -- File system operators.
+        , (PPLoad,              "load#")
+        , (PPStore,             "store#")
+        , (PPRead,              "read#")
+
+        -- Console operators.
+        , (PPPrint,             "print#") 
+
+        -- Pure tree operators.
         , (PPAt,                "at#")
         , (PPArgument,          "argument#")
         , (PPConcat,            "concat#")
@@ -83,14 +96,11 @@ namesOfPrimOps
         , (PPGather,            "gather#")
         , (PPGroup,             "group#")
         , (PPInitial,           "initial#")
-        , (PPLoad,              "load#")
         , (PPOn,                "on#")
         , (PPPermuteFields,     "permute-fields#")
-        , (PPPrint,             "print#") 
         , (PPRenameFields,      "rename-fields#")
         , (PPSample,            "sample#")
         , (PPSortByField,       "sortby-field#")
-        , (PPStore,             "store#")
         ]
 
 
@@ -121,6 +131,10 @@ arityOfPrimOp op
         PPRecordEmpty   -> 0
         PPRecordExtend  -> 3
 
+        PPLoad          -> 1
+        PPStore         -> 2
+        PPRead          -> 2
+
         PPAppend        -> 2
         PPAt            -> 3
         PPArgument      -> 1
@@ -130,11 +144,9 @@ arityOfPrimOp op
         PPGroup         -> 2
         PPGather        -> 2
         PPInitial       -> 2
-        PPLoad          -> 1
         PPOn            -> 3
         PPPermuteFields -> 2
         PPPrint         -> 1
         PPRenameFields  -> 2
         PPSortByField   -> 2
-        PPStore         -> 2
         PPSample        -> 2

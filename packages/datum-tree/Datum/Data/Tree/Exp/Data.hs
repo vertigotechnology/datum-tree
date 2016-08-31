@@ -124,6 +124,7 @@ data AtomType
         | ATDecimal
         | ATText
         | ATTime
+        | ATDate
         deriving (Show, Eq)
 
 
@@ -170,6 +171,9 @@ data Atom
         | ADecimal      !Double
         | AText         !String
         | ATime         !String
+
+        -- A date with year, month, day components.
+        | ADate         !Int !Int !Int
         deriving (Eq, Ord, Show)
 
 
@@ -184,6 +188,7 @@ instance Hashable Atom where
         ADecimal d      -> hashWithSalt (s + 5) d
         AText    t      -> hashWithSalt (s + 6) t
         ATime    t      -> hashWithSalt (s + 7) t
+        ADate    y m d  -> hashWithSalt (s + 8) (y, m, d)
 
 
 -- Names ----------------------------------------------------------------------

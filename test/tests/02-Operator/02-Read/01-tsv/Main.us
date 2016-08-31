@@ -1,0 +1,17 @@
+
+quoteFormat
+ =      { symbol        = 'Text
+        , date          = 'YYYY-MM-DD
+        , open          = 'Decimal
+        , close         = 'Decimal
+        , high          = 'Decimal
+        , low           = 'Decimal
+        , mid           = 'Decimal
+        , volume        = 'Int
+        , stamp         = 'YYYY-MM-DD }
+
+main = read quoteFormat "test/data/tsv/quotes/ANZ.tsv";
+
+
+
+

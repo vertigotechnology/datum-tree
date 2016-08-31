@@ -84,4 +84,5 @@ step self state pp vs
         -- LoadStore
         PPLoad          -> step_LoadStore self state pp vs
         PPStore         -> step_LoadStore self state pp vs
+        PPRead          -> step_LoadStore self state pp vs
 

@@ -26,6 +26,10 @@ strPervasive
         , "lt                   = lt#"
         , "le                   = le#"
 
+        , "load                 = load#"
+        , "store                = store#"
+        , "read                 = read#"
+
         , "append               = append#"
         , "argument             = argument#"
         , "concat               = concat#"
@@ -34,12 +38,10 @@ strPervasive
         , "gather               = gather#"
         , "group                = group#"
         , "initial              = initial#"
-        , "load                 = load#"
         , "on                   = on#"
         , "permute-fields       = permute-fields#"
         , "print                = print#"
         , "rename-fields        = rename-fields#"
         , "sample               = sample#"
         , "sortby-field         = sortby-field#"
-        , "store                = store#"
         ]

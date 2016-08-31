@@ -1,14 +1,19 @@
 {-# LANGUAGE UndecidableInstances #-}
 module Datum.Script.Core.Exp.Prim 
         ( GCPrim    (..)
-        , PrimOp    (..)
         , PrimData  (..)
         , PrimField (..)
         , GExpStd
         , typeOfPrim,   typeOfAtom,     typeOfPrimOp
         , arityOfPrim,  arityOfPrimOp
 
+        -- * Prim Types
+        , PrimType  (..)
+        , namesOfPrimTypes
+        , primTypesOfNames
+
         -- * Prim Ops
+        , PrimOp    (..)
         , namesOfPrimOps
         , primOpsOfNames
 
@@ -34,6 +39,7 @@ module Datum.Script.Core.Exp.Prim
 where
 import Datum.Script.Core.Exp.Prim.PrimOp
 import Datum.Script.Core.Exp.Prim.PrimData
+import Datum.Script.Core.Exp.Prim.PrimType
 import Datum.Script.Kernel.Exp.Generic
 import qualified Datum.Script.Kernel.Exp.Prim           as K
 import qualified Datum.Script.Kernel.Exp.Compounds      as K
@@ -48,16 +54,7 @@ data GCPrim x
         = PKAtom                        -- ^ Kind of atom types.
 
         -- Types  (level 1)
-        | PTValue                       -- ^ Super type of values.
-        | PTName                        -- ^ Name type.
-        | PTNum                         -- ^ Supertype of number types.
-        | PTAtom     !T.AtomType        -- ^ Atom types.
-        | PTTreePath                    -- ^ Datum tree path type.
-        | PTFilePath                    -- ^ File path type.
-        | PTArray                       -- ^ Array type constructor.
-        | PTRecord                      -- ^ Record type constructor.
-        | PTTree                        -- ^ Datum tree type.
-        | PTForest                      -- ^ Datum forest type.
+        | PTType     !PrimType
  
         -- Values (level 0)
         | PVData     !(PrimData x)      -- ^ Primitive structured data.
@@ -86,20 +83,26 @@ typeOfPrim pp
         PKAtom          -> K.XType 2
 
         -- Types of Types
-        PTValue         -> K.XType 1
-        PTNum           -> K.XType 1
-        PTName          -> K.XType 1
-        PTAtom _        -> K.XType 1
-        PTTreePath      -> K.XType 1
-        PTFilePath      -> K.XType 1
-        PTArray         -> K.XType 1
-        PTRecord        -> K.XType 1
-        PTTree          -> K.XType 1
-        PTForest        -> K.XType 1
+        PTType{}        -> K.XType 1
 
         -- Types of Values
         PVData d        -> typeOfPrimData d
         PVOp   op       -> typeOfPrimOp   op
+
+
+-- | Yield the type of the given data value.
+typeOfPrimData :: GExpStd l n => PrimData (GExp l) -> GExp l
+typeOfPrimData dd
+ = case dd of
+        PDType _        -> K.XType 2
+        PDName{}        -> XTName
+        PDAtom a        -> XFrag (PTType (PTAtom (typeOfAtom a)))
+        PDTreePath{}    -> XTTreePath
+        PDFilePath{}    -> XTFilePath
+        PDRecord _      -> XTRecord
+        PDArray t _     -> XTArray t
+        PDTree{}        -> XTTree
+        PDForest{}      -> XTForest
 
 
 -- | Yield the type of the given atom.
@@ -114,20 +117,7 @@ typeOfAtom aa
         T.ADecimal{}    -> T.ATDecimal
         T.AText{}       -> T.ATText
         T.ATime{}       -> T.ATTime
-
-
--- | Yield the type of the given data value.
-typeOfPrimData :: GExpStd l n => PrimData (GExp l) -> GExp l
-typeOfPrimData dd
- = case dd of
-        PDName{}        -> XTName
-        PDAtom a        -> XFrag (PTAtom (typeOfAtom a))
-        PDTreePath{}    -> XTTreePath
-        PDFilePath{}    -> XTFilePath
-        PDRecord _      -> XTRecord
-        PDArray t _     -> XTArray t
-        PDTree{}        -> XTTree
-        PDForest{}      -> XTForest
+        T.ADate{}       -> T.ATDate
 
 
 -- | Yield the type of the given primop.
@@ -151,6 +141,10 @@ typeOfPrimOp op
         PPRecordEmpty   -> XTRecord
         PPRecordExtend  -> XTRecord         ~> XTName ~> XTValue ~> XTRecord
 
+        PPLoad          -> XTFilePath       ~> K.XTS XTTree
+        PPStore         -> XTFilePath    ~> XTTree ~> K.XTS K.XTUnit
+        PPRead          -> XTRecord         ~> XTFilePath ~> K.XTS XTTree
+
         PPAppend        -> XTForest         ~> XTForest  ~> XTForest
         PPAt            -> XTArray XTName   ~> (XTTree   ~> XTTree)   ~> XTTree ~> XTTree
         PPArgument      -> XTText           ~> K.XTS XTText
@@ -160,13 +154,11 @@ typeOfPrimOp op
         PPGather        -> XTTreePath       ~> XTTree ~> XTTree
         PPGroup         -> XTName           ~> XTTree ~> XTTree
         PPInitial       -> XTNat            ~> XTTree ~> XTTree
-        PPLoad          -> XTFilePath       ~> K.XTS XTTree
         PPOn            -> XTArray XTName   ~> (XTForest ~> XTForest) ~> XTTree ~> XTTree
         PPPermuteFields -> XTArray XTName   ~> XTTree ~> XTTree
         PPRenameFields  -> XTArray XTName   ~> XTTree ~> XTTree
         PPSample        -> XTNat            ~> XTTree ~> XTTree
         PPSortByField   -> XTName ~> XTForest ~> XTForest
-        PPStore         -> XTFilePath    ~> XTTree ~> K.XTS K.XTUnit
 
         PPPrint
          -> K.makeXForall K.XKData K.XKData 
@@ -183,23 +175,23 @@ arityOfPrim pp
 
 ---------------------------------------------------------------------------------------------------
 -- Types
-pattern XTArray a       = XApp (XFrag PTArray) a
-pattern XTRecord        = XFrag PTRecord
+pattern XTArray a       = XApp (XFrag (PTType PTArray)) a
+pattern XTRecord        = XFrag (PTType PTRecord)
 
-pattern XTName          = XFrag PTName
-pattern XTForest        = XFrag PTForest
-pattern XTTree          = XFrag PTTree
-pattern XTTreePath      = XFrag PTTreePath
-pattern XTFilePath      = XFrag PTFilePath
-pattern XTValue         = XFrag PTValue
+pattern XTName          = XFrag (PTType PTName)
+pattern XTForest        = XFrag (PTType PTForest)
+pattern XTTree          = XFrag (PTType PTTree)
+pattern XTTreePath      = XFrag (PTType PTTreePath)
+pattern XTFilePath      = XFrag (PTType PTFilePath)
+pattern XTValue         = XFrag (PTType PTValue)
 
-pattern XTBool          = XFrag (PTAtom T.ATBool)
-pattern XTInt           = XFrag (PTAtom T.ATInt)
-pattern XTFloat         = XFrag (PTAtom T.ATFloat)
-pattern XTNat           = XFrag (PTAtom T.ATNat)
-pattern XTDecimal       = XFrag (PTAtom T.ATDecimal)
-pattern XTText          = XFrag (PTAtom T.ATText)
-pattern XTTime          = XFrag (PTAtom T.ATTime)
+pattern XTBool          = XFrag (PTType (PTAtom T.ATBool))
+pattern XTInt           = XFrag (PTType (PTAtom T.ATInt))
+pattern XTFloat         = XFrag (PTType (PTAtom T.ATFloat))
+pattern XTNat           = XFrag (PTType (PTAtom T.ATNat))
+pattern XTDecimal       = XFrag (PTType (PTAtom T.ATDecimal))
+pattern XTText          = XFrag (PTType (PTAtom T.ATText))
+pattern XTTime          = XFrag (PTType (PTAtom T.ATTime))
 
 -- Values
 pattern XName     n     = XFrag (PVData (PDName     n))
@@ -226,9 +218,3 @@ pattern XPrimOp   p     = XFrag (PVOp p)
 (~>) a b  = XApp (XApp (XPrim (K.PFun 1)) a) b
 infixr ~>
 
-{-
-(~~>)   ::  (GXPrim l ~ K.GPrim (GExp l))
-        =>  GExp l -> GExp l -> GExp l
-(~~>) a b = XApp (XApp (XPrim (K.PFun 2)) a) b
-infixr ~~>
--}

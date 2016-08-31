@@ -10,7 +10,8 @@ import qualified Datum.Data.Tree.Exp    as T
 -- | Primitive data values, excluding atomic values that
 --   come with the definition of trees.
 data PrimData x
-        = PDName     !Text              -- ^ Field or branch name.
+        = PDType     !x                 -- ^ Treat a closed type as a data value.
+        | PDName     !Text              -- ^ Field or branch name.
         | PDAtom     !T.Atom            -- ^ Atomic value.
         | PDTreePath ![Text]            -- ^ Datum tree path.
         | PDFilePath !FilePath          -- ^ File path.

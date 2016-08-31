@@ -95,6 +95,7 @@ pattern VVPAP p         = VPAP (PAP p [])
 pattern VVPAF p         = VPAP (PAF p [])
 
 pattern VName n         = VVPAF (PVData (PDName     n))
+pattern VRecord fs      = VVPAF (PVData (PDRecord   fs))
 pattern VArray t xs     = VVPAF (PVData (PDArray    t xs))
 pattern VForest f       = VVPAF (PVData (PDForest   f))
 pattern VTree t         = VVPAF (PVData (PDTree     t))

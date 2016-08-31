@@ -9,6 +9,7 @@ import qualified Datum.Data.Tree.Codec.XSV              as Tree
 import qualified Datum.Data.Tree.Codec.SExp.Pretty      as Tree
 import qualified Datum.Data.Tree.Codec.Matryo.Encode    as Matryo
 import qualified Datum.Data.Tree.Codec.Matryo.Decode    as Matryo
+import qualified Datum.Data.Tree.Codec.Format           as Format
 
 import qualified System.FilePath                        as FilePath
 import qualified System.IO                              as System
@@ -19,6 +20,7 @@ import qualified Data.ByteString.Lazy.Char8             as BS8
 import qualified Data.ByteString                        as BS
 import qualified Data.Text.Lazy.IO                      as LText
 import qualified Data.Text.Encoding                     as Text
+import qualified Data.Text                              as Text
 
 
 -- Load from the file system.
@@ -27,13 +29,13 @@ step_LoadStore _ _ PPLoad      [VText filePath]
         -- Load a CSV (Comma Separated Values) file as a tree.
         ".csv"  
          -> do  bs              <- BS8.readFile filePath
-                let Right t     =  Tree.decodeCSV Tree.HasHeader bs
+                let Right t     =  Tree.decodeXSV ',' Tree.HasHeader bs
                 progress $ VTree t
 
         -- Load a TSV (Tab Separated Values) file as a tree.
         ".tsv"  
          -> do  bs              <- BS8.readFile filePath
-                let Right t     =  Tree.decodeTSV Tree.HasHeader bs
+                let Right t     =  Tree.decodeXSV '\t' Tree.HasHeader bs
                 progress $ VTree t
 
         -- Load a Matryo file as a tree.
@@ -63,19 +65,41 @@ step_LoadStore _ _ PPLoad      [VText filePath]
         _ ->    failure  $ ErrorPrim $ ErrorStoreUnknownFileFormat filePath
 
 
+-- Read from the file system.
+step_LoadStore _ _ PPRead      [VRecord fields, VText filePath]
+ = case FilePath.takeExtension filePath of
+        ".tsv"
+         -> do  bs              <- BS8.readFile filePath
+                let names        = map pffieldName fields
+
+                let Just formats 
+                        = sequence 
+                        $ map (\pd -> case pd of
+                                PDName n        -> Format.readFormat (Text.unpack n)
+                                _               -> Nothing)
+                        $ map pffieldValue fields
+
+                let Right t =  Tree.readXSV '\t' (zip names formats) bs
+                progress $ VTree t
+
+
+        _ ->    failure $ ErrorPrim $ ErrorStoreUnknownFileFormat filePath
+
+
+
 -- Store to the file system.
 step_LoadStore _ _ PPStore     [VText filePath, VTree tree]
  = case FilePath.takeExtension filePath of
         -- Store a tree as a CSV (Comma Separated Values) file.
         ".csv"
          -> do  System.withFile filePath System.WriteMode
-                 $ \h -> BS8.hPutStr   h $ Tree.encodeCSV Tree.HasHeader tree
+                 $ \h -> BS8.hPutStr   h $ Tree.encodeXSV ',' Tree.HasHeader tree
                 progress $ VUnit
 
         -- Store a tree as a TSV (Tab Separated Values) file.
         ".tsv"
          -> do  System.withFile filePath System.WriteMode
-                 $ \h -> BS8.hPutStr   h $ Tree.encodeTSV Tree.HasHeader tree
+                 $ \h -> BS8.hPutStr   h $ Tree.encodeXSV '\t' Tree.HasHeader tree
                 progress $ VUnit
 
         -- Store tree as a Matryo file.

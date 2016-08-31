@@ -125,10 +125,15 @@ buildPrim c p
 buildFrag :: Config -> Frag -> Builder
 buildFrag c f
  = case f of
-        -- Kinds
         PKAtom          -> fromString "Atom"
+        PTType pt       -> buildPrimType c pt 
+        PVData d        -> buildPrimData c d
+        PVOp op         -> buildPrimOp   c op
 
-        -- Types
+
+buildPrimType :: Config -> PrimType -> Builder
+buildPrimType c pt
+ = case pt of
         PTArray         -> fromString "Array"
         PTRecord        -> fromString "Record"
         PTName          -> fromString "Name"
@@ -139,9 +144,6 @@ buildFrag c f
         PTFilePath      -> fromString "FilePath"
         PTAtom at       -> buildAtomType c at
         PTValue         -> fromString "Value"
-
-        PVData d        -> buildPrimData c d
-        PVOp op         -> buildPrimOp   c op
 
 
 buildAtomType :: Config -> AtomType -> Builder
@@ -155,12 +157,13 @@ buildAtomType _c at
         ATDecimal       -> fromString "Decimal"
         ATText          -> fromString "Text"
         ATTime          -> fromString "Time"
-
+        ATDate          -> fromString "Date"
 
 
 buildPrimData :: Config -> PrimData Exp -> Builder
 buildPrimData c dd
  = case dd of
+        PDType t        -> buildExp c 0 t
         PDName n        -> fromText n
         PDAtom a        -> buildAtom c a
         PDTreePath{}    -> error "buildPrim: tree path"
@@ -202,6 +205,12 @@ buildAtom _c aa
         ADecimal f      -> fromString (show f)
         AText  s        -> fromString (show s)
         ATime  t        -> fromString (show t)
+
+        ADate  yy mm dd
+         -> fromString "'"
+         <> fromString (show yy) <> fromString "-"
+         <> fromString (show mm) <> fromString "-"
+         <> fromString (show dd)
 
 
 buildPrimOp   :: Config -> PrimOp -> Builder

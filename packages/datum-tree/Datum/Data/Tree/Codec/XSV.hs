@@ -1,12 +1,8 @@
 
 module Datum.Data.Tree.Codec.XSV
-        ( -- * CSV
-          encodeCSV
-        , decodeCSV
-
-          -- * TSV
-        , encodeTSV
-        , decodeTSV
+        ( encodeXSV
+        , decodeXSV
+        , readXSV
 
           -- * Headers
         , Csv.HasHeader (..))
@@ -14,38 +10,18 @@ where
 import Datum.Data.Tree.Exp
 import Datum.Data.Tree.Codec.SExp
 import Data.Monoid
+import Data.Text                                (Text)
+import Data.Text.Encoding                       (decodeUtf8)
+import qualified Datum.Data.Tree.Codec.Format   as F
 import qualified Data.Csv                       as Csv
 import qualified Data.ByteString.Lazy.Char8     as BS8
+import qualified Data.ByteString                as BS
 import qualified Data.ByteString.Builder        as BB
 import qualified Data.Vector                    as V
 import qualified Data.Repa.Array                as A
 import qualified Data.List                      as List
 import qualified Data.Char                      as Char
-
-
----------------------------------------------------------------------------------------------------
--- | Encode a tree to a `CSV` file represented as a lazy `ByteString`.
-encodeCSV :: Csv.HasHeader -> Tree 'O -> BS8.ByteString
-encodeCSV hasHeader tt
- = encodeXSV ',' hasHeader tt
-
-
--- | Decode a tree from a `CSV` file represented as a lazy `ByteString`.
-decodeCSV :: Csv.HasHeader -> BS8.ByteString -> Either String (Tree 'O)
-decodeCSV hasHeader bs
- = decodeXSV ',' hasHeader bs
-
-
--- | Encode a tree to a `CSV` file represented as a lazy `ByteString`.
-encodeTSV :: Csv.HasHeader -> Tree 'O -> BS8.ByteString
-encodeTSV hasHeader tt
- = encodeXSV '\t' hasHeader tt
-
-
--- | Decode a tree from a `CSV` file represented as a lazy `ByteString`.
-decodeTSV :: Csv.HasHeader -> BS8.ByteString -> Either String (Tree 'O)
-decodeTSV hasHeader bs
- = decodeXSV '\t' hasHeader bs
+import qualified Data.Text                      as Text
 
 
 ---------------------------------------------------------------------------------------------------
@@ -80,14 +56,20 @@ encodeXSV delim _hasHeader tt
 
         encodeAtom a
          = case a of
-                AUnit{}      -> BB.string8  "()"
-                ABool    b   -> BB.string8   (show b)
-                AInt     i   -> BB.intDec    i
-                AFloat   f   -> BB.doubleDec f
-                ANat     n   -> BB.intDec    n
-                ADecimal n   -> BB.doubleDec n
-                AText    str -> BB.string8   $ show str
-                ATime    str -> BB.string8   str
+                AUnit{}        -> BB.string8  "()"
+                ABool    b     -> BB.string8   (show b)
+                AInt     i     -> BB.intDec    i
+                AFloat   f     -> BB.doubleDec f
+                ANat     n     -> BB.intDec    n
+                ADecimal n     -> BB.doubleDec n
+                AText    str   -> BB.string8   $ show str
+                ATime    str   -> BB.string8   str
+
+                ADate yy mm dd 
+                 -> BB.string8 "'"
+                 <> BB.intDec    yy <> (BB.string8 " ")
+                 <> BB.intDec    mm <> (BB.string8 " ")
+                 <> BB.intDec    dd
 
 
 ---------------------------------------------------------------------------------------------------
@@ -148,4 +130,66 @@ decodeXSV cDelim hasHeader bs
                         (tbranch "row" 
                                 (TT $ A.fromList 
                                     $ map (flip telement ttext) lsName)))
+
+
+---------------------------------------------------------------------------------------------------
+-- | Decode an XSV file from a lazy `ByteString` and read the fields
+--   using the given names and formats.
+readXSV :: Char                         -- ^ Character that separates the column.s
+        -> [(Text, F.Format)]         -- ^ Names and formats of desired columns.
+        -> BS8.ByteString               -- ^ Bytestring data to read.
+        -> Either String (Tree 'O)
+
+readXSV cDelim nsFormat bs
+ = do
+        let w8Delim 
+             = fromIntegral $ Char.ord cDelim
+
+        let decodeOptions
+             = Csv.defaultDecodeOptions
+             { Csv.decDelimiter     = w8Delim }
+
+        -- Decode the file into a vector of rows of vectors of fields.
+        -- Decode the CSV source data, also getting the column
+        -- names from the header. We actually set NoHeader here
+        -- so that we get it as the first row, rather than
+        -- it being skipped.
+        (  vsName :: V.Vector Text
+         , vvb    :: V.Vector (V.Vector BS.ByteString) )
+         <- do  vvb     <- Csv.decodeWith decodeOptions Csv.NoHeader bs
+                if (V.length vvb == 0)
+                  then return (V.empty, V.empty)
+                  else let -- Unpack the column names.
+                           lsName = V.map decodeUtf8 $ V.head vvb
+                       in  return (lsName, V.tail vvb)
+
+        -- Make a branch for a single row of the file.
+        let makeField (vsFields :: V.Vector BS.ByteString) (name, fmt) 
+                | Just ix       <- lookup name (zip (V.toList vsName) [0..])
+                , bsField       <- V.toList vsFields !! ix
+                , Just a        <- F.readAtomOfFormat fmt (decodeUtf8 bsField)
+                = a
+
+                | otherwise
+                = error $ "makeField " ++ show (vsFields, vsName, (name, fmt))
+
+        let makeRow (vsFields :: V.Vector BS.ByteString)
+                = let   lsAtom     = map (makeField vsFields) nsFormat
+
+                  in    B (T $ boxes lsAtom) A.empty
+
+        return
+         $ Tree (branch tuple 
+                        (G None $ A.fromList
+                                $ map (box . makeRow)
+                                $ V.toList vvb))
+                (tbranch "root"
+                        (ttuple)
+                        (tbranch "row" 
+                                (TT $ A.fromList 
+                                    $ map (flip telement ttext) 
+                                    $ map (Text.unpack)
+                                    $ V.toList vsName)))
+
+
 

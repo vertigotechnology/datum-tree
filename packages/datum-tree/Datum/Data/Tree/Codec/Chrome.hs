@@ -114,6 +114,7 @@ ppAtomType at
         ATDecimal       -> text "Decimal"
         ATText          -> text "Text"
         ATTime          -> text "Time"
+        ATDate          -> text "Date"
 
 
 ppAtom :: Atom -> Doc
@@ -128,3 +129,8 @@ ppAtom aa
         AText str       -> text $ show str
         ATime str       -> text str
 
+        ADate yy mm dd
+         ->  text "'"
+         <> int yy <> text "-" 
+         <> int mm <> text "-" 
+         <> int dd

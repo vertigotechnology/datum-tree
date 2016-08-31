@@ -1,15 +1,17 @@
 
+
 -- Test of concat operator.
 main
  = do   -- Load some separate files containing stock quotes,
         -- and concatenate them together.
         glob    = concat
-                [ load "test/data/tsv/quotes/ANZ.tsv"
-                , load "test/data/tsv/quotes/CBA.tsv"
-                , load "test/data/tsv/quotes/NAB.tsv"
-                , load "test/data/tsv/quotes/WBC.tsv" ]
+                [ read format "test/data/tsv/quotes/ANZ.tsv"
+                , read format "test/data/tsv/quotes/CBA.tsv"
+                , read format "test/data/tsv/quotes/NAB.tsv"
+                , read format "test/data/tsv/quotes/WBC.tsv" ]
 
-        -- Append all the files together, which also checks they have the same type.
+        -- Concatenate all the files together,
+        -- sorting them by symbol and traded volume.
         glob
            -- Select only the fields that we're interested in.
          & on /row      $ permute-fields ['symbol, 'date, 'open, 'close, 'volume]
@@ -19,3 +21,16 @@ main
          & on /date     $ sortby-field 'date
          & on /date/row $ sortby-field 'volume
          & sample 10
+
+
+-- Format of quote file.
+format
+ =      { symbol : Text         = 'Text
+        , date   : Date         = 'YYYY-MM-DD
+        , open   : Decimal      = 'Decimal
+        , close  : Decimal      = 'Decimal
+        , high   : Decimal      = 'Decimal
+        , low    : Decimal      = 'Decimal
+        , mid    : Decimal      = 'Decimal
+        , volume : Int          = 'Int
+        , stamp  : Date         = 'YYYY-MM-DD }

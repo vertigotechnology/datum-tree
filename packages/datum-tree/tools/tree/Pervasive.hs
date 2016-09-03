@@ -39,6 +39,7 @@ strPervasive
         , "gather               = gather#"
         , "group                = group#"
         , "initial              = initial#"
+        , "map-keys             = map-keys#"
         , "on                   = on#"
         , "permute-fields       = permute-fields#"
         , "print                = print#"

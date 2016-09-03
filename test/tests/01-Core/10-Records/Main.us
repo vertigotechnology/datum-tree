@@ -1,5 +1,8 @@
 
 
+-- Check basic records.
+--   We read a quote file, compute daily trade value,
+--   then sort days by value traded.
 format
  =      { symbol : Text         = 'Text
         , date   : Date         = 'YYYY-MM-DD
@@ -11,8 +14,23 @@ format
         , volume : Int          = 'Int
         , stamp  : Date         = 'YYYY-MM-DD }
 
-
 main
- = read format "test/data/tsv/quotes/ANZ.tsv"
- & sample 5
+ = concat 
+        [ read format "test/data/tsv/quotes/ANZ.tsv"
+        , read format "test/data/tsv/quotes/CBA.tsv"]
+
+ & on /row     
+        $ group 'symbol
+
+ & on /symbol/row
+        $ map-keys 
+        ( λx -> { date  : Date    = x.date
+                , high  : Decimal = x.high
+                , low   : Decimal = x.low
+                , mid   : Decimal = div (x.high + x.low) 2
+                , value : Decimal = x.volume * x.close })
+
+ & on /symbol/row
+        $ sortby-field 'value
+        @ sample 10
 

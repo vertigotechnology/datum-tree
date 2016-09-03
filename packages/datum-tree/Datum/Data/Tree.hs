@@ -82,6 +82,7 @@ module Datum.Data.Tree
         , mapForests'
         , mapForest'
 
+        , mapKeysOfForest
         , mapForestOfTreeOn
         , mapTreesOfTreeOn
 

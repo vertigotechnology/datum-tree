@@ -64,6 +64,7 @@ module Datum.Data.Tree.Operator
         , mapForests'
         , mapForest'
 
+        , mapKeysOfForest
         , mapForestOfTreeOn
         , mapTreesOfTreeOn
 

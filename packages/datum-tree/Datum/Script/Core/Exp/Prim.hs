@@ -155,6 +155,7 @@ typeOfPrimOp op
         PPGather        -> XTTreePath       ~> XTTree ~> XTTree
         PPGroup         -> XTName           ~> XTTree ~> XTTree
         PPInitial       -> XTNat            ~> XTTree ~> XTTree
+        PPMapKeys       -> (XTRecord ~> XTRecord) ~> XTForest ~> XTForest
         PPOn            -> XTArray XTName   ~> (XTForest ~> XTForest) ~> XTTree ~> XTTree
         PPPermuteFields -> XTArray XTName   ~> XTTree ~> XTTree
         PPRenameFields  -> XTArray XTName   ~> XTTree ~> XTTree

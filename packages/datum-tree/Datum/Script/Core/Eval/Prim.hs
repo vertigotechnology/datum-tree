@@ -7,6 +7,7 @@ import Datum.Script.Core.Eval.Prim.Base
 import Datum.Script.Core.Eval.Prim.Console
 import Datum.Script.Core.Eval.Prim.Fields
 import Datum.Script.Core.Eval.Prim.LoadStore
+import Datum.Script.Core.Eval.Prim.Map
 import Datum.Script.Core.Eval.Prim.Nesting
 import Datum.Script.Core.Eval.Prim.Numeric
 import Datum.Script.Core.Eval.Prim.Record
@@ -70,6 +71,9 @@ step self state pp vs
         -- Traverse
         PPAt            -> step_Traverse  self state pp vs
         PPOn            -> step_Traverse  self state pp vs
+
+        -- Mapping
+        PPMapKeys       -> step_Map       self state pp vs
 
         -- Nesting
         PPGroup         -> step_Nesting   self state pp vs

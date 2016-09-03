@@ -1,6 +1,8 @@
 
 module Datum.Data.Tree.Operator.Map
-        ( mapTreesOfTree
+        ( mapKeysOfForest
+
+        , mapTreesOfTree
         , mapTreesOfForest
         , mapForestsOfTree
         , mapForestOfTree
@@ -19,6 +21,15 @@ import Datum.Data.Tree.Exp
 
 
 -- Mapping ----------------------------------------------------------------------------------------
+mapKeysOfForest  :: (Path -> Key  c -> Key  c') -> Path -> Forest c -> Forest 'X
+mapKeysOfForest     fKey  path forest
+ = mapTreesOfForest fTree path forest
+ where   
+        fTree path' (Tree (B t gs) (BT n tt bts))
+         = let  (Key t' tt') = fKey path' (Key t tt)
+           in   Tree (B t' gs) (BT n tt' bts)
+
+
 -- | Apply a per-tree function to every sub-tree of a tree.
 mapTreesOfTree   :: (Path -> Tree c -> Tree c') -> Path -> Tree c -> Tree 'X
 mapTreesOfTree f path tree

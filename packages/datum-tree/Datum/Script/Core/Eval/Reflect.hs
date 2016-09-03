@@ -1,8 +1,9 @@
 
 -- | Reflect interpreter evaluations back into Haskell.
 module Datum.Script.Core.Eval.Reflect
-        ( reflectForestTransform
-        , reflectTreeTransform)
+        ( reflectKeyTransform
+        , reflectTreeTransform
+        , reflectForestTransform)
 where
 import Datum.Script.Core.Eval.Env
 import Datum.Script.Core.Eval.State
@@ -10,40 +11,83 @@ import Datum.Script.Core.Eval.Error
 import Datum.Script.Core.Exp
 import Datum.Data.Tree.Codec.Matryo.Decode              ()
 import qualified Datum.Data.Tree                        as T
+import qualified Datum.Data.Tree.Exp                    as T
 import qualified Datum.Script.Core.Eval.Env             as Env
+import qualified Data.Repa.Array                        as A
 import qualified Text.Show.Pretty                       as Text
+import qualified Data.Text                              as Text
+
+
+type Reflection a
+        = (State -> IO (Either Error (Maybe State)))
+                                -- ^ Interpreter transition function.
+        -> State                -- ^ Starting state for interpreter.
+        -> Value                -- ^ Thunk to apply.
+        -> T.Path               -- ^ Current path in overall tree.
+        -> a                    -- ^ Value to transform.
+        -> IO a                 -- ^ Transformed value.
 
 
 ---------------------------------------------------------------------------------------------------
--- | Reflect evaluation of a forest transform back into Haskell.
--- 
---   Given the transition function and starting state for the interpreter,
---   take a thunk that encodes a forest transform and produce a 
---   native Haskell forest transformer.
---
-reflectForestTransform
-        :: (State -> IO (Either Error (Maybe State)))
-                                -- ^ Interpreter transition function.        
-        -> State                -- ^ Starting state for interpreter.
-        -> Value                -- ^ Thunk that maps forests to forests.
-        -> T.Path               -- ^ Current path in the overall tree.
-        -> T.Forest 'T.O        -- ^ Forest to transform.
-        -> IO (T.Forest 'T.O)   -- ^ Transformed forest.
+-- | Reflect evaluation of a key transform back into Haskell.
+reflectKeyTransform :: Reflection (T.Key 'T.O)
+reflectKeyTransform sstep state0 thunk _path0 key0
+ = do
+        let pdRecord = PDRecord (fieldsOfKey key0)
 
-reflectForestTransform sstep state0 thunk _path0 forest0
- = do   
         state'  <- runMachine sstep
-                $  setStateApp thunk (PVData (PDForest forest0)) state0
+                $  setStateApp thunk (PVData pdRecord) state0
 
         case stateControl state' of
-         -- Expression normalized to a forest, ok.
-         ControlPAP (PAF (PVData (PDForest f)) [])
-               -> return f
+         ControlPAP (PAF (PVData (PDRecord fields)) [])
+               -> return (keyOfFields fields)
 
-         -- Normalized expression was not a forest.
-         -- The thunk that was provided does not map forests to forests.
-         focus -> error $ "datum-tree: wrong type in internal forest evaluation "
+         focus -> error $ "datum-tree: unexpected result in tree evaluation."
                ++ Text.ppShow focus
+
+
+-- | Convert a key to a list of record fields.
+fieldsOfKey :: T.Key 'T.O -> [PrimField Exp]
+fieldsOfKey key0
+ = let  T.Key (T.T arrAtoms) (T.TT arrNameTypes)
+                = key0
+
+        atoms   = T.unboxes arrAtoms
+
+        (names, tys) 
+                = unzip [  (name, ty) 
+                        |  T.Box name T.:*: T.Box ty 
+                        <- A.toList arrNameTypes]
+
+   in   [ PFField (Text.pack name) 
+                  (Just (XFrag (PTType (PTAtom ty))))
+                  (PDAtom atom)
+        | name  <- names
+        | ty    <- tys
+        | atom  <- atoms ]
+
+
+-- | Convert a list of record fields to a key.
+keyOfFields  :: [PrimField Exp] -> T.Key 'T.O
+keyOfFields fs
+ = let  
+        names   = map (Text.unpack . pffieldName) fs
+
+        tys     = map (\f -> case pffieldType f of
+                                Just (XFrag (PTType (PTAtom ty)))  
+                                                -> ty
+                                _               -> error "keyOfFields: bad type")
+                $ fs
+
+        atoms   = map (\f -> case pffieldValue f of
+                                PDAtom atom     -> atom
+                                _               -> error "keyOfField: not an atom")
+                $ fs
+
+   in   T.Key   (T.T  (T.boxes atoms))
+                (T.TT (A.fromList [ T.Box name T.:*: T.Box ty
+                            | name      <- names
+                            | ty        <- tys]))
 
 
 ---------------------------------------------------------------------------------------------------
@@ -53,15 +97,7 @@ reflectForestTransform sstep state0 thunk _path0 forest0
 --   take a thunk that encodes a tree transform and produce a 
 --   native Haskell tree transformer.
 --
-reflectTreeTransform
-        :: (State -> IO (Either Error (Maybe State)))
-                                -- ^ Interpreter transition function.
-        -> State                -- ^ Starting state for interpreter.
-        -> Value                -- ^ Thunk that maps trees to trees.
-        -> T.Path               -- ^ Current path in the overall tree.
-        -> T.Tree 'T.O          -- ^ Tree to transform.
-        -> IO (T.Tree 'T.O)     -- ^ Transformed tree.
-
+reflectTreeTransform :: Reflection (T.Tree 'T.O)
 reflectTreeTransform sstep state0 thunk _path0 tree0
  = do   
         state'  <- runMachine sstep 
@@ -75,6 +111,30 @@ reflectTreeTransform sstep state0 thunk _path0 tree0
          -- Normalized expression is not a tree.
          -- The thunk that was provided does not map trees to trees.
          focus -> error $ "datum-tree: unexpected result in tree evaluation."
+               ++ Text.ppShow focus
+
+
+---------------------------------------------------------------------------------------------------
+-- | Reflect evaluation of a forest transform back into Haskell.
+-- 
+--   Given the transition function and starting state for the interpreter,
+--   take a thunk that encodes a forest transform and produce a 
+--   native Haskell forest transformer.
+--
+reflectForestTransform :: Reflection (T.Forest 'T.O)
+reflectForestTransform sstep state0 thunk _path0 forest0
+ = do   
+        state'  <- runMachine sstep
+                $  setStateApp thunk (PVData (PDForest forest0)) state0
+
+        case stateControl state' of
+         -- Expression normalized to a forest, ok.
+         ControlPAP (PAF (PVData (PDForest f)) [])
+               -> return f
+
+         -- Normalized expression was not a forest.
+         -- The thunk that was provided does not map forests to forests.
+         focus -> error $ "datum-tree: wrong type in internal forest evaluation "
                ++ Text.ppShow focus
 
 
@@ -93,7 +153,9 @@ runMachine sstep state
         case result of
          -- Interpretation crashed.
          Left err               
-          -> error $ show err
+          -> error $ unlines
+                   [ show err
+                   , Text.ppShow state ]
 
          -- Transitioned to a new state.
          Right (Just state')

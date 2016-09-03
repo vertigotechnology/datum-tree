@@ -48,6 +48,7 @@ data PrimOp
         | PPGather              -- ^ Gather branches of a tree into sub trees.
         | PPGroup               -- ^ Group branches by given key field.
         | PPInitial             -- ^ Select the initial n branches of each subtree.
+        | PPMapKeys             -- ^ Apply a function to the keys of every branch in a forest.
         | PPOn                  -- ^ Apply a per-forest function at the given path. 
         | PPPermuteFields       -- ^ Permute fields of a key.
         | PPRenameFields        -- ^ Rename fields of key.
@@ -98,6 +99,7 @@ namesOfPrimOps
         , (PPGather,            "gather#")
         , (PPGroup,             "group#")
         , (PPInitial,           "initial#")
+        , (PPMapKeys,           "map-keys#")
         , (PPOn,                "on#")
         , (PPPermuteFields,     "permute-fields#")
         , (PPRenameFields,      "rename-fields#")
@@ -147,9 +149,11 @@ arityOfPrimOp op
         PPGroup         -> 2
         PPGather        -> 2
         PPInitial       -> 2
+        PPMapKeys       -> 2
         PPOn            -> 3
         PPPermuteFields -> 2
         PPPrint         -> 1
         PPRenameFields  -> 2
         PPSortByField   -> 2
         PPSample        -> 2
+

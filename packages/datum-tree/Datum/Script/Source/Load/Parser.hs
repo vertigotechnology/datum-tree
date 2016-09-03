@@ -71,7 +71,7 @@ pExp
 -- | Parse a function application.
 pExpApp :: Parser (SourcePos, Exp)
 pExpApp
- = do   spx     <- P.many1 pExpAtom
+ = do   spx     <- P.many1 pExpAtomProj
         let (sps, xs) = unzip spx
         let (sp1 : _) = sps
         case xs of
@@ -82,6 +82,22 @@ pExpApp
 
 
 -------------------------------------------------------------------------------
+pExpAtomProj :: Parser (SourcePos, Exp)
+pExpAtomProj
+ = do   (sp, xBody) <- pExpAtom
+
+        P.choice
+         [ do   _sp             <- pTok KDot
+                (_, nName)      <- pVar
+                return  ( sp
+                        , makeXApps (XVar (Text.pack "record-project#")) 
+                                  [ XFrag (PVData (PDName nName))
+                                  , xBody ])
+
+         , do   return  (sp, xBody)
+         ]
+
+
 pExpAtom :: Parser (SourcePos, Exp)
 pExpAtom 
  = P.choice

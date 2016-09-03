@@ -162,6 +162,7 @@ Library
         Datum.Script.Core.Eval.Prim.Sample
         Datum.Script.Core.Eval.Prim.Traverse
         Datum.Script.Core.Eval.Prim.World
+        Datum.Script.Core.Eval.Reflect
 
         Datum.Script.Core.Exp.Prim.PrimOp
         Datum.Script.Core.Exp.Prim.PrimData

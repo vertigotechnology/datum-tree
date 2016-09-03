@@ -1,1 +1,9 @@
-{name = "Armadillo", order = "Cingulata", offspring = "Monozygotic", genera = 9, species = 21}
+# {"row": {"symbol": Text, "date": Date, "open": Decimal, "close": Decimal, "high": Decimal, "low": Decimal, "mid": Decimal, "volume": Int, "stamp": Date}
+  }
+::
+# [ {"ANZ.AX", d/2014-01-01, 32.23, 32.23, 32.23, 32.23, 28.733, 0, d/2015-05-08}
+  , {"ANZ.AX", d/2014-03-14, 31.89, 32.0, 31.8, 31.87, 28.412, 3978300, d/2015-05-08}
+  , {"ANZ.AX", d/2014-05-27, 33.66, 33.765, 33.49, 33.55, 30.997, 3140200, d/2015-05-08}
+  , {"ANZ.AX", d/2014-08-07, 32.95, 33.04, 32.61, 32.85, 30.35, 5144700, d/2015-05-08}
+  , {"ANZ.AX", d/2014-12-31, 32.05, 32.18, 32.0, 32.09, 30.896, 1577900, d/2015-05-08}
+  ]

@@ -30,6 +30,7 @@ strPervasive
         , "store                = store#"
         , "read                 = read#"
 
+        , "at                   = at#"
         , "append               = append#"
         , "argument             = argument#"
         , "concat               = concat#"

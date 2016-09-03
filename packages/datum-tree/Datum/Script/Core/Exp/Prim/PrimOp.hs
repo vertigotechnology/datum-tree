@@ -28,6 +28,7 @@ data PrimOp
         -- Record operators.
         | PPRecordEmpty         -- ^ Construct an empty record.
         | PPRecordExtend        -- ^ Extend a record with a field of the given name.
+        | PPRecordProject       -- ^ Project the field with the given name from a record.
 
         -- File system operators.
         | PPLoad                -- ^ Load  a value from the file system.
@@ -78,6 +79,7 @@ namesOfPrimOps
         -- Record operators.
         , (PPRecordEmpty,       "record-empty#")
         , (PPRecordExtend,      "record-extend#")
+        , (PPRecordProject,     "record-project#")
 
         -- File system operators.
         , (PPLoad,              "load#")
@@ -130,6 +132,7 @@ arityOfPrimOp op
 
         PPRecordEmpty   -> 0
         PPRecordExtend  -> 4
+        PPRecordProject -> 2
 
         PPLoad          -> 1
         PPStore         -> 2

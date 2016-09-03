@@ -140,6 +140,7 @@ typeOfPrimOp op
 
         PPRecordEmpty   -> XTRecord
         PPRecordExtend  -> XTRecord         ~> XTName ~> XTValue ~> XTRecord
+        PPRecordProject -> XTRecord         ~> XTName ~> XTValue
 
         PPLoad          -> XTFilePath       ~> K.XTS XTTree
         PPStore         -> XTFilePath    ~> XTTree ~> K.XTS K.XTUnit

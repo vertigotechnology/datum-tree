@@ -49,6 +49,7 @@ step self state pp vs
         -- Record
         PPRecordEmpty   -> step_Record    self state pp vs
         PPRecordExtend  -> step_Record    self state pp vs
+        PPRecordProject -> step_Record    self state pp vs
 
         -- Fields
         PPRenameFields  -> step_Fields    self state pp vs

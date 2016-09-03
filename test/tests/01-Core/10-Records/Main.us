@@ -1,11 +1,18 @@
 
-record
- =      { name          = "Armadillo"
-        , order         = "Cingulata"
-        , offspring     = "Monozygotic"
-        , genera        = 9
-        , species       = 21 }
+
+format
+ =      { symbol : Text         = 'Text
+        , date   : Date         = 'YYYY-MM-DD
+        , open   : Decimal      = 'Decimal
+        , close  : Decimal      = 'Decimal
+        , high   : Decimal      = 'Decimal
+        , low    : Decimal      = 'Decimal
+        , mid    : Decimal      = 'Decimal
+        , volume : Int          = 'Int
+        , stamp  : Date         = 'YYYY-MM-DD }
 
 
 main
- = do   print record
+ = read format "test/data/tsv/quotes/ANZ.tsv"
+ & sample 5
+

@@ -1,5 +1,4 @@
-tree: Runtime error during query evaluation.
-
+Runtime error during primitive operator evaluation
 Type error in tree file
   when loading: "test/tests/02-Operator/01-Load/10-matryo/14-ErrorClashField/Companies-ErrorClashField.matryo"
 
@@ -28,4 +27,3 @@ Field name clash.
                 (tbranch "website"
                         (ttype  (telement "DERP" ttext)
                                 (telement "DERP" ttext)))))))
-

@@ -14,7 +14,6 @@ import qualified Datum.Data.Tree                        as T
 import qualified Datum.Data.Tree.Exp                    as T
 import qualified Datum.Script.Core.Eval.Env             as Env
 import qualified Data.Repa.Array                        as A
-import qualified Text.Show.Pretty                       as Text
 import qualified Data.Text                              as Text
 
 
@@ -25,7 +24,7 @@ type Reflection a
         -> Value                -- ^ Thunk to apply.
         -> T.Path               -- ^ Current path in overall tree.
         -> a                    -- ^ Value to transform.
-        -> IO a                 -- ^ Transformed value.
+        -> IO (Either Error a)  -- ^ Transformed value.
 
 
 ---------------------------------------------------------------------------------------------------
@@ -35,15 +34,18 @@ reflectKeyTransform sstep state0 thunk _path0 key0
  = do
         let pdRecord = PDRecord (fieldsOfKey key0)
 
-        state'  <- runMachine sstep
+        result' <- runMachine sstep
                 $  setStateApp thunk (PVData pdRecord) state0
 
-        case stateControl state' of
-         ControlPAP (PAF (PVData (PDRecord fields)) [])
-               -> return (keyOfFields fields)
+        case result' of
+         Left  err       
+          -> return $ Left err
 
-         focus -> error $ "datum-tree: unexpected result in tree evaluation."
-               ++ Text.ppShow focus
+         Right state'
+          -> case stateControl state' of
+                ControlPAP (PAF (PVData (PDRecord fields)) [])
+                  -> return $ Right $ keyOfFields fields
+                _ -> return $ Left  $ Error "Unexpected result in tree evaluation."
 
 
 -- | Convert a key to a list of record fields.
@@ -100,18 +102,22 @@ keyOfFields fs
 reflectTreeTransform :: Reflection (T.Tree 'T.O)
 reflectTreeTransform sstep state0 thunk _path0 tree0
  = do   
-        state'  <- runMachine sstep 
+        result  <- runMachine sstep 
                 $  setStateApp thunk (PVData (PDTree tree0)) state0
 
-        case stateControl state' of
-         -- Expression normalized to a tree, ok.
-         ControlPAP (PAF (PVData (PDTree t)) [])
-               -> return t
+        case result of
+         Left err
+          -> return $ Left err
 
-         -- Normalized expression is not a tree.
-         -- The thunk that was provided does not map trees to trees.
-         focus -> error $ "datum-tree: unexpected result in tree evaluation."
-               ++ Text.ppShow focus
+         Right state'
+          -> case stateControl state' of
+                -- Expression normalized to a tree, ok.
+                ControlPAP (PAF (PVData (PDTree t)) [])
+                  -> return $ Right t
+
+                -- Normalized expression is not a tree.
+                -- The thunk that was provided does not map trees to trees.
+                _ -> return $ Left $ Error "Unexpected result in tree evaluation."
 
 
 ---------------------------------------------------------------------------------------------------
@@ -124,18 +130,22 @@ reflectTreeTransform sstep state0 thunk _path0 tree0
 reflectForestTransform :: Reflection (T.Forest 'T.O)
 reflectForestTransform sstep state0 thunk _path0 forest0
  = do   
-        state'  <- runMachine sstep
+        result  <- runMachine sstep
                 $  setStateApp thunk (PVData (PDForest forest0)) state0
 
-        case stateControl state' of
-         -- Expression normalized to a forest, ok.
-         ControlPAP (PAF (PVData (PDForest f)) [])
-               -> return f
+        case result of
+         Left err
+          -> return $ Left err
 
-         -- Normalized expression was not a forest.
-         -- The thunk that was provided does not map forests to forests.
-         focus -> error $ "datum-tree: wrong type in internal forest evaluation "
-               ++ Text.ppShow focus
+         Right state'
+          -> case stateControl state' of
+                -- Expression normalized to a forest, ok.
+                ControlPAP (PAF (PVData (PDForest f)) [])
+                  -> return $ Right f
+
+                -- Normalized expression was not a forest.
+                -- The thunk that was provided does not map forests to forests.
+                _ -> return $ Left $ Error "Unexpected type in forest evaluation"
 
 
 ---------------------------------------------------------------------------------------------------
@@ -143,7 +153,7 @@ reflectForestTransform sstep state0 thunk _path0 forest0
 runMachine  
         :: (State -> IO (Either Error (Maybe State)))
         ->  State
-        ->  IO State
+        ->  IO (Either Error State)
 
 runMachine sstep state
  = do   
@@ -153,9 +163,7 @@ runMachine sstep state
         case result of
          -- Interpretation crashed.
          Left err               
-          -> error $ unlines
-                   [ show err
-                   , Text.ppShow state ]
+          -> return $ Left err
 
          -- Transitioned to a new state.
          Right (Just state')
@@ -163,7 +171,7 @@ runMachine sstep state
 
          -- Interpreter has normalized the expression.
          Right Nothing
-          -> return state
+          -> return $ Right state
 
 
 ---------------------------------------------------------------------------------------------------

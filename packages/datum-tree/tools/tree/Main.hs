@@ -1,6 +1,7 @@
 
 module Main where
 import Load
+import Error
 import Pipeline
 import Data.Default
 import Text.Show.Pretty
@@ -14,11 +15,9 @@ import qualified Datum.Script.Core.Exp          as Exp
 import qualified Datum.Script.Core.Eval         as Eval
 import qualified Datum.Script.Core.Eval.Pretty  as Eval
 import qualified Datum.Script.Core.Eval.Env     as Eval
-import qualified Datum.Script.Core.Eval.Error   as Eval
 
 import qualified System.Environment             as System
 import qualified System.Exit                    as System
-import qualified System.IO                      as System
 
 import qualified Data.Text.Lazy.IO              as LText
 import qualified Data.Text                      as Text
@@ -146,28 +145,13 @@ eval config state
 
         result  <- Eval.step state
         case result of 
-         Left  err              -> errorEval state err
-         Right Nothing          -> return state
-         Right (Just state')    -> eval config state'
-
-
-errorEval :: Eval.State -> Eval.Error -> IO a
-errorEval state err
- = case err of
-        Eval.Error str       
-         -> error str
-
-        Eval.ErrorCore errCore
-         -> error $ "Core error " ++ show errCore
-                ++ ppShow state
-
-        Eval.ErrorPrim errPrim
-         -> do  System.hPutStr System.stderr
-                 $ "tree: Runtime error during query evaluation.\n\n"
-                 ++ show (Eval.ppErrorPrim errPrim)
-                 ++ "\n\n"
-
+         Left  err              
+          -> do reportRuntimeError config state err
                 System.exitFailure
 
+         Right Nothing          
+          -> return state
 
+         Right (Just state')    
+          -> eval config state'
 

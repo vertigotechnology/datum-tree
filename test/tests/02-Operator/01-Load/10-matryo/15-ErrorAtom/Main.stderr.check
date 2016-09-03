@@ -1,5 +1,4 @@
-tree: Runtime error during query evaluation.
-
+Runtime error during primitive operator evaluation
 Type error in tree file
   when loading: "test/tests/02-Operator/01-Load/10-matryo/15-ErrorAtom/Companies-ErrorAtom.matryo"
 
@@ -7,4 +6,3 @@ Atom type mismatch.
   atom:                (int 42)
   does not match type: ttext
   on path:             (path (iforest "website") (iforest "company") (iforest "root"))
-

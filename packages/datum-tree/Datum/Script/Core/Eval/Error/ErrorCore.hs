@@ -14,17 +14,9 @@ import qualified Data.Text                      as Text
 -------------------------------------------------------------------------------
 -- | Errors from the ambient core language.
 data ErrorCore
-        -- | Evaluator crashed due to some obvious implementation bug
-        --   or missing functionality.
-        = ErrorCoreCrash
-
-        -- | Evaluation got stuck because the CEK machine did something
-        --   unexpected.
-        | ErrorCoreStuck
-
-        -- | Evaluation got stuck due to some runtime type error in the 
-        --   client program.
-        | ErrorCoreType             State
+        -- | The expression being evaluated is not in normal form,
+        --   but the evaluator cannot make progress.
+        = ErrorCoreCrash  State
 
         -- | Evaluation got stuck because we found an unbound variable.
         | ErrorCoreUnboundVariable  Bound
@@ -37,14 +29,8 @@ deriving instance Show ErrorCore
 -- | Pretty print an `ErrorCore`.
 ppErrorCore :: ErrorCore -> Doc
 
-ppErrorCore ErrorCoreCrash
+ppErrorCore (ErrorCoreCrash _state)
  = vcat [ text "Interpreter crashed." ]
-
-ppErrorCore ErrorCoreStuck
- = vcat [ text "Stuck core program." ]
-
-ppErrorCore (ErrorCoreType _state)
- = vcat [ text "Type error in core program." ]
 
 ppErrorCore (ErrorCoreUnboundVariable b)
  = vcat [ text "Unbound variable" <+> ppBound b <> text "."] 

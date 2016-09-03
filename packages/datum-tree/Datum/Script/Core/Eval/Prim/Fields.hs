@@ -35,5 +35,5 @@ step_Fields _ _ PPPermuteFields [ VArray _ names, VForest forest ]
                  $ T.promiseForest
                  $ T.permuteFields names' forest
 
-step_Fields _ _ _ _
- =      crash
+step_Fields _ state _ _
+ =      crash state

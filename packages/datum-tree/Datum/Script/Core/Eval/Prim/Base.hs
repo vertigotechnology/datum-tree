@@ -6,7 +6,7 @@ module Datum.Script.Core.Eval.Prim.Base
         , module Datum.Script.Core.Eval.Value
         , module Datum.Script.Core.Exp
         , type Text
-        , progress, failure, crash, stuck
+        , progress, failure, crash
         , takeXName, takePDName
         , takeVNat)
 where
@@ -31,14 +31,9 @@ failure  err    = return $ Left  err
 
 -- | Signal that evalution has crashed because of some error in the interpreter.
 --   This is an implementation error.
-crash :: Monad m => m (Either Error a)
-crash           = return $ Left (ErrorCore ErrorCoreCrash)
-
-
--- | Signal that evaluation has gotten stuck because we've found an ill-typed term.
---   This is a runtime type error in the user program.
-stuck :: Monad m => m (Either Error a)
-stuck           = return $ Left (ErrorCore ErrorCoreStuck)
+crash :: Monad m => State -> m (Either Error a)
+crash state     
+ = return $ Left (ErrorCore $ ErrorCoreCrash state)
 
 
 -- | Take the name from an expression, if there is one.

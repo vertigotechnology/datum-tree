@@ -21,5 +21,5 @@ step_Console _ _ PPPrint [VVPAP PVUnit]
  = do   putStr "()\n"
         progress $ VUnit
 
-step_Console _ _ _ _
- =      crash
+step_Console _ state _ _
+ =      crash state

@@ -45,5 +45,5 @@ step_Map self state PPMapKeys [thunk@VClo{}, VForest forest0]
          Just err -> failure err
          Nothing  -> progress $ VForest forest'
 
-step_Map _ _ _ _
- = crash
+step_Map _ state _ _
+ = crash state

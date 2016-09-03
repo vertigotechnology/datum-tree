@@ -23,5 +23,5 @@ step_Nesting _ _ PPGroup   [VName name, VForest forest]
 step_Nesting _ _ PPFlatten      [VTree tree]
  = do   progress $ VTree $ T.flattenTree tree
 
-step_Nesting _ _ _ _
- =      crash
+step_Nesting _ state _ _
+ =      crash  state

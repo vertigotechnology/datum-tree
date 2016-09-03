@@ -14,5 +14,5 @@ step_World _ state PPArgument [VText name]
         Nothing 
          -> failure $ ErrorPrim $ ErrorArgumentUnknown (Text.pack name)
 
-step_World _ _ _ _
- =      crash
+step_World _ state _ _
+ =      crash state

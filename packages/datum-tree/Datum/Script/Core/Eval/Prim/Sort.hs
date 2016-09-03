@@ -20,5 +20,5 @@ step_Sort _ _ PPSortByField
         let forest' = sortForest compareTuple forest
         progress $ VForest forest'
 
-step_Sort _ _ _ _
- =      crash
+step_Sort _ state _ _
+ =      crash state

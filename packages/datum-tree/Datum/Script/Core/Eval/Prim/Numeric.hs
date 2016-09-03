@@ -25,8 +25,8 @@ step_Numeric _ _ op     [v1@(VInt _),     v2@(VDecimal _)]
  =      return  $ Right x
 
 
-step_Numeric _ _ _ _
- =      crash 
+step_Numeric _ state _ _
+ =      crash state
 
 
 -- | Reduce a binary numeric primop.

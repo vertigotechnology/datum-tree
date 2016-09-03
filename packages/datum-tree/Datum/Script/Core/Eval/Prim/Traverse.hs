@@ -107,8 +107,8 @@ step_Traverse self state PPOn [VArray _ names, thunk, VTree tree0]
          Just err -> failure err
          Nothing  -> progress $ VTree tree'
 
-step_Traverse _ _ _ _
- = crash
+step_Traverse _ state _ _
+ = crash state
 
 
 

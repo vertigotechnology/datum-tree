@@ -136,6 +136,6 @@ step_LoadStore _ _ PPStore     [VText filePath, VTree tree]
 
 
 -- The current term is ill-typed.
-step_LoadStore _ _ _ _
- =      crash
+step_LoadStore _ state _ _
+ =      crash state
 

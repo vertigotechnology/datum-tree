@@ -13,7 +13,7 @@ step_Array _ _
         [VVPAF (PVData p),  VVPAF (PVData (PDArray xt xs))]
  =      progress $ VVPAF (PVData (PDArray xt (p : xs)))
 
-step_Array _ _ _ _
- = crash
+step_Array _ state _ _
+ = crash state
 
 

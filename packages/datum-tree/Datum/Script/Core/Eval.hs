@@ -123,7 +123,7 @@ step   state@(State world env ctx ctl)
                  -> case ctl of
                         ControlExp XAbs{} -> done
                         ControlPAP{}      -> done
-                        _                 -> failure $ ErrorCore ErrorCoreStuck
+                        _                 -> failure $ ErrorCore $ ErrorCoreCrash state
 
 
                 -- Finished evaluating the functional expression, 
@@ -166,7 +166,7 @@ step   state@(State world env ctx ctl)
 
                 -- The context is not empty but we can't make progress.
                 -- This is probably cause by a type error in the user program.
-                _ -> failure $ ErrorCore $ ErrorCoreType state
+                _ -> failure $ ErrorCore $ ErrorCoreCrash state
 
 
 -- | Pack a control with the current environment into a thunk.

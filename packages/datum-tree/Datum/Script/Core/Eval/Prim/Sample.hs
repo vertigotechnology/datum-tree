@@ -36,5 +36,5 @@ step_Sample _ _ PPSample  [vn, VForest forest]
  =      progress $ VForest $ T.sample n forest
 
 -- Unhandled
-step_Sample _ _ _ _
- =      crash
+step_Sample _ state _ _
+ =      crash state

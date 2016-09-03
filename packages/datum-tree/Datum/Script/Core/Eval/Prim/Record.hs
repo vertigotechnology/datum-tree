@@ -38,6 +38,6 @@ step_Record _ _
  =      progress $ VVPAF (PVData (pffieldValue f))
 
 
-step_Record _ _ _ _
- = crash
+step_Record _ state _ _
+ = crash state
 

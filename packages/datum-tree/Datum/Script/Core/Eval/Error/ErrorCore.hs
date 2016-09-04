@@ -5,10 +5,12 @@ module Datum.Script.Core.Eval.Error.ErrorCore
 where
 import Datum.Script.Core.Exp
 import Datum.Script.Core.Eval.State
+import Datum.Script.Core.Eval.Pretty
+-- import Datum.Script.Kernel.Exp.Pretty
 import Text.PrettyPrint.Leijen
-import Data.Text                                (Text)
-import qualified Datum.Script.Kernel.Exp.Bind   as K
-import qualified Data.Text                      as Text
+-- import Data.Text                                (Text)
+-- import qualified Datum.Script.Kernel.Exp.Bind   as K
+-- import qualified Data.Text                      as Text
 
 
 -------------------------------------------------------------------------------
@@ -29,16 +31,17 @@ deriving instance Show ErrorCore
 -- | Pretty print an `ErrorCore`.
 ppErrorCore :: ErrorCore -> Doc
 
-ppErrorCore (ErrorCoreCrash _state)
- = vcat [ text "Interpreter crashed." ]
+ppErrorCore (ErrorCoreCrash state)
+ = vcat [ text "Interpreter crashed."
+        , text "  control: " 
+                <>  ppExpCut (expOfControl $ stateControl state) ]
 
 ppErrorCore (ErrorCoreUnboundVariable b)
- = vcat [ text "Unbound variable" <+> ppBound b <> text "."] 
+ = vcat [ text "Unbound variable" 
+                <+> text "\"" 
+                <>  ppBound b 
+                <>  text "\""
+                <>  text "."
+        ] 
 
 
-ppBound :: K.Bound Text -> Doc
-ppBound uu
- = case uu of
-        UIx i   -> text "^" <> int i
-        UName n -> text (show $ Text.unpack n)
-        _       -> text "derp"

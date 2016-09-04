@@ -1,7 +1,8 @@
 
 module Datum.Script.Core.Eval.Value
         ( Value (..)
-        , takeExpOfValue
+        , expOfValue
+        , expOfPAP
 
         , Clo   (..)
         , PAP   (..)
@@ -16,20 +17,23 @@ import qualified Data.Set               as Set
 import Prelude hiding (lookup)
 
 
--- | Convert a value back to an expression, if possible
-takeExpOfValue :: Value -> Maybe Exp
-takeExpOfValue vv
+
+-- | Convert a value back to an expression.
+expOfValue :: Value -> Exp
+expOfValue vv
  = case vv of
-        VPAP (PAF f vs)
-         |  Just xs     <- sequence $ map takeExpOfValue vs
-         -> Just $ makeXApps (XFrag f) xs
+        -- TODO: substitute env back into exp
+        -- This is used for error reporting.
+        VClo (Clo xx _env) -> xx     
+        VPAP pap           -> expOfPAP pap
 
-        VPAP (PAP p vs)
-         |  Just xs     <- sequence $ map takeExpOfValue vs
-         -> Just $ makeXApps (XPrim p) xs
 
-        _ -> Nothing
-
+-- | Convert a PAP back to an expression.
+expOfPAP :: PAP -> Exp
+expOfPAP pp
+ = case pp of
+        PAF f vs  -> makeXApps (XFrag f) $ map expOfValue vs
+        PAP p vs  -> makeXApps (XPrim p) $ map expOfValue vs
 
 
 -- | Trim the environments stored in a value to just the elements that

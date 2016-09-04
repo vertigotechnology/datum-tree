@@ -70,8 +70,8 @@ toCoreBind tt
 toCoreCast :: S.Cast -> Either Error C.Cast
 toCoreCast cc
  = case cc of
-        S.CRun          -> return $ C.CRun
-        S.CBox          -> return $ C.CBox
+        S.CastRun       -> return $ C.CastRun
+        S.CastBox       -> return $ C.CastBox
 
 
 -- | Convert an optional source type to core,

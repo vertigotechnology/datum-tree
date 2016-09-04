@@ -1,7 +1,7 @@
 
 module Datum.Script.Core.Eval.Prim.Base
         ( module Datum.Script.Core.Eval.Error
-        , module Datum.Script.Core.Eval.Pretty
+--        , module Datum.Script.Core.Eval.Pretty
         , module Datum.Script.Core.Eval.State
         , module Datum.Script.Core.Eval.Value
         , module Datum.Script.Core.Exp
@@ -12,7 +12,7 @@ module Datum.Script.Core.Eval.Prim.Base
 where
 import Datum.Script.Core.Eval.Env
 import Datum.Script.Core.Eval.Error
-import Datum.Script.Core.Eval.Pretty
+-- import Datum.Script.Core.Eval.Pretty
 import Datum.Script.Core.Eval.State
 import Datum.Script.Core.Eval.Value
 import Datum.Script.Core.Exp

@@ -64,6 +64,15 @@ data Control
 deriving instance Show Control
 
 
+-- Convert a `Control` back to an expression,
+-- used for error reporting.
+expOfControl :: Control -> Exp
+expOfControl cc
+ = case cc of
+        ControlExp xx   -> xx
+        ControlPAP pap  -> expOfPAP pap
+
+
 -------------------------------------------------------------------------------
 -- | Context of evaluation.
 data Context

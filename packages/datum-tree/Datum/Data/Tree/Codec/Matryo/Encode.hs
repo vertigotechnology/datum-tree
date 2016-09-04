@@ -1,7 +1,7 @@
 
 module Datum.Data.Tree.Codec.Matryo.Encode
-        ( prettyTree
-        , encodeTree
+        ( prettyTree,   prettyForest
+        , encodeTree,   encodeForest
         , Config (..))
 where
 import Datum.Data.Tree.Exp
@@ -35,10 +35,25 @@ prettyTree tree
  = let  (_, b)  = runLayout (layoutTree def tree) 0 1
    in   toLazyText b
 
+
+-- | Pretty print a forest.
+prettyForest :: Forest 'O -> Text
+prettyForest tree
+ = let  (_, b)  = runLayout (layoutForest def tree) 0 1
+   in   toLazyText b
+
+
 -- | Encode a tree as a text builder.
 encodeTree :: Config -> Tree 'O -> Builder
 encodeTree cc tree
  = let  (_, b)  = runLayout (layoutTree cc tree) 0 1
+   in   b
+
+
+-- | Encode a tree as a text builder.
+encodeForest :: Config -> Forest 'O -> Builder
+encodeForest cc forest
+ = let  (_, b)  = runLayout (layoutForest cc forest) 0 1
    in   b
 
 
@@ -50,6 +65,16 @@ layoutTree cc (Tree b bt)
  <> text "::"
  <> line
  <> layoutBranch     cc True bt b
+
+
+-- | Layout a whole `Forest`.
+layoutForest :: Config -> Forest 'O -> Layout
+layoutForest cc (Forest g bt)
+ =  layoutBranchType cc True bt
+ <> line
+ <> text "::"
+ <> line
+ <> layoutGroup cc bt g
 
 
 -------------------------------------------------------------------------------

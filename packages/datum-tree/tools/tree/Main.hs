@@ -6,21 +6,23 @@ import Pipeline
 import Data.Default
 import Text.Show.Pretty
 import Control.Monad
-import Datum.Script.Core.Exp                    (Exp)
-import Config                                   (Config(..))
+import Datum.Script.Core.Exp                            (Exp)
+import Config                                           (Config(..))
 import Data.Maybe
-import qualified Config                         as Config
+import qualified Config                                 as Config
 
-import qualified Datum.Script.Core.Exp          as Exp
-import qualified Datum.Script.Core.Eval         as Eval
-import qualified Datum.Script.Core.Eval.Pretty  as Eval
-import qualified Datum.Script.Core.Eval.Env     as Eval
+import qualified Datum.Script.Core.Exp                  as Exp
+import qualified Datum.Script.Core.Eval                 as Eval
+import qualified Datum.Script.Core.Eval.State           as Eval
+import qualified Datum.Script.Core.Eval.Pretty.Build    as Eval
+import qualified Datum.Script.Core.Eval.Env             as Eval
 
-import qualified System.Environment             as System
-import qualified System.Exit                    as System
+import qualified System.Environment                     as System
+import qualified System.Exit                            as System
 
-import qualified Data.Text.Lazy.IO              as LText
-import qualified Data.Text                      as Text
+import qualified Data.Text.Lazy.IO                      as LText
+import qualified Data.Text                              as Text
+import qualified Data.Text.Lazy.Builder                 as Text
 
 
 -------------------------------------------------------------------------------
@@ -126,12 +128,12 @@ runExp config _filePath xCore
 
          -- Evaluation has produced some non-unit result, 
          -- so print it to the console.
-         _ -> do let ppConfig  = Eval.Config
-
+         _ -> do 
                  LText.putStrLn 
-                        $ Eval.pprControl ppConfig 
+                        $ Text.toLazyText
+                        $ Eval.buildExp 0
+                        $ Eval.expOfControl
                         $ Eval.stateControl state'
-
                  return ()
 
 

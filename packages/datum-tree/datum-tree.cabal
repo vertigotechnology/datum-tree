@@ -110,6 +110,7 @@ Library
         Datum.Script.Core.Eval.Env
         Datum.Script.Core.Eval.Error
         Datum.Script.Core.Eval.Prim
+        Datum.Script.Core.Eval.Pretty
         Datum.Script.Core.Eval.State
         Datum.Script.Core.Eval.Value
         Datum.Script.Core.Eval
@@ -162,7 +163,9 @@ Library
         Datum.Script.Core.Eval.Prim.Sample
         Datum.Script.Core.Eval.Prim.Traverse
         Datum.Script.Core.Eval.Prim.World
+        Datum.Script.Core.Eval.Pretty.Build
         Datum.Script.Core.Eval.Reflect
+        Datum.Script.Core.Pretty
 
         Datum.Script.Core.Exp.Prim.PrimOp
         Datum.Script.Core.Exp.Prim.PrimData
@@ -172,6 +175,7 @@ Library
         Datum.Script.Kernel.Exp.Compounds
         Datum.Script.Kernel.Exp.Generic
         Datum.Script.Kernel.Exp.Prim
+        Datum.Script.Kernel.Exp.Pretty
 
         Datum.Script.Source.Exp.Generic
 

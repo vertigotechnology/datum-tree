@@ -14,19 +14,6 @@ format
         , volume : Int          = 'Int
         , stamp  : Date         = 'YYYY-MM-DD }
 
-{-
-format
- =      { symbol  = std Text  
-        , date    = fmt Date    'YYYY-MM-DD
-        , open    = std Decimal
-        , close   = std Decimal
-        , high    = std Decimal
-        , low     = std Decimal
-        , mid     = std Decimal
-        , volume  = std Decimal
-        , stamp   = fmt Date    'YYYY-MM-DD }
--}
-
 main
  = concat
         [ read format "test/data/tsv/quotes/ANZ.tsv"

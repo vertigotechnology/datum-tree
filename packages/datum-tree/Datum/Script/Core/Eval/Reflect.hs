@@ -3,7 +3,8 @@
 module Datum.Script.Core.Eval.Reflect
         ( reflectKeyTransform
         , reflectTreeTransform
-        , reflectForestTransform)
+        , reflectForestTransform
+        , keyOfFields)
 where
 import Datum.Script.Core.Eval.Env
 import Datum.Script.Core.Eval.State

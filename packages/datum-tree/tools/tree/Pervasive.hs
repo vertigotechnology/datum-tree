@@ -45,6 +45,7 @@ strPervasive
         , "map-keys             = map-keys#"
         , "on                   = on#"
         , "permute-fields       = permute-fields#"
+        , "push-dim             = push-dim#"
         , "print                = print#"
         , "rename-fields        = rename-fields#"
         , "rename-dimension     = rename-dimension#"

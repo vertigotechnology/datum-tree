@@ -89,6 +89,7 @@ step self state pp vs
         PPFlatten               -> step_Nesting   self state pp vs
         PPRenameDimension       -> step_Nesting   self state pp vs
         PPDupDim                -> step_Nesting   self state pp vs
+        PPPushDim               -> step_Nesting   self state pp vs
 
         -- World
         PPArgument              -> step_World     self state pp vs

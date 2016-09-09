@@ -3,6 +3,7 @@ module Datum.Script.Core.Eval.Prim.Nesting
         (step_Nesting)
 where
 import Datum.Script.Core.Eval.Prim.Base
+import Datum.Script.Core.Eval.Reflect
 import qualified Datum.Data.Tree                as T
 import qualified Datum.Data.Tree.Operator.Cast  as T
 import qualified Data.Text                      as Text
@@ -52,6 +53,20 @@ step_Nesting _ _
                  $ T.dupDimOfForest 
                         (Text.unpack nDimSrc)
                         (Text.unpack nDimDst)
+                        forest
+
+
+-- Push down a dimension.
+step_Nesting _ _
+        PPPushDim 
+        [VName nDimDst, VArray _ rs, VForest forest]
+ = do
+        let ks      = [keyOfFields fs | PDRecord fs <- rs]
+
+        progress $ VForest
+                 $ T.pushDimOfForest
+                        (Text.unpack nDimDst)
+                        ks
                         forest
 
 step_Nesting _ state _ _

@@ -161,6 +161,7 @@ typeOfPrimOp op
         PPMapKeys               -> (XTRecord ~> XTRecord) ~> XTForest ~> XTForest
         PPOn                    -> XTArray XTName   ~> (XTForest ~> XTForest) ~> XTTree ~> XTTree
         PPPermuteFields         -> XTArray XTName   ~> XTTree ~> XTTree
+        PPPushDim               -> XTName ~> XTArray XTRecord ~> XTForest ~> XTForest
         PPRenameFields          -> XTArray XTName   ~> XTTree ~> XTTree
         PPRenameDimension       -> XTTreePath       ~> XTTreePath ~> XTTree ~> XTTree
         PPSample                -> XTNat            ~> XTTree ~> XTTree

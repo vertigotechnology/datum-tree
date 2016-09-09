@@ -79,6 +79,8 @@ module Datum.Data.Tree
         , dupDimOfTree
         , dupDimOfForest
 
+        , pushDimOfForest
+
           -- ** Mapping
         , mapTrees
         , mapTrees'

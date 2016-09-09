@@ -54,6 +54,7 @@ data PrimOp
         | PPMapKeys             -- ^ Apply a function to the keys of every branch in a forest.
         | PPOn                  -- ^ Apply a per-forest function at the given path. 
         | PPPermuteFields       -- ^ Permute fields of a key.
+        | PPPushDim             -- ^ Push down a dimension.
         | PPRenameFields        -- ^ Rename fields of key.
         | PPRenameDimension     -- ^ Rename a dimension in the tree.
         | PPSample              -- ^ Sample n intermediate branches of each subtree.
@@ -109,6 +110,7 @@ namesOfPrimOps
         , (PPMapKeys,           "map-keys#")
         , (PPOn,                "on#")
         , (PPPermuteFields,     "permute-fields#")
+        , (PPPushDim,           "push-dim#")
         , (PPRenameFields,      "rename-fields#")
         , (PPRenameDimension,   "rename-dimension#")
         , (PPSample,            "sample#")
@@ -163,6 +165,7 @@ arityOfPrimOp op
         PPMapKeys               -> 2
         PPOn                    -> 3
         PPPermuteFields         -> 2
+        PPPushDim               -> 3
         PPPrint                 -> 1
         PPRenameFields          -> 2
         PPRenameDimension       -> 3

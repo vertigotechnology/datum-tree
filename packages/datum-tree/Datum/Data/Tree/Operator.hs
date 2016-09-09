@@ -61,6 +61,8 @@ module Datum.Data.Tree.Operator
         , dupDimOfTree
         , dupDimOfForest
 
+        , pushDimOfForest
+
           -- ** Mapping
         , mapTrees
         , mapTrees'
@@ -137,6 +139,7 @@ import Datum.Data.Tree.Operator.Limit
 import Datum.Data.Tree.Operator.Map
 import Datum.Data.Tree.Operator.Path
 import Datum.Data.Tree.Operator.Project
+import Datum.Data.Tree.Operator.Push
 import Datum.Data.Tree.Operator.Reduce
 import Datum.Data.Tree.Operator.Rename
 import Datum.Data.Tree.Operator.Slice

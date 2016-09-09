@@ -1,0 +1,9 @@
+
+-- Test of count operator.
+-- Group the bodies by classification and count the number we have
+-- of each classification.
+main 
+ = load "test/data/csv/SolarSystem.csv"
+ & on /row $ rename-fields ['name, 'cls, 'orbits]
+ & on /row $ group 'cls
+ & on /cls $ count-as-field 'bodies 'row

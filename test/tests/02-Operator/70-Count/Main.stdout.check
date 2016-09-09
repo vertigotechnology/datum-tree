@@ -1,0 +1,63 @@
+# {"cls"
+    : {"cls": Text, "bodies": Nat}
+    # { "row": {"name": Text, "orbits": Text}
+      }
+  }
+::
+# [ {"Planet", 8}
+    # [ {"Mercury", "Sol"}
+      , {"Venus", "Sol"}
+      , {"Earth", "Sol"}
+      , {"Mars", "Sol"}
+      , {"Jupiter", "Sol"}
+      , {"Saturn", "Sol"}
+      , {"Uranus", "Sol"}
+      , {"Neptune", "Sol"}
+      ]
+  , {"Star", 1}
+    # [ {"Sol", "Galactic Center"}
+      ]
+  , {"Dwarf Planet", 2}
+    # [ {"Ceres", "Sol"}
+      , {"Pluto", "Sol"}
+      ]
+  , {"Moon", 37}
+    # [ {"Luna", "Earth"}
+      , {"Phobos", "Mars"}
+      , {"Deimos", "Mars"}
+      , {"Io", "Jupiter"}
+      , {"Europa", "Jupiter"}
+      , {"Ganymede", "Jupiter"}
+      , {"Callisto", "Jupiter"}
+      , {"Mimas", "Saturn"}
+      , {"Enceladus", "Saturn"}
+      , {"Tethys", "Saturn"}
+      , {"Dione", "Saturn"}
+      , {"Rhea", "Saturn"}
+      , {"Titan", "Saturn"}
+      , {"Iapetus", "Saturn"}
+      , {"Puck", "Uranus"}
+      , {"Miranda", "Uranus"}
+      , {"Ariel", "Uranus"}
+      , {"Umbriel", "Uranus"}
+      , {"Titania", "Uranus"}
+      , {"Oberon", "Uranus"}
+      , {"Naiad", "Neptune"}
+      , {"Thalassa", "Neptune"}
+      , {"Despina", "Neptune"}
+      , {"Galatea", "Neptune"}
+      , {"Larissa", "Neptune"}
+      , {"Proteus", "Neptune"}
+      , {"Triton", "Neptune"}
+      , {"Nereid", "Neptune"}
+      , {"Halimede", "Neptune"}
+      , {"Sao", "Neptune"}
+      , {"Laomedeia", "Neptune"}
+      , {"Psamathe", "Neptune"}
+      , {"Neso", "Neptune"}
+      , {"Charon", "Pluto"}
+      , {"Styx", "Pluto"}
+      , {"Nix", "Pluto"}
+      , {"Kerberos", "Pluto"}
+      ]
+  ]

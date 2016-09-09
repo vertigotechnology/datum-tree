@@ -83,6 +83,9 @@ module Datum.Data.Tree.Operator
         , keysOfTree
         , sizeOfTree
 
+        , countAsFieldTree
+        , countAsFieldForest
+
           -- * Appending
         , appendTrees
         , appendForests
@@ -113,6 +116,7 @@ module Datum.Data.Tree.Operator
 where
 import Datum.Data.Tree.Operator.Append
 import Datum.Data.Tree.Operator.Cast
+import Datum.Data.Tree.Operator.Count
 import Datum.Data.Tree.Operator.Elements
 import Datum.Data.Tree.Operator.Extract
 import Datum.Data.Tree.Operator.Fields

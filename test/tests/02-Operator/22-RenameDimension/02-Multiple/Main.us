@@ -1,6 +1,6 @@
 
 
--- Test of the rename-dimensino operator.
+-- Test of the rename-dimension operator.
 -- We rename two nested dimensions in one go.
 main 
  = load "test/data/csv/SolarSystem.csv"

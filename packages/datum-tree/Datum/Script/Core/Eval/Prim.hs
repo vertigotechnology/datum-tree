@@ -11,6 +11,7 @@ import Datum.Script.Core.Eval.Prim.Map
 import Datum.Script.Core.Eval.Prim.Nesting
 import Datum.Script.Core.Eval.Prim.Numeric
 import Datum.Script.Core.Eval.Prim.Record
+import Datum.Script.Core.Eval.Prim.Reduce
 import Datum.Script.Core.Eval.Prim.Sample
 import Datum.Script.Core.Eval.Prim.Sort
 import Datum.Script.Core.Eval.Prim.Traverse
@@ -67,6 +68,9 @@ step self state pp vs
         -- Union
         PPAppend                -> step_Union     self state pp vs
         PPConcat                -> step_Union     self state pp vs
+
+        -- Reduction
+        PPCountAsField          -> step_Reduce    self state pp vs
 
         -- Traverse
         PPAt                    -> step_Traverse  self state pp vs

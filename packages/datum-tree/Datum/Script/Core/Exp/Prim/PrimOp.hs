@@ -43,6 +43,7 @@ data PrimOp
         | PPAt                  -- ^ Apply a per-tree function at the given path.
         | PPArgument            -- ^ Get the value of a script argument.
         | PPConcat              -- ^ Concatenate a list of trees or forests.
+        | PPCountAsField        -- ^ Count the number of branches in a subtree.
         | PPFinal               -- ^ Select the final n branches of each subtree.
         | PPFlatten             -- ^ Flatten branches.
         | PPGather              -- ^ Gather branches of a tree into sub trees.
@@ -95,6 +96,7 @@ namesOfPrimOps
         , (PPAt,                "at#")
         , (PPArgument,          "argument#")
         , (PPConcat,            "concat#")
+        , (PPCountAsField,      "count-as-field#")
         , (PPFinal,             "final#")
         , (PPFlatten,           "flatten#")
         , (PPGather,            "gather#")
@@ -146,6 +148,7 @@ arityOfPrimOp op
         PPAt                    -> 3
         PPArgument              -> 1
         PPConcat                -> 1
+        PPCountAsField          -> 3
         PPFinal                 -> 2
         PPFlatten               -> 1
         PPGroup                 -> 2

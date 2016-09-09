@@ -34,6 +34,7 @@ strPervasive
         , "append               = append#"
         , "argument             = argument#"
         , "concat               = concat#"
+        , "count-as-field       = count-as-field#"
         , "final                = final#"
         , "flatten              = flatten#"
         , "gather               = gather#"

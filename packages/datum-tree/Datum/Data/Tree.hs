@@ -75,6 +75,10 @@ module Datum.Data.Tree
           -- ** Permuting
         , permuteFields
 
+          -- ** Duplicating
+        , dupDimOfTree
+        , dupDimOfForest
+
           -- ** Mapping
         , mapTrees
         , mapTrees'

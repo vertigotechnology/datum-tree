@@ -152,6 +152,7 @@ typeOfPrimOp op
         PPConcat                -> XTArray XTForest ~> XTForest
         PPCountAsField          -> XTName           ~> XTName ~> XTTree ~> XTTree
         PPDropDim               -> XTName           ~> XTTree ~> XTTree
+        PPDupDim                -> XTName ~> XTName ~> XTTree ~> XTTree
         PPFinal                 -> XTNat            ~> XTTree ~> XTTree
         PPFlatten               -> XTTree           ~> XTTree
         PPGather                -> XTTreePath       ~> XTTree ~> XTTree

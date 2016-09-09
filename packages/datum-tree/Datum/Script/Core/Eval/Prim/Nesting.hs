@@ -42,5 +42,17 @@ step_Nesting _ _
         progress $ VTree 
                  $ T.renameDimOfTree names1' names2' tree
 
+
+-- Duplicate a dimension in the tree.
+step_Nesting _ _
+        PPDupDim
+        [VName nDimSrc, VName nDimDst, VForest forest]
+ = 
+        progress $ VForest
+                 $ T.dupDimOfForest 
+                        (Text.unpack nDimSrc)
+                        (Text.unpack nDimDst)
+                        forest
+
 step_Nesting _ state _ _
  =      crash  state

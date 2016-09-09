@@ -45,6 +45,7 @@ data PrimOp
         | PPConcat              -- ^ Concatenate a list of trees or forests.
         | PPCountAsField        -- ^ Count the number of branches in a subtree.
         | PPDropDim             -- ^ Drop a dimension in a tree.
+        | PPDupDim              -- ^ Duplicate a dimension in the tree.
         | PPFinal               -- ^ Select the final n branches of each subtree.
         | PPFlatten             -- ^ Flatten branches.
         | PPGather              -- ^ Gather branches of a tree into sub trees.
@@ -99,6 +100,7 @@ namesOfPrimOps
         , (PPConcat,            "concat#")
         , (PPCountAsField,      "count-as-field#")
         , (PPDropDim,           "drop-dim#")
+        , (PPDupDim,            "dup-dim#")
         , (PPFinal,             "final#")
         , (PPFlatten,           "flatten#")
         , (PPGather,            "gather#")
@@ -152,6 +154,7 @@ arityOfPrimOp op
         PPConcat                -> 1
         PPCountAsField          -> 3
         PPDropDim               -> 2
+        PPDupDim                -> 3
         PPFinal                 -> 2
         PPFlatten               -> 1
         PPGroup                 -> 2

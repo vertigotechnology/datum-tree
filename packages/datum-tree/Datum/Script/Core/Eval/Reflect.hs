@@ -2,6 +2,7 @@
 -- | Reflect interpreter evaluations back into Haskell.
 module Datum.Script.Core.Eval.Reflect
         ( reflectKeyTransform
+        , reflectKeyPredicate
         , reflectTreeTransform
         , reflectForestTransform
         , keyOfFields)
@@ -18,19 +19,21 @@ import qualified Data.Repa.Array                        as A
 import qualified Data.Text                              as Text
 
 
-type Reflection a
+type Reflection a b
         = (State -> IO (Either Error (Maybe State)))
                                 -- ^ Interpreter transition function.
         -> State                -- ^ Starting state for interpreter.
         -> Value                -- ^ Thunk to apply.
         -> T.Path               -- ^ Current path in overall tree.
         -> a                    -- ^ Value to transform.
-        -> IO (Either Error a)  -- ^ Transformed value.
+        -> IO (Either Error b)  -- ^ Transformed value.
 
 
 ---------------------------------------------------------------------------------------------------
 -- | Reflect evaluation of a key transform back into Haskell.
-reflectKeyTransform :: Reflection (T.Key 'T.O)
+reflectKeyTransform 
+        :: Reflection (T.Key 'T.O) (T.Key 'T.O)
+
 reflectKeyTransform sstep state0 thunk _path0 key0
  = do
         let pdRecord = PDRecord (fieldsOfKey key0)
@@ -47,6 +50,35 @@ reflectKeyTransform sstep state0 thunk _path0 key0
                 ControlPAP (PAF (PVData (PDRecord fields)) [])
                   -> return $ Right $ keyOfFields fields
                 _ -> return $ Left  $ Error "Unexpected result in tree evaluation."
+
+
+-- | Reflect evaluation of a key predicate back into Haskell.
+reflectKeyPredicate
+        :: Reflection (T.Key 'T.O) Bool
+
+reflectKeyPredicate sstep state0 thunk _path0 key0
+ = do
+        let pdRecord = PDRecord (fieldsOfKey key0)
+
+        result' <- runMachine sstep
+                $  setStateApp thunk (PVData pdRecord) state0
+
+        case result' of
+         Left  err       
+          -> return $ Left err
+
+         Right state'
+          -> case stateControl state' of
+                ControlExp (XFrag (PVData (PDAtom (ABool b))))
+                  -> return $ Right b
+
+                ControlPAP (PAF   (PVData (PDAtom (ABool b))) [])
+                  -> return $ Right b
+
+                c -> return $ Left  $ Error 
+                            $ "Unexpected result in key preficate." ++ show c
+
+
 
 
 -- | Convert a key to a list of record fields.
@@ -100,7 +132,9 @@ keyOfFields fs
 --   take a thunk that encodes a tree transform and produce a 
 --   native Haskell tree transformer.
 --
-reflectTreeTransform :: Reflection (T.Tree 'T.O)
+reflectTreeTransform 
+        :: Reflection (T.Tree 'T.O) (T.Tree 'T.O)
+
 reflectTreeTransform sstep state0 thunk _path0 tree0
  = do   
         result  <- runMachine sstep 
@@ -128,7 +162,9 @@ reflectTreeTransform sstep state0 thunk _path0 tree0
 --   take a thunk that encodes a forest transform and produce a 
 --   native Haskell forest transformer.
 --
-reflectForestTransform :: Reflection (T.Forest 'T.O)
+reflectForestTransform 
+        :: Reflection (T.Forest 'T.O) (T.Forest 'T.O)
+
 reflectForestTransform sstep state0 thunk _path0 forest0
  = do   
         result  <- runMachine sstep

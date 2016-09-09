@@ -154,6 +154,7 @@ typeOfPrimOp op
         PPDropDim               -> XTName           ~> XTTree ~> XTTree
         PPDupDim                -> XTName ~> XTName ~> XTTree ~> XTTree
         PPFinal                 -> XTNat            ~> XTTree ~> XTTree
+        PPFilterKeys            -> (XTRecord ~> XTBool) ~> XTForest ~> XTForest
         PPFlatten               -> XTTree           ~> XTTree
         PPGather                -> XTTreePath       ~> XTTree ~> XTTree
         PPGroup                 -> XTName           ~> XTTree ~> XTTree

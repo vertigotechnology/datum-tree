@@ -22,27 +22,39 @@ main
                 , read format "test/data/tsv/quotes/NAB.tsv"
                 , read format "test/data/tsv/quotes/WBC.tsv" ]
 
-        glob 
-           -- Select only the fields that we're interested in.
-           & on /row
-                $ permute-fields ['symbol, 'date, 'open, 'close, 'volume]
+        bysym   = glob
+                -- Select only the fields that we're interested in.
+                & on /row
+                     $ permute-fields ['symbol, 'date, 'open, 'close, 'volume]
 
-           -- Group quotes by symbol
-           & on /row
-                $ group 'symbol
+                -- Group quotes by symbol
+                & on /row
+                     $ group 'symbol
 
-           -- Sample for debugging.
-           & on /symbol/row     
-                $ sample 10 
+                -- Sample for debugging.
+                & on /symbol/row     
+                     $ sample 10 
 
-           -- Associate copies of the data with the given date ranges.
-           & on /symbol/row     
-                $ push-dim 'row 
-                        [ { range : Nat  = 7  }
-                        , { range : Nat  = 30 }
-                        , { range : Nat  = 60 }
-                        , { range : Nat  = 90 } ]
 
-           & gather /symbol/row/row
+        dView  = 1234
 
-           & on /row    $ group 'symbol
+        bysym   -- Associate copies of the data with the given date ranges.
+                & on /symbol/row     
+                     $ push-dim 'row 
+                             [ { range : Nat  = 7  }
+                             , { range : Nat  = 30 }
+                             , { range : Nat  = 60 }
+                             , { range : Nat  = 90 } ]
+
+                -- Gather the leaves back to top-level so we have a copy of the 
+                -- data associated with each range.
+                & gather /symbol/row/row
+
+                -- Re-group by symbol.
+                & on /row 
+                     $ group 'symbol
+
+                -- Broadcast the view date to each key.
+                & on /symbol/row
+                     $ filter-keys (λk -> k.range >= 30)
+

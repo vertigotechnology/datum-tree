@@ -60,6 +60,7 @@ step self state pp vs
 
         -- Filter
         PPDropDim               -> step_Filter    self state pp vs
+        PPFilterKeys            -> step_Filter    self state pp vs
 
         -- Sample
         PPInitial               -> step_Sample    self state pp vs

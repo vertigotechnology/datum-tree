@@ -1,0 +1,42 @@
+
+-- Check filter operator.
+--  We determine the number of days where the traded volume
+--  was less than certain limits.
+
+-- Format of the quote file.
+format
+ =      { symbol : Text         = 'Text
+        , date   : Date         = 'YYYY-MM-DD
+        , open   : Decimal      = 'Decimal
+        , close  : Decimal      = 'Decimal
+        , high   : Decimal      = 'Decimal
+        , low    : Decimal      = 'Decimal
+        , mid    : Decimal      = 'Decimal
+        , volume : Int          = 'Int
+        , stamp  : Date         = 'YYYY-MM-DD }
+
+
+main
+ -- Read data and select fields of interest.
+ = read format "test/data/tsv/quotes/ANZ.tsv"
+ & on /row      $ permute-fields 
+                        ['symbol, 'date, 'volume, 'close]
+
+ -- Push in the limit levels that we're interested in.
+ & on /row      $ push-dim 'limit 
+                        [ { limit : Nat = 1000000 }
+                        , { limit : Nat = 2000000 } 
+                        , { limit : Nat = 3000000 } ]
+
+ -- Gather all the keys to top-level and filter against the limits.
+ & gather /limit/row
+ & on /row      $ filter-keys (λk -> k.volume < k.limit )
+
+ -- Regroup by the limit value and count how many rows were under that limit.
+ & on /row      $ group 'limit
+ & on /limit    $ count-as-field 'count 'row
+
+ -- Sort by the limit value for presentation.
+ & on /limit    $ sortby-field 'limit
+
+ 

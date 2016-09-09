@@ -34,10 +34,17 @@ redNum2 :: PrimOp -> Value -> Value -> Maybe Value
 
 redNum2 op (VInt x1)     (VInt x2)
  = case op of
-        PPAdd   -> Just $ VInt (x1 +     x2)
-        PPSub   -> Just $ VInt (x1 -     x2)
-        PPMul   -> Just $ VInt (x1 *     x2)
-        PPDiv   -> Just $ VInt (x1 `div` x2)
+        PPAdd   -> Just $ VInt     (x1 +     x2)
+        PPSub   -> Just $ VInt     (x1 -     x2)
+        PPMul   -> Just $ VInt     (x1 *     x2)
+        PPDiv   -> Just $ VInt     (x1 `div` x2)
+
+        PPEq    -> Just $ VBool    (x1 ==    x2)
+        PPGt    -> Just $ VBool    (x1 >     x2)
+        PPGe    -> Just $ VBool    (x1 >=    x2)
+        PPLt    -> Just $ VBool    (x1 <     x2)
+        PPLe    -> Just $ VBool    (x1 <=    x2)
+
         _       -> Nothing
 
 redNum2 op (VDecimal x1) (VDecimal x2)
@@ -46,6 +53,13 @@ redNum2 op (VDecimal x1) (VDecimal x2)
         PPSub   -> Just $ VDecimal (x1 -  x2)
         PPMul   -> Just $ VDecimal (x1 *  x2)
         PPDiv   -> Just $ VDecimal (x1 /  x2)
+
+        PPEq    -> Just $ VBool    (x1 ==    x2)
+        PPGt    -> Just $ VBool    (x1 >     x2)
+        PPGe    -> Just $ VBool    (x1 >=    x2)
+        PPLt    -> Just $ VBool    (x1 <     x2)
+        PPLe    -> Just $ VBool    (x1 <=    x2)
+
         _       -> Nothing
 
 redNum2 op (VDecimal x1) (VInt x2)

@@ -47,6 +47,7 @@ data PrimOp
         | PPDropDim             -- ^ Drop a dimension in a tree.
         | PPDupDim              -- ^ Duplicate a dimension in the tree.
         | PPFinal               -- ^ Select the final n branches of each subtree.
+        | PPFilterKeys          -- ^ Filter the keys in every branch of a forest.
         | PPFlatten             -- ^ Flatten branches.
         | PPGather              -- ^ Gather branches of a tree into sub trees.
         | PPGroup               -- ^ Group branches by given key field.
@@ -103,6 +104,7 @@ namesOfPrimOps
         , (PPDropDim,           "drop-dim#")
         , (PPDupDim,            "dup-dim#")
         , (PPFinal,             "final#")
+        , (PPFilterKeys,        "filter-keys#")
         , (PPFlatten,           "flatten#")
         , (PPGather,            "gather#")
         , (PPGroup,             "group#")
@@ -158,6 +160,7 @@ arityOfPrimOp op
         PPDropDim               -> 2
         PPDupDim                -> 3
         PPFinal                 -> 2
+        PPFilterKeys            -> 2
         PPFlatten               -> 1
         PPGroup                 -> 2
         PPGather                -> 2

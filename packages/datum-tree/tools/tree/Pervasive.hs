@@ -38,6 +38,7 @@ strPervasive
         , "drop-dim             = drop-dim#"
         , "dup-dim              = dup-dim#"
         , "final                = final#"
+        , "filter-keys          = filter-keys#"
         , "flatten              = flatten#"
         , "gather               = gather#"
         , "group                = group#"

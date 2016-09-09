@@ -1,0 +1,28 @@
+# {"classification"
+    : {"cls": Text}
+    # { "body": {"name": Text, "orbits": Text}
+      }
+  }
+::
+# [ {"Planet"}
+    # [ {"Mercury", "Sol"}
+      , {"Venus", "Sol"}
+      , {"Earth", "Sol"}
+      , {"Mars", "Sol"}
+      , {"Neptune", "Sol"}
+      ]
+  , {"Star"}
+    # [ {"Sol", "Galactic Center"}
+      ]
+  , {"Dwarf Planet"}
+    # [ {"Ceres", "Sol"}
+      , {"Pluto", "Sol"}
+      ]
+  , {"Moon"}
+    # [ {"Luna", "Earth"}
+      , {"Mimas", "Saturn"}
+      , {"Puck", "Uranus"}
+      , {"Thalassa", "Neptune"}
+      , {"Kerberos", "Pluto"}
+      ]
+  ]

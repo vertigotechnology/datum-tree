@@ -9,19 +9,38 @@ import qualified Data.Text                      as Text
 
 
 -- Gather subtrees.
-step_Nesting _ _ PPGather  [VArray _ names, VTree tree]
- = do   let names' = [ Text.unpack n | PDName n <- names]
+step_Nesting _ _
+        PPGather
+        [VArray _ names, VTree tree]
+ = do   
+        let names' = [ Text.unpack n | PDName n <- names]
         progress $ VTree $ T.gatherTree names' tree
 
 
 -- Group by a given key.
-step_Nesting _ _ PPGroup   [VName name, VForest forest]
- =      progress $ VForest
+step_Nesting _ _
+        PPGroup
+        [VName name, VForest forest]
+ =      
+        progress $ VForest
                  $ T.promiseForest
                  $ T.groupForest (Text.unpack name) forest
 
 step_Nesting _ _ PPFlatten      [VTree tree]
  = do   progress $ VTree $ T.flattenTree tree
+
+
+-- Rename a dimension in the tree.
+step_Nesting _ _ 
+        PPRenameDimension
+        [VArray _ names1, VArray _ names2, VTree tree]
+ | names1' <- [Text.unpack n | PDName n <- names1]
+ , names2' <- [Text.unpack n | PDName n <- names2]
+ , length names1' == length names1
+ , length names2' == length names2
+ = do   
+        progress $ VTree 
+                 $ T.renameDimOfTree names1' names2' tree
 
 step_Nesting _ state _ _
  =      crash  state

@@ -44,6 +44,7 @@ strPervasive
         , "permute-fields       = permute-fields#"
         , "print                = print#"
         , "rename-fields        = rename-fields#"
+        , "rename-dimension     = rename-dimension#"
         , "sample               = sample#"
         , "sortby-field         = sortby-field#"
         ]

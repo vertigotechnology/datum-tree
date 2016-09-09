@@ -32,62 +32,63 @@ step _ _ p args
 step self state pp vs
  = case pp of
         -- Numeric        
-        PPAdd           -> step_Numeric   self state pp vs
-        PPSub           -> step_Numeric   self state pp vs
-        PPMul           -> step_Numeric   self state pp vs
-        PPDiv           -> step_Numeric   self state pp vs
-        PPNeg           -> step_Numeric   self state pp vs
-        PPEq            -> step_Numeric   self state pp vs
-        PPGt            -> step_Numeric   self state pp vs
-        PPGe            -> step_Numeric   self state pp vs
-        PPLt            -> step_Numeric   self state pp vs
-        PPLe            -> step_Numeric   self state pp vs
+        PPAdd                   -> step_Numeric   self state pp vs
+        PPSub                   -> step_Numeric   self state pp vs
+        PPMul                   -> step_Numeric   self state pp vs
+        PPDiv                   -> step_Numeric   self state pp vs
+        PPNeg                   -> step_Numeric   self state pp vs
+        PPEq                    -> step_Numeric   self state pp vs
+        PPGt                    -> step_Numeric   self state pp vs
+        PPGe                    -> step_Numeric   self state pp vs
+        PPLt                    -> step_Numeric   self state pp vs
+        PPLe                    -> step_Numeric   self state pp vs
 
         -- List
-        PPArrayEmpty    -> step_Array     self state pp vs
-        PPArrayExtend   -> step_Array     self state pp vs
+        PPArrayEmpty            -> step_Array     self state pp vs
+        PPArrayExtend           -> step_Array     self state pp vs
 
         -- Record
-        PPRecordEmpty   -> step_Record    self state pp vs
-        PPRecordExtend  -> step_Record    self state pp vs
-        PPRecordProject -> step_Record    self state pp vs
+        PPRecordEmpty           -> step_Record    self state pp vs
+        PPRecordExtend          -> step_Record    self state pp vs
+        PPRecordProject         -> step_Record    self state pp vs
 
         -- Fields
-        PPRenameFields  -> step_Fields    self state pp vs
-        PPPermuteFields -> step_Fields    self state pp vs
+        PPRenameFields          -> step_Fields    self state pp vs
+        PPPermuteFields         -> step_Fields    self state pp vs
 
         -- Sample
-        PPInitial       -> step_Sample    self state pp vs
-        PPFinal         -> step_Sample    self state pp vs
-        PPSample        -> step_Sample    self state pp vs
+        PPInitial               -> step_Sample    self state pp vs
+        PPFinal                 -> step_Sample    self state pp vs
+        PPSample                -> step_Sample    self state pp vs
 
         -- Sort
-        PPSortByField   -> step_Sort      self state pp vs
+        PPSortByField           -> step_Sort      self state pp vs
 
         -- Union
-        PPAppend        -> step_Union     self state pp vs
-        PPConcat        -> step_Union     self state pp vs
+        PPAppend                -> step_Union     self state pp vs
+        PPConcat                -> step_Union     self state pp vs
 
         -- Traverse
-        PPAt            -> step_Traverse  self state pp vs
-        PPOn            -> step_Traverse  self state pp vs
+        PPAt                    -> step_Traverse  self state pp vs
+        PPOn                    -> step_Traverse  self state pp vs
 
         -- Mapping
-        PPMapKeys       -> step_Map       self state pp vs
+        PPMapKeys               -> step_Map       self state pp vs
 
         -- Nesting
-        PPGroup         -> step_Nesting   self state pp vs
-        PPGather        -> step_Nesting   self state pp vs
-        PPFlatten       -> step_Nesting   self state pp vs
+        PPGroup                 -> step_Nesting   self state pp vs
+        PPGather                -> step_Nesting   self state pp vs
+        PPFlatten               -> step_Nesting   self state pp vs
+        PPRenameDimension       -> step_Nesting   self state pp vs
 
         -- World
-        PPArgument      -> step_World     self state pp vs
+        PPArgument              -> step_World     self state pp vs
 
         -- Console
-        PPPrint         -> step_Console   self state pp vs
+        PPPrint                 -> step_Console   self state pp vs
 
         -- LoadStore
-        PPLoad          -> step_LoadStore self state pp vs
-        PPStore         -> step_LoadStore self state pp vs
-        PPRead          -> step_LoadStore self state pp vs
+        PPLoad                  -> step_LoadStore self state pp vs
+        PPStore                 -> step_LoadStore self state pp vs
+        PPRead                  -> step_LoadStore self state pp vs
 

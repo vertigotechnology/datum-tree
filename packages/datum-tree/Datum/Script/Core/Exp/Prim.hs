@@ -124,43 +124,44 @@ typeOfAtom aa
 typeOfPrimOp   :: GExpStd l n => PrimOp -> GExp l
 typeOfPrimOp op
  = case op of
-        PPNeg           -> error "typeOfOp: finish me"
-        PPAdd           -> error "typeOfOp: finish me"
-        PPSub           -> error "typeOfOp: finish me"
-        PPMul           -> error "typeOfOp: finish me"
-        PPDiv           -> error "typeOfOp: finish me"
-        PPEq            -> error "typeOfOp: finish me"
-        PPGt            -> error "typeOfOp: finish me"
-        PPGe            -> error "typeOfOp: finish me"
-        PPLt            -> error "typeOfOp: finish me"
-        PPLe            -> error "typeOfOp: finish me"
+        PPNeg                   -> error "typeOfOp: finish me"
+        PPAdd                   -> error "typeOfOp: finish me"
+        PPSub                   -> error "typeOfOp: finish me"
+        PPMul                   -> error "typeOfOp: finish me"
+        PPDiv                   -> error "typeOfOp: finish me"
+        PPEq                    -> error "typeOfOp: finish me"
+        PPGt                    -> error "typeOfOp: finish me"
+        PPGe                    -> error "typeOfOp: finish me"
+        PPLt                    -> error "typeOfOp: finish me"
+        PPLe                    -> error "typeOfOp: finish me"
 
-        PPArrayEmpty    -> XTArray XTValue
-        PPArrayExtend   -> XTArray XTValue ~> XTValue ~> XTArray XTValue
+        PPArrayEmpty            -> XTArray XTValue
+        PPArrayExtend           -> XTArray XTValue ~> XTValue ~> XTArray XTValue
 
-        PPRecordEmpty   -> XTRecord
-        PPRecordExtend  -> XTRecord         ~> XTName ~> XTValue ~> XTRecord
-        PPRecordProject -> XTRecord         ~> XTName ~> XTValue
+        PPRecordEmpty           -> XTRecord
+        PPRecordExtend          -> XTRecord         ~> XTName ~> XTValue ~> XTRecord
+        PPRecordProject         -> XTRecord         ~> XTName ~> XTValue
 
-        PPLoad          -> XTFilePath       ~> K.XTS XTTree
-        PPStore         -> XTFilePath    ~> XTTree ~> K.XTS K.XTUnit
-        PPRead          -> XTRecord         ~> XTFilePath ~> K.XTS XTTree
+        PPLoad                  -> XTFilePath       ~> K.XTS XTTree
+        PPStore                 -> XTFilePath    ~> XTTree ~> K.XTS K.XTUnit
+        PPRead                  -> XTRecord         ~> XTFilePath ~> K.XTS XTTree
 
-        PPAppend        -> XTForest         ~> XTForest  ~> XTForest
-        PPAt            -> XTArray XTName   ~> (XTTree   ~> XTTree)   ~> XTTree ~> XTTree
-        PPArgument      -> XTText           ~> K.XTS XTText
-        PPConcat        -> XTArray XTForest ~> XTForest
-        PPFinal         -> XTNat            ~> XTTree ~> XTTree
-        PPFlatten       -> XTTree           ~> XTTree
-        PPGather        -> XTTreePath       ~> XTTree ~> XTTree
-        PPGroup         -> XTName           ~> XTTree ~> XTTree
-        PPInitial       -> XTNat            ~> XTTree ~> XTTree
-        PPMapKeys       -> (XTRecord ~> XTRecord) ~> XTForest ~> XTForest
-        PPOn            -> XTArray XTName   ~> (XTForest ~> XTForest) ~> XTTree ~> XTTree
-        PPPermuteFields -> XTArray XTName   ~> XTTree ~> XTTree
-        PPRenameFields  -> XTArray XTName   ~> XTTree ~> XTTree
-        PPSample        -> XTNat            ~> XTTree ~> XTTree
-        PPSortByField   -> XTName ~> XTForest ~> XTForest
+        PPAppend                -> XTForest         ~> XTForest  ~> XTForest
+        PPAt                    -> XTArray XTName   ~> (XTTree   ~> XTTree)   ~> XTTree ~> XTTree
+        PPArgument              -> XTText           ~> K.XTS XTText
+        PPConcat                -> XTArray XTForest ~> XTForest
+        PPFinal                 -> XTNat            ~> XTTree ~> XTTree
+        PPFlatten               -> XTTree           ~> XTTree
+        PPGather                -> XTTreePath       ~> XTTree ~> XTTree
+        PPGroup                 -> XTName           ~> XTTree ~> XTTree
+        PPInitial               -> XTNat            ~> XTTree ~> XTTree
+        PPMapKeys               -> (XTRecord ~> XTRecord) ~> XTForest ~> XTForest
+        PPOn                    -> XTArray XTName   ~> (XTForest ~> XTForest) ~> XTTree ~> XTTree
+        PPPermuteFields         -> XTArray XTName   ~> XTTree ~> XTTree
+        PPRenameFields          -> XTArray XTName   ~> XTTree ~> XTTree
+        PPRenameDimension       -> XTTreePath       ~> XTTreePath ~> XTTree ~> XTTree
+        PPSample                -> XTNat            ~> XTTree ~> XTTree
+        PPSortByField           -> XTName ~> XTForest ~> XTForest
 
         PPPrint
          -> K.makeXForall K.XKData K.XKData 

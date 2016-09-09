@@ -1,0 +1,11 @@
+
+
+-- Test of the rename-dimension operator.
+-- We rename dimensions one at a time.
+main 
+ = load "test/data/csv/SolarSystem.csv"
+ & on /row $ rename-fields ['name, 'cls, 'orbits]
+ & on /row $ group 'cls
+ & rename-dimension (/cls)                 (/classification)
+ & rename-dimension (/classification/row)  (/classification/body)
+ & on /classification/body $ sample 5

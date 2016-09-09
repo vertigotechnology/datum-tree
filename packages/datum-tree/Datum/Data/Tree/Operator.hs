@@ -52,6 +52,7 @@ module Datum.Data.Tree.Operator
 
           -- ** Renaming
         , renameFields
+        , renameDimOfTree
 
           -- ** Permuting
         , permuteFields
@@ -124,6 +125,7 @@ import Datum.Data.Tree.Operator.Map
 import Datum.Data.Tree.Operator.Path
 import Datum.Data.Tree.Operator.Project
 import Datum.Data.Tree.Operator.Reduce
+import Datum.Data.Tree.Operator.Rename
 import Datum.Data.Tree.Operator.Slice
 import Datum.Data.Tree.Operator.Sort
 import Datum.Data.Tree.Operator.Strip

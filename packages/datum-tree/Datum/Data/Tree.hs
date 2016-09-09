@@ -70,6 +70,7 @@ module Datum.Data.Tree
 
           -- ** Renaming
         , renameFields
+        , renameDimOfTree
 
           -- ** Permuting
         , permuteFields

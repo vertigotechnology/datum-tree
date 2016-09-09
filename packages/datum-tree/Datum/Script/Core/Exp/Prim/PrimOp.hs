@@ -52,6 +52,7 @@ data PrimOp
         | PPOn                  -- ^ Apply a per-forest function at the given path. 
         | PPPermuteFields       -- ^ Permute fields of a key.
         | PPRenameFields        -- ^ Rename fields of key.
+        | PPRenameDimension     -- ^ Rename a dimension in the tree.
         | PPSample              -- ^ Sample n intermediate branches of each subtree.
         | PPSortByField         -- ^ Sort trees in a forest.
         deriving (Eq, Show)
@@ -103,6 +104,7 @@ namesOfPrimOps
         , (PPOn,                "on#")
         , (PPPermuteFields,     "permute-fields#")
         , (PPRenameFields,      "rename-fields#")
+        , (PPRenameDimension,   "rename-dimension#")
         , (PPSample,            "sample#")
         , (PPSortByField,       "sortby-field#")
         ]
@@ -118,42 +120,43 @@ primOpsOfNames
 arityOfPrimOp :: PrimOp -> Int
 arityOfPrimOp op
  = case op of
-        PPNeg           -> 1
-        PPAdd           -> 2
-        PPSub           -> 2
-        PPMul           -> 2
-        PPDiv           -> 2
-        PPEq            -> 2
-        PPGt            -> 2
-        PPGe            -> 2
-        PPLt            -> 2
-        PPLe            -> 2
+        PPNeg                   -> 1
+        PPAdd                   -> 2
+        PPSub                   -> 2
+        PPMul                   -> 2
+        PPDiv                   -> 2
+        PPEq                    -> 2
+        PPGt                    -> 2
+        PPGe                    -> 2
+        PPLt                    -> 2
+        PPLe                    -> 2
 
-        PPArrayEmpty    -> 0
-        PPArrayExtend   -> 2
+        PPArrayEmpty            -> 0
+        PPArrayExtend           -> 2
 
-        PPRecordEmpty   -> 0
-        PPRecordExtend  -> 4
-        PPRecordProject -> 2
+        PPRecordEmpty           -> 0
+        PPRecordExtend          -> 4
+        PPRecordProject         -> 2
 
-        PPLoad          -> 1
-        PPStore         -> 2
-        PPRead          -> 2
+        PPLoad                  -> 1
+        PPStore                 -> 2
+        PPRead                  -> 2
 
-        PPAppend        -> 2
-        PPAt            -> 3
-        PPArgument      -> 1
-        PPConcat        -> 1
-        PPFinal         -> 2
-        PPFlatten       -> 1
-        PPGroup         -> 2
-        PPGather        -> 2
-        PPInitial       -> 2
-        PPMapKeys       -> 2
-        PPOn            -> 3
-        PPPermuteFields -> 2
-        PPPrint         -> 1
-        PPRenameFields  -> 2
-        PPSortByField   -> 2
-        PPSample        -> 2
+        PPAppend                -> 2
+        PPAt                    -> 3
+        PPArgument              -> 1
+        PPConcat                -> 1
+        PPFinal                 -> 2
+        PPFlatten               -> 1
+        PPGroup                 -> 2
+        PPGather                -> 2
+        PPInitial               -> 2
+        PPMapKeys               -> 2
+        PPOn                    -> 3
+        PPPermuteFields         -> 2
+        PPPrint                 -> 1
+        PPRenameFields          -> 2
+        PPRenameDimension       -> 3
+        PPSortByField           -> 2
+        PPSample                -> 2
 

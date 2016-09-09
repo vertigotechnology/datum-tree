@@ -1,0 +1,10 @@
+
+
+-- Test of the rename-dimensino operator.
+-- We rename two nested dimensions in one go.
+main 
+ = load "test/data/csv/SolarSystem.csv"
+ & on /row $ rename-fields ['name, 'cls, 'orbits]
+ & on /row $ group 'cls
+ & rename-dimension (/cls/row)             (/classification/body)
+ & on /classification/body $ sample 5

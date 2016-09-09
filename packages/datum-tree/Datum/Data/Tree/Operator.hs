@@ -76,6 +76,9 @@ module Datum.Data.Tree.Operator
         , filterForests
         , filterForests'
 
+        , dropDimOfTree
+        , dropDimOfForest
+
           -- * Reducing
         , reduceTree
         , reduceForest
@@ -117,6 +120,7 @@ where
 import Datum.Data.Tree.Operator.Append
 import Datum.Data.Tree.Operator.Cast
 import Datum.Data.Tree.Operator.Count
+import Datum.Data.Tree.Operator.Drop
 import Datum.Data.Tree.Operator.Elements
 import Datum.Data.Tree.Operator.Extract
 import Datum.Data.Tree.Operator.Fields

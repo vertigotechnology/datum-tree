@@ -6,6 +6,7 @@ import Datum.Script.Core.Eval.Prim.Array
 import Datum.Script.Core.Eval.Prim.Base
 import Datum.Script.Core.Eval.Prim.Console
 import Datum.Script.Core.Eval.Prim.Fields
+import Datum.Script.Core.Eval.Prim.Filter
 import Datum.Script.Core.Eval.Prim.LoadStore
 import Datum.Script.Core.Eval.Prim.Map
 import Datum.Script.Core.Eval.Prim.Nesting
@@ -56,6 +57,9 @@ step self state pp vs
         -- Fields
         PPRenameFields          -> step_Fields    self state pp vs
         PPPermuteFields         -> step_Fields    self state pp vs
+
+        -- Filter
+        PPDropDim               -> step_Filter    self state pp vs
 
         -- Sample
         PPInitial               -> step_Sample    self state pp vs

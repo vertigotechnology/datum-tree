@@ -35,6 +35,7 @@ strPervasive
         , "argument             = argument#"
         , "concat               = concat#"
         , "count-as-field       = count-as-field#"
+        , "drop-dim             = drop-dim#"
         , "final                = final#"
         , "flatten              = flatten#"
         , "gather               = gather#"

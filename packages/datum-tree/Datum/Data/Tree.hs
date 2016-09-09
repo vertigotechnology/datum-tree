@@ -94,6 +94,9 @@ module Datum.Data.Tree
         , filterForests
         , filterForests'
 
+        , dropDimOfForest
+        , dropDimOfTree
+
           -- ** Reducing
         , reduceTree
         , reduceForest

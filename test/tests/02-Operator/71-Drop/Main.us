@@ -1,0 +1,10 @@
+
+
+main 
+ = load "test/data/csv/SolarSystem.csv"
+ & on /row $ rename-fields ['name, 'cls, 'orbits]
+ & on /row $ group 'cls
+ & on /cls $ count-as-field 'bodies 'row
+ & on /cls $ drop-dim 'row
+
+ 

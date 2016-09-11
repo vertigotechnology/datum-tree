@@ -63,12 +63,57 @@ final   : Nat → Tree → Tree
 sample  : Nat → Tree → Tree
 ```
 
+## Mapping
+```
+ Γ ⊢ f                     :: tt_a → tt_b
+ Γ ⊢ forest_a              :: Forest (name_r : tt_a # bts)
+----------------------------------------------------------
+ Γ ⊢ map-keys f forest_a   :: Forest (name_r : tt_b # bts)
+
+```
+
+## Filtering
+```
+ Γ ⊢ f                      :: tt_a → Bool
+ Γ ⊢ forest_a               :: Forest (name_r : tt_a # bts)
+----------------------------------------------------------
+ Γ ⊢ filter-keys f forest_a :: Forest (name_r : tt_a # bts)
+```
+
+
+## Folding
+```
+ Γ ⊢ f    :: τ → tt_k → τ
+ Γ ⊢ z    :: τ
+ Γ ⊢ tree :: Forest (name_r : tt_r                # bts)
+      bts = [ ..., name_d : tt_k # bts', ...]
+ ---------------------------------------------------------
+ Γ ⊢ fold-as-field name_f name_d f z tree
+          :: Forest (name_r : {tt_r | name_f : τ} # bts)
+```
+
+```
+fold-as-field 
+   :: (name_f   : Name)
+   -> (name_d   : Name)
+   -> (tt_k     : Record)
+   -> (bts bts' : Array BranchType)
+   -> (_        : Member name_d (tt_k, bts') bts)
+   -> (τ -> tt_k -> τ)
+   -> (Forest (name_r : tt_r # bts))
+   ->  Forest (name_r : {tt_r | name_f : τ} # bts)
+```
+
 
 ## Grouping
 ```
-group   : Name → Tree → Tree
+ Γ ⊢  tree_a
+        :: Forest (name_r : tt # bts)  
+ tt = { ..., name_g : τ, ... }
+ --------------------------------------------------------------------------
+ Γ ⊢  group name_g tree_a
+        :: Forest (name_g : { name_g : τ } # [ name_r : tt - name_g # bts ])
 ```
-
 
 ## Gathering
 ```

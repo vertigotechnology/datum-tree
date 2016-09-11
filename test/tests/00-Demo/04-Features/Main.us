@@ -58,12 +58,13 @@ main
                 -- Compute value traded for each day from volume and mid price.
                 & on /row 
                 $ map-keys 
-                  (λk → { symbo : Text    = k.symbol
-                        , date  : Date    = k.date 
-                        , open  : Decimal = k.open
-                        , close : Decimal = k.close
-                        , volume: Nat     = k.volume
-                        , value : Decimal = k.volume * (div (k.open + k.close) 2)
+                  (λk → { symbol : Text    = k.symbol
+                        , range  : Nat     = k.range
+                        , date   : Date    = k.date 
+                        , open   : Decimal = k.open
+                        , close  : Decimal = k.close
+                        , volume : Nat     = k.volume
+                        , value  : Decimal = k.volume * (div (k.open + k.close) 2)
                         })
 
                 -- Re-group by symbol.

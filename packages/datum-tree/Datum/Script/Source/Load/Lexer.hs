@@ -9,6 +9,8 @@ import Datum.Script.Source.Load.Located
 import Datum.Script.Source.Load.Token
 import qualified Text.Lexer.Inchworm.Char       as I
 import qualified Data.Char                      as Char
+import qualified Data.Repa.Convert              as R
+import qualified Data.Repa.Scalar.Date32        as R
 
 
 -------------------------------------------------------------------------------
@@ -41,23 +43,20 @@ scanner fileName
                                 '\n'        -> return $ KNewLine
                                 _           -> Nothing)
 
-        , fmap (stamp' KComment)
-                $ I.scanHaskellCommentBlock
+        , fmap (stamp' KComment)                 $ I.scanHaskellCommentBlock
+        , fmap (stamp' KComment)                 $ I.scanHaskellCommentLine
 
-        , fmap (stamp' KComment)
-                $ I.scanHaskellCommentLine
+        -- Literal dates need to come before variables as they start with "d'"
+        , fmap (stamp' KLitDate)                 $ scanDate32
 
-        , fmap stamp    $ scanPunctuation
-        , fmap stamp    $ scanKeyword
-        , fmap stamp    $ scanSymbol
-        , fmap stamp    $ scanVar
-        , fmap stamp    $ scanOperator 
+        , fmap stamp                             $ scanPunctuation
+        , fmap stamp                             $ scanKeyword
+        , fmap stamp                             $ scanSymbol
+        , fmap stamp                             $ scanVar
+        , fmap stamp                             $ scanOperator 
 
-        , fmap (stamp' KLitString)
-                $ I.scanHaskellString 
-
-        , fmap (stamp' (KLitInt . fromIntegral))
-                $ I.scanInteger
+        , fmap (stamp' KLitString)               $ I.scanHaskellString 
+        , fmap (stamp' (KLitInt . fromIntegral)) $ I.scanInteger
         ]
  where
         stamp   :: (I.Location, a) -> Located a
@@ -70,6 +69,28 @@ scanner fileName
         stamp' k (l, t) 
           = Located fileName l (k t)
         {-# INLINE stamp' #-}
+
+
+-- Date -----------------------------------------------------------------------
+scanDate32 :: Scanner (I.Location, R.Date32)
+scanDate32
+ =      I.munchPred Nothing matchDate acceptDate
+ where
+        matchDate 0 'd'         = True
+        matchDate 1 '\''        = True
+        matchDate n c
+         | n >= 2  && n < 6     = Char.isDigit c
+         | n == 6               = c == '-'
+         | n >= 7  && n < 9     = Char.isDigit c
+         | n == 9               = c == '-'
+         | n >= 10 && n < 12    = Char.isDigit c 
+         | otherwise            = False
+
+        acceptDate ('d' : '\'' : ss)
+         = R.unpackFromString (R.YYYYsMMsDD '-') ss
+
+        acceptDate _
+         = Nothing
 
 
 -- Punctuation ----------------------------------------------------------------

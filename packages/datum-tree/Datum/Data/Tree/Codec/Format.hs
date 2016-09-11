@@ -9,7 +9,6 @@ import Datum.Data.Tree.Exp
 import Data.Text                                (Text)
 import qualified Data.Text                      as Text
 import qualified Data.Repa.Convert              as R
-import qualified Data.Repa.Scalar.Date32        as Date32
 
 
 -- | Data format that we can load directly.
@@ -69,8 +68,7 @@ readAtomOfFormat FormatDecimal ss
 
 readAtomOfFormat (FormatYYYYsMMsDD c) ss
  = case R.unpackFromString (R.YYYYsMMsDD c) (Text.unpack ss) of
-        Just d  -> let  (yy, mm, dd) = Date32.unpack d
-                   in   Just $ ADate yy mm dd
+        Just d  -> Just $ ADate d
         Nothing -> Nothing
 
 

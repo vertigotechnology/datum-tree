@@ -4,13 +4,13 @@ import Data.Functor.Identity
 import Datum.Script.Source.Exp
 import Datum.Script.Source.Load.Token           (Token(..))
 import Text.Parsec                              (SourcePos, (<?>))
+import Data.Repa.Scalar.Date32                  (Date32)
 import qualified Datum.Script.Source.Load.Token as K
 import qualified Datum.Script.Source.Load.Lexer as L
 import qualified Datum.Data.Tree.Exp            as T
 import qualified Text.Parsec                    as P
 import qualified Text.Parsec.Pos                as P
 import qualified Data.Text                      as Text
-
 
 -------------------------------------------------------------------------------
 type Parser a 
@@ -198,20 +198,23 @@ pExpAtom
  , do   (sp, s) <- pSymbol
         return  (sp, XAnnot sp $ XFrag (PVData (PDName (Text.pack s))))
 
-
-        -- literal text
- , do   (sp, str) <- pLitString
-        return  (sp, XAnnot sp $ XFrag (PVData (PDAtom (T.AText str))))
-
+        -- literal unit
+ , do   sp      <- pTok KUnit
+        return  (sp, XAnnot sp $ XPrim PVUnit)
 
         -- literal integer
  , do   (sp, n)   <- pLitInt
         return  (sp, XAnnot sp $ XFrag (PVData (PDAtom (T.AInt n))))
 
+        -- literal text
+ , do   (sp, str) <- pLitString
+        return  (sp, XAnnot sp $ XFrag (PVData (PDAtom (T.AText str))))
 
-        -- literal unit
- , do   sp      <- pTok KUnit
-        return  (sp, XAnnot sp $ XPrim PVUnit)
+        -- literal date
+ , do   (sp, d)   <- pLitDate
+        return  (sp, XAnnot sp $ XFrag (PVData (PDAtom (T.ADate d))))
+
+
  ]
  <?> "an atomic expression"
 
@@ -280,6 +283,14 @@ pLitInt :: Parser (SourcePos, Int)
 pLitInt = pTokMaybe 
         $ \k -> case k of
                  KLitInt s      -> Just s
+                 _              -> Nothing
+
+
+-- | Parse a literal date.
+pLitDate :: Parser (SourcePos, Date32)
+pLitDate = pTokMaybe 
+        $ \k -> case k of
+                 KLitDate d     -> Just d
                  _              -> Nothing
 
 

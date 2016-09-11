@@ -154,14 +154,22 @@ Library
         Datum.Data.Tree.Operator.Sort
         Datum.Data.Tree.Operator.Traverse
 
+        Datum.Script.Core.Eval.Prim.Array
         Datum.Script.Core.Eval.Prim.Base
         Datum.Script.Core.Eval.Prim.Console
+        Datum.Script.Core.Eval.Prim.Date
         Datum.Script.Core.Eval.Prim.Fields
+        Datum.Script.Core.Eval.Prim.Filter
         Datum.Script.Core.Eval.Prim.LoadStore
+        Datum.Script.Core.Eval.Prim.Map
         Datum.Script.Core.Eval.Prim.Nesting
         Datum.Script.Core.Eval.Prim.Numeric
+        Datum.Script.Core.Eval.Prim.Record
+        Datum.Script.Core.Eval.Prim.Reduce
         Datum.Script.Core.Eval.Prim.Sample
+        Datum.Script.Core.Eval.Prim.Sort
         Datum.Script.Core.Eval.Prim.Traverse
+        Datum.Script.Core.Eval.Prim.Union
         Datum.Script.Core.Eval.Prim.World
         Datum.Script.Core.Eval.Pretty.Build
         Datum.Script.Core.Eval.Reflect

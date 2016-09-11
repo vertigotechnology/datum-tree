@@ -119,4 +119,5 @@ pattern VNat     x      = VVPAF (PVData (PDAtom (ANat     x)))
 pattern VDecimal x      = VVPAF (PVData (PDAtom (ADecimal x)))
 pattern VText    x      = VVPAF (PVData (PDAtom (AText    x)))
 pattern VTime    x      = VVPAF (PVData (PDAtom (ATime    x)))
+pattern VDate    x      = VVPAF (PVData (PDAtom (ADate    x)))
 

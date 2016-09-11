@@ -4,8 +4,10 @@ import Data.Repa.Scalar.Box
 import Data.Repa.Scalar.Option           
 import Data.Repa.Scalar.Product
 import Data.Hashable
-import Data.Repa.Array                  (Array)
-import qualified Data.Repa.Array        as A
+import Data.Repa.Array                          (Array)
+import Data.Repa.Scalar.Date32                  (Date32)
+import qualified Data.Repa.Array                as A
+import qualified Data.Repa.Scalar.Date32        as Date32
 
 
 -- Objects --------------------------------------------------------------------
@@ -173,7 +175,7 @@ data Atom
         | ATime         !String
 
         -- A date with year, month, day components.
-        | ADate         !Int !Int !Int
+        | ADate         !Date32
         deriving (Eq, Ord, Show)
 
 
@@ -188,7 +190,10 @@ instance Hashable Atom where
         ADecimal d      -> hashWithSalt (s + 5) d
         AText    t      -> hashWithSalt (s + 6) t
         ATime    t      -> hashWithSalt (s + 7) t
-        ADate    y m d  -> hashWithSalt (s + 8) (y, m, d)
+
+        ADate    d
+         -> let (yy, mm, dd) = Date32.unpack d
+            in  hashWithSalt (s + 8) (yy, mm, dd)
 
 
 -- Names ----------------------------------------------------------------------

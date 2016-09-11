@@ -26,10 +26,23 @@ strPervasive
         , "lt                   = lt#"
         , "le                   = le#"
 
+        -- Date operators.
+        , "date-pack            = date-pack#"
+        , "date-year            = date-year#"
+        , "date-month           = date-month#"
+        , "date-day             = date-day#"
+        , "date-next            = date-next#"
+        , "date-diff            = date-diff#"
+
+        -- File system operators.
         , "load                 = load#"
         , "store                = store#"
         , "read                 = read#"
 
+        -- Console operators.
+        , "print                = print#"
+
+        -- Pure tree operators.
         , "at                   = at#"
         , "append               = append#"
         , "argument             = argument#"
@@ -47,9 +60,9 @@ strPervasive
         , "on                   = on#"
         , "permute-fields       = permute-fields#"
         , "push-dim             = push-dim#"
-        , "print                = print#"
         , "rename-fields        = rename-fields#"
         , "rename-dimension     = rename-dimension#"
         , "sample               = sample#"
         , "sortby-field         = sortby-field#"
+
         ]

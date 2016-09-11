@@ -11,7 +11,6 @@ import Data.Text.Lazy                           (Text)
 import qualified Data.List                      as List
 import qualified Data.Repa.Array                as A
 import qualified Data.Repa.Convert              as R
-import qualified Data.Repa.Scalar.Date32        as Date32
 
 import Data.Text.Lazy.Builder                   
         (Builder, toLazyText, fromString)
@@ -170,9 +169,9 @@ layoutAtom a
         AText    str    -> text $ show str
         ATime    str    -> text   str
 
-        ADate    yy mm dd
-         -> let Just str = R.packToString (R.YYYYsMMsDD '-') (Date32.pack (yy, mm, dd))
-            in  text "d/" <> text str
+        ADate    d
+         -> let Just str = R.packToString (R.YYYYsMMsDD '-') d
+            in  text "d'" <> text str
 
 
 -- | Layout an `AtomType`.

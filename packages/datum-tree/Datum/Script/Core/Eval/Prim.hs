@@ -5,6 +5,7 @@ where
 import Datum.Script.Core.Eval.Prim.Array
 import Datum.Script.Core.Eval.Prim.Base
 import Datum.Script.Core.Eval.Prim.Console
+import Datum.Script.Core.Eval.Prim.Date
 import Datum.Script.Core.Eval.Prim.Fields
 import Datum.Script.Core.Eval.Prim.Filter
 import Datum.Script.Core.Eval.Prim.LoadStore
@@ -44,6 +45,14 @@ step self state pp vs
         PPGe                    -> step_Numeric   self state pp vs
         PPLt                    -> step_Numeric   self state pp vs
         PPLe                    -> step_Numeric   self state pp vs
+
+        -- Date
+        PPDatePack              -> step_Date      self state pp vs
+        PPDateYear              -> step_Date      self state pp vs
+        PPDateMonth             -> step_Date      self state pp vs
+        PPDateDay               -> step_Date      self state pp vs
+        PPDateNext              -> step_Date      self state pp vs
+        PPDateDiff              -> step_Date      self state pp vs
 
         -- List
         PPArrayEmpty            -> step_Array     self state pp vs

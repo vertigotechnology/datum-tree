@@ -22,39 +22,55 @@ main
                 , read format "test/data/tsv/quotes/NAB.tsv"
                 , read format "test/data/tsv/quotes/WBC.tsv" ]
 
-        bysym   = glob
+        bySym   = glob
                 -- Select only the fields that we're interested in.
                 & on /row
-                     $ permute-fields ['symbol, 'date, 'open, 'close, 'volume]
+                $ permute-fields ['symbol, 'date, 'open, 'close, 'volume]
 
                 -- Group quotes by symbol
                 & on /row
-                     $ group 'symbol
+                $ group 'symbol
 
                 -- Sample for debugging.
+--                & on /symbol/row     
+--                $ sample 10 
+
+
+        dView  = d'2015-01-01
+
+        bySym   -- Associate copies of the data with the given date ranges.
                 & on /symbol/row     
-                     $ sample 10 
-
-
-        dView  = 1234
-
-        bysym   -- Associate copies of the data with the given date ranges.
-                & on /symbol/row     
-                     $ push-dim 'row 
-                             [ { range : Nat  = 7  }
-                             , { range : Nat  = 30 }
-                             , { range : Nat  = 60 }
-                             , { range : Nat  = 90 } ]
+                $ push-dim 'row 
+                        [ { range : Nat  = 7  }
+                        , { range : Nat  = 30 }
+                        , { range : Nat  = 60 }
+                        , { range : Nat  = 90 } ]
 
                 -- Gather the leaves back to top-level so we have a copy of the 
                 -- data associated with each range.
                 & gather /symbol/row/row
 
+                -- Select just the rows within each date range.
+                & on /row
+                $ filter-keys 
+                  (λk → date-diff k.date dView <= k.range)
+
+                -- Compute value traded for each day from volume and mid price.
+                & on /row 
+                $ map-keys 
+                  (λk → { symbo : Text    = k.symbol
+                        , date  : Date    = k.date 
+                        , open  : Decimal = k.open
+                        , close : Decimal = k.close
+                        , volume: Nat     = k.volume
+                        , value : Decimal = k.volume * (div (k.open + k.close) 2)
+                        })
+
                 -- Re-group by symbol.
                 & on /row 
-                     $ group 'symbol
+                $ group 'symbol
 
-                -- Broadcast the view date to each key.
+                -- Group by range and sort for presentation.
                 & on /symbol/row
-                     $ filter-keys (λk -> k.range >= 30)
-
+                $ group 'range
+                @ sortby-field 'range

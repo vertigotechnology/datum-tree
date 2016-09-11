@@ -60,6 +60,15 @@ data PrimOp
         | PPRenameDimension     -- ^ Rename a dimension in the tree.
         | PPSample              -- ^ Sample n intermediate branches of each subtree.
         | PPSortByField         -- ^ Sort trees in a forest.
+
+        -- Date primitives.
+        | PPDatePack            -- ^ Pack year month day into a date.
+        | PPDateYear            -- ^ Get the year  component of a date.
+        | PPDateMonth           -- ^ Get the month component of a date.
+        | PPDateDay             -- ^ Get the day   component of a date.
+        | PPDateNext            -- ^ Add a single day to a date.
+        | PPDateDiff            -- ^ Get the difference in days between two dates.
+
         deriving (Eq, Show)
 
 
@@ -117,6 +126,14 @@ namesOfPrimOps
         , (PPRenameDimension,   "rename-dimension#")
         , (PPSample,            "sample#")
         , (PPSortByField,       "sortby-field#")
+
+        -- Date operators.
+        , (PPDatePack,          "date-pack#")
+        , (PPDateYear,          "date-year#")
+        , (PPDateMonth,         "date-month#")
+        , (PPDateDay,           "date-day#")
+        , (PPDateNext,          "date-next#")
+        , (PPDateDiff,          "date-diff#")
         ]
 
 
@@ -175,3 +192,9 @@ arityOfPrimOp op
         PPSortByField           -> 2
         PPSample                -> 2
 
+        PPDatePack              -> 3
+        PPDateYear              -> 1
+        PPDateMonth             -> 1
+        PPDateDay               -> 1
+        PPDateNext              -> 1
+        PPDateDiff              -> 2

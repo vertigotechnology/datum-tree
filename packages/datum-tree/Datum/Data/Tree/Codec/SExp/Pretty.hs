@@ -4,11 +4,12 @@ import Datum.Data.Tree.Exp
 
 import Text.PrettyPrint.Leijen
 import Data.Maybe
-import Prelude                          hiding ((<$>))
-import Data.Repa.Array                  (Array)
+import Prelude                                  hiding ((<$>))
+import Data.Repa.Array                          (Array)
 import Data.Default
-import qualified Data.Repa.Array        as A
-import qualified Data.List              as L
+import qualified Data.Repa.Array                as A
+import qualified Data.Repa.Scalar.Date32        as Date32
+import qualified Data.List                      as L
 
 ssym n          = parens $ text n
 sexp n d        = parens $ text n <+> d
@@ -316,8 +317,9 @@ ppAtomWithFormat f aa
         ATime str
          -> sexp "time"    (text $ show str)
 
-        ADate yy mm dd
-         -> sexp "date"    ((text $ show yy) <+> (text $ show mm) <+> (text $ show dd))
+        ADate d
+         -> let (yy, mm, dd) = Date32.unpack d
+            in  sexp "date"  ((text $ show yy) <+> (text $ show mm) <+> (text $ show dd))
 
 
 -- | Get the default format for an atom.

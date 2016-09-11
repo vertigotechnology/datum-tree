@@ -124,6 +124,7 @@ typeOfAtom aa
 typeOfPrimOp   :: GExpStd l n => PrimOp -> GExp l
 typeOfPrimOp op
  = case op of
+        -- Arithmetic operators.
         PPNeg                   -> error "typeOfOp: finish me"
         PPAdd                   -> error "typeOfOp: finish me"
         PPSub                   -> error "typeOfOp: finish me"
@@ -135,17 +136,25 @@ typeOfPrimOp op
         PPLt                    -> error "typeOfOp: finish me"
         PPLe                    -> error "typeOfOp: finish me"
 
+        -- Array operators.
         PPArrayEmpty            -> XTArray XTValue
         PPArrayExtend           -> XTArray XTValue ~> XTValue ~> XTArray XTValue
 
+        -- Record operators.
         PPRecordEmpty           -> XTRecord
-        PPRecordExtend          -> XTRecord         ~> XTName ~> XTValue ~> XTRecord
-        PPRecordProject         -> XTRecord         ~> XTName ~> XTValue
+        PPRecordExtend          -> XTRecord     ~> XTName ~> XTValue ~> XTRecord
+        PPRecordProject         -> XTRecord     ~> XTName ~> XTValue
 
-        PPLoad                  -> XTFilePath       ~> K.XTS XTTree
-        PPStore                 -> XTFilePath    ~> XTTree ~> K.XTS K.XTUnit
-        PPRead                  -> XTRecord         ~> XTFilePath ~> K.XTS XTTree
+        -- File system operators.
+        PPLoad                  -> XTFilePath   ~> K.XTS XTTree
+        PPStore                 -> XTFilePath   ~> XTTree ~> K.XTS K.XTUnit
+        PPRead                  -> XTRecord     ~> XTFilePath ~> K.XTS XTTree
 
+        -- Console operators.
+        PPPrint                 -> K.makeXForall K.XKData K.XKData 
+                                $ \u -> u ~> K.XTS K.XTUnit
+
+        -- Pure tree operators.
         PPAppend                -> XTForest         ~> XTForest  ~> XTForest
         PPAt                    -> XTArray XTName   ~> (XTTree   ~> XTTree)   ~> XTTree ~> XTTree
         PPArgument              -> XTText           ~> K.XTS XTText
@@ -168,9 +177,13 @@ typeOfPrimOp op
         PPSample                -> XTNat            ~> XTTree ~> XTTree
         PPSortByField           -> XTName ~> XTForest ~> XTForest
 
-        PPPrint
-         -> K.makeXForall K.XKData K.XKData 
-                $ \u -> u ~> K.XTS K.XTUnit
+        -- Date operators.
+        PPDatePack              -> XTNat  ~> XTNat  ~> XTNat ~> XTDate
+        PPDateYear              -> XTDate ~> XTNat
+        PPDateMonth             -> XTDate ~> XTNat
+        PPDateDay               -> XTDate ~> XTNat
+        PPDateNext              -> XTDate ~> XTDate
+        PPDateDiff              -> XTDate ~> XTDate ~> XTNat
 
 
 -- | Yield the arity of a primitive.
@@ -200,6 +213,7 @@ pattern XTNat           = XFrag (PTType (PTAtom T.ATNat))
 pattern XTDecimal       = XFrag (PTType (PTAtom T.ATDecimal))
 pattern XTText          = XFrag (PTType (PTAtom T.ATText))
 pattern XTTime          = XFrag (PTType (PTAtom T.ATTime))
+pattern XTDate          = XFrag (PTType (PTAtom T.ATDate))
 
 -- Values
 pattern XName     n     = XFrag (PVData (PDName     n))

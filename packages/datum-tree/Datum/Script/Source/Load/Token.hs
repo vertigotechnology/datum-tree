@@ -3,6 +3,7 @@ module Datum.Script.Source.Load.Token
         ( Token (..)
         , sayToken)
 where
+import Data.Repa.Scalar.Date32  (Date32)
 
 
 -- | A token in lambda expression syntax.
@@ -44,6 +45,8 @@ data Token
 
         | KLitString  String    -- ^ Literal string.
         | KLitInt     Int       -- ^ Literal integer.
+        
+        | KLitDate    Date32    -- ^ Literal date.
         deriving (Show, Eq)
 
 
@@ -84,5 +87,5 @@ sayToken tok
         KSym s          -> "symbol " ++ s
         KLitString s    -> "literal string "   ++ show s 
         KLitInt i       -> "literal integer '" ++ show i ++ "'"
-
+        KLitDate d      -> "literal date '" ++ show d ++ "'"
 

@@ -16,7 +16,7 @@ import Data.Monoid
 import Data.Default
 import qualified Datum.Data.Tree.Codec.Matryo.Encode    as Matryo
 import qualified Data.List                              as List
-
+import qualified Data.Repa.Scalar.Date32                as Date32
 import Data.Text.Lazy.Builder                   
         (Builder, fromText, fromString)
 
@@ -175,11 +175,12 @@ buildAtom aa
         AText  s        -> fromString (show s)
         ATime  t        -> fromString (show t)
 
-        ADate  yy mm dd
-         -> fromString "'"
-         <> fromString (show yy) <> fromString "-"
-         <> fromString (show mm) <> fromString "-"
-         <> fromString (show dd)
+        ADate  d
+         -> let (yy, mm, dd)    = Date32.unpack d
+            in fromString "'"
+                <> fromString (show yy) <> fromString "-"
+                <> fromString (show mm) <> fromString "-"
+                <> fromString (show dd)
 
 
 buildPrimOp :: PrimOp -> Builder

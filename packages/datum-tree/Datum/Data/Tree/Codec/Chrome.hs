@@ -2,9 +2,9 @@
 module Datum.Data.Tree.Codec.Chrome where
 import Datum.Data.Tree.Exp
 import Text.PrettyPrint.Leijen
-import Prelude                          hiding ((<$>))
-import qualified Data.Repa.Array        as A
-
+import Prelude                                  hiding ((<$>))
+import qualified Data.Repa.Array                as A
+import qualified Data.Repa.Scalar.Date32        as Date32
 
 -- Trees-----------------------------------------------------------------------
 ppTree :: Tree c -> Doc
@@ -129,8 +129,9 @@ ppAtom aa
         AText str       -> text $ show str
         ATime str       -> text str
 
-        ADate yy mm dd
-         ->  text "'"
-         <> int yy <> text "-" 
-         <> int mm <> text "-" 
-         <> int dd
+        ADate d
+         -> let (yy, mm, dd)     = Date32.unpack d
+            in  text "d'"
+                <> int yy <> text "-" 
+                <> int mm <> text "-" 
+                <> int dd

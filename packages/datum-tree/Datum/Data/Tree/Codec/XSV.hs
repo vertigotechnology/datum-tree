@@ -22,6 +22,7 @@ import qualified Data.Repa.Array                as A
 import qualified Data.List                      as List
 import qualified Data.Char                      as Char
 import qualified Data.Text                      as Text
+import qualified Data.Repa.Scalar.Date32        as Date32
 
 
 ---------------------------------------------------------------------------------------------------
@@ -65,11 +66,12 @@ encodeXSV delim _hasHeader tt
                 AText    str   -> BB.string8   $ show str
                 ATime    str   -> BB.string8   str
 
-                ADate yy mm dd 
-                 -> BB.string8 "'"
-                 <> BB.intDec    yy <> (BB.string8 " ")
-                 <> BB.intDec    mm <> (BB.string8 " ")
-                 <> BB.intDec    dd
+                ADate d
+                 -> let (dd, mm, yy) = Date32.unpack d
+                    in  BB.string8 "d'"
+                        <> BB.intDec    yy <> (BB.string8 " ")
+                        <> BB.intDec    mm <> (BB.string8 " ")
+                        <> BB.intDec    dd
 
 
 ---------------------------------------------------------------------------------------------------

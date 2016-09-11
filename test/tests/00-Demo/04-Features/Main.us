@@ -13,6 +13,10 @@ format
         , stamp  : Date         = 'YYYY-MM-DD }
 
 
+-- View date for when we compute the features.
+dateView  = d'2015-01-01
+
+
 main
  = do   -- Load some separate files containing stock quotes,
         -- and concatenate them together.
@@ -22,23 +26,20 @@ main
                 , read format "test/data/tsv/quotes/NAB.tsv"
                 , read format "test/data/tsv/quotes/WBC.tsv" ]
 
+
+        -- Select the fields that were interested in, and group quotes by symbol.
         bySym   = glob
-                -- Select only the fields that we're interested in.
                 & on /row
                 $ permute-fields ['symbol, 'date, 'open, 'close, 'volume]
 
                 -- Group quotes by symbol
-                & on /row
-                $ group 'symbol
-
-                -- Sample for debugging.
---                & on /symbol/row     
---                $ sample 10 
+                & on /row       $ group 'symbol
 
 
-        dView  = d'2015-01-01
-
-        bySym   -- Associate copies of the data with the given date ranges.
+        -- Filter data to select rows for each of the date ranges that we're
+        -- interestd in.
+        tsRange = bySym
+                -- Associate copies of the data with each date range.
                 & on /symbol/row     
                 $ push-dim 'row 
                         [ { range : Nat  = 7  }
@@ -47,38 +48,43 @@ main
                         , { range : Nat  = 90 } ]
 
                 -- Gather the leaves back to top-level so we have a copy of the 
-                -- data associated with each range.
+                -- data associated with each range, where the range is relative.
+                -- to the view date.
                 & gather /symbol/row/row
 
-                -- Select just the rows within each date range.
+                -- Filter range groups so we have just the rows within
+                -- each date range.
                 & on /row
                 $ filter-keys 
-                  (λk → date-diff k.date dView <= k.range)
+                  (λk → date-diff k.date dateView <= k.range)
 
+                -- Regroup the data after the filter process.
+                -- If we had a better way to broadcast the desired range to
+                -- the filter process then we wouldn't need this.
+                & on /row        $ group 'symbol
+                & on /symbol/row $ group 'range  @ sortby-field 'range
+
+
+        -- Compute features for each range.
+        tsFeatures
+                = tsRange
                 -- Compute value traded for each day from volume and mid price.
-                & on /row 
+                & on /symbol/range/row
                 $ map-keys 
-                  (λk → { symbol : Text    = k.symbol
-                        , range  : Nat     = k.range
-                        , date   : Date    = k.date 
+                  (λk → { date   : Date    = k.date 
                         , open   : Decimal = k.open
                         , close  : Decimal = k.close
                         , volume : Nat     = k.volume
                         , value  : Decimal = k.volume * (div (k.open + k.close) 2)
                         })
 
-                -- Re-group by symbol.
-                & on /row 
-                $ group 'symbol
-
-                -- Group by range.
-                & on /symbol/row
-                $ group 'range
-                @ sortby-field 'range
-
-{-
                 -- Sum up the total volume traded for each symbol in each range.
                 & on /symbol/range
                 $ fold-as-field 'total-value 'row 
                   (λacc → λk -> acc + k.value) 0
--}
+
+                -- Drop the underling quote data now that we're done with it.
+                & on /symbol/range $ drop-dim 'row
+
+
+        tsFeatures

@@ -95,6 +95,9 @@ module Datum.Data.Tree.Operator
         , countAsFieldTree
         , countAsFieldForest
 
+        , foldAsFieldTree
+        , foldAsFieldForest
+
           -- * Appending
         , appendTrees
         , appendForests

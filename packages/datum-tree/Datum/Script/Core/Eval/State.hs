@@ -111,6 +111,7 @@ pattern VTree t         = VVPAF (PVData (PDTree     t))
 pattern VTreePath ts    = VVPAF (PVData (PDTreePath ts))
 pattern VFilePath fp    = VVPAF (PVData (PDFilePath fp))
 
+pattern VAtom    a      = VVPAF (PVData (PDAtom  a))
 pattern VUnit           = VVPAF (PVData (PDAtom  AUnit))
 pattern VBool    x      = VVPAF (PVData (PDAtom (ABool    x)))
 pattern VInt     x      = VVPAF (PVData (PDAtom (AInt     x)))

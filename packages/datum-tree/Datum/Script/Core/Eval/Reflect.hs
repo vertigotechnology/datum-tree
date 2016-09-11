@@ -5,6 +5,7 @@ module Datum.Script.Core.Eval.Reflect
         , reflectKeyPredicate
         , reflectTreeTransform
         , reflectForestTransform
+        , reflectKeyFoldWorker
         , keyOfFields)
 where
 import Datum.Script.Core.Eval.Env
@@ -39,7 +40,7 @@ reflectKeyTransform sstep state0 thunk _path0 key0
         let pdRecord = PDRecord (fieldsOfKey key0)
 
         result' <- runMachine sstep
-                $  setStateApp thunk (PVData pdRecord) state0
+                $  setStateApp thunk [PVData pdRecord] state0
 
         case result' of
          Left  err       
@@ -61,7 +62,7 @@ reflectKeyPredicate sstep state0 thunk _path0 key0
         let pdRecord = PDRecord (fieldsOfKey key0)
 
         result' <- runMachine sstep
-                $  setStateApp thunk (PVData pdRecord) state0
+                $  setStateApp thunk [PVData pdRecord] state0
 
         case result' of
          Left  err       
@@ -138,7 +139,7 @@ reflectTreeTransform
 reflectTreeTransform sstep state0 thunk _path0 tree0
  = do   
         result  <- runMachine sstep 
-                $  setStateApp thunk (PVData (PDTree tree0)) state0
+                $  setStateApp thunk [PVData (PDTree tree0)] state0
 
         case result of
          Left err
@@ -168,7 +169,7 @@ reflectForestTransform
 reflectForestTransform sstep state0 thunk _path0 forest0
  = do   
         result  <- runMachine sstep
-                $  setStateApp thunk (PVData (PDForest forest0)) state0
+                $  setStateApp thunk [PVData (PDForest forest0)] state0
 
         case result of
          Left err
@@ -183,6 +184,35 @@ reflectForestTransform sstep state0 thunk _path0 forest0
                 -- Normalized expression was not a forest.
                 -- The thunk that was provided does not map forests to forests.
                 _ -> return $ Left $ Error "Unexpected type in forest evaluation"
+
+
+---------------------------------------------------------------------------------------------------
+-- | Reflect evaluation of a tree fold worker.
+reflectKeyFoldWorker
+        :: Reflection (T.Atom, T.Key 'T.O) T.Atom
+
+reflectKeyFoldWorker sstep state0 thunk _path0 (acc, key0)
+ = do
+        let pdRecord0 = PDRecord (fieldsOfKey key0)
+
+        result  <- runMachine sstep
+                $  setStateApp thunk 
+                        [ PVData (PDAtom   acc)
+                        , PVData pdRecord0 ]
+                        state0
+
+        case result of
+         Left err
+          -> return $ Left err
+
+         Right state'
+          -> case stateControl state' of
+                -- Expression normalized to an atom, ok.
+                ControlPAP (PAF (PVData (PDAtom a)) [])
+                  -> return $ Right a
+
+                -- Normalized expression was not an atom.
+                _ -> return $ Left $ Error "Unexpected type in fold worker evaluation"
 
 
 ---------------------------------------------------------------------------------------------------
@@ -214,9 +244,9 @@ runMachine sstep state
 ---------------------------------------------------------------------------------------------------
 -- | Apply thunk to an argument and set the result as the new control
 --   in the given state.
-setStateApp :: Value -> Frag -> State -> State
-setStateApp thunk arg state
- = case curryThunkPrim thunk arg of
+setStateApp :: Value -> [Frag] -> State -> State
+setStateApp thunk args state
+ = case curryThunkPrim thunk args of
         VClo (Clo x1 env)
          -> state { stateEnv     = env
                   , stateControl = ControlExp x1 }
@@ -227,15 +257,15 @@ setStateApp thunk arg state
 
 
 -- | Curry the given primitive argument onto a thunk.
-curryThunkPrim  :: Value -> Frag -> Value
-curryThunkPrim tt pArg
+curryThunkPrim  :: Value -> [Frag] -> Value
+curryThunkPrim tt psArg
  = case tt of
         VClo (Clo x1 env)
-         -> VClo (Clo (XApp x1 (XFrag pArg)) env)
+         -> VClo (Clo (makeXApps x1 [XFrag pArg | pArg <- psArg]) env)
 
         VPAP (PAP p ts)
-         -> VPAP (PAP p (ts ++ [VPAP (PAF pArg [])]))
+         -> VPAP (PAP p (ts ++ [VPAP (PAF pArg []) | pArg <- psArg]))
 
         VPAP (PAF p ts)
-         -> VPAP (PAF p (ts ++ [VPAP (PAF pArg [])]))
+         -> VPAP (PAF p (ts ++ [VPAP (PAF pArg []) | pArg <- psArg]))
 

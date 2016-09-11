@@ -113,6 +113,9 @@ module Datum.Data.Tree
         , countAsFieldTree
         , countAsFieldForest
 
+        , foldAsFieldTree
+        , foldAsFieldForest
+
           -- ** Slicing
         , sliceTree
         , sliceTreeWithNames

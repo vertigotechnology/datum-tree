@@ -62,8 +62,14 @@ ppCast' cc
 -------------------------------------------------------------------------------
 -- | Pretty print an expression.
 ppExp'  :: PpExp l -> GExp l -> Doc
-ppExp' p xx
- = case xx of
+ppExp'  p =  ppExp'' p ContextTop
+
+
+ppExp'' p ctx xx
+ = let  bparens True  d = text "(" <> d <> text ")"
+        bparens False d = d
+
+   in case xx of
         XAnnot a x
          -> ppAnnot p a <> ppExp p x
 
@@ -71,31 +77,45 @@ ppExp' p xx
          -> ppBound p u
 
         XAbs bParam xType xBody
-         -> text "λ(" 
-                <>  ppBind p bParam 
+         -> bparens (elem ctx [ContextArg])
+         $  text "λ(" 
+                <>  ppBind   p bParam 
                 <+> text ":"
-                <+> ppExp  p xType
-                <>  text ") ->"
-                <>  ppExp  p xBody
+                <+> ppExp    p xType
+                <>  text ") → "
+                <>  ppExp''  p ContextBody xBody
 
         XApp x1 x2
-         -> ppExp p x1 <+> ppExp p x2
+         ->  bparens (elem ctx [ContextArg])
+         $   ppExp'' p ContextFun x1 
+         <+> ppExp'' p ContextArg x2
 
         XRec bxs xBody
-         -> text "rec {"
-         <> vsep [ ppBind p b <+> text "=" <+> ppExp p x
-                 | (b, x) <- bxs ]
-         <> text "} in "
-         <> ppExp p xBody
+         ->  text "rec {"
+         <>  vsep [ ppBind p b <+> text "=" <+> ppExp p x
+                  | (b, x) <- bxs ]
+         <>  text "} in "
+         <>  ppExp'' p ContextBody xBody
 
         XCast c xBody
-         -> ppCast p c <+> text "in" <+> ppExp p xBody
+         ->  ppCast p c 
+         <+> text "in" 
+         <+> ppExp'' p ContextBody xBody
 
         XPrim pp
          -> ppPrim p pp
 
         XFrag ff
          -> ppFrag p ff
+ 
+
+data Context 
+        = ContextArg
+        | ContextFun
+        | ContextBody
+        | ContextTop
+        deriving Eq
+
 
 
 -------------------------------------------------------------------------------
@@ -107,9 +127,6 @@ ppPrim'
 ppPrim' _p pp
  = case pp of
         PMeta{} -> text "meta"
-        _       -> text "derp"
+        _       -> text "TODO"
 
-
--- GXPrim l ~ GPrim (GExp l)
---        => 
 

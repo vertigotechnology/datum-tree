@@ -25,6 +25,5 @@ step_Reduce _ _
                         (Text.unpack nSub) 
                         forest
 
-
 step_Reduce _ state _ _
  = crash state

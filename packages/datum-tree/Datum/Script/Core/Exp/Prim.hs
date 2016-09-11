@@ -165,6 +165,11 @@ typeOfPrimOp op
         PPFinal                 -> XTNat            ~> XTTree ~> XTTree
         PPFilterKeys            -> (XTRecord ~> XTBool) ~> XTForest ~> XTForest
         PPFlatten               -> XTTree           ~> XTTree
+
+        PPFoldAsField           
+         -> K.makeXForall K.XKData K.XKData
+         $  \u -> XTName ~> XTName ~> (u ~> u ~> u) ~> u ~> XTTree ~> XTTree
+
         PPGather                -> XTTreePath       ~> XTTree ~> XTTree
         PPGroup                 -> XTName           ~> XTTree ~> XTTree
         PPInitial               -> XTNat            ~> XTTree ~> XTTree

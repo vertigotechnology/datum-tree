@@ -85,6 +85,7 @@ step self state pp vs
 
         -- Reduction
         PPCountAsField          -> step_Reduce    self state pp vs
+        PPFoldAsField           -> step_Reduce    self state pp vs
 
         -- Traverse
         PPAt                    -> step_Traverse  self state pp vs

@@ -53,6 +53,7 @@ strPervasive
         , "final                = final#"
         , "filter-keys          = filter-keys#"
         , "flatten              = flatten#"
+        , "fold-as-field        = fold-as-field#"
         , "gather               = gather#"
         , "group                = group#"
         , "initial              = initial#"

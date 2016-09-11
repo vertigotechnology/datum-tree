@@ -71,7 +71,14 @@ main
                 & on /row 
                 $ group 'symbol
 
-                -- Group by range and sort for presentation.
+                -- Group by range.
                 & on /symbol/row
                 $ group 'range
                 @ sortby-field 'range
+
+{-
+                -- Sum up the total volume traded for each symbol in each range.
+                & on /symbol/range
+                $ fold-as-field 'total-value 'row 
+                  (λacc → λk -> acc + k.value) 0
+-}

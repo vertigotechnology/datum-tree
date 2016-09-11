@@ -49,6 +49,7 @@ data PrimOp
         | PPFinal               -- ^ Select the final n branches of each subtree.
         | PPFilterKeys          -- ^ Filter the keys in every branch of a forest.
         | PPFlatten             -- ^ Flatten branches.
+        | PPFoldAsField         -- ^ Fold keys in a sub-dimension into a field in the parent key.
         | PPGather              -- ^ Gather branches of a tree into sub trees.
         | PPGroup               -- ^ Group branches by given key field.
         | PPInitial             -- ^ Select the initial n branches of each subtree.
@@ -115,6 +116,7 @@ namesOfPrimOps
         , (PPFinal,             "final#")
         , (PPFilterKeys,        "filter-keys#")
         , (PPFlatten,           "flatten#")
+        , (PPFoldAsField,       "fold-as-field#")
         , (PPGather,            "gather#")
         , (PPGroup,             "group#")
         , (PPInitial,           "initial#")
@@ -179,6 +181,7 @@ arityOfPrimOp op
         PPFinal                 -> 2
         PPFilterKeys            -> 2
         PPFlatten               -> 1
+        PPFoldAsField           -> 5
         PPGroup                 -> 2
         PPGather                -> 2
         PPInitial               -> 2

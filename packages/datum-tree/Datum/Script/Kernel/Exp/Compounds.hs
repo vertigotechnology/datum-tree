@@ -31,6 +31,7 @@ stripXAnnot xx
         XApp   x1 x2    -> XApp (down x1) (down x2)
         XRec   bxs x2   -> XRec [(b, down x) | (b, x) <- bxs] (down x2)
         XCast  c x      -> XCast c   (down x)
+        XIf    x1 x2 x3 -> XIf   (down x1) (down x2) (down x3)
         XPrim{}         -> xx
         XFrag{}         -> xx
         

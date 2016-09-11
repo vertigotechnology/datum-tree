@@ -34,7 +34,11 @@ ppErrorCore :: ErrorCore -> Doc
 ppErrorCore (ErrorCoreCrash state)
  = vcat [ text "Interpreter crashed."
         , text "  control: " 
-                <>  ppExpCut (expOfControl $ stateControl state) ]
+                <>  ppExpCut (expOfControl $ stateControl state) 
+
+        , text "  context: " 
+                <> (text $ show $ stateContext state) 
+        ]
 
 ppErrorCore (ErrorCoreUnboundVariable b)
  = vcat [ text "Unbound variable" 

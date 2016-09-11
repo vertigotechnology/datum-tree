@@ -42,6 +42,12 @@ buildExp prec xx
          -> buildExp 10 x1
          <> buildExp 0  x2
 
+        XIf    xScrut xThen xElse
+         -> fromString "if"
+                <> buildExp 0 xScrut
+                <> fromString "then" <> buildExp 0 xThen
+                <> fromString "else" <> buildExp 0 xElse
+
         XRec{} 
          -> error "buildPrim: handle letrec"
 

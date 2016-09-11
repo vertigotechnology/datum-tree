@@ -102,6 +102,12 @@ ppExp'' p ctx xx
          <+> text "in" 
          <+> ppExp'' p ContextBody xBody
 
+        XIf  xScrut xThen xElse
+         ->  bparens (elem ctx [ContextFun, ContextArg])
+         $   text "if"   <+> ppExp' p xScrut
+         <+> text "then" <+> ppExp' p xThen
+         <+> text "else" <+> ppExp' p xElse
+
         XPrim pp
          -> ppPrim p pp
 

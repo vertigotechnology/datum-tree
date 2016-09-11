@@ -79,11 +79,12 @@ stripXAnnotX xx
         XPrim{}         -> xx
         XFrag{}         -> xx
         XVar{}          -> xx
-        XCast  c x      -> XCast c   (down x)
-        XAbs   b t x    -> XAbs  b t (down x)
-        XApp   x1 x2    -> XApp (down x1) (down x2)
-        XRec   bxs x2   -> XRec [(b, down x) | (b, x) <- bxs] (down x2)
-        XDo    ss x     -> XDo  (map stripXAnnotS ss) (down x)
+        XCast  c x      -> XCast   c   (down x)
+        XAbs   b t x    -> XAbs    b t (down x)
+        XApp   x1 x2    -> XApp   (down x1) (down x2)
+        XRec   bxs x2   -> XRec   [(b, down x) | (b, x) <- bxs] (down x2)
+        XIf    x1 x2 x3 -> XIf    (down x1) (down x2) (down x3)
+        XDo    ss x     -> XDo    (map stripXAnnotS ss) (down x)
         XDefix xs       -> XDefix (map down xs)
         XInfixOp{}      -> xx
         XInfixVar{}     -> xx

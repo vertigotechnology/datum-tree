@@ -55,6 +55,10 @@ toCoreX xx
 
             in  go ss0
 
+        S.XIf xScrut xThen xElse
+                        -> C.XIf <$> (toCoreX xScrut) 
+                                 <*> (toCoreX xThen) <*> (toCoreX xElse)
+
         S.XDefix{}      -> Left $ ErrorSugaredInfix xx
         S.XInfixOp{}    -> Left $ ErrorSugaredInfix xx
         S.XInfixVar{}   -> Left $ ErrorSugaredInfix xx

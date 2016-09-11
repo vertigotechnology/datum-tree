@@ -99,6 +99,12 @@ freeVarsX env xx
                  $ map (freeVarsX env')
                  $ x2 : xs
 
+        XIf xScrut xThen xElse
+         -> Set.unions
+                [ freeVarsX env xScrut
+                , freeVarsX env xThen
+                , freeVarsX env xElse ]
+
 
 -- | Take the name of a binder, if there is one.
 takeNameOfBind :: Bind -> Maybe Name

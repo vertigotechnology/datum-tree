@@ -101,6 +101,16 @@ step   state@(State world env ctx ctl)
                          $ ControlExp x2
 
 
+        -- Enter into the scrutinee of an if-then-else expression.
+        ControlExp (XIf xScrut xThen xElse)
+         -> do  let ctx' = ContextBranches 
+                                (VClo (Clo xThen env))
+                                (VClo (Clo xElse env))
+                                ctx
+                progress $ State world env ctx'
+                         $ ControlExp xScrut
+
+
         -- Evaluate fully applied primitive applications in PAP form.
         ControlPAP (PAF (PVOp op) args)
          | length args == arityOfPrimOp op
@@ -124,6 +134,14 @@ step   state@(State world env ctx ctl)
                         ControlExp XAbs{} -> done
                         ControlPAP{}      -> done
                         _                 -> failure $ ErrorCore $ ErrorCoreCrash state
+
+                ContextBranches 
+                        (VClo (Clo xThen envThen))
+                        (VClo (Clo xElse envElse)) ctx'
+                 |  ControlPAP (PAF (PVData (PDAtom (ABool b))) []) <- ctl
+                 -> if b 
+                        then progress $ State world envThen ctx' $ ControlExp xThen
+                        else progress $ State world envElse ctx' $ ControlExp xElse
 
 
                 -- Finished evaluating the functional expression, 

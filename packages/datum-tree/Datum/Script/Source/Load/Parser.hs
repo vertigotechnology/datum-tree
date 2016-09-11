@@ -64,7 +64,8 @@ pTop
 -- | Parse an expression.
 pExp :: Parser (SourcePos, Exp)
 pExp 
- = do   pExpApp
+ = pExpApp
+
 
 
 -------------------------------------------------------------------------------
@@ -114,6 +115,16 @@ pExpAtom
         _       <- pTok KRightArrow
         (_,  x) <- pExp
         return  (sp, XAnnot sp $ XAbs n Nothing x)
+
+
+ , do   -- let-expression
+        sp              <- pTok (KKey "if")
+        (_, xScrut)     <- pExp
+        _               <- pTok (KKey "then")
+        (_, xThen)      <- pExp
+        _               <- pTok (KKey "else")
+        (_, xElse)      <- pExp
+        return  (sp, XAnnot sp $ XIf  xScrut xThen xElse)
 
 
         -- do expression

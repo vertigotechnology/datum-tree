@@ -80,11 +80,15 @@ data Context
 
         -- | In an application we are evaluating the functional expression,
         --   and the frame holds the unevaluated argument.
-        | ContextAppArg  !Value !Context
+        | ContextAppArg   !Value !Context
 
         -- | In an application we are evaluating the argument,
         --   and the frame holds the evaluated function.
-        | ContextAppFun  !Value !Context
+        | ContextAppFun   !Value !Context
+
+        -- | In an if-then-else expression we're evaluating the scurtinee, 
+        --   and the context holds the branches.
+        | ContextBranches !Value !Value !Context
 
         -- | We're evalating a list of elements and have already handled
         --   the current ones.

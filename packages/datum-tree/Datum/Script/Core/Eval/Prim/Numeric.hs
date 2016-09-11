@@ -26,7 +26,7 @@ step_Numeric _ _ op     [v1@(VInt _),     v2@(VDecimal _)]
 
 
 step_Numeric _ state _ _
- =      crash state
+ = crash state 
 
 
 -- | Reduce a binary numeric primop.
@@ -64,18 +64,30 @@ redNum2 op (VDecimal x1) (VDecimal x2)
 
 redNum2 op (VDecimal x1) (VInt x2)
  = case op of
-        PPAdd   -> Just $ VDecimal (x1 +     (fromIntegral x2))
-        PPSub   -> Just $ VDecimal (x1 -     (fromIntegral x2))
-        PPMul   -> Just $ VDecimal (x1 *     (fromIntegral x2))
-        PPDiv   -> Just $ VDecimal (x1 /     (fromIntegral x2))
+        PPAdd   -> Just $ VDecimal (x1 +  fromIntegral x2)
+        PPSub   -> Just $ VDecimal (x1 -  fromIntegral x2)
+        PPMul   -> Just $ VDecimal (x1 *  fromIntegral x2)
+        PPDiv   -> Just $ VDecimal (x1 /  fromIntegral x2)
+
+        PPEq    -> Just $ VBool    (x1 == fromIntegral x2)
+        PPGt    -> Just $ VBool    (x1 >  fromIntegral x2)
+        PPGe    -> Just $ VBool    (x1 >= fromIntegral x2)
+        PPLt    -> Just $ VBool    (x1 <  fromIntegral x2)
+        PPLe    -> Just $ VBool    (x1 <= fromIntegral x2)
         _       -> Nothing
 
 redNum2 op (VInt x1)     (VDecimal x2)
  = case op of
-        PPAdd   -> Just $ VDecimal ((fromIntegral x1) + x2)
-        PPSub   -> Just $ VDecimal ((fromIntegral x1) - x2)
-        PPMul   -> Just $ VDecimal ((fromIntegral x1) * x2)
-        PPDiv   -> Just $ VDecimal ((fromIntegral x1) / x2)
+        PPAdd   -> Just $ VDecimal (fromIntegral x1 + x2)
+        PPSub   -> Just $ VDecimal (fromIntegral x1 - x2)
+        PPMul   -> Just $ VDecimal (fromIntegral x1 * x2)
+        PPDiv   -> Just $ VDecimal (fromIntegral x1 / x2)
+
+        PPEq    -> Just $ VBool    (fromIntegral x1 ==    x2)
+        PPGt    -> Just $ VBool    (fromIntegral x1 >     x2)
+        PPGe    -> Just $ VBool    (fromIntegral x1 >=    x2)
+        PPLt    -> Just $ VBool    (fromIntegral x1 <     x2)
+        PPLe    -> Just $ VBool    (fromIntegral x1 <=    x2)
         _       -> Nothing
 
 redNum2 _ _ _

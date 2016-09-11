@@ -31,6 +31,9 @@ data GExp l
         -- | Type cast.
         | XCast  (GXCast  l) (GExp l)
 
+        -- | Selection
+        | XIf    (GExp    l) (GExp l) (GExp l)
+
         -- | Ambient primitive.
         --
         --   These are baked into the calculus,

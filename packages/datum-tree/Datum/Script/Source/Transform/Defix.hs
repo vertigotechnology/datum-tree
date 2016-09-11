@@ -77,6 +77,8 @@ instance Lang l => Defix GExp l where
                 x2'          <- down x2
                 return  $ XRec bxs' x2'
 
+        XIf x1 x2 x3    -> liftM3 XIf (down x1) (down x2) (down x3)
+
         XDo ss x
          -> do  ss'     <- mapM (defixStmt table a) ss
                 x'      <- down x

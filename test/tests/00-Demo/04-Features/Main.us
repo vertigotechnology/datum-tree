@@ -80,11 +80,24 @@ main
 
                 -- Sum up the total volume traded for each symbol in each range.
                 & on /symbol/range
-                $ fold-as-field 'total-value 'row 
-                  (λacc → λk -> acc + k.value) 0
+                $ fold-as-field 'value-total 'row 
+                  (λacc → λk → acc + k.value) 0
+
+                -- Get the maximum value traded on any day in the range.
+                & on /symbol/range
+                $ fold-as-field 'value-max 'row
+                  (λacc → λk → if k.value > acc then k.value else acc) 0
 
                 -- Drop the underling quote data now that we're done with it.
                 & on /symbol/range $ drop-dim 'row
 
+                -- Normalize features relative to the date ranges.
+                & on /symbol/range
+                $ map-keys
+                  (λk → { range              : Nat     = k.range
+                        , value-total        : Decimal = k.value-total
+                        , value-total-perday : Decimal = div k.value-total k.range
+                        , value-max          : Decimal = k.value-max
+                        , value-max-norm     : Decimal = div k.value-max k.value-total  })
 
         tsFeatures

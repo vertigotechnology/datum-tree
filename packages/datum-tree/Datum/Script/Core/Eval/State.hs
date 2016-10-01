@@ -6,7 +6,9 @@ import Datum.Script.Core.Eval.Env               (Env)
 import Datum.Script.Core.Exp
 import Data.Default
 import Data.Text                                (Text)
-import qualified Datum.Script.Core.Eval.Env  as Env
+import qualified Datum.Script.Core.Eval.Env     as Env
+import qualified Data.Map.Strict                as Map
+import Data.Map                                 (Map)
 
 
 -------------------------------------------------------------------------------
@@ -16,6 +18,9 @@ data State
         = State
         { -- | World that the machine is executing in.
           stateWorld    :: World
+
+          -- | Store mapping addresses to values.
+        , stateStore    :: !(Map Int Value)
 
           -- | Environment.
         , stateEnv      :: !Env
@@ -33,6 +38,7 @@ stateInit :: World -> Exp -> State
 stateInit world xx
         = State
         { stateWorld    = world
+        , stateStore    = Map.empty
         , stateEnv      = Env.empty
         , stateContext  = ContextNil 
         , stateControl  = ControlExp xx }

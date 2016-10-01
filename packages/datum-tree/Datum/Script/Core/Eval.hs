@@ -23,7 +23,7 @@ import qualified Data.List                      as List
 -- | Perform a single step evaluation of the expression.
 step :: State -> IO (Either Error (Maybe State))
 
-step   state@(State world env ctx ctl)
+step   state@(State world store env ctx ctl)
  = let  failure  err = return $ Left err
         progress ss  = return $ Right $ Just ss
         done         = return $ Right $ Nothing
@@ -31,33 +31,37 @@ step   state@(State world env ctx ctl)
    in case ctl of
         -- Silently look through annotations.
         ControlExp (XAnnot _ x)
-         ->     step $ State world env ctx $ ControlExp x
+         ->     step    $ State world store env ctx
+                        $ ControlExp x
 
 
         -- Silently promote prims to PAPs.
         ControlExp (XPrim p)
-         ->     step $ State world env ctx $ ControlPAP (PAP p [])
+         ->     step    $ State world store env ctx
+                        $ ControlPAP (PAP p [])
 
 
         -- Other fragment specific prims are fully evaluated.
         ControlExp (XFrag p)
-         ->     step $ State world env ctx $ ControlPAP (PAF p [])
+         ->     step    $ State world store env ctx
+                        $ ControlPAP (PAF p [])
 
 
         -- Silently look through casts.
         ControlExp (XCast _ x)
-         ->     step $ State world env ctx $ ControlExp x
+         ->     step    $ State world store env ctx 
+                        $ ControlExp x
 
 
         -- Lookup value of variable from the environment.
         ControlExp (XVar u)
          -> case Env.lookup u env of
                 Just (VClo (Clo x' env'))
-                 -> progress $ State world env' ctx 
+                 -> progress $ State world store env' ctx 
                              $ ControlExp x'
 
                 Just (VPAP pp)
-                 -> progress $ State world Env.empty ctx 
+                 -> progress $ State world store Env.empty ctx 
                              $ ControlPAP pp
 
                 Nothing
@@ -68,7 +72,7 @@ step   state@(State world env ctx ctl)
         -- begin evaluating the functional expression.
         ControlExp (XApp x1 x2)
          -> do  let ctx'  = ContextAppArg (VClo (Clo x2 env)) ctx
-                progress $ State world env ctx' 
+                progress $ State world store env ctx' 
                          $ ControlExp x1
 
 
@@ -97,7 +101,7 @@ step   state@(State world env ctx ctl)
                 -- Add new environment to existing one.
                 let env'' = Env.union env env'
 
-                progress $ State world env'' ctx 
+                progress $ State world store env'' ctx 
                          $ ControlExp x2
 
 
@@ -107,7 +111,7 @@ step   state@(State world env ctx ctl)
                                 (VClo (Clo xThen env))
                                 (VClo (Clo xElse env))
                                 ctx
-                progress $ State world env ctx'
+                progress $ State world store env ctx'
                          $ ControlExp xScrut
 
 
@@ -120,10 +124,10 @@ step   state@(State world env ctx ctl)
                   -> failure err
 
                  Right (VClo (Clo x' env'))
-                  -> progress $ State world env' ctx      $ ControlExp x'
+                  -> progress $ State world store env' ctx      $ ControlExp x'
 
                  Right (VPAP pap)
-                  -> progress $ State world Env.empty ctx $ ControlPAP pap
+                  -> progress $ State world store Env.empty ctx $ ControlPAP pap
 
 
         _ -> case ctx of
@@ -140,8 +144,11 @@ step   state@(State world env ctx ctl)
                         (VClo (Clo xElse envElse)) ctx'
                  |  ControlPAP (PAF (PVData (PDAtom (ABool b))) []) <- ctl
                  -> if b 
-                        then progress $ State world envThen ctx' $ ControlExp xThen
-                        else progress $ State world envElse ctx' $ ControlExp xElse
+                        then progress $ State world store envThen ctx' 
+                                      $ ControlExp xThen
+
+                        else progress $ State world store envElse ctx' 
+                                      $ ControlExp xElse
 
 
                 -- Finished evaluating the functional expression, 
@@ -149,7 +156,8 @@ step   state@(State world env ctx ctl)
                 ContextAppArg (VClo (Clo xArg envArg)) ctx'
                  -> do  let thunk = trimValue $ thunkify ctl env
                         let ctx'' = ContextAppFun thunk ctx'
-                        progress $ State world envArg ctx'' $ ControlExp xArg
+                        progress  $ State world store envArg ctx''
+                                  $ ControlExp xArg
 
 
                 -- Finished evaluating the argument, 
@@ -157,7 +165,8 @@ step   state@(State world env ctx ctl)
                 ContextAppFun (VClo (Clo (XAbs b _t xBody) envFun)) ctx'
                  -> do  let thunk = trimValue $ thunkify ctl env
                         let env'  = Env.insert b thunk envFun
-                        progress $ State world env' ctx' $ ControlExp xBody
+                        progress  $ State world store env' ctx' 
+                                  $ ControlExp xBody
 
 
                 -- Application of a primitive where its next argument
@@ -176,10 +185,12 @@ step   state@(State world env ctx ctl)
                          Left  err    -> failure err
 
                          Right (VClo (Clo x' env'))
-                          -> progress $ State world env' ctx'      $ ControlExp x'
+                          -> progress   $ State world store env' ctx'
+                                        $ ControlExp x'
 
                          Right (VPAP pap)
-                          -> progress $ State world Env.empty ctx' $ ControlPAP pap
+                          -> progress   $ State world store Env.empty ctx'
+                                        $ ControlPAP pap
 
 
                 -- The context is not empty but we can't make progress.

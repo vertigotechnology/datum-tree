@@ -34,6 +34,8 @@ step _ _ p args
 -- Dispatch to the function that handles each primitive.
 step self state pp vs
  = case pp of
+        -- Store Primitives
+        PPStoreRead             -> error "step: not finished"
         -- Numeric        
         PPAdd                   -> step_Numeric   self state pp vs
         PPSub                   -> step_Numeric   self state pp vs

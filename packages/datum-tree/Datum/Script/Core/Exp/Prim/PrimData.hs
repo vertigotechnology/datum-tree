@@ -11,6 +11,7 @@ import qualified Datum.Data.Tree.Exp    as T
 --   come with the definition of trees.
 data PrimData x
         = PDType     !x                 -- ^ Treat a closed type as a data value.
+        | PDAddr     !x !Int            -- ^ A store reference of the given type.
         | PDName     !Text              -- ^ Field or branch name.
         | PDAtom     !T.Atom            -- ^ Atomic value.
         | PDTreePath ![Text]            -- ^ Datum tree path.

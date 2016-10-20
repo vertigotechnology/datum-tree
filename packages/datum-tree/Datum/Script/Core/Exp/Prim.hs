@@ -18,6 +18,7 @@ module Datum.Script.Core.Exp.Prim
         , primOpsOfNames
 
         -- * Pattern Synonyms
+        , pattern XTRef
         , pattern XTName,       pattern XName
         , pattern XTTreePath,   pattern XTreePath
         , pattern XTFilePath,   pattern XFilePath
@@ -95,6 +96,7 @@ typeOfPrimData :: GExpStd l n => PrimData (GExp l) -> GExp l
 typeOfPrimData dd
  = case dd of
         PDType _        -> K.XType 2
+        PDAddr t _      -> XTRef t
         PDName{}        -> XTName
         PDAtom a        -> XFrag (PTType (PTAtom (typeOfAtom a)))
         PDTreePath{}    -> XTTreePath
@@ -124,6 +126,10 @@ typeOfAtom aa
 typeOfPrimOp   :: GExpStd l n => PrimOp -> GExp l
 typeOfPrimOp op
  = case op of
+        -- Store operators.
+        PPStoreRead             -> K.makeXForall K.XKData K.XKData
+                                $  \u -> u ~> XTRef u
+
         -- Arithmetic operators.
         PPNeg                   -> error "typeOfOp: finish me"
         PPAdd                   -> error "typeOfOp: finish me"
@@ -204,6 +210,7 @@ arityOfPrim pp
 pattern XTArray a       = XApp (XFrag (PTType PTArray)) a
 pattern XTRecord        = XFrag (PTType PTRecord)
 
+pattern XTRef      t    = XApp (XFrag (PTType PTRef)) t
 pattern XTName          = XFrag (PTType PTName)
 pattern XTForest        = XFrag (PTType PTForest)
 pattern XTTree          = XFrag (PTType PTTree)

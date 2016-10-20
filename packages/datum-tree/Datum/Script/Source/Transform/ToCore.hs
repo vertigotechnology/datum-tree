@@ -125,6 +125,7 @@ toCoreFrag ff
 toCorePrimType :: S.PrimType -> Either Error C.PrimType
 toCorePrimType pt
  = case pt of
+        S.PTRef         -> return $ C.PTRef 
         S.PTNum         -> return $ C.PTNum
         S.PTName        -> return $ C.PTName
         S.PTArray       -> return $ C.PTArray
@@ -142,6 +143,7 @@ toCorePrimData :: S.PrimData S.Exp -> Either Error (C.PrimData C.Exp)
 toCorePrimData dd
  = case dd of
         S.PDType t      -> C.PDType  <$> toCoreX t
+        S.PDAddr t i    -> C.PDAddr  <$> toCoreX t <*> return i
         S.PDAtom a      -> return $ C.PDAtom a
         S.PDName t      -> return $ C.PDName t
         S.PDTreePath ts -> return $ C.PDTreePath ts

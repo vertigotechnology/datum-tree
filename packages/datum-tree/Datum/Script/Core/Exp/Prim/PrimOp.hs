@@ -9,8 +9,11 @@ where
 
 -- Primitive operators.
 data PrimOp
+        -- Store operators.
+        = PPStoreRead           -- ^ Read a value from the store.
+
         -- Arithmetic operators.
-        = PPNeg                 -- ^ Negation.
+        | PPNeg                 -- ^ Negation.
         | PPAdd                 -- ^ Addition.
         | PPSub                 -- ^ Subtraction.
         | PPMul                 -- ^ Multiplication.
@@ -149,6 +152,8 @@ primOpsOfNames
 arityOfPrimOp :: PrimOp -> Int
 arityOfPrimOp op
  = case op of
+        PPStoreRead             -> 1
+
         PPNeg                   -> 1
         PPAdd                   -> 2
         PPSub                   -> 2

@@ -10,6 +10,7 @@ import qualified Datum.Data.Tree.Exp                    as T
 -- Primitive types.
 data PrimType
         = PTValue                       -- ^ Super type of values.
+        | PTRef                         -- ^ Reference to a value in the store.
         | PTName                        -- ^ Name type.
         | PTNum                         -- ^ Supertype of number types.
         | PTTreePath                    -- ^ Datum tree path type.
@@ -26,6 +27,7 @@ data PrimType
 namesOfPrimTypes :: [(PrimType, String)]
 namesOfPrimTypes 
  =      [ (PTValue,             "Value")
+        , (PTRef,               "Ref")
         , (PTName,              "Name")
         , (PTNum,               "Num")
         , (PTTreePath,          "TreePath")

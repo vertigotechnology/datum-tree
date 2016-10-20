@@ -17,10 +17,10 @@ import Data.Map                                 (Map)
 data State
         = State
         { -- | World that the machine is executing in.
-          stateWorld    :: World
+          stateWorld    :: !World
 
           -- | Store mapping addresses to values.
-        , stateStore    :: !(Map Int Value)
+        , stateStore    :: !Store
 
           -- | Environment.
         , stateEnv      :: !Env
@@ -38,7 +38,7 @@ stateInit :: World -> Exp -> State
 stateInit world xx
         = State
         { stateWorld    = world
-        , stateStore    = Map.empty
+        , stateStore    = def
         , stateEnv      = Env.empty
         , stateContext  = ContextNil 
         , stateControl  = ControlExp xx }
@@ -59,6 +59,24 @@ deriving instance Show World
 instance Default World where
  def    = World
         { worldArguments        = [] }
+
+
+-------------------------------------------------------------------------------
+-- | Store of the machine.
+data Store
+        = Store
+        { -- | Next address to allocate.
+          storeAddr     :: Int
+
+          -- | Map of address to value.
+        , storeValues   :: Map Int Value }
+
+deriving instance Show Store
+
+instance Default Store where
+ def    = Store
+        { storeAddr     = 0
+        , storeValues   = Map.empty }
 
 
 -------------------------------------------------------------------------------

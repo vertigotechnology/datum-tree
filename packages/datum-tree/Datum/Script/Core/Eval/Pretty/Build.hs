@@ -109,6 +109,7 @@ buildFrag f
 buildPrimType :: PrimType -> Builder
 buildPrimType pt
  = case pt of
+        PTRef           -> fromString "Ref"
         PTArray         -> fromString "Array"
         PTRecord        -> fromString "Record"
         PTName          -> fromString "Name"
@@ -139,6 +140,7 @@ buildPrimData :: PrimData Exp -> Builder
 buildPrimData dd
  = case dd of
         PDType t        -> buildExp  0 t
+        PDAddr _t i     -> fromString "ADDR" <> fromString (show i)
         PDName n        -> fromText  n
         PDAtom a        -> buildAtom a
         PDTreePath{}    -> error "buildPrim: tree path"

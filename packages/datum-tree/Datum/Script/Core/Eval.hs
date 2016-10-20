@@ -81,9 +81,13 @@ step   state@(State world store env ctx ctl)
         --   actually needed free in the body.
         ControlExp (XRec bxs x2)
          -> do  
+                -- Allocate addresses for each of the new values.
+--              let a0  = storeAddr store
+--              let as  = [a0 .. a0 + length bxs - 1]
+
                 -- Build thunks for each of the bindings.
                 let (bs, xs) = unzip bxs
-                let ts    = map (\x -> trimValue $ VClo (Clo x env)) xs
+                let ts  = map (\x -> trimValue $ VClo (Clo x env)) xs
 
                 -- Make a new environment containing the thunks,
                 -- trimmed to just those that are needed in the body.
